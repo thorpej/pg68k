@@ -1,0 +1,264 @@
+Name		SYSCTL;
+Partno		PG68KSYS;
+Date		05/21/25;
+Revision	1;
+Designer	thorpej;
+Company		lulz;
+Assembly	pg68k cpu030;
+Location	N/A;
+Device		f1508isptqfp100;
+
+/* ATF1508 TQFP-100, JTAG-programmed */
+
+property ATMEL	{ JTAG=on };
+property ATMEL	{ TMS_pullup=on };
+property ATMEL	{ TDI_pullup=on };
+
+/** INPUTS **/
+/* pin	1	=	!RESET; */
+pin	2	=	!AS;
+/*	3	VCCIO		*/
+/*	4	TDI		*/
+pin	5	=	DS;
+pin	6	=	RW;		/* 1=R, 0=W */
+pin	7	=	FC0;
+pin	8	=	FC1;
+pin	9	=	FC2;
+pin	10	=	SIZ0;
+/*	11	GND		*/
+pin	12	=	SIZ1;
+pin	13	=	!FPU_PRESENT;
+/*	14			*/
+/*	15	TMS		*/
+pin	16	=	A0;
+pin	17	=	A1;
+/*	18	VCCIO		*/
+pin	19	=	A2;
+pin	20	=	A3;
+pin	21	=	A4;
+pin	22	=	A5;
+pin	23	=	A6;
+pin	24	=	A7;
+pin	25	=	A8;
+/*	26	GND		*/
+pin	27	=	A9;
+pin	28	=	A10;
+pin	29	=	A11;
+pin	30	=	A12;
+pin	31	=	A13;
+pin	32	=	A14;
+pin	33	=	A15;
+/*	34	VCCIO		*/
+pin	35	=	A16;
+pin	36	=	A17;
+pin	37	=	A18;
+/*	38	GND		*/
+/*	39	VCCINT		*/
+pin	40	=	A19;
+pin	41	=	A20;
+pin	42	=	A21;
+/*	43	GND		*/
+pin	44	=	A22;
+pin	45	=	A23;
+pin	46	=	A24;
+pin	47	=	A25;
+pin	48	=	A26;
+pin	49	=	A27;
+pin	50	=	A28;
+/*	51	VCCIO		*/
+pin	52	=	A29;
+pin	53	=	A30;
+pin	54	=	A31;
+
+pin	89	=	!RESET;
+pin	90	=	CPU_CLK;
+/*	91	VCCINT		*/
+
+/** OUTPUTS **/
+
+/*
+ * These signals are active-low at the CPU, but we drive them
+ * active-high and connect them to fast open-drain inverters
+ * externally so that they can also be driven by external decoders.
+ *
+ * If someone can clue me in on how to use the Open_collector property
+ * on a per-pin basis, that would be s00000p3r!
+ */
+pin	100	=	DSACK1;
+pin	99	=	DSACK0;
+pin	98	=	STERM;
+pin	97	=	CI;	/* /CIIN on the CPU */
+pin	96	=	BERR;
+/*	95	GND		*/
+pin	94	=	AVEC;
+
+pin	93	=	!RD;	/* /RD and ... */
+pin	92	=	!WR;	/* .../WR outputs for 8-bit peripherals. */
+/*	91	VCCINT		*/
+/*	90	CLK		*/
+/*	89	/RESET		*/
+/*	88	OE1		*/
+/*	87	GCLK1		*/
+/*	86	GND		*/
+/*	85	<pg68k rsvd>	*/
+/*	84	<pg68k rsvd>	*/
+/*	83	<pg68k rsvd>	*/
+/*	82	VCCIO		*/
+pin	81	=	!ROMSEL;
+pin	80	=	!DEV8SEL;
+pin	79	=	!FRAMSEL;
+pin	78	=	!MMIOSEL;
+pin	77	=	!RAMSEL;
+pin	76	=	!FPUSEL;
+
+/** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
+
+/* address space indicators */
+node SPACE_NORMAL;
+node SPACE_FPU;
+node SPACE_IACK;
+
+/* normal space regions */
+node REGION_ROM;
+node REGION_DEV8;
+node REGION_FRAM;
+node REGION_MMIO;
+
+/* Shift register to indicate boot-up for the first 4 memory cycles. */
+node BOOT_A;
+node BOOT_B;
+node BOOT_C;
+node RUNNING;
+
+/** LOGIC EQUATIONS **/
+
+/*
+ * We clear BOOT_A-BOOT_C and RUNNING when /RESET is asserted.  We then
+ * shift 1's through the chain.  After 4 cycles, RUNNING will be 1.  This
+ * is used to map the ROM to $0000.0000 until the reset vector is fetched.
+ */
+BOOT_A.AR = RESET;
+BOOT_B.AR = RESET;
+BOOT_C.AR = RESET;
+RUNNING.AR = RESET;
+
+BOOT_A.CK = AS;
+BOOT_B.CK = AS;
+BOOT_C.CK = AS;
+RUNNING.CK = AS;
+
+BOOT_A.D = 'h'1;
+BOOT_B.D = BOOT_A;
+BOOT_C.D = BOOT_B;
+RUNNING.D = BOOT_C;
+
+/*
+ * Function bits for address space encodings:
+ *
+ * FC2   FC1   FC0
+ *  0     0     0	(Undefined, reserved)
+ *  0     0     1	User Data Space
+ *  0     1     0	User Program Space
+ *  0     1     1	(Undefined, reserved)
+ *  1     0     0	(Undefined, reserved)
+ *  1     0     1	Supervisor Data Space
+ *  1     1     0	Supervisor Program Space
+ *  1     1     1	CPU Space
+ *
+ * Note that {User,Supervisor}{Data,Program} -> FC1 xor FC0 -> 1
+ */
+
+SPACE_NORMAL = FC1 $ FC0;
+
+SPACE_FPU = (FC2 & FC1 & FC0) /* CPU space */ &
+            (!A19 & !A18 & A17 & !A16) /* ACCTYPE = 0x2 */ &
+	    (!A15 & !A14 & A13) /* CPID = 0x1 */;
+
+SPACE_IACK = (FC2 & FC1 & FC0) /* CPU space */ &
+             (A19 & A18 & A17 & A16) /* ACCTYPE = 0xf */;
+
+/*
+ * Top-level address decoding:
+ *
+ * $FFF0.0000 - $FFFF.FFFF	System ROM (1MB)
+ * $FFE0.0000 - $FFEF.FFFF	8-bit peripheral space (1MB)
+ * $FFA0.0000 - $FFDF.FFFF	Fast RAM (4MB)
+ * $8000.0000 - $BFFF.FFFF	Memory mapped I/O space (1GB)
+ * $0000.0000 - $7FFF.FFFF	RAM (2GB)
+ *
+ * The bottom 3GB are futher decoded by external decoding logic
+ * (qualified by /RAMSEL and /MMIOSEL).
+ */
+
+REGION_ROM = [A31..20]:&;
+
+REGION_DEV8 = [A31..21]:& & !A20;
+
+REGION_FRAM = [A31..23]:& &
+              ((!A22 &  A21 & !A20)
+	     # (!A22 &  A21 &  A20)
+	     # ( A22 & !A21 & !A20)
+	     # ( A22 & !A21 &  A20));
+
+REGION_MMIO = A31 & !A30 & !A29 & !A28
+            # A31 & !A30 & !A29 &  A28
+	    # A31 & !A30 &  A29 & !A28
+	    # A31 & !A30 &  A29 &  A28;
+
+/*
+ * The ROM is always selected when RUNNING is not asserted (for the reset
+ * vector fetch).
+ */
+ROMSEL = SPACE_NORMAL & AS & !RUNNING
+       # SPACE_NORMAL & AS & REGION_ROM;
+
+DEV8SEL = SPACE_NORMAL & AS & REGION_DEV8;
+
+FRAMSEL = SPACE_NORMAL & AS & REGION_FRAM;
+
+MMIOSEL = SPACE_NORMAL & AS & REGION_MMIO;
+
+/*
+ * The RAM region is never selected when RUNNING is not asserted (to avoid
+ * conflicting with the ROM during the reset vector fetch).
+ */
+RAMSEL = SPACE_NORMAL & AS & RUNNING & !A31;
+
+/*
+ * Select the FPU, if present.
+ */
+FPUSEL = SPACE_FPU & AS & FPU_PRESENT;
+
+/*
+ * We're doing to use synchronous bus cycles for fast RAM, but we
+ * need to get a head start on generating this signal, otherwize
+ * we might be late.  It won't be sampled by the CPU right away,
+ * so we don't need to wait for AS.
+ */
+STERM = SPACE_NORMAL & REGION_FRAM;
+
+/*
+ * Assert BERR if:
+ * - Normal bus access and not top-level regions are selected.
+ * - FPU access and FPU not present.
+ */
+BERR = SPACE_NORMAL & AS & !ROMSEL & !DEV8SEL & !FRAMSEL & !MMIOSEL & !RAMSEL
+     # SPACE_FPU & AS & !FPUSEL;
+
+/*
+ * For now, all interrupts are auto-vectored.  So, if we see an IACK
+ * cycle, just assert AVEC.
+ */
+AVEC = SPACE_IACK & AS;
+
+/*
+ * Inhibit the cache on the reset vector fetch or if the
+ * 8-bit peripheral region was seleced.
+ */
+CI = !RUNNING # DEV8SEL;
+
+/*
+ * Generate /RD and /WR signals.
+ */
+RD = DS & RW;
+WR = DS & !RW;

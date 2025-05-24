@@ -345,7 +345,7 @@ DS32_LL = DS &  RW
 	# DS & !RW & !SIZ1 & !SIZ0;
 
 /*
- * Generate /RD8 and /WR8 signals.
+ * Generate /RD8 and /WR8 signals.  We just follow /DS as above with /DS8.
  */
 RD8 = DS & RW;
 WR8 = DS & !RW;

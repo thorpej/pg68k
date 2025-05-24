@@ -92,8 +92,8 @@ pin	96	=	BERR;
 /*	95	GND		*/
 pin	94	=	AVEC;
 
-pin	93	=	!RD;	/* /RD and ... */
-pin	92	=	!WR;	/* .../WR outputs for 8-bit peripherals. */
+pin	93	=	!RD8;	/* /RD and ... */
+pin	92	=	!WR8;	/* .../WR outputs for 8-bit peripherals. */
 /*	91	VCCINT		*/
 /*	90	CPU_CLK		*/
 /*	89	/RESET		*/
@@ -345,7 +345,7 @@ DS32_LL = DS &  RW
 	# DS & !RW & !SIZ1 & !SIZ0;
 
 /*
- * Generate /RD and /WR signals.
+ * Generate /RD8 and /WR8 signals.
  */
-RD = DS & RW;
-WR = DS & !RW;
+RD8 = DS & RW;
+WR8 = DS & !RW;

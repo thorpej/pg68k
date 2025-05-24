@@ -95,7 +95,7 @@ pin	94	=	AVEC;
 pin	93	=	!RD;	/* /RD and ... */
 pin	92	=	!WR;	/* .../WR outputs for 8-bit peripherals. */
 /*	91	VCCINT		*/
-/*	90	CLK		*/
+/*	90	CPU_CLK		*/
 /*	89	/RESET		*/
 /*	88	OE1		*/
 /*	87	GCLK1		*/
@@ -133,19 +133,27 @@ node RUNNING;
 /** LOGIC EQUATIONS **/
 
 /*
+ * We are using a 25MHz CPU clock, which means a single clock period
+ * is 40ns.
+ */
+
+/*
  * We clear BOOT_A-BOOT_C and RUNNING when /RESET is asserted.  We then
  * shift 1's through the chain.  After 4 cycles, RUNNING will be 1.  This
  * is used to map the ROM to $0000.0000 until the reset vector is fetched.
+ *
+ * N.B. We want the state to advance **after** the bus cycle is over,
+ * thus we clock when AS is de-asserted.
  */
 BOOT_A.AR = RESET;
 BOOT_B.AR = RESET;
 BOOT_C.AR = RESET;
 RUNNING.AR = RESET;
 
-BOOT_A.CK = AS;
-BOOT_B.CK = AS;
-BOOT_C.CK = AS;
-RUNNING.CK = AS;
+BOOT_A.CK = !AS;
+BOOT_B.CK = !AS;
+BOOT_C.CK = !AS;
+RUNNING.CK = !AS;
 
 BOOT_A.D = 'h'1;
 BOOT_B.D = BOOT_A;

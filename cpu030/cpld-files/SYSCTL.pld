@@ -19,7 +19,7 @@ property ATMEL	{ TDI_pullup=on };
 pin	2	=	!AS;
 /*	3	VCCIO		*/
 /*	4	TDI		*/
-pin	5	=	DS;
+pin	5	=	!DS;
 pin	6	=	RW;		/* 1=R, 0=W */
 pin	7	=	FC0;
 pin	8	=	FC1;
@@ -104,12 +104,24 @@ pin	92	=	!WR;	/* .../WR outputs for 8-bit peripherals. */
 /*	84	<pg68k rsvd>	*/
 /*	83	<pg68k rsvd>	*/
 /*	82	VCCIO		*/
-pin	81	=	!ROMSEL;
-pin	80	=	!DEV8SEL;
-pin	79	=	!FRAMSEL;
-pin	78	=	!MMIOSEL;
-pin	77	=	!RAMSEL;
-pin	76	=	!FPUSEL;
+pin	81	=	!DS8;		/*  8-bit port: D31..24 */
+pin	80	=	!DS16_ODD;	/* 16-bit port: DS23..16 */
+pin	79	=	!DS16_EVEN;	/* 16-bit port: D31..24 */
+pin	78	=	!DS32_LL;	/* 32-bit port: D7..0 */
+pin	77	=	!DS32_ML;	/* 32-bit port: D15..8 */
+pin	76	=	!DS32_MU;	/* 32-bit port: D23..16 */
+pin	75	=	!DS32_UU;	/* 32-bit port: D31..24 */
+/*	74	GND		*/
+/*	73	TDO		*/
+pin	72	=	!ROMSEL;
+pin	71	=	!DEV8SEL;
+pin	70	=	!FRAMSEL;
+pin	69	=	!MMIOSEL;
+pin	68	=	!RAMSEL;
+pin	67	=	!FPUSEL;
+/*	66	VCCIO		*/
+/*	62	TCK		*/
+/*	59	GND		*/
 
 /** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
 
@@ -264,6 +276,73 @@ AVEC = SPACE_IACK & AS;
  * 8-bit peripheral region was seleced.
  */
 CI = !RUNNING # DEV8SEL;
+
+/*
+ * Generate the data strobes for the individual byte lanes for the
+ * three port sizes.
+ *
+ * N.B. the 16-bit and 32-bit ports, the logic diagram in Figure 7-18
+ * of the 68030 user's manual always shows every byte lane being driven
+ * for read cycles, so we do the same.
+ *
+ * See Table 7-7 in the 68030 user's manual.
+ *
+ * Some of these equations have redundant terms, but I'm happy to
+ * let the compiler optimize them out for the sake of clarity.
+ */
+DS8 = DS;
+
+DS16_EVEN = DS &  RW
+	  # DS & !RW & !A0;
+
+DS16_ODD = DS &  RW
+           /* byte */
+	 # DS & !RW & !SIZ1 &  SIZ0 & A0
+	   /* word */
+	 # DS & !RW &  SIZ1 & !SIZ0
+	   /* 3 byte */
+	 # DS & !RW &  SIZ1 &  SIZ0
+	   /* long word */
+	 # DS & !RW & !SIZ1 & !SIZ0;
+
+DS32_UU = DS &  RW
+        # DS & !RW & !A1 & !A0;
+
+DS32_MU = DS &  RW
+          /* byte */
+	# DS & !RW & !SIZ1 &  SIZ0 & !A1 &  A0
+	  /* word */
+	# DS & !RW &  SIZ1 & !SIZ0 & !A1
+	  /* 3 byte */
+	# DS & !RW &  SIZ1 &  SIZ0 & !A1
+	  /* long word */
+	# DS & !RW & !SIZ1 & !SIZ0 & !A1;
+
+DS32_ML = DS &  RW
+          /* byte */
+	# DS & !RW & !SIZ1 &  SIZ0 &  A1 & !A0
+	  /* word */
+	# DS & !RW &  SIZ1 & !SIZ0 & !A1 &  A0
+	# DS & !RW &  SIZ1 & !SIZ0 &  A1 & !A0
+	  /* 3 byte */
+	# DS & !RW &  SIZ1 &  SIZ0 & !A1 & !A0
+	# DS & !RW &  SIZ1 &  SIZ0 & !A1 &  A0
+	# DS & !RW &  SIZ1 &  SIZ0 &  A1 & !A0
+	  /* long word */
+	# DS & !RW & !SIZ1 & !SIZ0 & !A1 & !A0
+	# DS & !RW & !SIZ1 & !SIZ0 & !A1 &  A0
+	# DS & !RW & !SIZ1 & !SIZ0 &  A1 & !A0;
+
+DS32_LL = DS &  RW
+	  /* byte /
+	# DS & !RW & !SIZ1 &  SIZ0 &  A1 &  A0
+	  /* word */
+	# DS & !RW &  SIZ1 & !SIZ0 &  A1
+	  /* 3 byte */
+	# DS & !RW &  SIZ1 &  SIZ0 & !A1 &  A0
+	# DS & !RW &  SIZ1 &  SIZ0 &  A1
+	  /* long word */
+	# DS & !RW & !SIZ1 & !SIZ0;
 
 /*
  * Generate /RD and /WR signals.

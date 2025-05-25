@@ -146,7 +146,38 @@ node RUNNING;
 
 /*
  * We are using a 25MHz CPU clock, which means a single clock period
- * is 40ns.
+ * is 40ns.  Bus cycle states are even (S0, S2, S4, ...) when CLK is
+ * high and odd (S1, S3, S5, ...) when the clock is low.
+ *
+ * SYNCHRONOUS READ CYCLES (section 7.3.4)
+ *   T-start
+ * S0 (00ns): Address, Function, and Size placed on the bus.
+ * S1 (20ns): /AS is asserted indicating valid address.  /DS is
+ *            asserted, indicating target should start driving
+ *            the data bus.
+ * S2 (40ns): Target must have valid data on the data bus.  CPU
+ *            samples /STERM at the beginning of S2 (rising edge
+ *            of CLK).  If /STERM is recognized, data is latched
+ *            on the falling edge of CLK (corresponding to the
+ *            start of S3).
+ * S3 (60ns): /AS and /DS are de-asserted.  Address, RW, Size,
+ *            and Function remain valid throughout S3 in order
+ *            to simplify memory interfaces.  Target must keep
+ *            the data bus valid for the synchronous hold time from
+ *            the start of S3.
+ *
+ * SYNCHRONOUS WRITE CYCLES (section 7.3.5)
+ *   T-start
+ * S0 (00ns): Address, Function, and Size placed on the bus.
+ * S1 (20ns): /AS is asserted indicating valid address.
+ * S2 (40ns): Processor places the data to be written onto data
+ *            bus.  CPU samples /STERM at the beginning of S2
+ *            (rising edge of CLK).  If /STERM is *not* recognized,
+ *            then /DS is asserted at the end of S2 (falling edge
+ *            of CLK) and wait states are inserted.
+ * S3 (60ns): /AS (and /DS, if necessary) is de-asserted.  Address,
+ *            RW, Size, and Function remain valid throughout S3
+ *            in order to simply memory interfaces.
  */
 
 /*
@@ -167,7 +198,7 @@ BOOT_B.CK = !AS;
 BOOT_C.CK = !AS;
 RUNNING.CK = !AS;
 
-BOOT_A.D = 'h'1;
+BOOT_A.D = 'b'1;
 BOOT_B.D = BOOT_A;
 BOOT_C.D = BOOT_B;
 RUNNING.D = BOOT_C;
@@ -214,16 +245,11 @@ REGION_ROM = [A31..20]:&;
 
 REGION_DEV8 = [A31..21]:& & !A20;
 
-REGION_FRAM = [A31..23]:& &
-              ((!A22 &  A21 & !A20)
-	     # (!A22 &  A21 &  A20)
-	     # ( A22 & !A21 & !A20)
-	     # ( A22 & !A21 &  A20));
+/* A20=don't care */
+REGION_FRAM = [A31..23]:& & ((!A22 & A21) # (A22 & !A21));
 
-REGION_MMIO = A31 & !A30 & !A29 & !A28
-            # A31 & !A30 & !A29 &  A28
-	    # A31 & !A30 &  A29 & !A28
-	    # A31 & !A30 &  A29 &  A28;
+/* A29=don't care, A28=don't care */
+REGION_MMIO = A31 & !A30;
 
 /*
  * The ROM is always selected when RUNNING is not asserted (for the reset
@@ -250,12 +276,14 @@ RAMSEL = SPACE_NORMAL & AS & RUNNING & !A31;
 FPUSEL = SPACE_FPU & AS & FPU_PRESENT;
 
 /*
- * We're doing to use synchronous bus cycles for fast RAM, but we
- * need to get a head start on generating this signal, otherwize
- * we might be late.  It won't be sampled by the CPU right away,
- * so we don't need to wait for AS.
+ * We'd like to eventually use synchronous bus cycles for fast RAM,
+ * but we'll do the system bring-up using async cycles for now.  Once
+ * the system is running with async cycles, we can build the state
+ * machine to implement sync cycles.
+ *
+ * As such, force STERM to be de-asserted for now.
  */
-STERM = SPACE_NORMAL & REGION_FRAM;
+STERM = 'b'0;
 
 /*
  * Assert BERR if:

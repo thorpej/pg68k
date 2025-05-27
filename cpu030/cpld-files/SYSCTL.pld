@@ -178,6 +178,21 @@ node RUNNING;
  * S3 (60ns): /AS (and /DS, if necessary) is de-asserted.  Address,
  *            RW, Size, and Function remain valid throughout S3
  *            in order to simply memory interfaces.
+ *
+ * Some notes on various devices that will be the basis for the discussion
+ * about 8-bit peripheral timing:
+ *
+ * TL16C2552IFNR dual UART - /IOR or /IOW minimum pulse time @ 5V: 40ns.
+ *
+ * Intersil CP82C54 timer (10MHz part clocked at 6.25MHz) - /RD min pulse
+ * width 95ns, data setup before /WR 95ns, /WR min pulse width 95ns.
+ *
+ * IDE/ATA drives have an /IORDY output, but can also be 8-bit or 16-bit,
+ * so we will build that controller in a separate CPLD.
+ *
+ * The SST39SF040-70 NOR flash (of which we will have two) has 70ns from
+ * the time /CS is asserted (happens with /AS) before data is valid and
+ * 35ns from the time /OE is asserted (happens with /DS).
  */
 
 /*

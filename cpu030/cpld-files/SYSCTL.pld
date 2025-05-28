@@ -129,9 +129,6 @@ pin	67	=	!FPUSEL;
 node SPACE_FPU;
 node SPACE_IACK;
 
-/* normal space regions */
-node REGION_FRAM;
-
 /* Shift register to indicate boot-up for the first 4 memory cycles. */
 node BOOT_A;
 node BOOT_B;
@@ -256,7 +253,7 @@ $define REGION_ROM	[A31..20]:&
 
 $define	REGION_DEV8	[A31..21]:& & !A20
 
-REGION_FRAM = [A31..23]:& & !A22;
+$define REGION_FRAM	[A31..23]:& & !A22
 
 /* A29=don't care, A28=don't care */
 $define REGION_MMIO	A31 & !A30

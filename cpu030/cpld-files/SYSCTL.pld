@@ -15,20 +15,20 @@ property ATMEL	{ TMS_pullup=on };
 property ATMEL	{ TDI_pullup=on };
 
 /** INPUTS **/
-/* pin	1	=	!RESET; */
-pin	2	=	!AS;
+pin	1	=	!ECS;
+pin	2	=	!OCS;
 /*	3	VCCIO		*/
 /*	4	TDI		*/
-pin	5	=	!DS;
-pin	6	=	RW;		/* 1=R, 0=W */
-pin	7	=	FC0;
-pin	8	=	FC1;
-pin	9	=	FC2;
-pin	10	=	SIZ0;
+pin	5	=	!AS;
+pin	6	=	!DS;
+pin	7	=	RW;		/* 1=R, 0=W */
+pin	8	=	FC0;
+pin	9	=	FC1;
+pin	10	=	FC2;
 /*	11	GND		*/
-pin	12	=	SIZ1;
-pin	13	=	!FPU_PRESENT;
-/*	14			*/
+pin	12	=	SIZ0;
+pin	13	=	SIZ1;
+pin	14	=	!FPU_PRESENT;
 /*	15	TMS		*/
 pin	16	=	A0;
 pin	17	=	A1;

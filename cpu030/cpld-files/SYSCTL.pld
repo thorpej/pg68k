@@ -126,15 +126,11 @@ pin	67	=	!FPUSEL;
 /** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
 
 /* address space indicators */
-node SPACE_NORMAL;
 node SPACE_FPU;
 node SPACE_IACK;
 
 /* normal space regions */
-node REGION_ROM;
-node REGION_DEV8;
 node REGION_FRAM;
-node REGION_MMIO;
 
 /* Shift register to indicate boot-up for the first 4 memory cycles. */
 node BOOT_A;
@@ -234,7 +230,7 @@ RUNNING.D = BOOT_C;
  * Note that {User,Supervisor}{Data,Program} -> FC1 xor FC0 -> 1
  */
 
-SPACE_NORMAL = FC1 $ FC0;
+$define SPACE_NORMAL	(FC1 $ FC0)
 
 SPACE_FPU = (FC2 & FC1 & FC0) /* CPU space */ &
             (!A19 & !A18 & A17 & !A16) /* ACCTYPE = 0x2 */ &
@@ -256,15 +252,17 @@ SPACE_IACK = (FC2 & FC1 & FC0) /* CPU space */ &
  * (qualified by /RAMSEL and /MMIOSEL).
  */
 
-REGION_ROM = [A31..20]:&;
+$define REGION_ROM	[A31..20]:&
 
-REGION_DEV8 = [A31..21]:& & !A20;
+$define	REGION_DEV8	[A31..21]:& & !A20
 
 /* A20=don't care */
 REGION_FRAM = [A31..23]:& & ((!A22 & A21) # (A22 & !A21));
 
 /* A29=don't care, A28=don't care */
-REGION_MMIO = A31 & !A30;
+$define REGION_MMIO	A31 & !A30
+
+$define REGION_RAM	!A31
 
 /*
  * The ROM is always selected when RUNNING is not asserted (for the reset
@@ -283,7 +281,7 @@ MMIOSEL = SPACE_NORMAL & AS & REGION_MMIO;
  * The RAM region is never selected when RUNNING is not asserted (to avoid
  * conflicting with the ROM during the reset vector fetch).
  */
-RAMSEL = SPACE_NORMAL & AS & RUNNING & !A31;
+RAMSEL = SPACE_NORMAL & AS & RUNNING & REGION_RAM;
 
 /*
  * Select the FPU, if present.

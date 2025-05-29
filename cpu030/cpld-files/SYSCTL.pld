@@ -125,8 +125,10 @@ pin	67	=	!FPUSEL;
 
 /** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
 
+/* An inverted, delayed clock. */
+node CLKDb;
+
 /* address space indicators */
-node SPACE_FPU;
 node SPACE_IACK;
 
 /* Shift register to indicate boot-up for the first 4 memory cycles. */
@@ -136,6 +138,12 @@ node BOOT_C;
 node RUNNING;
 
 /** LOGIC EQUATIONS **/
+
+/*
+ * This is used to provide a slightly delayed clock signal during
+ * FPU selection.  See section 12.2 of the 68030 user's manual.
+ */
+CLKDb = /CLK;
 
 /*
  * We are using a 25MHz CPU clock, which means a single clock period
@@ -229,9 +237,11 @@ RUNNING.D = BOOT_C;
 
 $define SPACE_NORMAL	(FC1 $ FC0)
 
-SPACE_FPU = (FC2 & FC1 & FC0) /* CPU space */ &
-            (!A19 & !A18 & A17 & !A16) /* ACCTYPE = 0x2 */ &
-	    (!A15 & !A14 & A13) /* CPID = 0x1 */;
+$define SPACE_CPU	(FC2 & FC1 & FC0)
+
+$define ACCTYPE_COPROC	(!A19 & !A18 & A17 & !A16)	/* 0x02 */
+
+#define CPID_FPU	(!A15 & !A14 & A13)		/* 0x01 */
 
 SPACE_IACK = (FC2 & FC1 & FC0) /* CPU space */ &
              (A19 & A18 & A17 & A16) /* ACCTYPE = 0xf */;
@@ -280,9 +290,11 @@ MMIOSEL = SPACE_NORMAL & AS & REGION_MMIO;
 RAMSEL = SPACE_NORMAL & AS & RUNNING & REGION_RAM;
 
 /*
- * Select the FPU, if present.
+ * Select the FPU.  See section 12.2 of the 68030 user's manual.
  */
-FPUSEL = SPACE_FPU & AS & FPU_PRESENT;
+FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CLK
+       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & AS
+       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CLKDb;
 
 /*
  * We'd like to eventually use synchronous bus cycles for fast RAM,
@@ -300,7 +312,7 @@ STERM = 'b'0;
  * - FPU access and FPU not present.
  */
 BERR = SPACE_NORMAL & AS & !ROMSEL & !DEV8SEL & !FRAMSEL & !MMIOSEL & !RAMSEL
-     # SPACE_FPU & AS & !FPUSEL;
+     # FPUSEL & AS & !FPU_PRESENT;
 
 /*
  * For now, all interrupts are auto-vectored.  So, if we see an IACK

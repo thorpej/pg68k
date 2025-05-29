@@ -15,60 +15,58 @@ property ATMEL	{ TMS_pullup=on };
 property ATMEL	{ TDI_pullup=on };
 
 /** INPUTS **/
-pin	1	=	!ECS;
-pin	2	=	!OCS;
+pin	1	=	!AS;
+pin	2	=	!DS;
 /*	3	VCCIO		*/
 /*	4	TDI		*/
-pin	5	=	!AS;
-pin	6	=	!DS;
-pin	7	=	RW;		/* 1=R, 0=W */
-pin	8	=	FC0;
-pin	9	=	FC1;
-pin	10	=	FC2;
+pin	5	=	RW;		/* 1=R, 0=W */
+pin	6	=	FC0;
+pin	7	=	FC1;
+pin	8	=	FC2;
+pin	9	=	SIZ0;
+pin	10	=	SIZ1;
 /*	11	GND		*/
-pin	12	=	SIZ0;
-pin	13	=	SIZ1;
-pin	14	=	!FPU_PRESENT;
+pin	12	=	!FPU_PRESENT;
+pin	13	=	A0;
+pin	14	=	A1;
 /*	15	TMS		*/
-pin	16	=	A0;
-pin	17	=	A1;
+pin	16	=	A2;
+pin	17	=	A3;
 /*	18	VCCIO		*/
-pin	19	=	A2;
-pin	20	=	A3;
-pin	21	=	A4;
-pin	22	=	A5;
-pin	23	=	A6;
-pin	24	=	A7;
-pin	25	=	A8;
+pin	19	=	A4;
+pin	20	=	A5;
+pin	21	=	A6;
+pin	22	=	A7;
+pin	23	=	A8;
+pin	24	=	A9;
+pin	25	=	A10;
 /*	26	GND		*/
-pin	27	=	A9;
-pin	28	=	A10;
-pin	29	=	A11;
-pin	30	=	A12;
-pin	31	=	A13;
-pin	32	=	A14;
-pin	33	=	A15;
+pin	27	=	A11;
+pin	28	=	A12;
+pin	29	=	A13;
+pin	30	=	A14;
+pin	31	=	A15;
+pin	32	=	A16;
+pin	33	=	A17;
 /*	34	VCCIO		*/
-pin	35	=	A16;
-pin	36	=	A17;
-pin	37	=	A18;
+pin	35	=	A18;
+pin	36	=	A19;
+pin	37	=	A20;
 /*	38	GND		*/
 /*	39	VCCINT		*/
-pin	40	=	A19;
-pin	41	=	A20;
-pin	42	=	A21;
+pin	40	=	A21;
+pin	41	=	A22;
+pin	42	=	A23;
 /*	43	GND		*/
-pin	44	=	A22;
-pin	45	=	A23;
-pin	46	=	A24;
-pin	47	=	A25;
-pin	48	=	A26;
-pin	49	=	A27;
-pin	50	=	A28;
+pin	44	=	A24;
+pin	45	=	A25;
+pin	46	=	A26;
+pin	47	=	A27;
+pin	48	=	A28;
+pin	49	=	A29;
+pin	50	=	A30;
 /*	51	VCCIO		*/
-pin	52	=	A29;
-pin	53	=	A30;
-pin	54	=	A31;
+pin	52	=	A31;
 
 pin	89	=	!RESET;
 pin	90	=	CPU_CLK;
@@ -126,7 +124,7 @@ pin	67	=	!FPUSEL;
 /** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
 
 /* An inverted, delayed clock. */
-node CLKDb;
+node CPU_CLKDb;
 
 /* address space indicators */
 node SPACE_IACK;
@@ -143,7 +141,7 @@ node RUNNING;
  * This is used to provide a slightly delayed clock signal during
  * FPU selection.  See section 12.2 of the 68030 user's manual.
  */
-CLKDb = /CLK;
+CPU_CLKDb = /CPU_CLK;
 
 /*
  * We are using a 25MHz CPU clock, which means a single clock period
@@ -292,9 +290,9 @@ RAMSEL = SPACE_NORMAL & AS & RUNNING & REGION_RAM;
 /*
  * Select the FPU.  See section 12.2 of the 68030 user's manual.
  */
-FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CLK
+FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLK
        # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & AS
-       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CLKDb;
+       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLKDb;
 
 /*
  * We'd like to eventually use synchronous bus cycles for fast RAM,

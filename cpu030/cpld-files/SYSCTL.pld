@@ -340,56 +340,56 @@ CI = !RUNNING # DEV8SEL;
 DS8 = DS;
 
 DS16_EVEN = DS &  RW
-	  # DS & !RW & !A0;
+	  # DS & !A0;
 
 DS16_ODD = DS &  RW
            /* byte */
-	 # DS & !RW & !SIZ1 &  SIZ0 & A0
+	 # DS & !SIZ1 &  SIZ0 & A0
 	   /* word */
-	 # DS & !RW &  SIZ1 & !SIZ0
+	 # DS &  SIZ1 & !SIZ0
 	   /* 3 byte */
-	 # DS & !RW &  SIZ1 &  SIZ0
+	 # DS &  SIZ1 &  SIZ0
 	   /* long word */
-	 # DS & !RW & !SIZ1 & !SIZ0;
+	 # DS & !SIZ1 & !SIZ0;
 
 DS32_UU = DS &  RW
-        # DS & !RW & !A1 & !A0;
+        # DS & !A1 & !A0;
 
 DS32_MU = DS &  RW
           /* byte */
-	# DS & !RW & !SIZ1 &  SIZ0 & !A1 &  A0
+	# DS & !SIZ1 &  SIZ0 & !A1 &  A0
 	  /* word */
-	# DS & !RW &  SIZ1 & !SIZ0 & !A1
+	# DS &  SIZ1 & !SIZ0 & !A1
 	  /* 3 byte */
-	# DS & !RW &  SIZ1 &  SIZ0 & !A1
+	# DS &  SIZ1 &  SIZ0 & !A1
 	  /* long word */
-	# DS & !RW & !SIZ1 & !SIZ0 & !A1;
+	# DS & !SIZ1 & !SIZ0 & !A1;
 
 DS32_ML = DS &  RW
           /* byte */
-	# DS & !RW & !SIZ1 &  SIZ0 &  A1 & !A0
+	# DS & !SIZ1 &  SIZ0 &  A1 & !A0
 	  /* word */
-	# DS & !RW &  SIZ1 & !SIZ0 & !A1 &  A0
-	# DS & !RW &  SIZ1 & !SIZ0 &  A1 & !A0
+	# DS &  SIZ1 & !SIZ0 & !A1 &  A0
+	# DS &  SIZ1 & !SIZ0 &  A1 & !A0
 	  /* 3 byte */
-	# DS & !RW &  SIZ1 &  SIZ0 & !A1 & !A0
-	# DS & !RW &  SIZ1 &  SIZ0 & !A1 &  A0
-	# DS & !RW &  SIZ1 &  SIZ0 &  A1 & !A0
+	# DS &  SIZ1 &  SIZ0 & !A1 & !A0
+	# DS &  SIZ1 &  SIZ0 & !A1 &  A0
+	# DS &  SIZ1 &  SIZ0 &  A1 & !A0
 	  /* long word */
-	# DS & !RW & !SIZ1 & !SIZ0 & !A1 & !A0
-	# DS & !RW & !SIZ1 & !SIZ0 & !A1 &  A0
-	# DS & !RW & !SIZ1 & !SIZ0 &  A1 & !A0;
+	# DS & !SIZ1 & !SIZ0 & !A1 & !A0
+	# DS & !SIZ1 & !SIZ0 & !A1 &  A0
+	# DS & !SIZ1 & !SIZ0 &  A1 & !A0;
 
 DS32_LL = DS &  RW
 	  /* byte /
-	# DS & !RW & !SIZ1 &  SIZ0 &  A1 &  A0
+	# DS & !SIZ1 &  SIZ0 &  A1 &  A0
 	  /* word */
-	# DS & !RW &  SIZ1 & !SIZ0 &  A1
+	# DS &  SIZ1 & !SIZ0 &  A1
 	  /* 3 byte */
-	# DS & !RW &  SIZ1 &  SIZ0 & !A1 &  A0
-	# DS & !RW &  SIZ1 &  SIZ0 &  A1
+	# DS &  SIZ1 &  SIZ0 & !A1 &  A0
+	# DS &  SIZ1 &  SIZ0 &  A1
 	  /* long word */
-	# DS & !RW & !SIZ1 & !SIZ0;
+	# DS & !SIZ1 & !SIZ0;
 
 /*
  * Generate /RD8 and /WR8 signals.  We just follow /DS as above with /DS8.

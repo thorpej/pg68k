@@ -257,14 +257,14 @@ SPACE_IACK = (FC2 & FC1 & FC0) /* CPU space */ &
  * (qualified by /RAMSEL and /MMIOSEL).
  */
 
-$define REGION_ROM	[A31..20]:&
+$define REGION_ROM	([A31..20]:&)
 
-$define	REGION_DEV8	[A31..21]:& & !A20
+$define REGION_DEV8	([A31..21]:& & !A20)
 
-$define REGION_FRAM	[A31..23]:& & !A22
+$define REGION_FRAM	([A31..23]:& & !A22)
 
 /* A29=don't care, A28=don't care */
-$define REGION_MMIO	A31 & !A30
+$define REGION_MMIO	(A31 & !A30)
 
 $define REGION_RAM	!A31
 

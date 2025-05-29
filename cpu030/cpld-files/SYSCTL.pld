@@ -113,11 +113,12 @@ pin	75	=	!DS32_UU;	/* 32-bit port: D31..24 */
 /*	73	TDO		*/
 pin	72	=	!ROMSEL;
 pin	71	=	!DEV8SEL;
-pin	70	=	!FRAMSEL;
-pin	69	=	!MMIOSEL;
-pin	68	=	!RAMSEL;
-pin	67	=	!FPUSEL;
+pin	70	=	!MMIOSEL;
+pin	69	=	!RAMSEL;
+pin	68	=	!FPUSEL;
+pin	67	=	!FRAM_RD;
 /*	66	VCCIO		*/
+pin	65	=	!FRAM_WR;
 /*	62	TCK		*/
 /*	59	GND		*/
 
@@ -277,8 +278,6 @@ ROMSEL = SPACE_NORMAL & AS & !RUNNING
 
 DEV8SEL = SPACE_NORMAL & AS & REGION_DEV8;
 
-FRAMSEL = SPACE_NORMAL & AS & REGION_FRAM;
-
 MMIOSEL = SPACE_NORMAL & AS & REGION_MMIO;
 
 /*
@@ -302,6 +301,7 @@ FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLK
  *
  * As such, force STERM to be de-asserted for now.
  */
+FRAMSEL = SPACE_NORMAL & AS & REGION_FRAM;
 STERM = 'b'0;
 
 /*
@@ -352,44 +352,31 @@ DS16_ODD = DS &  RW
 	   /* long word */
 	 # DS & !SIZ1 & !SIZ0;
 
-DS32_UU = DS &  RW
-        # DS & !A1 & !A0;
+/*
+ * DS32_* equations are adapted from Figure 12-7 of the 68030 user's
+ * manual.  I manually verified they produce the same results as
+ * as shown in Table 7-7.
+ */
 
-DS32_MU = DS &  RW
-          /* byte */
-	# DS & !SIZ1 &  SIZ0 & !A1 &  A0
-	  /* word */
-	# DS &  SIZ1 & !SIZ0 & !A1
-	  /* 3 byte */
-	# DS &  SIZ1 &  SIZ0 & !A1
-	  /* long word */
-	# DS & !SIZ1 & !SIZ0 & !A1;
+DS32_UU = DS & RW
+	# DS & !A0 & !A1;
 
-DS32_ML = DS &  RW
-          /* byte */
-	# DS & !SIZ1 &  SIZ0 &  A1 & !A0
-	  /* word */
-	# DS &  SIZ1 & !SIZ0 & !A1 &  A0
-	# DS &  SIZ1 & !SIZ0 &  A1 & !A0
-	  /* 3 byte */
-	# DS &  SIZ1 &  SIZ0 & !A1 & !A0
-	# DS &  SIZ1 &  SIZ0 & !A1 &  A0
-	# DS &  SIZ1 &  SIZ0 &  A1 & !A0
-	  /* long word */
-	# DS & !SIZ1 & !SIZ0 & !A1 & !A0
-	# DS & !SIZ1 & !SIZ0 & !A1 &  A0
-	# DS & !SIZ1 & !SIZ0 &  A1 & !A0;
+DS32_MU = DS & RW
+	# DS & A0 & !A1
+	# DS & !A1 & !SIZ0
+	# DS & !A1 & SIZ1;
 
-DS32_LL = DS &  RW
-	  /* byte /
-	# DS & !SIZ1 &  SIZ0 &  A1 &  A0
-	  /* word */
-	# DS &  SIZ1 & !SIZ0 &  A1
-	  /* 3 byte */
-	# DS &  SIZ1 &  SIZ0 & !A1 &  A0
-	# DS &  SIZ1 &  SIZ0 &  A1
-	  /* long word */
-	# DS & !SIZ1 & !SIZ0;
+DS32_ML = DS & RW
+	# DS & !A0 & A1
+	# DS & !A1 & !SIZ0 & !SIZ1
+	# DS & !A1 & SIZ0 & SIZ1
+	# DS & !A1 & A0 & !SIZ0;
+
+DS32_LL = DS & RW
+	# DS & A0 & A1
+	# DS & A0 & SIZ0 & SIZ1
+	# DS & !SIZ0 & !SIZ1
+	# DS & A1 & SIZ1;
 
 /*
  * Generate /RD8 and /WR8 signals.  We just follow /DS as above with /DS8.

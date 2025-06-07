@@ -1,12 +1,14 @@
 GAL22V10
 INTC1
 
- FFCI /I0 /I1   /I2   /I3   /I4   /I5   /I6  IACK /RESET /CS   GND
-/DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  NC  D0    ENAB   FFCO VCC
+ FFCI /I0 /I1   /I2   /I3   /I4   /I5   /I6      IACK /RESET /CS   GND
+/DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  DSACK0  D0    ENAB   FFCO VCC
 
 ;
 ; == intc-1 ==
 ; An absurdly basic interrupt controller for Playground 68030 Mk I.
+; (We consume every pin, but the entire thing fits inside a single
+; 22V10.)
 ;
 ; This is essentially a simple priority encoder that encodes interrupts
 ; according to the following priority:
@@ -28,20 +30,23 @@ INTC1
 ; active-low, and are intended to directly drive the corresponding inputs
 ; to the CPU.
 ;
-; N.B. D0 is an I/O pin that reflects the value of ENAB on read and
-; latches a new value into ENAB on write.  22V10s don't have buried
-; signals, so ENAB has to be brought out to a pin.  It is NOT tri-stated
-; and should be left unconnected on the board.
+; D0 is an I/O pin that reflects the value of ENAB on read and latches a
+; new value into ENAB on write.  22V10s don't have buried signals, so ENAB
+; has to be brought out to a pin.  It is NOT tri-stated and should be left
+; unconnected on the board.
 ;
 ; We take the /DS and RW signals directly from the CPU, and a chip-select
 ; from the address decoder.  We internally generate the D-FF clock (FFCO),
-; but have to feed it back in externally (FFCI).  When the data strobe for
-; a write is complete, we have to generate a rising edge on FFCI.
+; but have to feed it back in externally (FFCI); when the data strobe for
+; a write is complete, we have to generate a rising edge on FFCI.  We also
+; generate /DSACK0 ourselves, although active-high because it's driving an
+; open-drain inverter (wire-OR'd to the CPU's input).
 ;
 ; We also check for the CPU performing an interrupt acknowledge cycle
 ; (the SYSCTL CPLD decodes this for us and provides the IACK signal).
 ; If this is happening and an interrupt is pending, we assert the /AVEC
-; output that's connected to the CPU.
+; output that's connected to the CPU.  Otherwise, BERR (driving an open-drain
+; inverter) is generated so the CPU can perform a suprious interrupt.
 ;
 ; This isn't a particularly sophisticated interrupt controller, obviously.
 ; This is merely a very simple first step to get the system up and running.
@@ -66,6 +71,12 @@ D0.E = CS * DS * RW;
 ;
 /FFCO = CS * DS * /RW;
 ENAB.R = D0;
+
+;
+; Acknowledge an 8-bit transfer as soon as we detect the data strobe.
+; The 22V10 is fast enough that no wait states are required.
+;
+DSACK0 = CS * DS;
 
 ;
 ; Truth table for /IPLx outputs:

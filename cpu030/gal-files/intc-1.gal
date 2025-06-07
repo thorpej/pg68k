@@ -1,0 +1,116 @@
+GAL22V10
+INTC1
+
+ FFCI /I0 /I1   /I2   /I3   /I4   /I5   /I6  IACK /RESET /CS   GND
+/DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  NC  D0    ENAB   FFCO VCC
+
+;
+; == intc-1 ==
+; An absurdly basic interrupt controller for Playground 68030 Mk I.
+;
+; This is essentially a simple priority encoder that encodes interrupts
+; according to the following priority:
+;
+; I0	IPL <- 7
+; I1	IPL <- 6
+; I2	IPL <- 5
+; I3	IPL <- 4
+; I4	IPL <- 3
+; I5	IPL <- 2
+; I6	IPL <- 1
+;
+; There is a single global interrupt enable bit, and it is cleared upon
+; reset.  Yes, this also masks the non-maskable interrupt.
+;
+; The IRQ inputs are active-low (and assumed to be pulled up and driven
+; by open-drain / open-collector outputs to allow wired-OR configuration,
+; although this is not strictly required).  The IPLx outputs are similarly
+; active-low, and are intended to directly drive the corresponding inputs
+; to the CPU.
+;
+; N.B. D0 is an I/O pin that reflects the value of ENAB on read and
+; latches a new value into ENAB on write.  22V10s don't have buried
+; signals, so ENAB has to be brought out to a pin.  It is NOT tri-stated
+; and should be left unconnected on the board.
+;
+; We take the /DS and RW signals directly from the CPU, and a chip-select
+; from the address decoder.  We internally generate the D-FF clock (FFCO),
+; but have to feed it back in externally (FFCI).  When the data strobe for
+; a write is complete, we have to generate a rising edge on FFCI.
+;
+; We also check for the CPU performing an interrupt acknowledge cycle
+; (the SYSCTL CPLD decodes this for us and provides the IACK signal).
+; If this is happening and an interrupt is pending, we assert the /AVEC
+; output that's connected to the CPU.
+;
+; This isn't a particularly sophisticated interrupt controller, obviously.
+; This is merely a very simple first step to get the system up and running.
+;
+
+;
+; When reset is asserted, clear all the D-FFs (ENAB).
+;
+AR = RESET;
+
+;
+; Reflect the value of ENAB onto the data bus when the read strobe is
+; asserted.
+;
+D0.T = ENAB;
+D0.E = CS * DS * RW;
+
+;
+; We want the idle state of FFCO to be high, and for it to go low when we
+; get a write strobe.  When the write strobe ends, FFCO will go high again,
+; which is fed back eternally to FFCI to latch the new ENAB value from D0.
+;
+/FFCO = CS * DS * /RW;
+ENAB.R = D0;
+
+;
+; Truth table for /IPLx outputs:
+;
+; ENAB I0  I1  I2  I3  I4  I5  I6     IPL2  IPL1  IPL0
+;   F   x   x   x   x   x   x   x        F     F     F       0
+;   T   F   F   F   F   F   F   F        F     F     F       0
+;   T   F   F   F   F   F   F   T        F     F     T       1
+;   T   F   F   F   F   F   T   x        F     T     F       2
+;   T   F   F   F   F   T   x   x        F     T     T       3
+;   T   F   F   F   T   x   x   x        T     F     F       4
+;   T   F   F   T   x   x   x   x        T     F     T       5
+;   T   F   T   x   x   x   x   x        T     T     F       6
+;   T   T   x   x   x   x   x   x        T     T     T       7
+;
+
+IPL0 = ENAB * /I0 * /I1 * /I2 * /I3 * /I4 * /I5 *  I6
+     + ENAB * /I0 * /I1 * /I2 * /I3 *  I4
+     + ENAB * /I0 * /I1 *  I2
+     + ENAB *  I0;
+
+IPL1 = ENAB * /I0 * /I1 * /I2 * /I3 * /I4 *  I5
+     + ENAB * /I0 * /I1 * /I2 * /I3 *  I4
+     + ENAB * /I0 *  I1
+     + ENAB *  I0;
+
+IPL2 = ENAB * /I0 * /I1 * /I2 *  I3
+     + ENAB * /I0 * /I1 *  I2
+     + ENAB * /I0 *  I1
+     + ENAB *  I0;
+
+;
+; Assert our /AVEC output if the CPU is performing an interrupt acknowledge
+; cycle and we have any interrupt pending.
+;
+; We simplify the equation by using fed-back IPLx signals; the additional
+; propagation delay isn't a concern because IPLx will have already propagated
+; in order for the IACK cycle to begin in the first place.
+;
+; If we see IACK and no interrupt is pending, we assert BERR (an active-high
+; output that drives an external open-drain inverter that is wire-OR'd to
+; the CPU /BERR input).
+;
+AVEC = IACK * IPL0
+     + IACK * IPL1
+     + IACK * IPL2;
+
+BERR = IACK * /IPL0 * /IPL1 * /IPL2;

@@ -67,12 +67,17 @@ pin	49	=	A29;
 pin	50	=	A30;
 /*	51	VCCIO		*/
 pin	52	=	A31;
+pin	53	=	!DSACK0;
+pin	54	=	!DSACK1;
 
 pin	89	=	!RESET;
 pin	90	=	CPU_CLK;
 /*	91	VCCINT		*/
 
 /** OUTPUTS **/
+
+pin	100	=	!DSACK1_OUT;
+pin	99	=	!DSACK0_OUT;
 
 /*
  * These signals are active-low at the CPU, but we drive them
@@ -82,8 +87,6 @@ pin	90	=	CPU_CLK;
  * If someone can clue me in on how to use the Open_collector property
  * on a per-pin basis, that would be s00000p3r!
  */
-pin	100	=	DSACK1;
-pin	99	=	DSACK0;
 pin	98	=	STERM;
 pin	97	=	CI;	/* /CIIN on the CPU */
 pin	96	=	BERR;
@@ -214,6 +217,13 @@ BOOT_A.D = 'b'1;
 BOOT_B.D = BOOT_A;
 BOOT_C.D = BOOT_B;
 RUNNING.D = BOOT_C;
+
+/*
+ * DSACK0_OUT and DSACK1_OUT simply reflect the DSACK0 and DSACK1 inputs.
+ * These outputs directly drive the corresponding pins on the CPU.
+ */
+DSACK0_OUT = DSACK0;
+DSACK1_OUT = DSACK1;
 
 /*
  * Function bits for address space encodings:

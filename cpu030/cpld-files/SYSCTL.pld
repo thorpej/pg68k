@@ -88,7 +88,7 @@ pin	98	=	STERM;
 pin	97	=	CI;	/* /CIIN on the CPU */
 pin	96	=	BERR;
 /*	95	GND		*/
-pin	94	=	AVEC;
+pin	94	=	IACK;
 
 pin	93	=	!RD8;	/* /RD and ... */
 pin	92	=	!WR8;	/* .../WR outputs for 8-bit peripherals. */
@@ -126,9 +126,6 @@ pin	65	=	!FRAM_WR;
 
 /* An inverted, delayed clock. */
 node CPU_CLKDb;
-
-/* address space indicators */
-node SPACE_IACK;
 
 /* Shift register to indicate boot-up for the first 4 memory cycles. */
 node BOOT_A;
@@ -242,8 +239,11 @@ $define ACCTYPE_COPROC	(!A19 & !A18 & A17 & !A16)	/* 0x02 */
 
 #define CPID_FPU	(!A15 & !A14 & A13)		/* 0x01 */
 
-SPACE_IACK = (FC2 & FC1 & FC0) /* CPU space */ &
-             (A19 & A18 & A17 & A16) /* ACCTYPE = 0xf */;
+/*
+ * Generate an IACK output whenever the CPU decides to do one.
+ */
+IACK = (FC2 & FC1 & FC0) /* CPU space */ &
+       (A19 & A18 & A17 & A16) /* ACCTYPE = 0xf */;
 
 /*
  * Top-level address decoding:
@@ -311,12 +311,6 @@ STERM = 'b'0;
  */
 BERR = SPACE_NORMAL & AS & !ROMSEL & !DEV8SEL & !FRAMSEL & !MMIOSEL & !RAMSEL
      # FPUSEL & AS & !FPU_PRESENT;
-
-/*
- * For now, all interrupts are auto-vectored.  So, if we see an IACK
- * cycle, just assert AVEC.
- */
-AVEC = SPACE_IACK & AS;
 
 /*
  * Inhibit the cache on the reset vector fetch or if the

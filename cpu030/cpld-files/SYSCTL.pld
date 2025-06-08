@@ -67,8 +67,6 @@ pin	49	=	A29;
 pin	50	=	A30;
 /*	51	VCCIO		*/
 pin	52	=	A31;
-pin	53	=	!DSACK0;
-pin	54	=	!DSACK1;
 
 pin	89	=	!RESET;
 pin	90	=	CPU_CLK;
@@ -76,8 +74,8 @@ pin	90	=	CPU_CLK;
 
 /** OUTPUTS **/
 
-pin	100	=	!DSACK1_OUT;
-pin	99	=	!DSACK0_OUT;
+/*	100	=	available */
+/*	99	=	available */
 
 /*
  * These signals are active-low at the CPU, but we drive them
@@ -89,10 +87,10 @@ pin	99	=	!DSACK0_OUT;
  */
 pin	98	=	STERM;
 pin	97	=	CI;	/* /CIIN on the CPU */
-pin	96	=	BERR;
+
+pin	96	=	!BERR;
 /*	95	GND		*/
 pin	94	=	IACK;
-
 pin	93	=	!RD8;	/* /RD and ... */
 pin	92	=	!WR8;	/* .../WR outputs for 8-bit peripherals. */
 /*	91	VCCINT		*/
@@ -128,7 +126,7 @@ pin	65	=	!FRAM_WR;
 /** DECLARATIONS AND INTERMEDIATE VARIABLE DEFINITIONS **/
 
 /* An inverted, delayed clock. */
-node CPU_CLKDb;
+/* node CPU_CLKDb; */
 
 /* Shift register to indicate boot-up for the first 4 memory cycles. */
 node BOOT_A;
@@ -142,7 +140,7 @@ node RUNNING;
  * This is used to provide a slightly delayed clock signal during
  * FPU selection.  See section 12.2 of the 68030 user's manual.
  */
-CPU_CLKDb = /CPU_CLK;
+/* CPU_CLKDb = /CPU_CLK; */
 
 /*
  * We are using a 25MHz CPU clock, which means a single clock period
@@ -219,11 +217,33 @@ BOOT_C.D = BOOT_B;
 RUNNING.D = BOOT_C;
 
 /*
- * DSACK0_OUT and DSACK1_OUT simply reflect the DSACK0 and DSACK1 inputs.
- * These outputs directly drive the corresponding pins on the CPU.
+ * Bus error generation state machine.
+ *
+ * This will drive the /BERR output to the CPU if a bus cycle
+ * fails to terminate after 64 clock cycles.
+ *
+ * For all states, if /RESET is asserted or there is no active bus
+ * cycle (/AS not asserted), then we reset the counter to 0.
+ *
+ * For states 0..63, unless we reset to 0, we advance to the next state.
+ * Once we reach state 64 (the state field is arranged to that this asserts
+ * the /BERR output), we stay at state 64 until the conditions are correct
+ * to return us back to state 0.
+ *
+ * No other termination indication is required; when bus cycles terminate
+ * by whatever means, the CPU de-asserts /AS before the rising edge of
+ * the CPU clock cycle that begins the next bus cycle's S0.
  */
-DSACK0_OUT = DSACK0;
-DSACK1_OUT = DSACK1;
+node [BerrState0..5];
+[BerrState0..5].CK = CPU_CLK;
+[BerrState0..5].AR = RESET # !AS;
+sequenced [BerrState0..5] {
+  $repeat i = [0..62]
+    present 'd'{i}  next 'd'{i+1};
+  $repend
+    present 'd'{63} out BERR;
+                    next 'd'{63};
+}
 
 /*
  * Function bits for address space encodings:
@@ -247,7 +267,7 @@ $define SPACE_CPU	(FC2 & FC1 & FC0)
 
 $define ACCTYPE_COPROC	(!A19 & !A18 & A17 & !A16)	/* 0x02 */
 
-#define CPID_FPU	(!A15 & !A14 & A13)		/* 0x01 */
+$define CPID_FPU	(!A15 & !A14 & A13)		/* 0x01 */
 
 /*
  * Generate an IACK output whenever the CPU decides to do one.
@@ -299,9 +319,9 @@ RAMSEL = SPACE_NORMAL & AS & RUNNING & REGION_RAM;
 /*
  * Select the FPU.  See section 12.2 of the 68030 user's manual.
  */
-FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLK
+/* FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLK
        # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & AS
-       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLKDb;
+       # SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLKDb; */
 
 /*
  * We'd like to eventually use synchronous bus cycles for fast RAM,
@@ -313,14 +333,6 @@ FPUSEL = SPACE_CPU & ACCTYPE_COPROC & CPID_FPU & /CPU_CLK
  */
 FRAMSEL = SPACE_NORMAL & AS & REGION_FRAM;
 STERM = 'b'0;
-
-/*
- * Assert BERR if:
- * - Normal bus access and not top-level regions are selected.
- * - FPU access and FPU not present.
- */
-BERR = SPACE_NORMAL & AS & !ROMSEL & !DEV8SEL & !FRAMSEL & !MMIOSEL & !RAMSEL
-     # FPUSEL & AS & !FPU_PRESENT;
 
 /*
  * Inhibit the cache on the reset vector fetch or if the

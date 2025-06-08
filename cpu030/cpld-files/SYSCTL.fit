@@ -1,4 +1,4 @@
-Atmel ATF1508AS Fitter Version 1.8.7.8 ,running Sun Jun 08 11:42:28 2025
+Atmel ATF1508AS Fitter Version 1.8.7.8 ,running Sun Jun 08 12:18:16 2025
 
 
 fit1508 .\SYSCTL.tt2 -device P1508T100
@@ -51,10 +51,14 @@ fit1508 .\SYSCTL.tt2 -device P1508T100
 ---------------------------------------------------------
  Fitter_Pass 1, Preassign = KEEP, LOGIC_DOUBLING : OFF 
  ... 
-## ERROR : Bad user pin assignement : 101
+## ERROR : Bad user pin assignement : 103
  ## ERROR : Bad user pin assignement 
 ---------------------------------------------------------
  Fitter_Pass 2, Preassign = KEEP, NODE ASSIGN : OFF 
+ ... 
+ ## Warning : Placement fail 
+---------------------------------------------------------
+ Fitter_Pass 3, Preassign = KEEP, CASCADE_LOGIC : (TRY) 
  ... 
 
 Performing global Output Enable pin assignments ...
@@ -79,22 +83,24 @@ RESET assigned to pin  89
 Attempt to place floating signals ...
 ------------------------------------
 DS is placed at pin 2 (MC 1)
-BOOT_C is placed at feedback node 601 (MC 1)
-BOOT_B is placed at feedback node 602 (MC 2)
+BerrState3 is placed at feedback node 601 (MC 1)
+BerrState4 is placed at feedback node 602 (MC 2)
 AS is placed at pin 1 (MC 3)
 BerrState5 is placed at feedback node 603 (MC 3)
-BerrState3 is placed at feedback node 605 (MC 5)
-BerrState4 is placed at feedback node 607 (MC 7)
+BerrState0 is placed at feedback node 604 (MC 4)
+BootState1 is placed at feedback node 605 (MC 5)
+BootState0 is placed at feedback node 606 (MC 6)
+BerrState1 is placed at feedback node 607 (MC 7)
 STERM is placed at pin 98 (MC 8)
 CI is placed at pin 97 (MC 9)
-BerrState0 is placed at feedback node 610 (MC 10)
+XXL_80 is placed at feedback node 610 (MC 10)
 BERR is placed at pin 96 (MC 11)
-BerrState1 is placed at feedback node 612 (MC 12)
+XXL_81 is placed at feedback node 612 (MC 12)
 IACK is placed at pin 94 (MC 13)
 RD8 is placed at pin 93 (MC 14)
 BerrState2 is placed at feedback node 615 (MC 15)
 WR8 is placed at pin 92 (MC 16)
-Com_Ctrl_87 is placed at foldback expander node 316 (MC 16)
+Com_Ctrl_79 is placed at foldback expander node 316 (MC 16)
 A1 is placed at pin 14 (MC 17)
 A0 is placed at pin 13 (MC 19)
 SIZ1 is placed at pin 10 (MC 22)
@@ -103,9 +109,8 @@ FC2 is placed at pin 8 (MC 25)
 FC1 is placed at pin 7 (MC 27)
 FC0 is placed at pin 6 (MC 29)
 RW is placed at pin 5 (MC 30)
-BOOT_A is placed at feedback node 631 (MC 31)
 TDI is placed at pin 4 (MC 32)
-RUNNING is placed at feedback node 632 (MC 32)
+XXL_82 is placed at feedback node 632 (MC 32)
 TMS is placed at pin 15 (MC 48)
 A20 is placed at pin 37 (MC 49)
 A19 is placed at pin 36 (MC 51)
@@ -197,69 +202,90 @@ NC = Unused I/O pins which must be unconnected on the board
 
 Universal-Interconnect-Multiplexer assignments
 ------------------------------------------------
-FanIn assignment for block A [21]
+FanIn assignment for block A [22]
 {
-AS,A19,A17,A16,A18,
-BerrState2,BerrState4,BOOT_B,BerrState0,BerrState1,BerrState3,BerrState5,BOOT_A,
-DS,DEV8SEL,
+A16,A17,A19,AS,A18,
+BerrState2,BerrState1,BerrState4,BootState0,BerrState3,BootState1,BerrState5,BerrState0,
+DEV8SEL,DS,
 FC2,FC1,FC0,
-RW,RESET,RUNNING,
+RW,RESET,
+XXL_81,XXL_80,
 }
 Multiplexer assignment for block A
-RW			(MC15	P)   : MUX 0		Ref (B30p)
-DS			(MC14	P)   : MUX 1		Ref (A1p)
-RESET			(MC21	FB)  : MUX 2		Ref (GCLR)
-BerrState2		(MC7	FB)  : MUX 5		Ref (A15fb)
-DEV8SEL			(MC10	P)   : MUX 6		Ref (G109p)
-AS			(MC11	P)   : MUX 7		Ref (A3p)
-BerrState4		(MC4	FB)  : MUX 8		Ref (A7fb)
-A19			(MC19	P)   : MUX 9		Ref (D51p)
-BOOT_B			(MC1	FB)  : MUX 10		Ref (A2fb)
-A17			(MC17	P)   : MUX 11		Ref (D54p)
-BerrState0		(MC5	FB)  : MUX 13		Ref (A10fb)
-A16			(MC16	P)   : MUX 15		Ref (D56p)
-FC2			(MC20	P)   : MUX 16		Ref (B25p)
-BerrState1		(MC6	FB)  : MUX 19		Ref (A12fb)
+RW			(MC16	P)   : MUX 0		Ref (B30p)
+A16			(MC17	P)   : MUX 1		Ref (D56p)
+RESET			(MC22	FB)  : MUX 2		Ref (GCLR)
+DEV8SEL			(MC11	P)   : MUX 4		Ref (G109p)
+BerrState2		(MC10	FB)  : MUX 5		Ref (A15fb)
+A17			(MC18	P)   : MUX 7		Ref (D54p)
+BerrState1		(MC7	FB)  : MUX 8		Ref (A7fb)
+BerrState4		(MC2	FB)  : MUX 10		Ref (A2fb)
+DS			(MC15	P)   : MUX 11		Ref (A1p)
+BootState0		(MC6	FB)  : MUX 12		Ref (A6fb)
+A19			(MC20	P)   : MUX 13		Ref (D51p)
+FC2			(MC21	P)   : MUX 16		Ref (B25p)
+AS			(MC14	P)   : MUX 17		Ref (A3p)
+XXL_81			(MC9	FB)  : MUX 19		Ref (A12fb)
 FC1			(MC13	P)   : MUX 20		Ref (B27p)
-A18			(MC18	P)   : MUX 25		Ref (D53p)
-BerrState3		(MC3	FB)  : MUX 28		Ref (A5fb)
+A18			(MC19	P)   : MUX 25		Ref (D53p)
+BerrState3		(MC1	FB)  : MUX 26		Ref (A1fb)
+BootState1		(MC5	FB)  : MUX 28		Ref (A5fb)
 FC0			(MC12	P)   : MUX 32		Ref (B29p)
-BerrState5		(MC2	FB)  : MUX 36		Ref (A3fb)
-RUNNING			(MC9	FB)  : MUX 37		Ref (B32fb)
-BOOT_A			(MC8	FB)  : MUX 39		Ref (B31fb)
+BerrState5		(MC3	FB)  : MUX 36		Ref (A3fb)
+BerrState0		(MC4	FB)  : MUX 38		Ref (A4fb)
+XXL_80			(MC8	FB)  : MUX 39		Ref (A10fb)
 
-FanIn assignment for block B [2]
+FanIn assignment for block B [17]
 {
-AS,
-BOOT_C,
+A28,A31,A27,A25,A23,A29,A24,A30,AS,A26,A22,A20,A21,
+BootState0,BootState1,
+FC1,FC0,
 }
 Multiplexer assignment for block B
-BOOT_C			(MC1	FB)  : MUX 2		Ref (A1fb)
-AS			(MC2	P)   : MUX 7		Ref (A3p)
+A28			(MC15	P)   : MUX 0		Ref (E77p)
+FC1			(MC4	P)   : MUX 2		Ref (B27p)
+A31			(MC6	P)   : MUX 3		Ref (F81p)
+A27			(MC14	P)   : MUX 6		Ref (E75p)
+A25			(MC12	P)   : MUX 7		Ref (E72p)
+A23			(MC10	P)   : MUX 11		Ref (E69p)
+A29			(MC16	P)   : MUX 12		Ref (E78p)
+A24			(MC11	P)   : MUX 13		Ref (E70p)
+A30			(MC17	P)   : MUX 14		Ref (E80p)
+FC0			(MC3	P)   : MUX 16		Ref (B29p)
+AS			(MC5	P)   : MUX 17		Ref (A3p)
+A26			(MC13	P)   : MUX 20		Ref (E73p)
+A22			(MC9	P)   : MUX 29		Ref (E67p)
+A20			(MC7	P)   : MUX 33		Ref (D49p)
+BootState0		(MC2	FB)  : MUX 34		Ref (A6fb)
+BootState1		(MC1	FB)  : MUX 38		Ref (A5fb)
+A21			(MC8	P)   : MUX 39		Ref (E65p)
 
-FanIn assignment for block G [16]
+FanIn assignment for block G [18]
 {
-A28,A20,A25,A29,A31,A24,A30,AS,A26,A23,A22,A27,A21,
+A28,A31,A27,A25,A23,A29,A24,A30,AS,A26,A22,A20,A21,
+BootState0,BootState1,
 FC1,FC0,
-RUNNING,
+XXL_82,
 }
 Multiplexer assignment for block G
-A28			(MC13	P)   : MUX 0		Ref (E77p)
-FC1			(MC4	P)   : MUX 2		Ref (B27p)
-A20			(MC5	P)   : MUX 5		Ref (D49p)
-A25			(MC10	P)   : MUX 7		Ref (E72p)
-A29			(MC14	P)   : MUX 8		Ref (E78p)
-A31			(MC16	P)   : MUX 11		Ref (F81p)
-A24			(MC9	P)   : MUX 13		Ref (E70p)
-A30			(MC15	P)   : MUX 14		Ref (E80p)
-FC0			(MC3	P)   : MUX 16		Ref (B29p)
-AS			(MC2	P)   : MUX 17		Ref (A3p)
-A26			(MC11	P)   : MUX 20		Ref (E73p)
-A23			(MC8	P)   : MUX 23		Ref (E69p)
-A22			(MC7	P)   : MUX 29		Ref (E67p)
-A27			(MC12	P)   : MUX 32		Ref (E75p)
-RUNNING			(MC1	FB)  : MUX 37		Ref (B32fb)
-A21			(MC6	P)   : MUX 39		Ref (E65p)
+A28			(MC16	P)   : MUX 0		Ref (E77p)
+FC1			(MC5	P)   : MUX 2		Ref (B27p)
+A31			(MC7	P)   : MUX 3		Ref (F81p)
+A27			(MC15	P)   : MUX 6		Ref (E75p)
+A25			(MC13	P)   : MUX 7		Ref (E72p)
+A23			(MC11	P)   : MUX 11		Ref (E69p)
+A29			(MC17	P)   : MUX 12		Ref (E78p)
+A24			(MC12	P)   : MUX 13		Ref (E70p)
+A30			(MC18	P)   : MUX 14		Ref (E80p)
+FC0			(MC4	P)   : MUX 16		Ref (B29p)
+AS			(MC6	P)   : MUX 17		Ref (A3p)
+A26			(MC14	P)   : MUX 20		Ref (E73p)
+A22			(MC10	P)   : MUX 29		Ref (E67p)
+A20			(MC8	P)   : MUX 33		Ref (D49p)
+BootState0		(MC2	FB)  : MUX 34		Ref (A6fb)
+XXL_82			(MC3	FB)  : MUX 37		Ref (B32fb)
+BootState1		(MC1	FB)  : MUX 38		Ref (A5fb)
+A21			(MC9	P)   : MUX 39		Ref (E65p)
 
 FanIn assignment for block H [6]
 {
@@ -272,9 +298,9 @@ Multiplexer assignment for block H
 RW			(MC2	P)   : MUX 0		Ref (B30p)
 DS			(MC1	P)   : MUX 1		Ref (A1p)
 SIZ0			(MC3	P)   : MUX 3		Ref (B24p)
-A0			(MC4	P)   : MUX 11		Ref (B19p)
-SIZ1			(MC5	P)   : MUX 27		Ref (B22p)
-A1			(MC6	P)   : MUX 33		Ref (B17p)
+SIZ1			(MC4	P)   : MUX 7		Ref (B22p)
+A0			(MC6	P)   : MUX 11		Ref (B19p)
+A1			(MC5	P)   : MUX 33		Ref (B17p)
 
 Creating JEDEC file .\SYSCTL.jed ...
 
@@ -282,132 +308,128 @@ TQFP100 programmed logic:
 -----------------------------------
 !BERR = (BerrState0.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q);
 
-BOOT_A.D = 1;
+BerrState0.D = (!BerrState0.Q
+	# (BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q));
 
-BOOT_B.D = BOOT_A.Q;
+BerrState1.D = ((BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# (BerrState0.Q & !BerrState1.Q)
+	# (!BerrState0.Q & BerrState1.Q));
 
-BOOT_C.D = BOOT_B.Q;
-
-BerrState0.D = ((BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
-	# !BerrState0.Q);
-
-BerrState1.D = ((!BerrState0.Q & BerrState1.Q)
-	# (BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
-	# (BerrState0.Q & !BerrState1.Q));
-
-BerrState2.D = ((!BerrState1.Q & BerrState2.Q)
-	# (!BerrState0.Q & BerrState2.Q)
+BerrState2.D = ((BerrState2.Q & !BerrState0.Q)
 	# (BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
-	# (BerrState0.Q & BerrState1.Q & !BerrState2.Q));
+	# (BerrState1.Q & !BerrState2.Q & BerrState0.Q)
+	# (!BerrState1.Q & BerrState2.Q));
 
-BerrState3.D = ((!BerrState0.Q & BerrState3.Q)
-	# (!BerrState2.Q & BerrState3.Q)
-	# (!BerrState1.Q & BerrState3.Q)
-	# (BerrState3.Q & BerrState4.Q & BerrState5.Q)
-	# (BerrState0.Q & BerrState1.Q & BerrState2.Q & !BerrState3.Q));
+BerrState3.D = XXL_80;
 
-!BerrState4.D = ((!BerrState4.Q & !BerrState2.Q)
-	# (!BerrState4.Q & !BerrState3.Q)
-	# (BerrState4.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState0.Q & !BerrState5.Q)
-	# (!BerrState4.Q & !BerrState0.Q)
-	# (!BerrState4.Q & !BerrState1.Q));
+!BerrState4.D = XXL_81;
 
-BerrState5.D = (BerrState5.Q
-	# (BerrState0.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q));
+BerrState5.D = ((BerrState0.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q)
+	# BerrState5.Q);
 
-DS16_EVEN = (DS
-	# (!RW & A0));
+!BootState0.D = (BootState0.Q & !BootState1.Q);
 
-!DEV8SEL = ((!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1)
-	# (!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1));
+!BootState1.D = (!BootState0.Q & !BootState1.Q);
 
-!DS32_UU = ((!DS & RW)
-	# (!DS & !A0 & !A1));
+!DEV8SEL = ((!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1)
+	# (!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1));
 
-DS16_ODD = (DS
-	# (!RW & !A0 & SIZ0 & !SIZ1));
+DS16_EVEN = ((!RW & A0)
+	# DS);
 
-DS32_LL = ((!RW & SIZ0 & !A0 & !SIZ1)
-	# (!RW & SIZ0 & !A1 & !SIZ1)
-	# (!RW & !SIZ0 & !A1 & SIZ1)
+DS32_LL = ((!RW & SIZ0 & !SIZ1 & !A1)
+	# (!RW & !SIZ0 & SIZ1 & !A1)
 	# DS
-	# (!RW & SIZ0 & !A0 & !A1));
+	# (!RW & SIZ0 & !A0 & !A1)
+	# (!RW & SIZ0 & !A0 & !SIZ1));
+
+DS32_ML = ((!RW & !A1 & SIZ0 & !SIZ1)
+	# DS
+	# (!RW & A0 & A1)
+	# (!RW & !A0 & !A1 & !SIZ0 & SIZ1));
+
+DS16_ODD = ((!RW & !A0 & SIZ0 & !SIZ1)
+	# DS);
 
 DS8 = DS;
 
-DS32_ML = ((!RW & !A0 & !A1 & !SIZ0 & SIZ1)
-	# (!RW & !A1 & SIZ0 & !SIZ1)
-	# DS
-	# (!RW & A0 & A1));
-
-DS32_MU = ((!RW & !A0 & SIZ0 & !SIZ1)
-	# DS
-	# (!RW & A1));
-
-!RAMSEL = ((!A31 & !AS & !FC0 & FC1 & RUNNING.Q)
-	# (!A31 & !AS & FC0 & !FC1 & RUNNING.Q));
+DS32_MU = (DS
+	# (!RW & A1)
+	# (!RW & !A0 & SIZ0 & !SIZ1));
 
 IACK = (A16 & A17 & A18 & A19 & FC0 & FC1 & FC2);
 
-!MMIOSEL = ((!A30 & A31 & !AS & !FC0 & FC1)
-	# (!A30 & A31 & !AS & FC0 & !FC1));
+!DS32_UU = ((!DS & !A0 & !A1)
+	# (!DS & RW));
 
-!ROMSEL = ((A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1)
-	# (!AS & !FC0 & FC1 & !RUNNING.Q)
-	# (!AS & FC0 & !FC1 & !RUNNING.Q)
-	# (A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1));
+!RAMSEL = ((!A31 & !AS & BootState0.Q & BootState1.Q & FC0 & !FC1)
+	# (!A31 & !AS & BootState0.Q & BootState1.Q & !FC0 & FC1));
 
-RUNNING.D = BOOT_C.Q;
-
-!RD8 = (!DS & RW);
+!MMIOSEL = ((!A30 & A31 & !AS & FC0 & !FC1)
+	# (!A30 & A31 & !AS & !FC0 & FC1));
 
 STERM = 0;
 
 !WR8 = (!DS & !RW);
 
-!CI = (DEV8SEL & RUNNING.Q);
+!RD8 = (!DS & RW);
 
-!Com_Ctrl_87 = (!AS & RESET);
+!ROMSEL = (XXL_82
+	# (A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1));
 
-BOOT_A.C = AS;
+!CI = (DEV8SEL & BootState0.Q & BootState1.Q);
 
-BOOT_A.AR = !RESET;
+!Com_Ctrl_79 = (!AS & RESET);
 
-BOOT_B.C = AS;
+XXL_80 = ((BerrState3.Q & !BerrState2.Q)
+	# (BerrState3.Q & !BerrState1.Q)
+	# (BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# (BerrState0.Q & !BerrState3.Q & BerrState2.Q & BerrState1.Q)
+	# (!BerrState0.Q & BerrState3.Q));
 
-BOOT_B.AR = !RESET;
+XXL_81 = ((!BerrState4.Q & !BerrState3.Q)
+	# (BerrState4.Q & BerrState2.Q & BerrState3.Q & BerrState1.Q & BerrState0.Q & !BerrState5.Q)
+	# (!BerrState4.Q & !BerrState0.Q)
+	# (!BerrState4.Q & !BerrState1.Q)
+	# (!BerrState4.Q & !BerrState2.Q));
 
-BOOT_C.C = AS;
-
-BOOT_C.AR = !RESET;
+XXL_82 = ((!A31 & !AS & !FC0 & FC1 & !BootState1.Q)
+	# (!A31 & !AS & FC0 & !FC1 & !BootState1.Q)
+	# (!A31 & !AS & !FC0 & FC1 & !BootState0.Q)
+	# (!A31 & !AS & FC0 & !FC1 & !BootState0.Q)
+	# (A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1));
 
 BerrState0.C = CPU_CLK;
 
-BerrState0.AR = Com_Ctrl_87;
+BerrState0.AR = Com_Ctrl_79;
 
 BerrState1.C = CPU_CLK;
 
-BerrState1.AR = Com_Ctrl_87;
+BerrState1.AR = Com_Ctrl_79;
 
 BerrState2.C = CPU_CLK;
 
-BerrState2.AR = Com_Ctrl_87;
+BerrState2.AR = Com_Ctrl_79;
 
 BerrState3.C = CPU_CLK;
 
-BerrState3.AR = Com_Ctrl_87;
+BerrState3.AR = Com_Ctrl_79;
 
 BerrState4.C = CPU_CLK;
 
-BerrState4.AR = Com_Ctrl_87;
+BerrState4.AR = Com_Ctrl_79;
 
 BerrState5.C = CPU_CLK;
 
-BerrState5.AR = Com_Ctrl_87;
+BerrState5.AR = Com_Ctrl_79;
 
-RUNNING.C = AS;
+BootState0.C = AS;
 
-RUNNING.AR = !RESET;
+BootState0.AR = !RESET;
+
+BootState1.C = AS;
+
+BootState1.AR = !RESET;
 
 
 TQFP100 Pin/Node Placement:
@@ -461,17 +483,18 @@ Pin 94 = IACK; /* MC 13 */
 Pin 96 = BERR; /* MC 11 */ 
 Pin 97 = CI; /* MC  9 */
 Pin 98 = STERM; /* MC  8 */
-PINNODE 316 = Com_Ctrl_87; /* MC 16 Foldback */
-PINNODE 601 = BOOT_C; /* MC 1 Feedback */
-PINNODE 602 = BOOT_B; /* MC 2 Feedback */
+PINNODE 316 = Com_Ctrl_79; /* MC 16 Foldback */
+PINNODE 601 = BerrState3; /* MC 1 Feedback */
+PINNODE 602 = BerrState4; /* MC 2 Feedback */
 PINNODE 603 = BerrState5; /* MC 3 Feedback */
-PINNODE 605 = BerrState3; /* MC 5 Feedback */
-PINNODE 607 = BerrState4; /* MC 7 Feedback */
-PINNODE 610 = BerrState0; /* MC 10 Feedback */
-PINNODE 612 = BerrState1; /* MC 12 Feedback */
+PINNODE 604 = BerrState0; /* MC 4 Feedback */
+PINNODE 605 = BootState1; /* MC 5 Feedback */
+PINNODE 606 = BootState0; /* MC 6 Feedback */
+PINNODE 607 = BerrState1; /* MC 7 Feedback */
+PINNODE 610 = XXL_80; /* MC 10 Feedback */
+PINNODE 612 = XXL_81; /* MC 12 Feedback */
 PINNODE 615 = BerrState2; /* MC 15 Feedback */
-PINNODE 631 = BOOT_A; /* MC 31 Feedback */
-PINNODE 632 = RUNNING; /* MC 32 Feedback */
+PINNODE 632 = XXL_82; /* MC 32 Feedback */
 
 ** Resource Usage **
 
@@ -491,22 +514,22 @@ DCERP Field = Summary of Allocations.
 For input only = INPUT.
 
 MCell Pin# Oe   PinDrive  DCERP  FBDrive    DCERP  Foldback    CascadeOut     TotPT output_slew
-MC1   2    --   DS        INPUT  BOOT_C     Dc-g-  --          --             2     slow
-MC2   0         --               BOOT_B     Dc-g-  --          --             2     slow
+MC1   2    --   DS        INPUT  BerrState3 Dg-r-  --          --             2     slow
+MC2   0         --               BerrState4 Dg-r-  --          --             2     slow
 MC3   1    --   AS        INPUT  BerrState5 Dg-r-  --          --             3     slow
-MC4   0         --               --                --          -> BerrState3  5     slow
-MC5   100       --               BerrState3 Dg-r-  --          --             1     slow
-MC6   99        --               --                --          -> BerrState4  5     slow
-MC7   0         --               BerrState4 Dg-r-  --          --             1     slow
+MC4   0         --               BerrState0 Dg-r-  --          --             3     slow
+MC5   100       --               BootState1 Dc-g-  --          --             2     slow
+MC6   99        --               BootState0 Dc-g-  --          --             2     slow
+MC7   0         --               BerrState1 Dg-r-  --          --             4     slow
 MC8   98   on   STERM     C----  --                --          --             0     slow
 MC9   97   on   CI        C----  --                --          --             1     slow
-MC10  0         --               BerrState0 Dg-r-  --          --             3     slow
+MC10  0         --               XXL_80     C----  NA          --             5     slow
 MC11  96   on   BERR      C----  --                --          --             1     slow
-MC12  0         --               BerrState1 Dg-r-  --          --             4     slow
+MC12  0         --               XXL_81     C----  NA          --             5     slow
 MC13  94   on   IACK      C----  --                --          --             1     slow
 MC14  93   on   RD8       C----  --                --          --             1     slow
 MC15  0         --               BerrState2 Dg-r-  NA          --             5     slow
-MC16  92   on   WR8       C----  --                Com_Ctrl_87 --             2     slow
+MC16  92   on   WR8       C----  --                Com_Ctrl_79 --             2     slow
 MC17  14   --   A1        INPUT  --                --          --             0     slow
 MC18  0         --               --                --          --             0     slow
 MC19  13   --   A0        INPUT  --                --          --             0     slow
@@ -521,8 +544,8 @@ MC27  7    --   FC1       INPUT  --                --          --             0 
 MC28  0         --               --                --          --             0     slow
 MC29  6    --   FC0       INPUT  --                --          --             0     slow
 MC30  5    --   RW        INPUT  --                --          --             0     slow
-MC31  0         --               BOOT_A     Dc-g-  --          --             1     slow
-MC32  4    --   TDI       INPUT  RUNNING    Dc-g-  --          --             2     slow
+MC31  0         --               --                --          --             0     slow
+MC32  4    --   TDI       INPUT  XXL_82     C----  NA          --             5     slow
 MC33  25        --               --                --          --             0     slow
 MC34  0         --               --                --          --             0     slow
 MC35  24        --               --                --          --             0     slow
@@ -600,7 +623,7 @@ MC106 0         --               --                --          --             0 
 MC107 70   on   MMIOSEL   C----  --                --          --             2     slow
 MC108 0         --               --                --          --             0     slow
 MC109 71   on   DEV8SEL   C----  --                --          --             2     slow
-MC110 72   on   ROMSEL    C----  --                --          --             4     slow
+MC110 72   on   ROMSEL    C----  --                --          --             2     slow
 MC111 0         --               --                --          --             0     slow
 MC112 73   --   TDO       INPUT  --                --          --             0     slow
 MC113 75   on   DS32_UU   C----  --                --          --             2     slow
@@ -625,25 +648,25 @@ MC0   88        --               --                --          --             0 
 MC0   87        --               --                --          --             0     slow
 
 Logic Array Block	Logic Cells	I/O Pins	Foldbacks	TotalPT		FanIN	Cascades
-A: LC1	- LC16		14/16(87%)	8/16(50%)	1/16(6%)	37/80(46%)	(21)	2
-B: LC17	- LC32		2/16(12%)	9/16(56%)	0/16(0%)	3/80(3%)	(2)	0
-C: LC33	- LC48		0/16(0%)	1/16(6%)	0/16(0%)	0/80(0%)	(16)	0
+A: LC1	- LC16		16/16(100%)	8/16(50%)	1/16(6%)	39/80(48%)	(22)	0
+B: LC17	- LC32		1/16(6%)	9/16(56%)	0/16(0%)	5/80(6%)	(17)	0
+C: LC33	- LC48		0/16(0%)	1/16(6%)	0/16(0%)	0/80(0%)	(18)	0
 D: LC49	- LC64		0/16(0%)	5/16(31%)	0/16(0%)	0/80(0%)	(6)	0
 E: LC65	- LC80		0/16(0%)	10/16(62%)	0/16(0%)	0/80(0%)	(6)	0
 F: LC81	- LC96		0/16(0%)	2/16(12%)	0/16(0%)	0/80(0%)	(6)	0
-G: LC97	- LC112		4/16(25%)	5/16(31%)	0/16(0%)	10/80(12%)	(6)	0
+G: LC97	- LC112		4/16(25%)	5/16(31%)	0/16(0%)	8/80(10%)	(6)	0
 H: LC113- LC128		7/16(43%)	7/16(43%)	0/16(0%)	19/80(23%)	(6)	0
 
 Total dedicated input used:	2/4 	(50%)
 Total I/O pins used		47/80 	(58%)
-Total Logic cells used 		29/128 	(22%)
-Total Flip-Flop used 		10/128 	(7%)
+Total Logic cells used 		28/128 	(21%)
+Total Flip-Flop used 		8/128 	(6%)
 Total Foldback logic used 	1/128 	(0%)
-Total Nodes+FB/MCells 		28/128 	(21%)
-Total cascade used 		2
+Total Nodes+FB/MCells 		29/128 	(22%)
+Total cascade used 		0
 Total input pins 		32
 Total output pins 		17
-Total Pts 			69
+Total Pts 			71
 Creating pla file .\SYSCTL.tt3 with 0 inputs 0 outputs, 0 pins 0 nodes and 0 pterms...
 
 ----------------  End fitter, Design FITS

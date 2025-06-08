@@ -5,7 +5,7 @@
 
 CUPL(WM)        5.0a Serial# 60008009
 Device          f1508isptqfp100  Library DLIB-h-40-2
-Created         Sun Jun 08 11:32:37 2025
+Created         Sun Jun 08 12:18:05 2025
 Name            SYSCTL
 Partno          PG68KSYS
 Revision        1
@@ -22,33 +22,6 @@ Location        N/A
 BERR =>
     BerrState0 & BerrState1 & BerrState2 & BerrState3 & BerrState4 & 
       BerrState5
-
-BOOT_A.d  =>
-    1 
-
-BOOT_A.ar  =>
-    RESET
-
-BOOT_A.ck  =>
-    !AS
-
-BOOT_B.d  =>
-    BOOT_A
-
-BOOT_B.ar  =>
-    RESET
-
-BOOT_B.ck  =>
-    !AS
-
-BOOT_C.d  =>
-    BOOT_B
-
-BOOT_C.ar  =>
-    RESET
-
-BOOT_C.ck  =>
-    !AS
 
 BerrState0.d  =>
     BerrState0 & BerrState1 & BerrState2 & BerrState3 & BerrState4 & 
@@ -136,8 +109,29 @@ BerrState5.ar  =>
 BerrState5.ck  =>
     CPU_CLK
 
+BootState0.d  =>
+    !BootState0
+  # BootState0 & BootState1
+
+BootState0.ar  =>
+    RESET
+
+BootState0.ck  =>
+    !AS
+
+BootState1.d  =>
+    !BootState0 & BootState1
+  # BootState0
+
+BootState1.ar  =>
+    RESET
+
+BootState1.ck  =>
+    !AS
+
 CI =>
-    !RUNNING
+    !BootState0
+  # !BootState1
   # DEV8SEL
 
 DEV8SEL =>
@@ -197,28 +191,21 @@ MMIOSEL =>
   # !A30 & A31 & AS & !FC0 & FC1
 
 RAMSEL =>
-    !A31 & AS & FC0 & !FC1 & RUNNING
-  # !A31 & AS & !FC0 & FC1 & RUNNING
+    !A31 & AS & BootState0 & BootState1 & FC0 & !FC1
+  # !A31 & AS & BootState0 & BootState1 & !FC0 & FC1
 
 RD8 =>
     DS & RW
 
 ROMSEL =>
-    AS & FC0 & !FC1 & !RUNNING
-  # AS & !FC0 & FC1 & !RUNNING
+    !A31 & AS & !BootState0 & FC0 & !FC1
+  # !A31 & AS & !BootState0 & !FC0 & FC1
+  # !A31 & AS & !BootState1 & FC0 & !FC1
+  # !A31 & AS & !BootState1 & !FC0 & FC1
   # A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & 
       AS & FC0 & !FC1
   # A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & 
       AS & !FC0 & FC1
-
-RUNNING.d  =>
-    BOOT_C
-
-RUNNING.ar  =>
-    RESET
-
-RUNNING.ck  =>
-    !AS
 
 STERM =>
     0 
@@ -269,43 +256,39 @@ Pol   Name              Ext     Pin     Type     Used   Pterms  Level
     A31                         52       V        -       -       -     
  !  AS                          1        V        -       -       -     
  !  BERR                        96       V        1       0       1     
-    BOOT_A                      101      N        -       -       -     
-    BOOT_A              d       101      M        1       0       1     
-    BOOT_A              ar      101      M        1       0       1     
-    BOOT_A              ck      101      M        1       0       1     
-    BOOT_B                      102      N        -       -       -     
-    BOOT_B              d       102      M        1       0       1     
-    BOOT_B              ar      102      M        1       0       1     
-    BOOT_B              ck      102      M        1       0       1     
-    BOOT_C                      103      N        -       -       -     
-    BOOT_C              d       103      M        1       0       1     
-    BOOT_C              ar      103      M        1       0       1     
-    BOOT_C              ck      103      M        1       0       1     
-    BerrState0                  105      N        -       -       -     
-    BerrState0          d       105      M        2       0       1     
-    BerrState0          ar      105      M        2       0       1     
-    BerrState0          ck      105      M        1       0       1     
-    BerrState1                  106      N        -       -       -     
-    BerrState1          d       106      M        3       0       1     
-    BerrState1          ar      106      M        2       0       1     
-    BerrState1          ck      106      M        1       0       1     
-    BerrState2                  107      N        -       -       -     
-    BerrState2          d       107      M        4       0       1     
-    BerrState2          ar      107      M        2       0       1     
-    BerrState2          ck      107      M        1       0       1     
-    BerrState3                  108      N        -       -       -     
-    BerrState3          d       108      M        5       0       1     
-    BerrState3          ar      108      M        2       0       1     
-    BerrState3          ck      108      M        1       0       1     
-    BerrState4                  109      N        -       -       -     
-    BerrState4          d       109      M        6       0       1     
-    BerrState4          ar      109      M        2       0       1     
-    BerrState4          ck      109      M        1       0       1     
-    BerrState5                  110      N        -       -       -     
-    BerrState5          d       110      M        6       0       1     
-    BerrState5          ar      110      M        2       0       1     
-    BerrState5          ck      110      M        1       0       1     
-    CI                          97       V        2       0       1     
+    BerrState0                  103      N        -       -       -     
+    BerrState0          d       103      M        2       0       1     
+    BerrState0          ar      103      M        2       0       1     
+    BerrState0          ck      103      M        1       0       1     
+    BerrState1                  104      N        -       -       -     
+    BerrState1          d       104      M        3       0       1     
+    BerrState1          ar      104      M        2       0       1     
+    BerrState1          ck      104      M        1       0       1     
+    BerrState2                  105      N        -       -       -     
+    BerrState2          d       105      M        4       0       1     
+    BerrState2          ar      105      M        2       0       1     
+    BerrState2          ck      105      M        1       0       1     
+    BerrState3                  106      N        -       -       -     
+    BerrState3          d       106      M        5       0       1     
+    BerrState3          ar      106      M        2       0       1     
+    BerrState3          ck      106      M        1       0       1     
+    BerrState4                  107      N        -       -       -     
+    BerrState4          d       107      M        6       0       1     
+    BerrState4          ar      107      M        2       0       1     
+    BerrState4          ck      107      M        1       0       1     
+    BerrState5                  108      N        -       -       -     
+    BerrState5          d       108      M        6       0       1     
+    BerrState5          ar      108      M        2       0       1     
+    BerrState5          ck      108      M        1       0       1     
+    BootState0                  101      N        -       -       -     
+    BootState0          d       101      M        2       0       1     
+    BootState0          ar      101      M        1       0       1     
+    BootState0          ck      101      M        1       0       1     
+    BootState1                  102      N        -       -       -     
+    BootState1          d       102      M        2       0       1     
+    BootState1          ar      102      M        1       0       1     
+    BootState1          ck      102      M        1       0       1     
+    CI                          97       V        3       0       1     
     CPU_CLK                     90       V        -       -       -     
  !  DEV8SEL                     71       V        2       0       1     
  !  DS                          2        V        -       -       -     
@@ -329,11 +312,7 @@ Pol   Name              Ext     Pin     Type     Used   Pterms  Level
  !  RAMSEL                      69       V        2       0       1     
  !  RD8                         93       V        1       0       1     
  !  RESET                       89       V        -       -       -     
- !  ROMSEL                      72       V        4       0       1     
-    RUNNING                     104      N        -       -       -     
-    RUNNING             d       104      M        1       0       1     
-    RUNNING             ar      104      M        1       0       1     
-    RUNNING             ck      104      M        1       0       1     
+ !  ROMSEL                      72       V        6       0       1     
     RW                          5        V        -       -       -     
     SIZ0                        9        V        -       -       -     
     SIZ1                        10       V        -       -       -     

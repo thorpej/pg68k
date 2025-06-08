@@ -128,12 +128,6 @@ pin	65	=	!FRAM_WR;
 /* An inverted, delayed clock. */
 /* node CPU_CLKDb; */
 
-/* Shift register to indicate boot-up for the first 4 memory cycles. */
-node BOOT_A;
-node BOOT_B;
-node BOOT_C;
-node RUNNING;
-
 /** LOGIC EQUATIONS **/
 
 /*
@@ -194,27 +188,22 @@ node RUNNING;
  */
 
 /*
- * We clear BOOT_A-BOOT_C and RUNNING when /RESET is asserted.  We then
- * shift 1's through the chain.  After 4 cycles, RUNNING will be 1.  This
- * is used to map the ROM to $0000.0000 until the reset vector is fetched.
+ * We count the first 4 bus cycles after a /RESET occurs, and use that
+ * to ensure the ROM is selected for the reset vector fetch.
  *
  * N.B. We want the state to advance **after** the bus cycle is over,
  * thus we clock when AS is de-asserted.
  */
-BOOT_A.AR = RESET;
-BOOT_B.AR = RESET;
-BOOT_C.AR = RESET;
-RUNNING.AR = RESET;
-
-BOOT_A.CK = !AS;
-BOOT_B.CK = !AS;
-BOOT_C.CK = !AS;
-RUNNING.CK = !AS;
-
-BOOT_A.D = 'b'1;
-BOOT_B.D = BOOT_A;
-BOOT_C.D = BOOT_B;
-RUNNING.D = BOOT_C;
+node [BootState0..1];
+[BootState0..1].CK = !AS;
+[BootState0..1].AR = RESET;
+sequenced [BootState0..1] {
+    present 'd'0 next 1;
+    present 'd'1 next 2;
+    present 'd'2 next 3;
+    present 'd'3 next 3;
+}
+$define ResetVecFetch	(!BootState0 # !BootState1)
 
 /*
  * Bus error generation state machine.
@@ -299,22 +288,14 @@ $define REGION_MMIO	(A31 & !A30)
 
 $define REGION_RAM	!A31
 
-/*
- * The ROM is always selected when RUNNING is not asserted (for the reset
- * vector fetch).
- */
-ROMSEL = SPACE_NORMAL & AS & !RUNNING
+ROMSEL = SPACE_NORMAL & AS & REGION_RAM & ResetVecFetch
        # SPACE_NORMAL & AS & REGION_ROM;
 
 DEV8SEL = SPACE_NORMAL & AS & REGION_DEV8;
 
 MMIOSEL = SPACE_NORMAL & AS & REGION_MMIO;
 
-/*
- * The RAM region is never selected when RUNNING is not asserted (to avoid
- * conflicting with the ROM during the reset vector fetch).
- */
-RAMSEL = SPACE_NORMAL & AS & RUNNING & REGION_RAM;
+RAMSEL = SPACE_NORMAL & AS & REGION_RAM & !ResetVecFetch;
 
 /*
  * Select the FPU.  See section 12.2 of the 68030 user's manual.
@@ -338,7 +319,7 @@ STERM = 'b'0;
  * Inhibit the cache on the reset vector fetch or if the
  * 8-bit peripheral region was seleced.
  */
-CI = !RUNNING # DEV8SEL;
+CI = ResetVecFetch # DEV8SEL;
 
 /*
  * Generate the data strobes for the individual byte lanes for the

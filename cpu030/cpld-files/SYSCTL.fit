@@ -1,0 +1,651 @@
+Atmel ATF1508AS Fitter Version 1.8.7.8 ,running Sun Jun 08 11:42:28 2025
+
+
+fit1508 .\SYSCTL.tt2 -device P1508T100
+
+
+****** Initial fitting strategy and property ******
+ Pla_in_file = SYSCTL.tt2
+ Pla_out_file = SYSCTL.tt3
+ Jedec_file = SYSCTL.jed
+ Vector_file = SYSCTL.tmv
+ verilog_file = SYSCTL.vt
+ Time_file = 
+ Log_file = SYSCTL.fit
+ err_file = 
+ Device_name = TQFP100
+ Module_name = 
+ Package_type = TQFP
+ Preassign_file = 
+ Property_file = 
+ Sleep_mode = 
+ Preassignment = 
+ Security_mode = OFF
+ Pin_keep_mode = ON
+ Dedicated_input_clock = 
+ Dedicated_input_reset = 
+ Dedicated_input_oe = 
+ supporter = CUPL
+ optimize = ON
+ Soft_buffer = 
+ Xor_synthesis = OFF
+ Foldback_logic =  on
+ Expander = 
+ Cascade_logic = OFF
+ Dedicated_input = 
+ Output_fast = OFF
+ *******************************
+ Power down pin 1 = OFF
+ Power down pin 2 = OFF
+ power_reset = OFF
+ JTAG = ON
+ TDI pullup = ON
+ TMS pullup = ON
+ MC_power = OFF
+ Open_collector = OFF
+ ITD0 = ON
+ ITD1 = ON
+ ITD2 = ON
+ Fast_inlatch = off
+ *******************************
+---------------------------------------------------------
+ Fitter_Pass 1, Preassign = KEEP, LOGIC_DOUBLING : OFF 
+ ... 
+## ERROR : Bad user pin assignement : 101
+ ## ERROR : Bad user pin assignement 
+---------------------------------------------------------
+ Fitter_Pass 2, Preassign = KEEP, NODE ASSIGN : OFF 
+ ... 
+
+Performing global Output Enable pin assignments ...
+
+Performing global pin assignments ...
+--------------------------------------
+
+
+
+Final global control pins assignment (if applicable)...
+-------------------------------------------------------
+CPU_CLK assigned to pin  90
+RESET assigned to pin  89
+
+
+
+Performing input pin pre-assignments ...
+------------------------------------
+CPU_CLK assigned to pin  90
+RESET assigned to pin  89
+
+Attempt to place floating signals ...
+------------------------------------
+DS is placed at pin 2 (MC 1)
+BOOT_C is placed at feedback node 601 (MC 1)
+BOOT_B is placed at feedback node 602 (MC 2)
+AS is placed at pin 1 (MC 3)
+BerrState5 is placed at feedback node 603 (MC 3)
+BerrState3 is placed at feedback node 605 (MC 5)
+BerrState4 is placed at feedback node 607 (MC 7)
+STERM is placed at pin 98 (MC 8)
+CI is placed at pin 97 (MC 9)
+BerrState0 is placed at feedback node 610 (MC 10)
+BERR is placed at pin 96 (MC 11)
+BerrState1 is placed at feedback node 612 (MC 12)
+IACK is placed at pin 94 (MC 13)
+RD8 is placed at pin 93 (MC 14)
+BerrState2 is placed at feedback node 615 (MC 15)
+WR8 is placed at pin 92 (MC 16)
+Com_Ctrl_87 is placed at foldback expander node 316 (MC 16)
+A1 is placed at pin 14 (MC 17)
+A0 is placed at pin 13 (MC 19)
+SIZ1 is placed at pin 10 (MC 22)
+SIZ0 is placed at pin 9 (MC 24)
+FC2 is placed at pin 8 (MC 25)
+FC1 is placed at pin 7 (MC 27)
+FC0 is placed at pin 6 (MC 29)
+RW is placed at pin 5 (MC 30)
+BOOT_A is placed at feedback node 631 (MC 31)
+TDI is placed at pin 4 (MC 32)
+RUNNING is placed at feedback node 632 (MC 32)
+TMS is placed at pin 15 (MC 48)
+A20 is placed at pin 37 (MC 49)
+A19 is placed at pin 36 (MC 51)
+A18 is placed at pin 35 (MC 53)
+A17 is placed at pin 33 (MC 54)
+A16 is placed at pin 32 (MC 56)
+A21 is placed at pin 40 (MC 65)
+A22 is placed at pin 41 (MC 67)
+A23 is placed at pin 42 (MC 69)
+A24 is placed at pin 44 (MC 70)
+A25 is placed at pin 45 (MC 72)
+A26 is placed at pin 46 (MC 73)
+A27 is placed at pin 47 (MC 75)
+A28 is placed at pin 48 (MC 77)
+A29 is placed at pin 49 (MC 78)
+A30 is placed at pin 50 (MC 80)
+A31 is placed at pin 52 (MC 81)
+TCK is placed at pin 62 (MC 96)
+RAMSEL is placed at pin 69 (MC 105)
+MMIOSEL is placed at pin 70 (MC 107)
+DEV8SEL is placed at pin 71 (MC 109)
+ROMSEL is placed at pin 72 (MC 110)
+TDO is placed at pin 73 (MC 112)
+DS32_UU is placed at pin 75 (MC 113)
+DS32_MU is placed at pin 76 (MC 115)
+DS32_ML is placed at pin 77 (MC 117)
+DS32_LL is placed at pin 78 (MC 118)
+DS16_EVEN is placed at pin 79 (MC 120)
+DS16_ODD is placed at pin 80 (MC 121)
+DS8 is placed at pin 81 (MC 123)
+
+                                                                                             
+                                                                                             
+                                                                                             
+                                                                                             
+                                                              D                              
+                                                            D S                              
+                                        C                   S 1 D D D                        
+                                        P                   1 6 S S S                        
+                        S               U R                 6 _ 3 3 3                        
+                        T   B   I       _ E                 _ E 2 2 2                        
+                        E   E G A R W V C S     G       V D O V _ _ _                        
+                        R C R N C D R C L E     N       C S D E L M M                        
+                        M I R D K 8 8 C K T     D       C 8 D N L L U                        
+                  ------------------------------------------------------                     
+                 / 100  98  96  94  92  90  88  86  84  82  80  78  76  \                   
+                /     99  97  95  93  91  89  87  85  83  81  79  77     \                  
+            AS | 1                                                     75 | DS32_UU          
+            DS | 2                                                     74 | GND              
+           VCC | 3                                                     73 | TDO              
+           TDI | 4                                                     72 | ROMSEL           
+            RW | 5                                                     71 | DEV8SEL          
+           FC0 | 6                                                     70 | MMIOSEL          
+           FC1 | 7                                                     69 | RAMSEL           
+           FC2 | 8                                                     68 |                  
+          SIZ0 | 9                                                     67 |                  
+          SIZ1 | 10                                                    66 | VCC              
+           GND | 11                                                    65 |                  
+               | 12                     ATF1508                        64 |                  
+            A0 | 13                  100-Lead TQFP                     63 |                  
+            A1 | 14                                                    62 | TCK              
+           TMS | 15                                                    61 |                  
+               | 16                                                    60 |                  
+               | 17                                                    59 | GND              
+           VCC | 18                                                    58 |                  
+               | 19                                                    57 |                  
+               | 20                                                    56 |                  
+               | 21                                                    55 |                  
+               | 22                                                    54 |                  
+               | 23                                                    53 |                  
+               | 24                                                    52 | A31              
+               | 25                                                    51 | VCC              
+                \     27  29  31  33  35  37  39  41  43  45   47  49    /                  
+                 \  26  28  30  32  34  36  38  40  42  44  46  48   50 /                   
+                  ------------------------------------------------------                     
+A                   G           A A V A A A G V A A A G A A A A A A                          
+3                   N           1 1 C 1 1 2 N C 2 2 2 N 2 2 2 2 2 2                          
+0                   D           6 7 C 8 9 0 D C 1 2 3 D 4 5 6 7 8 9                          
+
+
+
+VCC = Supply Voltage pin which must be connected to (5.0V or 3.0V)
+
+GND = GND pin which must be connected to ground
+
+TMS,TDI,TDO,TDI = JTAG pins which must reserved for the JTAG interface
+
+NC = Unused I/O pins which must be unconnected on the board
+
+Universal-Interconnect-Multiplexer assignments
+------------------------------------------------
+FanIn assignment for block A [21]
+{
+AS,A19,A17,A16,A18,
+BerrState2,BerrState4,BOOT_B,BerrState0,BerrState1,BerrState3,BerrState5,BOOT_A,
+DS,DEV8SEL,
+FC2,FC1,FC0,
+RW,RESET,RUNNING,
+}
+Multiplexer assignment for block A
+RW			(MC15	P)   : MUX 0		Ref (B30p)
+DS			(MC14	P)   : MUX 1		Ref (A1p)
+RESET			(MC21	FB)  : MUX 2		Ref (GCLR)
+BerrState2		(MC7	FB)  : MUX 5		Ref (A15fb)
+DEV8SEL			(MC10	P)   : MUX 6		Ref (G109p)
+AS			(MC11	P)   : MUX 7		Ref (A3p)
+BerrState4		(MC4	FB)  : MUX 8		Ref (A7fb)
+A19			(MC19	P)   : MUX 9		Ref (D51p)
+BOOT_B			(MC1	FB)  : MUX 10		Ref (A2fb)
+A17			(MC17	P)   : MUX 11		Ref (D54p)
+BerrState0		(MC5	FB)  : MUX 13		Ref (A10fb)
+A16			(MC16	P)   : MUX 15		Ref (D56p)
+FC2			(MC20	P)   : MUX 16		Ref (B25p)
+BerrState1		(MC6	FB)  : MUX 19		Ref (A12fb)
+FC1			(MC13	P)   : MUX 20		Ref (B27p)
+A18			(MC18	P)   : MUX 25		Ref (D53p)
+BerrState3		(MC3	FB)  : MUX 28		Ref (A5fb)
+FC0			(MC12	P)   : MUX 32		Ref (B29p)
+BerrState5		(MC2	FB)  : MUX 36		Ref (A3fb)
+RUNNING			(MC9	FB)  : MUX 37		Ref (B32fb)
+BOOT_A			(MC8	FB)  : MUX 39		Ref (B31fb)
+
+FanIn assignment for block B [2]
+{
+AS,
+BOOT_C,
+}
+Multiplexer assignment for block B
+BOOT_C			(MC1	FB)  : MUX 2		Ref (A1fb)
+AS			(MC2	P)   : MUX 7		Ref (A3p)
+
+FanIn assignment for block G [16]
+{
+A28,A20,A25,A29,A31,A24,A30,AS,A26,A23,A22,A27,A21,
+FC1,FC0,
+RUNNING,
+}
+Multiplexer assignment for block G
+A28			(MC13	P)   : MUX 0		Ref (E77p)
+FC1			(MC4	P)   : MUX 2		Ref (B27p)
+A20			(MC5	P)   : MUX 5		Ref (D49p)
+A25			(MC10	P)   : MUX 7		Ref (E72p)
+A29			(MC14	P)   : MUX 8		Ref (E78p)
+A31			(MC16	P)   : MUX 11		Ref (F81p)
+A24			(MC9	P)   : MUX 13		Ref (E70p)
+A30			(MC15	P)   : MUX 14		Ref (E80p)
+FC0			(MC3	P)   : MUX 16		Ref (B29p)
+AS			(MC2	P)   : MUX 17		Ref (A3p)
+A26			(MC11	P)   : MUX 20		Ref (E73p)
+A23			(MC8	P)   : MUX 23		Ref (E69p)
+A22			(MC7	P)   : MUX 29		Ref (E67p)
+A27			(MC12	P)   : MUX 32		Ref (E75p)
+RUNNING			(MC1	FB)  : MUX 37		Ref (B32fb)
+A21			(MC6	P)   : MUX 39		Ref (E65p)
+
+FanIn assignment for block H [6]
+{
+A0,A1,
+DS,
+RW,
+SIZ0,SIZ1,
+}
+Multiplexer assignment for block H
+RW			(MC2	P)   : MUX 0		Ref (B30p)
+DS			(MC1	P)   : MUX 1		Ref (A1p)
+SIZ0			(MC3	P)   : MUX 3		Ref (B24p)
+A0			(MC4	P)   : MUX 11		Ref (B19p)
+SIZ1			(MC5	P)   : MUX 27		Ref (B22p)
+A1			(MC6	P)   : MUX 33		Ref (B17p)
+
+Creating JEDEC file .\SYSCTL.jed ...
+
+TQFP100 programmed logic:
+-----------------------------------
+!BERR = (BerrState0.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q);
+
+BOOT_A.D = 1;
+
+BOOT_B.D = BOOT_A.Q;
+
+BOOT_C.D = BOOT_B.Q;
+
+BerrState0.D = ((BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# !BerrState0.Q);
+
+BerrState1.D = ((!BerrState0.Q & BerrState1.Q)
+	# (BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# (BerrState0.Q & !BerrState1.Q));
+
+BerrState2.D = ((!BerrState1.Q & BerrState2.Q)
+	# (!BerrState0.Q & BerrState2.Q)
+	# (BerrState2.Q & BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# (BerrState0.Q & BerrState1.Q & !BerrState2.Q));
+
+BerrState3.D = ((!BerrState0.Q & BerrState3.Q)
+	# (!BerrState2.Q & BerrState3.Q)
+	# (!BerrState1.Q & BerrState3.Q)
+	# (BerrState3.Q & BerrState4.Q & BerrState5.Q)
+	# (BerrState0.Q & BerrState1.Q & BerrState2.Q & !BerrState3.Q));
+
+!BerrState4.D = ((!BerrState4.Q & !BerrState2.Q)
+	# (!BerrState4.Q & !BerrState3.Q)
+	# (BerrState4.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState0.Q & !BerrState5.Q)
+	# (!BerrState4.Q & !BerrState0.Q)
+	# (!BerrState4.Q & !BerrState1.Q));
+
+BerrState5.D = (BerrState5.Q
+	# (BerrState0.Q & BerrState1.Q & BerrState2.Q & BerrState3.Q & BerrState4.Q));
+
+DS16_EVEN = (DS
+	# (!RW & A0));
+
+!DEV8SEL = ((!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1)
+	# (!A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1));
+
+!DS32_UU = ((!DS & RW)
+	# (!DS & !A0 & !A1));
+
+DS16_ODD = (DS
+	# (!RW & !A0 & SIZ0 & !SIZ1));
+
+DS32_LL = ((!RW & SIZ0 & !A0 & !SIZ1)
+	# (!RW & SIZ0 & !A1 & !SIZ1)
+	# (!RW & !SIZ0 & !A1 & SIZ1)
+	# DS
+	# (!RW & SIZ0 & !A0 & !A1));
+
+DS8 = DS;
+
+DS32_ML = ((!RW & !A0 & !A1 & !SIZ0 & SIZ1)
+	# (!RW & !A1 & SIZ0 & !SIZ1)
+	# DS
+	# (!RW & A0 & A1));
+
+DS32_MU = ((!RW & !A0 & SIZ0 & !SIZ1)
+	# DS
+	# (!RW & A1));
+
+!RAMSEL = ((!A31 & !AS & !FC0 & FC1 & RUNNING.Q)
+	# (!A31 & !AS & FC0 & !FC1 & RUNNING.Q));
+
+IACK = (A16 & A17 & A18 & A19 & FC0 & FC1 & FC2);
+
+!MMIOSEL = ((!A30 & A31 & !AS & !FC0 & FC1)
+	# (!A30 & A31 & !AS & FC0 & !FC1));
+
+!ROMSEL = ((A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & FC0 & !FC1)
+	# (!AS & !FC0 & FC1 & !RUNNING.Q)
+	# (!AS & FC0 & !FC1 & !RUNNING.Q)
+	# (A20 & A21 & A22 & A23 & A24 & A25 & A26 & A27 & A28 & A29 & A30 & A31 & !AS & !FC0 & FC1));
+
+RUNNING.D = BOOT_C.Q;
+
+!RD8 = (!DS & RW);
+
+STERM = 0;
+
+!WR8 = (!DS & !RW);
+
+!CI = (DEV8SEL & RUNNING.Q);
+
+!Com_Ctrl_87 = (!AS & RESET);
+
+BOOT_A.C = AS;
+
+BOOT_A.AR = !RESET;
+
+BOOT_B.C = AS;
+
+BOOT_B.AR = !RESET;
+
+BOOT_C.C = AS;
+
+BOOT_C.AR = !RESET;
+
+BerrState0.C = CPU_CLK;
+
+BerrState0.AR = Com_Ctrl_87;
+
+BerrState1.C = CPU_CLK;
+
+BerrState1.AR = Com_Ctrl_87;
+
+BerrState2.C = CPU_CLK;
+
+BerrState2.AR = Com_Ctrl_87;
+
+BerrState3.C = CPU_CLK;
+
+BerrState3.AR = Com_Ctrl_87;
+
+BerrState4.C = CPU_CLK;
+
+BerrState4.AR = Com_Ctrl_87;
+
+BerrState5.C = CPU_CLK;
+
+BerrState5.AR = Com_Ctrl_87;
+
+RUNNING.C = AS;
+
+RUNNING.AR = !RESET;
+
+
+TQFP100 Pin/Node Placement:
+------------------------------------
+Pin 1  = AS; /* MC 3 */
+Pin 2  = DS; /* MC 1 */
+Pin 4  = TDI; /* MC 32 */
+Pin 5  = RW; /* MC 30 */
+Pin 6  = FC0; /* MC 29 */
+Pin 7  = FC1; /* MC 27 */
+Pin 8  = FC2; /* MC 25 */
+Pin 9  = SIZ0; /* MC 24 */
+Pin 10 = SIZ1; /* MC 22 */ 
+Pin 13 = A0; /* MC 19 */ 
+Pin 14 = A1; /* MC 17 */ 
+Pin 15 = TMS; /* MC 48 */ 
+Pin 32 = A16; /* MC 56 */ 
+Pin 33 = A17; /* MC 54 */ 
+Pin 35 = A18; /* MC 53 */ 
+Pin 36 = A19; /* MC 51 */ 
+Pin 37 = A20; /* MC 49 */ 
+Pin 40 = A21; /* MC 65 */ 
+Pin 41 = A22; /* MC 67 */ 
+Pin 42 = A23; /* MC 69 */ 
+Pin 44 = A24; /* MC 70 */ 
+Pin 45 = A25; /* MC 72 */ 
+Pin 46 = A26; /* MC 73 */ 
+Pin 47 = A27; /* MC 75 */ 
+Pin 48 = A28; /* MC 77 */ 
+Pin 49 = A29; /* MC 78 */ 
+Pin 50 = A30; /* MC 80 */ 
+Pin 52 = A31; /* MC 81 */ 
+Pin 62 = TCK; /* MC 96 */ 
+Pin 69 = RAMSEL; /* MC 105 */ 
+Pin 70 = MMIOSEL; /* MC 107 */ 
+Pin 71 = DEV8SEL; /* MC 109 */ 
+Pin 72 = ROMSEL; /* MC 110 */ 
+Pin 73 = TDO; /* MC 112 */ 
+Pin 75 = DS32_UU; /* MC 113 */ 
+Pin 76 = DS32_MU; /* MC 115 */ 
+Pin 77 = DS32_ML; /* MC 117 */ 
+Pin 78 = DS32_LL; /* MC 118 */ 
+Pin 79 = DS16_EVEN; /* MC 120 */ 
+Pin 80 = DS16_ODD; /* MC 121 */ 
+Pin 81 = DS8; /* MC 123 */ 
+Pin 89 = RESET;
+Pin 90 = CPU_CLK;
+Pin 92 = WR8; /* MC 16 */ 
+Pin 93 = RD8; /* MC 14 */ 
+Pin 94 = IACK; /* MC 13 */ 
+Pin 96 = BERR; /* MC 11 */ 
+Pin 97 = CI; /* MC  9 */
+Pin 98 = STERM; /* MC  8 */
+PINNODE 316 = Com_Ctrl_87; /* MC 16 Foldback */
+PINNODE 601 = BOOT_C; /* MC 1 Feedback */
+PINNODE 602 = BOOT_B; /* MC 2 Feedback */
+PINNODE 603 = BerrState5; /* MC 3 Feedback */
+PINNODE 605 = BerrState3; /* MC 5 Feedback */
+PINNODE 607 = BerrState4; /* MC 7 Feedback */
+PINNODE 610 = BerrState0; /* MC 10 Feedback */
+PINNODE 612 = BerrState1; /* MC 12 Feedback */
+PINNODE 615 = BerrState2; /* MC 15 Feedback */
+PINNODE 631 = BOOT_A; /* MC 31 Feedback */
+PINNODE 632 = RUNNING; /* MC 32 Feedback */
+
+** Resource Usage **
+
+
+DCERP Field = Summary of Allocations.
+|||||
+|||||_Preset [p,-]       ==  p = PT preset, - No Preset.
+||||
+||||__Reset [g,r,-]      ==  g= Global AR, r = PT reset, - No reset.
+|||
+|||___Clock Enable [e,-] ==  e = Product Term, - always enabled, - none.
+||
+||____Clock [c,g,-],     ==  c = Product term, g = Global term, - No Clock.
+|
+|_____Type [C,D,L,T],    ==  Register type C= combin, D=dff, L=latch, T=tff.
+
+For input only = INPUT.
+
+MCell Pin# Oe   PinDrive  DCERP  FBDrive    DCERP  Foldback    CascadeOut     TotPT output_slew
+MC1   2    --   DS        INPUT  BOOT_C     Dc-g-  --          --             2     slow
+MC2   0         --               BOOT_B     Dc-g-  --          --             2     slow
+MC3   1    --   AS        INPUT  BerrState5 Dg-r-  --          --             3     slow
+MC4   0         --               --                --          -> BerrState3  5     slow
+MC5   100       --               BerrState3 Dg-r-  --          --             1     slow
+MC6   99        --               --                --          -> BerrState4  5     slow
+MC7   0         --               BerrState4 Dg-r-  --          --             1     slow
+MC8   98   on   STERM     C----  --                --          --             0     slow
+MC9   97   on   CI        C----  --                --          --             1     slow
+MC10  0         --               BerrState0 Dg-r-  --          --             3     slow
+MC11  96   on   BERR      C----  --                --          --             1     slow
+MC12  0         --               BerrState1 Dg-r-  --          --             4     slow
+MC13  94   on   IACK      C----  --                --          --             1     slow
+MC14  93   on   RD8       C----  --                --          --             1     slow
+MC15  0         --               BerrState2 Dg-r-  NA          --             5     slow
+MC16  92   on   WR8       C----  --                Com_Ctrl_87 --             2     slow
+MC17  14   --   A1        INPUT  --                --          --             0     slow
+MC18  0         --               --                --          --             0     slow
+MC19  13   --   A0        INPUT  --                --          --             0     slow
+MC20  0         --               --                --          --             0     slow
+MC21  12        --               --                --          --             0     slow
+MC22  10   --   SIZ1      INPUT  --                --          --             0     slow
+MC23  0         --               --                --          --             0     slow
+MC24  9    --   SIZ0      INPUT  --                --          --             0     slow
+MC25  8    --   FC2       INPUT  --                --          --             0     slow
+MC26  0         --               --                --          --             0     slow
+MC27  7    --   FC1       INPUT  --                --          --             0     slow
+MC28  0         --               --                --          --             0     slow
+MC29  6    --   FC0       INPUT  --                --          --             0     slow
+MC30  5    --   RW        INPUT  --                --          --             0     slow
+MC31  0         --               BOOT_A     Dc-g-  --          --             1     slow
+MC32  4    --   TDI       INPUT  RUNNING    Dc-g-  --          --             2     slow
+MC33  25        --               --                --          --             0     slow
+MC34  0         --               --                --          --             0     slow
+MC35  24        --               --                --          --             0     slow
+MC36  0         --               --                --          --             0     slow
+MC37  23        --               --                --          --             0     slow
+MC38  22        --               --                --          --             0     slow
+MC39  0         --               --                --          --             0     slow
+MC40  21        --               --                --          --             0     slow
+MC41  20        --               --                --          --             0     slow
+MC42  0         --               --                --          --             0     slow
+MC43  19        --               --                --          --             0     slow
+MC44  0         --               --                --          --             0     slow
+MC45  17        --               --                --          --             0     slow
+MC46  16        --               --                --          --             0     slow
+MC47  0         --               --                --          --             0     slow
+MC48  15   --   TMS       INPUT  --                --          --             0     slow
+MC49  37   --   A20       INPUT  --                --          --             0     slow
+MC50  0         --               --                --          --             0     slow
+MC51  36   --   A19       INPUT  --                --          --             0     slow
+MC52  0         --               --                --          --             0     slow
+MC53  35   --   A18       INPUT  --                --          --             0     slow
+MC54  33   --   A17       INPUT  --                --          --             0     slow
+MC55  0         --               --                --          --             0     slow
+MC56  32   --   A16       INPUT  --                --          --             0     slow
+MC57  31        --               --                --          --             0     slow
+MC58  0         --               --                --          --             0     slow
+MC59  30        --               --                --          --             0     slow
+MC60  0         --               --                --          --             0     slow
+MC61  29        --               --                --          --             0     slow
+MC62  28        --               --                --          --             0     slow
+MC63  0         --               --                --          --             0     slow
+MC64  27        --               --                --          --             0     slow
+MC65  40   --   A21       INPUT  --                --          --             0     slow
+MC66  0         --               --                --          --             0     slow
+MC67  41   --   A22       INPUT  --                --          --             0     slow
+MC68  0         --               --                --          --             0     slow
+MC69  42   --   A23       INPUT  --                --          --             0     slow
+MC70  44   --   A24       INPUT  --                --          --             0     slow
+MC71  0         --               --                --          --             0     slow
+MC72  45   --   A25       INPUT  --                --          --             0     slow
+MC73  46   --   A26       INPUT  --                --          --             0     slow
+MC74  0         --               --                --          --             0     slow
+MC75  47   --   A27       INPUT  --                --          --             0     slow
+MC76  0         --               --                --          --             0     slow
+MC77  48   --   A28       INPUT  --                --          --             0     slow
+MC78  49   --   A29       INPUT  --                --          --             0     slow
+MC79  0         --               --                --          --             0     slow
+MC80  50   --   A30       INPUT  --                --          --             0     slow
+MC81  52   --   A31       INPUT  --                --          --             0     slow
+MC82  0         --               --                --          --             0     slow
+MC83  53        --               --                --          --             0     slow
+MC84  0         --               --                --          --             0     slow
+MC85  54        --               --                --          --             0     slow
+MC86  55        --               --                --          --             0     slow
+MC87  0         --               --                --          --             0     slow
+MC88  56        --               --                --          --             0     slow
+MC89  57        --               --                --          --             0     slow
+MC90  0         --               --                --          --             0     slow
+MC91  58        --               --                --          --             0     slow
+MC92  0         --               --                --          --             0     slow
+MC93  60        --               --                --          --             0     slow
+MC94  61        --               --                --          --             0     slow
+MC95  0         --               --                --          --             0     slow
+MC96  62   --   TCK       INPUT  --                --          --             0     slow
+MC97  63        --               --                --          --             0     slow
+MC98  0         --               --                --          --             0     slow
+MC99  64        --               --                --          --             0     slow
+MC100 0         --               --                --          --             0     slow
+MC101 65        --               --                --          --             0     slow
+MC102 67        --               --                --          --             0     slow
+MC103 0         --               --                --          --             0     slow
+MC104 68        --               --                --          --             0     slow
+MC105 69   on   RAMSEL    C----  --                --          --             2     slow
+MC106 0         --               --                --          --             0     slow
+MC107 70   on   MMIOSEL   C----  --                --          --             2     slow
+MC108 0         --               --                --          --             0     slow
+MC109 71   on   DEV8SEL   C----  --                --          --             2     slow
+MC110 72   on   ROMSEL    C----  --                --          --             4     slow
+MC111 0         --               --                --          --             0     slow
+MC112 73   --   TDO       INPUT  --                --          --             0     slow
+MC113 75   on   DS32_UU   C----  --                --          --             2     slow
+MC114 0         --               --                --          --             0     slow
+MC115 76   on   DS32_MU   C----  --                --          --             3     slow
+MC116 0         --               --                --          --             0     slow
+MC117 77   on   DS32_ML   C----  --                --          --             4     slow
+MC118 78   on   DS32_LL   C----  --                NA          --             5     slow
+MC119 0         --               --                --          --             0     slow
+MC120 79   on   DS16_EVEN C----  --                --          --             2     slow
+MC121 80   on   DS16_ODD  C----  --                --          --             2     slow
+MC122 0         --               --                --          --             0     slow
+MC123 81   on   DS8       C----  --                --          --             1     slow
+MC124 0         --               --                --          --             0     slow
+MC125 83        --               --                --          --             0     slow
+MC126 84        --               --                --          --             0     slow
+MC127 0         --               --                --          --             0     slow
+MC128 85        --               --                --          --             0     slow
+MC0   90        CPU_CLK   INPUT  --                --          --             0     slow
+MC0   89        RESET     INPUT  --                --          --             0     slow
+MC0   88        --               --                --          --             0     slow
+MC0   87        --               --                --          --             0     slow
+
+Logic Array Block	Logic Cells	I/O Pins	Foldbacks	TotalPT		FanIN	Cascades
+A: LC1	- LC16		14/16(87%)	8/16(50%)	1/16(6%)	37/80(46%)	(21)	2
+B: LC17	- LC32		2/16(12%)	9/16(56%)	0/16(0%)	3/80(3%)	(2)	0
+C: LC33	- LC48		0/16(0%)	1/16(6%)	0/16(0%)	0/80(0%)	(16)	0
+D: LC49	- LC64		0/16(0%)	5/16(31%)	0/16(0%)	0/80(0%)	(6)	0
+E: LC65	- LC80		0/16(0%)	10/16(62%)	0/16(0%)	0/80(0%)	(6)	0
+F: LC81	- LC96		0/16(0%)	2/16(12%)	0/16(0%)	0/80(0%)	(6)	0
+G: LC97	- LC112		4/16(25%)	5/16(31%)	0/16(0%)	10/80(12%)	(6)	0
+H: LC113- LC128		7/16(43%)	7/16(43%)	0/16(0%)	19/80(23%)	(6)	0
+
+Total dedicated input used:	2/4 	(50%)
+Total I/O pins used		47/80 	(58%)
+Total Logic cells used 		29/128 	(22%)
+Total Flip-Flop used 		10/128 	(7%)
+Total Foldback logic used 	1/128 	(0%)
+Total Nodes+FB/MCells 		28/128 	(21%)
+Total cascade used 		2
+Total input pins 		32
+Total output pins 		17
+Total Pts 			69
+Creating pla file .\SYSCTL.tt3 with 0 inputs 0 outputs, 0 pins 0 nodes and 0 pterms...
+
+----------------  End fitter, Design FITS
+$Device TQFP100 fits 
+FIT1508 completed in 0.00 seconds

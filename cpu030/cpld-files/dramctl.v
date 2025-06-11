@@ -39,6 +39,7 @@ localparam REFRESH_CYCLE_CNT = 374;	/* fencepost */
  * a refresh cycle.
  */
 reg refresh_req = 1'b0;
+reg refresh_ack = 1'b0;
 reg [11:0] refresh_cnt = 12'b0;
 
 always @(posedge CLK) begin
@@ -53,6 +54,7 @@ always @(posedge CLK) begin
 		end
 		else begin
 			refresh_cnt = refresh_cnt + 12'b1;
+			if (refresh_ack) refresh_req <= 1'b0;
 		end
 	end
 end
@@ -199,7 +201,7 @@ always @(posedge CLK) begin
 
 		REFRESH1: begin
 			/* Acknowledge refresh request. */
-			refresh_req <= 1'b0;
+			refresh_ack <= 1'b1;
 
 			/* De-assert WE. */
 			DRAM_nWR <= 1'b1;
@@ -241,6 +243,7 @@ always @(posedge CLK) begin
 			DRAM_ADDR <= 12'b0;
 			DSACK0 <= 1'b0;
 			DSACK1 <= 1'b0;
+			refresh_ack <= 1'b0;
 
 			state <= IDLE;
 		end

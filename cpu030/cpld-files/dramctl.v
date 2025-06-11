@@ -89,19 +89,19 @@ begin
 	5'b01011:	enabs = 4'b0001;
 
 	/* 3 byte writes */
-	5'b01100:	enabs <= 4'b1110;
-	5'b01101:	enabs <= 4'b0111;
-	5'b01110:	enabs <= 4'b0011;
-	5'b01111:	enabs <= 4'b0001;
+	5'b01100:	enabs = 4'b1110;
+	5'b01101:	enabs = 4'b0111;
+	5'b01110:	enabs = 4'b0011;
+	5'b01111:	enabs = 4'b0001;
 
 	/* long word writes */
-	5'b00000:	enabs <= 4'b1111;
-	5'b00001:	enabs <= 4'b0111;
-	5'b00010:	enabs <= 4'b0011;
-	5'b00011:	enabs <= 4'b0001;
+	5'b00000:	enabs = 4'b1111;
+	5'b00001:	enabs = 4'b0111;
+	5'b00010:	enabs = 4'b0011;
+	5'b00011:	enabs = 4'b0001;
 
 	/* What remains is: all the reads */
-	default:	enabs <= 4'b1111;
+	default:	enabs = 4'b1111;
 	endcase
 	ComputeByteEnables = enabs;
 end

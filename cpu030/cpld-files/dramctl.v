@@ -62,38 +62,49 @@ end
  * N.B. for reads, we enable all bytes,  We mix the RnW signal
  * in to the type and catch it in the default case.
  */
-wire [4:0] CYCLE_TYPE = { RnW, SIZ1, SIZ0, ADDR[1], ADDR[0] };
-reg [3:0] BYTE_ENABLES;
-always @(*) begin
-	case (CYCLE_TYPE)
+function [3:0] ComputeByteEnables(
+	input r,
+	input sz1,
+	input sz0,
+	input ad1,
+	input ad0
+);
+reg [3:0] enabs;
+begin
+	enabs = 4'b1111;	/* default */
+	case ({r, sz1, sz0, ad1, ad0})
 	/* byte writes */
-	5'b00100:	BYTE_ENABLES <= 4'b1000;
-	5'b00101:	BYTE_ENABLES <= 4'b0100;
-	5'b00110:	BYTE_ENABLES <= 4'b0010;
-	5'b00111:	BYTE_ENABLES <= 4'b0001;
+	5'b00100:	enabs = 4'b1000;
+	5'b00101:	enabs = 4'b0100;
+	5'b00110:	enabs = 4'b0010;
+	5'b00111:	enabs = 4'b0001;
 
 	/* word writes */
-	5'b01000:	BYTE_ENABLES <= 4'b1100;
-	5'b01001:	BYTE_ENABLES <= 4'b0110;
-	5'b01010:	BYTE_ENABLES <= 4'b0011;
-	5'b01011:	BYTE_ENABLES <= 4'b0001;
+	5'b01000:	enabs = 4'b1100;
+	5'b01001:	enabs = 4'b0110;
+	5'b01010:	enabs = 4'b0011;
+	5'b01011:	enabs = 4'b0001;
 
 	/* 3 byte writes */
-	5'b01100:	BYTE_ENABLES <= 4'b1110;
-	5'b01101:	BYTE_ENABLES <= 4'b0111;
-	5'b01110:	BYTE_ENABLES <= 4'b0011;
-	5'b01111:	BYTE_ENABLES <= 4'b0001;
+	5'b01100:	enabs <= 4'b1110;
+	5'b01101:	enabs <= 4'b0111;
+	5'b01110:	enabs <= 4'b0011;
+	5'b01111:	enabs <= 4'b0001;
 
 	/* long word writes */
-	5'b00000:	BYTE_ENABLES <= 4'b1111;
-	5'b00001:	BYTE_ENABLES <= 4'b0111;
-	5'b00010:	BYTE_ENABLES <= 4'b0011;
-	5'b00011:	BYTE_ENABLES <= 4'b0001;
+	5'b00000:	enabs <= 4'b1111;
+	5'b00001:	enabs <= 4'b0111;
+	5'b00010:	enabs <= 4'b0011;
+	5'b00011:	enabs <= 4'b0001;
 
 	/* What remains is: all the reads */
-	default:	BYTE_ENABLES <= 4'b1111;
+	default:	enabs <= 4'b1111;
 	endcase
+	ComputeByteEnables = enabs;
 end
+endfunction
+
+wire [3:0] ByteEnables = ComputeByteEnables(RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]);
 
 /*
  * Main DRAM state machine.
@@ -172,7 +183,7 @@ always @(posedge CLK) begin
 			 * Column address is valid, assert CAS based on
 			 * the byte enables.
 			 */
-			DRAM_nCAS <= ~BYTE_ENABLES;
+			DRAM_nCAS <= ~ByteEnables;
 
 			state <= RW5;
 		end

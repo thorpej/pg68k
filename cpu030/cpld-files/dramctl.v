@@ -45,7 +45,6 @@ reg [11:0] refresh_cnt = 12'b0;
 always @(posedge CLK) begin
 	if (~nRST) begin
 		refresh_req <= 1'b0;
-		refresh_ack <= 1'b0;
 		refresh_cnt <= 12'b0;
 	end
 	else begin
@@ -59,6 +58,32 @@ always @(posedge CLK) begin
 		end
 	end
 end
+
+/*
+ * Row address computation.
+ */
+function [11:0] ComputeRowAddress(
+	input [27:0] addr
+);
+begin
+	ComputeRowAddress = addr[13:2];
+end
+endfunction
+
+wire [11:0] RowAddress = ComputeRowAddress(ADDR);
+
+/*
+ * Column address computation.
+ */
+function [11:0] ComputeColumnAddress(
+	input [27:0] addr
+);
+begin
+	ComputeColumnAddress = addr[25:14];
+end
+endfunction
+
+wire [11:0] ColumnAddress = ComputeColumnAddress(ADDR);
 
 /*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
@@ -134,6 +159,7 @@ always @(posedge CLK) begin
 		DRAM_nWR <= 1'b1;
 		DSACK0 <= 1'b0;
 		DSACK1 <= 1'b0;
+		refresh_ack <= 1'b0;
 	end
 	else begin
 		case (state)
@@ -150,7 +176,7 @@ always @(posedge CLK) begin
 
 		RW1: begin
 			/* Mux in the row address. */
-			DRAM_ADDR <= ADDR[13:2];
+			DRAM_ADDR <= RowAddress;
 			state <= RW2;
 		end
 
@@ -173,7 +199,7 @@ always @(posedge CLK) begin
 
 		RW3: begin
 			/* Mux in the column address. */
-			DRAM_ADDR <= ADDR[25:14];
+			DRAM_ADDR <= ColumnAddress;
 
 			/* Set the WE line. */
 			DRAM_nWR <= RnW;

@@ -45,6 +45,7 @@ reg [11:0] refresh_cnt = 12'b0;
 always @(posedge CLK) begin
 	if (~nRST) begin
 		refresh_req <= 1'b0;
+		refresh_ack <= 1'b0;
 		refresh_cnt <= 12'b0;
 	end
 	else begin

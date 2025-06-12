@@ -86,6 +86,30 @@ endfunction
 wire [11:0] ColumnAddress = ComputeColumnAddress(ADDR);
 
 /*
+ * Row select computation.
+ */
+function [3:0] ComputeRowSelects(
+	input [27:0] addr
+);
+reg [3:0] ras;
+begin
+	/* XXX
+	 * This is set up for 64/128 SIMMs.  If A26
+	 * is 0, the first side of the SIMM is used.
+	 * otherwise the second side.
+	 * XXX Fix for other sizes.
+	 */
+	ras[0] = ADDR[26];
+	ras[1] = ~ADDR[26];
+	ras[2] = ADDR[26];
+	ras[3] = ~ADDR[26];
+	ComputeRowSelects = ras;
+end
+endfunction
+
+wire [3:0] RowSelects = ComputeRowSelects(ADDR);
+
+/*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
  * N.B. for reads, we enable all bytes,  We mix the RnW signal
  * in to the type and catch it in the default case.
@@ -182,17 +206,7 @@ always @(posedge CLK) begin
 
 		RW2: begin
 			/* Row address is valid, assert RAS. */
-
-			/* XXX
-			 * This is set up for 64/128 SIMMs.  If A26
-			 * is 0, the first side of the SIMM is used.
-			 * otherwise the second side.
-			 * XXX Fix for other sizes.
-			 */
-			DRAM_nRAS[0] <= ADDR[26];
-			DRAM_nRAS[1] <= ~ADDR[26];
-			DRAM_nRAS[2] <= ADDR[26];
-			DRAM_nRAS[3] <= ~ADDR[26];
+			DRAM_nRAS <= RowSelects;
 
 			state <= RW3;
 		end

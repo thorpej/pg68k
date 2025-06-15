@@ -9,10 +9,14 @@ module dramctl(
 	input nRST,
 	input CLK,
 
-	input nCS,
+	/*
+	 * We double-buffer /AS and /CS because we're dealing with
+	 * two clock domains.  RnW does not need this treatment because
+	 * it's not acted upon until our latched /AS signal is stable.
+	 */
+	input cpu_nAS,
+	input cpu_nCS,
 	input RnW,
-	input nAS,
-	input nDS,
 
 	input SIZ0, SIZ1,
 
@@ -27,11 +31,36 @@ module dramctl(
 	output reg DSACK0, DSACK1
 );
 
+reg nAS1;
+reg nAS;
+reg nCS1;
+reg nCS;
+
+always @(posedge CLK) begin
+	if (~nRST) begin
+		nAS1 <= 1'b1;
+		nAS  <= 1'b1;
+		nCS1 <= 1'b1;
+		nCS  <= 1'b1;
+	end
+	else begin
+		nAS1 <= cpu_nAS;
+		nAS  <= nAS1;
+		nCS1 <= cpu_nCS;
+		nCS  <= nCS1;
+	end
+end
+
 /*
- * 25MHz system clock = 40ns clock period.  15.6 uS is a very common
- * refresh cycle interval, so we'll do one every 375 clocks.
+ * The CPU runs at 1/2 the DRAM clock frequency, which is 50MHz.
+ * Standard DRAM rows wants to be refreshed within 32 ms.  Since we
+ * have 12 address bits, there is a maximum of 4096 rows.  This
+ * means we need to refresh a row once every 7.8125 us.  At 50MHz,
+ * the clock period is 20 ns, which means max 390 clock cycles between
+ * refreshes.  Since memory cycles take a few clock cycles each, we'll
+ * give ourselves a 16 clock cycle margin.
  */
-localparam REFRESH_CYCLE_CNT = 374;	/* fencepost */
+localparam REFRESH_CYCLE_CNT = 374;
 
 /*
  * DRAM refresh generator.  We count clocks and when we reach the

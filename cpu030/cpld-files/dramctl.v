@@ -15,7 +15,7 @@ module dramctl(
 	 * it's not acted upon until our latched /AS signal is stable.
 	 */
 	input cpu_nAS,
-	input cpu_nCS,
+	input cpu_nRAMSEL,
 	input RnW,
 
 	input SIZ0, SIZ1,
@@ -33,21 +33,21 @@ module dramctl(
 
 reg nAS1;
 reg nAS;
-reg nCS1;
-reg nCS;
+reg nRAMSEL1;
+reg nRAMSEL;
 
-always @(posedge CLK) begin
+always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		nAS1 <= 1'b1;
 		nAS  <= 1'b1;
-		nCS1 <= 1'b1;
-		nCS  <= 1'b1;
+		nRAMSEL1 <= 1'b1;
+		nRAMSEL  <= 1'b1;
 	end
 	else begin
 		nAS1 <= cpu_nAS;
 		nAS  <= nAS1;
-		nCS1 <= cpu_nCS;
-		nCS  <= nCS1;
+		nRAMSEL1 <= cpu_nRAMSEL;
+		nRAMSEL  <= nRAMSEL1;
 	end
 end
 
@@ -71,7 +71,7 @@ reg refresh_req = 1'b0;
 reg refresh_ack = 1'b0;
 reg [11:0] refresh_cnt = 12'b0;
 
-always @(posedge CLK) begin
+always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		refresh_req <= 1'b0;
 		refresh_cnt <= 12'b0;
@@ -204,7 +204,7 @@ localparam PRECHARGE	= 4'd10;
 
 reg [3:0] state = IDLE;
 
-always @(posedge CLK) begin
+always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		state <= IDLE;
 		DRAM_nRAS <= 4'b1111;
@@ -221,7 +221,7 @@ always @(posedge CLK) begin
 				/* Start CAS-before-RAS refresh cycle. */
 				state <= REFRESH1;
 			end
-			else if (~nCS && ~nAS) begin
+			else if (~nRAMSEL && ~nAS) begin
 				/* DRAM selected, start normal R/W cycle */
 				state <= RW1;
 			end

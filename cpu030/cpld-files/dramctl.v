@@ -1,26 +1,49 @@
 /*
  * DRAM controller for the Playground 68030.  This is almost entirely
  * borrowed from crmaykish's mackerel-30, with adjustments to support
- * configurable SIMM sizes.
+ * configurable SIMM sizes and multiple SIMMs.  Jumpers select the SIMM
+ * size (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size)
  *
- * XXX And, eventually, multiple SIMMs.
+ * The Playground 68030's DRAM subsystem is arranged with a single DRAM
+ * controller that manages two "banks" of 128MB (the largest 5V 72-pin
+ * SIMM).  The resulting physical memory map is potentially non-contigous
+ * (if < 128MB SIMMs are used).
+ *
+ * 72-pin SIMMs are 32-bits wide, and thus they are addressed in terms of
+ * 32-bit (or 36-bit with parity) words.  Thus, DA0 is connected to A2.
+ *
+ *   4MB	DA0-DA9		1 rank (RAS0/RAS2)			10 bits
+ *   8MB	DA0-DA9		2 rank (RAS0/RAS2, A22=1 RAS1/RAS3)	10 bits
+ *  16MB	DA0-DA10	1 rank (RAS0/RAS2)			11 bits
+ *  32MB	DA0-DA10	2 rank (RAS0/RAS2, A24=1 RAS1/RAS3)	11 bits
+ *  64MB	DA0-DA11	1 rank (RAS0/RAS2)			12 bits
+ * 128MB	DA0-DA11	2 rank (RAS0/RAS2, A26=1 RAS1/RAS3)	12 bits
+ *
+ * We're not going to bother to support anything other than 16MB, 32MB,
+ * 64MB, and 128MB SIMMs.
+ *
+ * N.B. at 50MHz, this particular DRAM access state machine requires 60ns
+ * SIMMs.
  */
 module dramctl(
-	input nRST,
-	input CLK,
+	input wire nRST,
+	input wire CLK,
 
 	/*
 	 * We double-buffer /AS and /CS because we're dealing with
 	 * two clock domains.  RnW does not need this treatment because
 	 * it's not acted upon until our latched /AS signal is stable.
 	 */
-	input cpu_nAS,
-	input cpu_nRAMSEL,
-	input RnW,
+	input wire cpu_nAS,
+	input wire cpu_nRAMSEL,
+	input wire RnW,
 
-	input SIZ0, SIZ1,
+	input wire SIZ0, SIZ1,
 
-	input [27:0] ADDR,	/* good for 256MB (2x128MB) */
+	input wire [27:0] ADDR,	/* good for 256MB (2x128MB) */
+
+	input wire SIMMSZ,	/* size jumper: 1=11 bit, 0=12 bit */
+	input wire [3:0] SIMMPD,/* Presence Detect from 1st SIMM */
 
 	output reg DRAM_nWR,
 	output reg [11:0] DRAM_ADDR,
@@ -89,54 +112,43 @@ always @(posedge CLK, negedge nRST) begin
 end
 
 /*
+ * PD bits are arranged according to the table in JEDEC 21-C, pg 4.4.2-3,
+ * just to make it easier to read.  SZ is the SIMMSZ input.
+ *
+ *	SZ	PD1	PD2
+ *	x	0	0	4MB	10-bit	1-rank	not supported
+ *	x	1	1	8MB	10-bit	2-rank	not supported
+ *	1	0	1	16MB	11-bit	1-rank
+ *	1	1	0	32MB	11-bit	2-rank
+ *	0	0	1	64MB	12-bit	1-rank
+ *	0	1	0	128MB	12-bit	2-rank
+ */
+
+localparam SZ16  = 3'b101;
+localparam SZ32  = 3'b110;
+localparam SZ64  = 3'b001;
+localparam SZ128 = 3'b010;
+
+/*
  * Row address computation.
  */
-function [11:0] ComputeRowAddress(
-	input [27:0] addr
-);
-begin
-	ComputeRowAddress = addr[13:2];
-end
-endfunction
-
-wire [11:0] RowAddress = ComputeRowAddress(ADDR);
+wire [11:0] RowAddress;
+assign RowAddress = SIMMSZ ? {1'b0, ADDR[12:2]}
+			   :        ADDR[13:2];
 
 /*
  * Column address computation.
  */
-function [11:0] ComputeColumnAddress(
-	input [27:0] addr
-);
-begin
-	ComputeColumnAddress = addr[25:14];
-end
-endfunction
-
-wire [11:0] ColumnAddress = ComputeColumnAddress(ADDR);
+wire [11:0] ColumnAddress;
+assign ColumnAddress = SIMMSZ ? {1'b0, ADDR[23:13]}
+			      :        ADDR[25:14];
 
 /*
  * Row select computation.
  */
-function [3:0] ComputeRowSelects(
-	input [27:0] addr
-);
-reg [3:0] ras;
-begin
-	/* XXX
-	 * This is set up for 64/128 SIMMs.  If A26
-	 * is 0, the first side of the SIMM is used.
-	 * otherwise the second side.
-	 * XXX Fix for other sizes.
-	 */
-	ras[0] = ADDR[26];
-	ras[1] = ~ADDR[26];
-	ras[2] = ADDR[26];
-	ras[3] = ~ADDR[26];
-	ComputeRowSelects = ras;
-end
-endfunction
-
-wire [3:0] RowSelects = ComputeRowSelects(ADDR);
+wire [3:0] nRowSelects;
+assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
+			    : {~ADDR[26], ADDR[26], ~ADDR[26], ADDR[26]};
 
 /*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
@@ -152,7 +164,6 @@ function [3:0] ComputeByteEnables(
 );
 reg [3:0] enabs;
 begin
-	enabs = 4'b1111;	/* default */
 	case ({r, sz1, sz0, ad1, ad0})
 	/* byte writes */
 	5'b00100:	enabs = 4'b1000;
@@ -181,6 +192,7 @@ begin
 	/* What remains is: all the reads */
 	default:	enabs = 4'b1111;
 	endcase
+
 	ComputeByteEnables = enabs;
 end
 endfunction
@@ -235,7 +247,7 @@ always @(posedge CLK, negedge nRST) begin
 
 		RW2: begin
 			/* Row address is valid, assert RAS. */
-			DRAM_nRAS <= RowSelects;
+			DRAM_nRAS <= nRowSelects;
 
 			state <= RW3;
 		end

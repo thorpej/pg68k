@@ -1,8 +1,8 @@
 /*
- * DRAM controller for the Playground 68030.  This is almost entirely
- * borrowed from crmaykish's mackerel-30, with adjustments to support
- * configurable SIMM sizes and multiple SIMMs.  Jumpers select the SIMM
- * size (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size).
+ * DRAM controller for the Playground 68030.  This is based on crmaykish's
+ * mackerel-30 DRAM controller, but has been modified to support multiple
+ * SIMM sizes (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size)
+ * and multiple SIMMs (two, for now).
  *
  * 72-pin SIMMs are 32-bits wide, and thus they are addressed in terms of
  * 32-bit (or 36-bit with parity) words.  Thus, DA0 is connected to A2.
@@ -13,9 +13,6 @@
  *  32MB	DA0-DA10	2 rank (RAS0/RAS2, A24=1 RAS1/RAS3)	11 bits
  *  64MB	DA0-DA11	1 rank (RAS0/RAS2)			12 bits
  * 128MB	DA0-DA11	2 rank (RAS0/RAS2, A26=1 RAS1/RAS3)	12 bits
- *
- * We're not going to bother to support anything other than 16MB, 32MB,
- * 64MB, and 128MB SIMMs.
  *
  * N.B. at 50MHz, this particular DRAM access state machine requires 60ns
  * SIMMs.
@@ -163,53 +160,40 @@ end
 
 /*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
- * N.B. for reads, we enable all bytes,  We mix the RnW signal
+ * N.B. for reads, we enable all bytes.  We mix the RnW signal
  * in to the type and catch it in the default case.
  */
-function [3:0] ComputeByteEnables(
-	input wire r,
-	input wire sz1,
-	input wire sz0,
-	input wire ad1,
-	input wire ad0
-);
-reg [3:0] enabs;
-begin
-	case ({r, sz1, sz0, ad1, ad0})
+reg [3:0] ByteEnables;
+always @(*) begin
+	case ({RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]})
 	/* byte writes */
-	5'b00100:	enabs = 4'b1000;
-	5'b00101:	enabs = 4'b0100;
-	5'b00110:	enabs = 4'b0010;
-	5'b00111:	enabs = 4'b0001;
+	5'b00100:	ByteEnables = 4'b1000;
+	5'b00101:	ByteEnables = 4'b0100;
+	5'b00110:	ByteEnables = 4'b0010;
+	5'b00111:	ByteEnables = 4'b0001;
 
 	/* word writes */
-	5'b01000:	enabs = 4'b1100;
-	5'b01001:	enabs = 4'b0110;
-	5'b01010:	enabs = 4'b0011;
-	5'b01011:	enabs = 4'b0001;
+	5'b01000:	ByteEnables = 4'b1100;
+	5'b01001:	ByteEnables = 4'b0110;
+	5'b01010:	ByteEnables = 4'b0011;
+	5'b01011:	ByteEnables = 4'b0001;
 
 	/* 3 byte writes */
-	5'b01100:	enabs = 4'b1110;
-	5'b01101:	enabs = 4'b0111;
-	5'b01110:	enabs = 4'b0011;
-	5'b01111:	enabs = 4'b0001;
+	5'b01100:	ByteEnables = 4'b1110;
+	5'b01101:	ByteEnables = 4'b0111;
+	5'b01110:	ByteEnables = 4'b0011;
+	5'b01111:	ByteEnables = 4'b0001;
 
 	/* long word writes */
-	5'b00000:	enabs = 4'b1111;
-	5'b00001:	enabs = 4'b0111;
-	5'b00010:	enabs = 4'b0011;
-	5'b00011:	enabs = 4'b0001;
+	5'b00000:	ByteEnables = 4'b1111;
+	5'b00001:	ByteEnables = 4'b0111;
+	5'b00010:	ByteEnables = 4'b0011;
+	5'b00011:	ByteEnables = 4'b0001;
 
 	/* What remains is: all the reads */
-	default:	enabs = 4'b1111;
+	default:	ByteEnables = 4'b1111;
 	endcase
-
-	ComputeByteEnables = enabs;
 end
-endfunction
-
-wire [3:0] ByteEnables;
-assign ByteEnables = ComputeByteEnables(RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]);
 
 /*
  * Main DRAM state machine.

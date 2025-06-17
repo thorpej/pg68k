@@ -2,12 +2,7 @@
  * DRAM controller for the Playground 68030.  This is almost entirely
  * borrowed from crmaykish's mackerel-30, with adjustments to support
  * configurable SIMM sizes and multiple SIMMs.  Jumpers select the SIMM
- * size (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size)
- *
- * The Playground 68030's DRAM subsystem is arranged with a single DRAM
- * controller that manages two "banks" of 128MB (the largest 5V 72-pin
- * SIMM).  The resulting physical memory map is potentially non-contigous
- * (if < 128MB SIMMs are used).
+ * size (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size).
  *
  * 72-pin SIMMs are 32-bits wide, and thus they are addressed in terms of
  * 32-bit (or 36-bit with parity) words.  Thus, DA0 is connected to A2.
@@ -47,8 +42,12 @@ module dramctl(
 
 	output reg DRAM_nWR,
 	output reg [11:0] DRAM_ADDR,
-	output reg [3:0] DRAM_nRAS,
-	output reg [3:0] DRAM_nCAS,
+
+	output reg [3:0] DRAM_nRASA,
+	output reg [3:0] DRAM_nCASA,
+
+	output reg [3:0] DRAM_nRASB,
+	output reg [3:0] DRAM_nCASB,
 
 	/* These drive open-drain inverters. */
 	output reg DSACK0, DSACK1
@@ -115,7 +114,7 @@ end
  * PD bits are arranged according to the table in JEDEC 21-C, pg 4.4.2-3,
  * just to make it easier to read.  SZ is the SIMMSZ input.
  *
- *	SZ	PD1	PD2
+ *	SIMMSZ	PD1	PD2
  *	x	0	0	4MB	10-bit	1-rank	not supported
  *	x	1	1	8MB	10-bit	2-rank	not supported
  *	1	0	1	16MB	11-bit	1-rank
@@ -123,7 +122,6 @@ end
  *	0	0	1	64MB	12-bit	1-rank
  *	0	1	0	128MB	12-bit	2-rank
  */
-
 localparam SZ16  = 3'b101;
 localparam SZ32  = 3'b110;
 localparam SZ64  = 3'b001;
@@ -151,16 +149,29 @@ assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
 			    : {~ADDR[26], ADDR[26], ~ADDR[26], ADDR[26]};
 
 /*
+ * Which SIMM computation.
+ */
+reg SecondSIMM;
+always @(*) begin
+	case ({SIMMSZ, SIMMPD[0], SIMMPD[1]})
+	SZ32:		SecondSIMM = ADDR[25];
+	SZ64:		SecondSIMM = ADDR[26];
+	SZ128:		SecondSIMM = ADDR[27];
+	default:	SecondSIMM = ADDR[24];	/* default to 16MB boundary */
+	endcase
+end
+
+/*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
  * N.B. for reads, we enable all bytes,  We mix the RnW signal
  * in to the type and catch it in the default case.
  */
 function [3:0] ComputeByteEnables(
-	input r,
-	input sz1,
-	input sz0,
-	input ad1,
-	input ad0
+	input wire r,
+	input wire sz1,
+	input wire sz0,
+	input wire ad1,
+	input wire ad0
 );
 reg [3:0] enabs;
 begin
@@ -220,8 +231,10 @@ reg [3:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		state <= IDLE;
-		DRAM_nRAS <= 4'b1111;
-		DRAM_nCAS <= 4'b1111;
+		DRAM_nRASA <= 4'b1111;
+		DRAM_nRASB <= 4'b1111;
+		DRAM_nCASA <= 4'b1111;
+		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
 		DSACK0 <= 1'b0;
 		DSACK1 <= 1'b0;
@@ -248,7 +261,10 @@ always @(posedge CLK, negedge nRST) begin
 
 		RW2: begin
 			/* Row address is valid, assert RAS. */
-			DRAM_nRAS <= nRowSelects;
+			if (SecondSIMM)
+				DRAM_nRASB <= nRowSelects;
+			else
+				DRAM_nRASA <= nRowSelects;
 
 			state <= RW3;
 		end
@@ -268,7 +284,10 @@ always @(posedge CLK, negedge nRST) begin
 			 * Column address is valid, assert CAS based on
 			 * the byte enables.
 			 */
-			DRAM_nCAS <= ~ByteEnables;
+			if (SecondSIMM)
+				DRAM_nCASB <= ~ByteEnables;
+			else
+				DRAM_nCASA <= ~ByteEnables;
 
 			state <= RW5;
 		end
@@ -290,28 +309,32 @@ always @(posedge CLK, negedge nRST) begin
 			DRAM_nWR <= 1'b1;
 
 			/* Assert CAS. */
-			DRAM_nCAS <= 4'b0000;
+			DRAM_nCASA <= 4'b0000;
+			DRAM_nCASB <= 4'b0000;
 
 			state <= REFRESH2;
 		end
 
 		REFRESH2: begin
 			/* Assert RAS. */
-			DRAM_nRAS <= 4'b0000;
+			DRAM_nRASA <= 4'b0000;
+			DRAM_nRASB <= 4'b0000;
 
 			state <= REFRESH3;
 		end
 
 		REFRESH3: begin
 			/* De-assert CAS. */
-			DRAM_nCAS <= 4'b1111;
+			DRAM_nCASA <= 4'b1111;
+			DRAM_nCASB <= 4'b1111;
 
 			state <= REFRESH4;
 		end
 
 		REFRESH4: begin
 			/* De-assert RAS. */
-			DRAM_nRAS <= 4'b1111;
+			DRAM_nRASA <= 4'b1111;
+			DRAM_nRASB <= 4'b1111;
 
 			state <= PRECHARGE;
 		end
@@ -321,8 +344,10 @@ always @(posedge CLK, negedge nRST) begin
 			 * DRAM cycle finished.  De-assert RAS and CAS,
 			 * de-assert DSACK.
 			 */
-			DRAM_nRAS <= 4'b1111;
-			DRAM_nCAS <= 4'b1111;
+			DRAM_nRASA <= 4'b1111;
+			DRAM_nRASB <= 4'b1111;
+			DRAM_nCASA <= 4'b1111;
+			DRAM_nCASB <= 4'b1111;
 			DRAM_ADDR <= 12'b0;
 			DSACK0 <= 1'b0;
 			DSACK1 <= 1'b0;

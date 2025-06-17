@@ -197,7 +197,8 @@ begin
 end
 endfunction
 
-wire [3:0] ByteEnables = ComputeByteEnables(RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]);
+wire [3:0] ByteEnables;
+assign ByteEnables = ComputeByteEnables(RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]);
 
 /*
  * Main DRAM state machine.

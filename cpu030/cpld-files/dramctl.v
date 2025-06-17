@@ -90,9 +90,9 @@ localparam REFRESH_CYCLE_CNT = 374;
  * refresh cycle count, we ask the DRAM state machine to perform
  * a refresh cycle.
  */
-reg refresh_req = 1'b0;
-reg refresh_ack = 1'b0;
-reg [11:0] refresh_cnt = 12'b0;
+reg refresh_req;
+reg refresh_ack;
+reg [11:0] refresh_cnt;
 
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
@@ -214,7 +214,7 @@ localparam REFRESH3	= 4'd8;
 localparam REFRESH4	= 4'd9;
 localparam PRECHARGE	= 4'd10;
 
-reg [3:0] state = IDLE;
+reg [3:0] state;
 
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin

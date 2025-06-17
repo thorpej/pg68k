@@ -62,3 +62,7 @@ then
     perl -pe 's/\(array\s+(\w+)\s+(\d+)/"(array (rename $1 \"$1(" . ($2 - 1) . ":0)\") $2"/ge;' < ${NAME}.edif > tmp.edif
     mv tmp.edif ${NAME}.edif
 fi
+
+# Generate the pin file.  hoglet's original does this in the fitter invocation,
+# but it seems more appropriate to do it here.
+grep '^//PIN:' ${NAME}.v | cut -d' ' -f2- > ${NAME}.pin

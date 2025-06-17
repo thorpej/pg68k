@@ -2,7 +2,8 @@
  * DRAM controller for the Playground 68030.  This is based on crmaykish's
  * mackerel-30 DRAM controller, but has been modified to support multiple
  * SIMM sizes (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size)
- * and multiple SIMMs (two, for now).
+ * and 2 SIMMs.  This consumes almost all of the available I/O on a TQFP100
+ * ATF1508AS.
  *
  * 72-pin SIMMs are 32-bits wide, and thus they are addressed in terms of
  * 32-bit (or 36-bit with parity) words.  Thus, DA0 is connected to A2.
@@ -15,22 +16,19 @@
  * 128MB	DA0-DA11	2 rank (RAS0/RAS2, A26=1 RAS1/RAS3)	12 bits
  *
  * N.B. at 50MHz, this particular DRAM access state machine requires 60ns
- * SIMMs.
+ * SIMMs.  We can detect the SIMM speed via the Presence Detect pins, and
+ * inserting additional states to support 70ns DRAM shouldn't be too bad,
+ * so maybe I'll do it someday.
  */
 module dramctl(
 	input wire nRST,
 	input wire CLK,
 
-	/*
-	 * We double-buffer /AS and /CS because we're dealing with
-	 * two clock domains.  RnW does not need this treatment because
-	 * it's not acted upon until our latched /AS signal is stable.
-	 */
-	input wire cpu_nAS,
-	input wire cpu_nRAMSEL,
+	input wire nAS,
+	input wire nRAMSEL,
 	input wire RnW,
 
-	input wire SIZ0, SIZ1,
+	input wire [1:0] SIZ,
 
 	input wire [27:0] ADDR,	/* good for 256MB (2x128MB) */
 
@@ -46,10 +44,15 @@ module dramctl(
 	output reg [3:0] DRAM_nRASB,
 	output reg [3:0] DRAM_nCASB,
 
-	/* These drive open-drain inverters. */
-	output reg DSACK0, DSACK1
+	/* Drives external open-drain inverters. */
+	output reg [1:0] DSACK
 );
 
+/*
+ * We have to synchronize /AS and /RAMSEL because we're dealing with
+ * two clock domains.  RnW does not need this treatment because
+ * it's not acted upon until our latched /AS signal is stable.
+ */
 reg AS1;
 reg AS;
 reg RAMSEL1;
@@ -63,8 +66,8 @@ always @(posedge CLK, negedge nRST) begin
 		RAMSEL  <= 1'b0;
 	end
 	else begin
-		AS1 <= ~cpu_nAS;
-		RAMSEL1 <= ~cpu_nRAMSEL;
+		AS1 <= ~nAS;
+		RAMSEL1 <= ~nRAMSEL;
 		AS  <= AS1;
 		RAMSEL  <= RAMSEL1;
 	end
@@ -165,7 +168,7 @@ end
  */
 reg [3:0] ByteEnables;
 always @(*) begin
-	case ({RnW, SIZ1, SIZ0, ADDR[1], ADDR[0]})
+	case ({RnW, SIZ[1], SIZ[0], ADDR[1], ADDR[0]})
 	/* byte writes */
 	5'b00100:	ByteEnables = 4'b1000;
 	5'b00101:	ByteEnables = 4'b0100;
@@ -220,8 +223,7 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_nCASA <= 4'b1111;
 		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
-		DSACK0 <= 1'b0;
-		DSACK1 <= 1'b0;
+		DSACK <= 2'b00;
 		refresh_ack <= 1'b0;
 	end
 	else begin
@@ -278,8 +280,7 @@ always @(posedge CLK, negedge nRST) begin
 
 		RW5: begin
 			/* Data is valid; terminate the cycle. */
-			DSACK0 <= 1'b1;
-			DSACK1 <= 1'b1;
+			DSACK <= 2'b11;
 
 			/* Stay in RW5 until the CPU ends the cycle. */
 			if (~AS) state <= PRECHARGE;
@@ -333,8 +334,7 @@ always @(posedge CLK, negedge nRST) begin
 			DRAM_nCASA <= 4'b1111;
 			DRAM_nCASB <= 4'b1111;
 			DRAM_ADDR <= 12'b0;
-			DSACK0 <= 1'b0;
-			DSACK1 <= 1'b0;
+			DSACK <= 2'b00;
 			refresh_ack <= 1'b0;
 
 			state <= IDLE;
@@ -352,11 +352,11 @@ endmodule
 //     === Inputs ===
 //PIN: nRST		: 89
 //PIN: CLK		: 90
-//PIN: cpu_nAS		: 1
-//PIN: cpu_nRAMSEL	: 2
+//PIN: nAS		: 1
+//PIN: nRAMSEL		: 2
 //PIN: RnW		: 5
-//PIN: SIZ0		: 6
-//PIN: SIZ1		: 7
+//PIN: SIZ_0		: 6
+//PIN: SIZ_1		: 7
 //PIN: ADDR_0		: 8
 //PIN: ADDR_1		: 9
 //PIN: ADDR_2		: 10
@@ -422,5 +422,5 @@ endmodule
 //PIN: DRAM_nCASB_1	: 83
 //PIN: DRAM_nCASB_2	: 84
 //PIN: DRAM_nCASB_3	: 85
-//PIN: DSACK0		: 99
-//PIN: DSACK1		: 100
+//PIN: DSACK_0		: 99
+//PIN: DSACK_1		: 100

@@ -344,3 +344,83 @@ always @(posedge CLK, negedge nRST) begin
 end
 
 endmodule
+
+// Pin assignment for Yosys workflow.
+//
+//PIN: CHIP "dramctl" ASSIGNED TO AN TQFP100
+//
+//     === Inputs ===
+//PIN: nRST		: 89
+//PIN: CLK		: 90
+//PIN: cpu_nAS		: 1
+//PIN: cpu_nRAMSEL	: 2
+//PIN: RnW		: 5
+//PIN: SIZ0		: 6
+//PIN: SIZ1		: 7
+//PIN: ADDR_0		: 8
+//PIN: ADDR_1		: 9
+//PIN: ADDR_2		: 10
+//PIN: ADDR_3		: 12
+//PIN: ADDR_4		: 13
+//PIN: ADDR_5		: 14
+//PIN: ADDR_6		: 16
+//PIN: ADDR_7		: 17
+//PIN: ADDR_8		: 19
+//PIN: ADDR_9		: 20
+//PIN: ADDR_10		: 21
+//PIN: ADDR_11		: 22
+//PIN: ADDR_12		: 23
+//PIN: ADDR_13		: 24
+//PIN: ADDR_14		: 25
+//PIN: ADDR_15		: 27
+//PIN: ADDR_16		: 28
+//PIN: ADDR_17		: 29
+//PIN: ADDR_18		: 30
+//PIN: ADDR_19		: 31
+//PIN: ADDR_20		: 32
+//PIN: ADDR_21		: 33
+//PIN: ADDR_22		: 35
+//PIN: ADDR_23		: 36
+//PIN: ADDR_24		: 37
+//PIN: ADDR_25		: 40
+//PIN: ADDR_26		: 41
+//PIN: ADDR_27		: 42
+//PIN: SIMMSZ		: 44
+//PIN: SIMMPD_0		: 45
+//PIN: SIMMPD_1		: 46
+//PIN: SIMMPD_2		: 47
+//PIN: SIMMPD_3		: 48
+//
+//     === Outputs ===
+//
+//PIN: DRAM_nWR		: 50
+//PIN: DRAM_ADDR_0	: 52
+//PIN: DRAM_ADDR_1	: 53
+//PIN: DRAM_ADDR_2	: 54
+//PIN: DRAM_ADDR_3	: 55
+//PIN: DRAM_ADDR_4	: 56
+//PIN: DRAM_ADDR_5	: 57
+//PIN: DRAM_ADDR_6	: 58
+//PIN: DRAM_ADDR_7	: 60
+//PIN: DRAM_ADDR_8	: 61
+//PIN: DRAM_ADDR_9	: 63
+//PIN: DRAM_ADDR_10	: 64
+//PIN: DRAM_ADDR_11	: 65
+//PIN: DRAM_nRASA_0	: 67
+//PIN: DRAM_nRASA_1	: 68
+//PIN: DRAM_nRASA_2	: 69
+//PIN: DRAM_nRASA_3	: 70
+//PIN: DRAM_nCASA_0	: 71
+//PIN: DRAM_nCASA_1	: 72
+//PIN: DRAM_nCASA_2	: 75
+//PIN: DRAM_nCASA_3	: 76
+//PIN: DRAM_nRASB_0	: 77
+//PIN: DRAM_nRASB_1	: 78
+//PIN: DRAM_nRASB_2	: 79
+//PIN: DRAM_nRASB_3	: 80
+//PIN: DRAM_nCASB_0	: 81
+//PIN: DRAM_nCASB_1	: 83
+//PIN: DRAM_nCASB_2	: 84
+//PIN: DRAM_nCASB_3	: 85
+//PIN: DSACK0		: 99
+//PIN: DSACK1		: 100

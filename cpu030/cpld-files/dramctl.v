@@ -54,23 +54,23 @@ module dramctl(
 	output reg DSACK0, DSACK1
 );
 
-reg nAS1;
-reg nAS;
-reg nRAMSEL1;
-reg nRAMSEL;
+reg AS1;
+reg AS;
+reg RAMSEL1;
+reg RAMSEL;
 
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		nAS1 <= 1'b1;
-		nAS  <= 1'b1;
-		nRAMSEL1 <= 1'b1;
-		nRAMSEL  <= 1'b1;
+		AS1 <= 1'b0;
+		AS  <= 1'b0;
+		RAMSEL1 <= 1'b0;
+		RAMSEL  <= 1'b0;
 	end
 	else begin
-		nAS1 <= cpu_nAS;
-		nAS  <= nAS1;
-		nRAMSEL1 <= cpu_nRAMSEL;
-		nRAMSEL  <= nRAMSEL1;
+		AS1 <= ~cpu_nAS;
+		RAMSEL1 <= ~cpu_nRAMSEL;
+		AS  <= AS1;
+		RAMSEL  <= RAMSEL1;
 	end
 end
 
@@ -233,7 +233,7 @@ always @(posedge CLK, negedge nRST) begin
 				/* Start CAS-before-RAS refresh cycle. */
 				state <= REFRESH1;
 			end
-			else if (~nRAMSEL && ~nAS) begin
+			else if (RAMSEL && AS) begin
 				/* DRAM selected, start normal R/W cycle */
 				state <= RW1;
 			end
@@ -278,7 +278,7 @@ always @(posedge CLK, negedge nRST) begin
 			DSACK1 <= 1'b1;
 
 			/* Stay in RW5 until the CPU ends the cycle. */
-			if (nAS) state <= PRECHARGE;
+			if (~AS) state <= PRECHARGE;
 		end
 
 		REFRESH1: begin

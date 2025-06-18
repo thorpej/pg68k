@@ -65,9 +65,9 @@ REM  Logic Doubling = off
 
 set VAR_FITTER=fit%VAR_DEVICE:~3,4%.exe
 
-findstr /R /C:"//PIN:" "%VAR_NAME%.v">"%VAR_NAME%.temp.pin"
-(for /f "usebackq tokens=* delims=//PIN: " %%I in ("%VAR_NAME%.temp.pin") do echo %%I) >%VAR_NAME%.pin
-del /f /q "%VAR_NAME%.temp.pin">nul
+REM findstr /R /C:"//PIN:" "%VAR_NAME%.v">"%VAR_NAME%.temp.pin"
+REM (for /f "usebackq tokens=* delims=//PIN: " %%I in ("%VAR_NAME%.temp.pin") do echo %%I) >%VAR_NAME%.pin
+REM del /f /q "%VAR_NAME%.temp.pin">nul
 
 if exist "%VAR_NAME%.fit" del /f /q "%VAR_NAME%.fit">nul
 

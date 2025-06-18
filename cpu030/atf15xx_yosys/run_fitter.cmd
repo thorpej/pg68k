@@ -14,8 +14,8 @@ if not exist "%VAR_FITTERDIR%\atmel.std" (
 
 REM Process command line args
 set VAR_DEVICE=ATF1508AS
-set VAR_PACKAGE=PLCC84
-set VAR_SPEED=15
+set VAR_PACKAGE=TQFP100
+set VAR_SPEED=7
 set VAR_OPTS=
 goto :getopts
 :getoptsComplete

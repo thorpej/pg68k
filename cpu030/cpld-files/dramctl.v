@@ -104,7 +104,7 @@ always @(posedge CLK, negedge nRST) begin
 			refresh_cnt <= 12'b0;
 		end
 		else begin
-			refresh_cnt = refresh_cnt + 12'b1;
+			refresh_cnt <= refresh_cnt + 12'b1;
 			if (refresh_ack) refresh_req <= 1'b0;
 		end
 	end

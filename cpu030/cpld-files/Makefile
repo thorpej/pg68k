@@ -12,4 +12,4 @@ EDIFS=		dramctl.edif
 all: $(EDIFS)
 
 clean:
-	-rm -f *.edif *.pin
+	-rm -f *.edif *.io *.pin *.tt3

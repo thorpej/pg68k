@@ -1,7 +1,6 @@
 RUN_YOSYS=	../atf15xx_yosys/run_yosys.sh
 
-#EDIFS=		counter.edif mmu.edif testlatches.edif
-EDIFS=		dramctl.edif
+EDIFS=		dramctl.edif sysctl.edif
 
 .SUFFIXES:
 .SUFFIXES: .v .edif

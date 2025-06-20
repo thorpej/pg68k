@@ -218,6 +218,7 @@ reg [3:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		state <= IDLE;
+		DRAM_ADDR <= 12'd0;
 		DRAM_nRASA <= 4'b1111;
 		DRAM_nRASB <= 4'b1111;
 		DRAM_nCASA <= 4'b1111;

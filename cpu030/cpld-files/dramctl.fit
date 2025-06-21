@@ -1,4 +1,4 @@
-Atmel ATF1508 Fitter Version 1918 ,running Wed Jun 18 19:22:43 2025
+Atmel ATF1508 Fitter Version 1918 ,running Sat Jun 21 15:35:56 2025
 
 
 
@@ -81,167 +81,180 @@ nRST assigned to pin  89
 Attempt to place floating signals ...
 ------------------------------------
 nRAMSEL is placed at pin 2 (MC 1)
-id00291 is placed at feedback node 601 (MC 1)
-id00294 is placed at feedback node 602 (MC 2)
+id00310 is placed at feedback node 601 (MC 1)
+id00348 is placed at feedback node 602 (MC 2)
 nAS is placed at pin 1 (MC 3)
-id00286 is placed at feedback node 603 (MC 3)
-id00287 is placed at feedback node 604 (MC 4)
+id00344 is placed at feedback node 603 (MC 3)
+id00345 is placed at feedback node 604 (MC 4)
 DSACK_1 is placed at pin 100 (MC 5)
 DSACK_0 is placed at pin 99 (MC 6)
-id00295 is placed at feedback node 607 (MC 7)
-id00284 is placed at feedback node 608 (MC 8)
-id00282 is placed at feedback node 609 (MC 9)
-id00292 is placed at feedback node 610 (MC 10)
-id00293 is placed at feedback node 611 (MC 11)
-id00046QN is placed at feedback node 612 (MC 12)
-id00289 is placed at feedback node 613 (MC 13)
-id00194QN is placed at foldback expander node 313 (MC 13)
-id00290 is placed at feedback node 614 (MC 14)
-id00186Q is placed at foldback expander node 314 (MC 14)
-id00288 is placed at feedback node 615 (MC 15)
-id00285 is placed at feedback node 616 (MC 16)
-id00011QN is placed at foldback expander node 316 (MC 16)
+id00340 is placed at feedback node 607 (MC 7)
+BERR is placed at pin 98 (MC 8)
+id00339 is placed at feedback node 609 (MC 9)
+id00346 is placed at feedback node 610 (MC 10)
+SIMMPDB_3 is placed at pin 96 (MC 11)
+id00349 is placed at feedback node 611 (MC 11)
+id00341 is placed at feedback node 612 (MC 12)
+SIMMPDB_2 is placed at pin 94 (MC 13)
+id00342 is placed at feedback node 613 (MC 13)
+id00233QN is placed at foldback expander node 313 (MC 13)
+SIMMPDB_1 is placed at pin 93 (MC 14)
+id00350 is placed at feedback node 614 (MC 14)
+id00225Q is placed at foldback expander node 314 (MC 14)
+id00347 is placed at feedback node 615 (MC 15)
+id00189QN is placed at foldback expander node 315 (MC 15)
+SIMMPDB_0 is placed at pin 92 (MC 16)
+id00343 is placed at feedback node 616 (MC 16)
 ADDR_5 is placed at pin 14 (MC 17)
-id00254 is placed at feedback node 617 (MC 17)
-id00252 is placed at feedback node 618 (MC 18)
 ADDR_4 is placed at pin 13 (MC 19)
-id00247 is placed at feedback node 619 (MC 19)
-id00246 is placed at feedback node 620 (MC 20)
 ADDR_3 is placed at pin 12 (MC 21)
-id00250 is placed at feedback node 621 (MC 21)
 ADDR_2 is placed at pin 10 (MC 22)
-id00251 is placed at feedback node 622 (MC 22)
-id00283 is placed at feedback node 623 (MC 23)
 ADDR_1 is placed at pin 9 (MC 24)
-id00253 is placed at feedback node 624 (MC 24)
 ADDR_0 is placed at pin 8 (MC 25)
-id00249 is placed at feedback node 625 (MC 25)
-id00068QN is placed at feedback node 626 (MC 26)
 SIZ_1 is placed at pin 7 (MC 27)
-id00074QN is placed at feedback node 627 (MC 27)
-id00030QN is placed at feedback node 628 (MC 28)
+id00309 is placed at feedback node 627 (MC 27)
+id00305 is placed at feedback node 628 (MC 28)
 SIZ_0 is placed at pin 6 (MC 29)
-id00058QN is placed at feedback node 629 (MC 29)
+id00049QN is placed at feedback node 629 (MC 29)
 RnW is placed at pin 5 (MC 30)
-id00003 is placed at feedback node 630 (MC 30)
-XXL_607 is placed at feedback node 631 (MC 31)
+XXL_691 is placed at feedback node 630 (MC 30)
+XXL_692 is placed at feedback node 631 (MC 31)
 TDI is placed at pin 4 (MC 32)
-XXL_606 is placed at feedback node 632 (MC 32)
+XXL_693 is placed at feedback node 632 (MC 32)
 ADDR_14 is placed at pin 25 (MC 33)
 ADDR_13 is placed at pin 24 (MC 35)
+id00307 is placed at feedback node 635 (MC 35)
+id00303 is placed at feedback node 636 (MC 36)
 ADDR_12 is placed at pin 23 (MC 37)
+id00299 is placed at feedback node 637 (MC 37)
 ADDR_11 is placed at pin 22 (MC 38)
-id00026Q is placed at feedback node 639 (MC 39)
+id00304 is placed at feedback node 638 (MC 38)
+id00306 is placed at feedback node 639 (MC 39)
 ADDR_10 is placed at pin 21 (MC 40)
+id00302 is placed at feedback node 640 (MC 40)
 ADDR_9 is placed at pin 20 (MC 41)
-id00299 is placed at feedback node 641 (MC 41)
-id00298 is placed at feedback node 642 (MC 42)
+id00078QN is placed at feedback node 641 (MC 41)
+id00092QN is placed at feedback node 642 (MC 42)
 ADDR_8 is placed at pin 19 (MC 43)
-id00297 is placed at feedback node 643 (MC 43)
-id00296 is placed at feedback node 644 (MC 44)
+id00064QN is placed at feedback node 643 (MC 43)
+id00028QN is placed at feedback node 644 (MC 44)
 ADDR_7 is placed at pin 17 (MC 45)
-id00255 is placed at feedback node 645 (MC 45)
+id00200QN is placed at feedback node 645 (MC 45)
 ADDR_6 is placed at pin 16 (MC 46)
-id00248 is placed at feedback node 646 (MC 46)
+id00308 is placed at feedback node 646 (MC 46)
+XXL_690 is placed at feedback node 647 (MC 47)
 TMS is placed at pin 15 (MC 48)
-XXL_605 is placed at feedback node 648 (MC 48)
+id00003 is placed at feedback node 648 (MC 48)
 ADDR_24 is placed at pin 37 (MC 49)
 ADDR_23 is placed at pin 36 (MC 51)
 ADDR_22 is placed at pin 35 (MC 53)
 ADDR_21 is placed at pin 33 (MC 54)
 ADDR_20 is placed at pin 32 (MC 56)
 ADDR_19 is placed at pin 31 (MC 57)
+id00354 is placed at feedback node 657 (MC 57)
+id00353 is placed at feedback node 658 (MC 58)
 ADDR_18 is placed at pin 30 (MC 59)
+id00352 is placed at feedback node 659 (MC 59)
+id00351 is placed at feedback node 660 (MC 60)
 ADDR_17 is placed at pin 29 (MC 61)
+id00301 is placed at feedback node 661 (MC 61)
 ADDR_16 is placed at pin 28 (MC 62)
+id00300 is placed at feedback node 662 (MC 62)
+id00338 is placed at feedback node 663 (MC 63)
 ADDR_15 is placed at pin 27 (MC 64)
+id00024Q is placed at feedback node 664 (MC 64)
 ADDR_25 is placed at pin 40 (MC 65)
 ADDR_26 is placed at pin 41 (MC 67)
 ADDR_27 is placed at pin 42 (MC 69)
-SIMMSZ is placed at pin 44 (MC 70)
-SIMMPD_0 is placed at pin 45 (MC 72)
-SIMMPD_1 is placed at pin 46 (MC 73)
-DRAM_nWR is placed at pin 50 (MC 80)
-DRAM_ADDR_0 is placed at pin 52 (MC 81)
-DRAM_ADDR_1 is placed at pin 53 (MC 83)
-DRAM_ADDR_2 is placed at pin 54 (MC 85)
-DRAM_ADDR_3 is placed at pin 55 (MC 86)
-DRAM_ADDR_4 is placed at pin 56 (MC 88)
-DRAM_ADDR_5 is placed at pin 57 (MC 89)
-DRAM_ADDR_6 is placed at pin 58 (MC 91)
-DRAM_ADDR_7 is placed at pin 60 (MC 93)
-DRAM_ADDR_8 is placed at pin 61 (MC 94)
+DRAM_nWR is placed at pin 45 (MC 72)
+DRAM_ADDR_0 is placed at pin 46 (MC 73)
+DRAM_ADDR_1 is placed at pin 47 (MC 75)
+DRAM_ADDR_2 is placed at pin 48 (MC 77)
+DRAM_ADDR_3 is placed at pin 49 (MC 78)
+DRAM_ADDR_4 is placed at pin 50 (MC 80)
+DRAM_ADDR_5 is placed at pin 52 (MC 81)
+DRAM_ADDR_6 is placed at pin 53 (MC 83)
+DRAM_ADDR_7 is placed at pin 54 (MC 85)
+DRAM_ADDR_8 is placed at pin 55 (MC 86)
+DRAM_ADDR_9 is placed at pin 56 (MC 88)
+DRAM_ADDR_10 is placed at pin 57 (MC 89)
+DRAM_ADDR_11 is placed at pin 58 (MC 91)
+DRAM_nRASA_0 is placed at pin 60 (MC 93)
+DRAM_nRASA_1 is placed at pin 61 (MC 94)
 TCK is placed at pin 62 (MC 96)
-DRAM_ADDR_9 is placed at pin 63 (MC 97)
-DRAM_ADDR_10 is placed at pin 64 (MC 99)
-DRAM_ADDR_11 is placed at pin 65 (MC 101)
-DRAM_nRASA_0 is placed at pin 67 (MC 102)
-DRAM_nRASA_1 is placed at pin 68 (MC 104)
-DRAM_nRASA_2 is placed at pin 69 (MC 105)
-DRAM_nRASA_3 is placed at pin 70 (MC 107)
-DRAM_nCASA_0 is placed at pin 71 (MC 109)
-DRAM_nCASA_1 is placed at pin 72 (MC 110)
+DRAM_nRASA_2 is placed at pin 63 (MC 97)
+DRAM_nRASA_3 is placed at pin 64 (MC 99)
+DRAM_nCASA_0 is placed at pin 65 (MC 101)
+DRAM_nCASA_1 is placed at pin 67 (MC 102)
+DRAM_nCASA_2 is placed at pin 68 (MC 104)
+DRAM_nCASA_3 is placed at pin 69 (MC 105)
+DRAM_nRASB_0 is placed at pin 70 (MC 107)
+DRAM_nRASB_1 is placed at pin 71 (MC 109)
+DRAM_nRASB_2 is placed at pin 72 (MC 110)
 TDO is placed at pin 73 (MC 112)
-DRAM_nCASA_2 is placed at pin 75 (MC 113)
-DRAM_nCASA_3 is placed at pin 76 (MC 115)
-DRAM_nRASB_0 is placed at pin 77 (MC 117)
-DRAM_nRASB_1 is placed at pin 78 (MC 118)
-DRAM_nRASB_2 is placed at pin 79 (MC 120)
-DRAM_nRASB_3 is placed at pin 80 (MC 121)
-DRAM_nCASB_0 is placed at pin 81 (MC 123)
-DRAM_nCASB_1 is placed at pin 83 (MC 125)
-DRAM_nCASB_2 is placed at pin 84 (MC 126)
-DRAM_nCASB_3 is placed at pin 85 (MC 128)
+DRAM_nRASB_3 is placed at pin 75 (MC 113)
+DRAM_nCASB_0 is placed at pin 76 (MC 115)
+DRAM_nCASB_1 is placed at pin 77 (MC 117)
+DRAM_nCASB_2 is placed at pin 78 (MC 118)
+DRAM_nCASB_3 is placed at pin 79 (MC 120)
+SIMMPDA_0 is placed at pin 80 (MC 121)
+SIMMPDA_1 is placed at pin 81 (MC 123)
+SIMMPDA_2 is placed at pin 83 (MC 125)
+SIMMPDA_3 is placed at pin 84 (MC 126)
+SIMMSZ is placed at pin 85 (MC 128)
 
-                                                                  D  D  D     D  D  D  D  D  D  
-                                                                  R  R  R     R  R  R  R  R  R  
-                                                                  A  A  A     A  A  A  A  A  A  
-                                                                  M  M  M     M  M  M  M  M  M  
-                                                                  _  _  _     _  _  _  _  _  _  
-                     D  D                                         n  n  n     n  n  n  n  n  n  
-                     S  S                                         C  C  C     C  R  R  R  R  C  
-                     A  A                                         A  A  A     A  A  A  A  A  A  
-                     C  C                             n           S  S  S     S  S  S  S  S  S  
-                     K  K           G           V  C  R        G  B  B  B  V  B  B  B  B  B  A  
-                     _  _           N           C  L  S        N  _  _  _  C  _  _  _  _  _  _  
-                     1  0           D           C  K  T        D  3  2  1  C  0  3  2  1  0  3  
+                                                                                    D  D  D  D  
+                                                                                    R  R  R  R  
+                                                                                    A  A  A  A  
+                                 S     S  S  S                       S  S     S  S  M  M  M  M  
+                                 I     I  I  I                       I  I     I  I  _  _  _  _  
+                     D  D        M     M  M  M                       M  M     M  M  n  n  n  n  
+                     S  S        M     M  M  M                    S  M  M     M  M  C  C  C  C  
+                     A  A        P     P  P  P                    I  P  P     P  P  A  A  A  A  
+                     C  C  B     D     D  D  D        n           M  D  D     D  D  S  S  S  S  
+                     K  K  E     B  G  B  B  B  V  C  R        G  M  A  A  V  A  A  B  B  B  B  
+                     _  _  R     _  N  _  _  _  C  L  S        N  S  _  _  C  _  _  _  _  _  _  
+                     1  0  R     3  D  2  1  0  C  K  T        D  Z  3  2  C  1  0  3  2  1  0  
                  +------------------------------------------------------------------------------+
                  | 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76  |
-              nAS| 1                                                                         75 |DRAM_nCASA_2
+              nAS| 1                                                                         75 |DRAM_nRASB_3
           nRAMSEL| 2                                                                         74 |GND
               VCC| 3                                                                         73 |TDO
-              TDI| 4                                                                         72 |DRAM_nCASA_1
-              RnW| 5                                                                         71 |DRAM_nCASA_0
-            SIZ_0| 6                                                                         70 |DRAM_nRASA_3
-            SIZ_1| 7                                                                         69 |DRAM_nRASA_2
-           ADDR_0| 8                                                                         68 |DRAM_nRASA_1
-           ADDR_1| 9                                                                         67 |DRAM_nRASA_0
+              TDI| 4                                                                         72 |DRAM_nRASB_2
+              RnW| 5                                                                         71 |DRAM_nRASB_1
+            SIZ_0| 6                                                                         70 |DRAM_nRASB_0
+            SIZ_1| 7                                                                         69 |DRAM_nCASA_3
+           ADDR_0| 8                                                                         68 |DRAM_nCASA_2
+           ADDR_1| 9                                                                         67 |DRAM_nCASA_1
            ADDR_2| 10                                                                        66 |VCC
-              GND| 11                                                                        65 |DRAM_ADDR_11
-           ADDR_3| 12                                ATF1508                                 64 |DRAM_ADDR_10
-           ADDR_4| 13                             100-Lead TQFP                              63 |DRAM_ADDR_9
+              GND| 11                                                                        65 |DRAM_nCASA_0
+           ADDR_3| 12                                ATF1508                                 64 |DRAM_nRASA_3
+           ADDR_4| 13                             100-Lead TQFP                              63 |DRAM_nRASA_2
            ADDR_5| 14                                                                        62 |TCK
-              TMS| 15                                                                        61 |DRAM_ADDR_8
-           ADDR_6| 16                                                                        60 |DRAM_ADDR_7
+              TMS| 15                                                                        61 |DRAM_nRASA_1
+           ADDR_6| 16                                                                        60 |DRAM_nRASA_0
            ADDR_7| 17                                                                        59 |GND
-              VCC| 18                                                                        58 |DRAM_ADDR_6
-           ADDR_8| 19                                                                        57 |DRAM_ADDR_5
-           ADDR_9| 20                                                                        56 |DRAM_ADDR_4
-          ADDR_10| 21                                                                        55 |DRAM_ADDR_3
-          ADDR_11| 22                                                                        54 |DRAM_ADDR_2
-          ADDR_12| 23                                                                        53 |DRAM_ADDR_1
-          ADDR_13| 24                                                                        52 |DRAM_ADDR_0
+              VCC| 18                                                                        58 |DRAM_ADDR_11
+           ADDR_8| 19                                                                        57 |DRAM_ADDR_10
+           ADDR_9| 20                                                                        56 |DRAM_ADDR_9
+          ADDR_10| 21                                                                        55 |DRAM_ADDR_8
+          ADDR_11| 22                                                                        54 |DRAM_ADDR_7
+          ADDR_12| 23                                                                        53 |DRAM_ADDR_6
+          ADDR_13| 24                                                                        52 |DRAM_ADDR_5
           ADDR_14| 25                                                                        51 |VCC
                  |  26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50  |
                  +------------------------------------------------------------------------------+
-                     G  A  A  A  A  A  A  A  V  A  A  A  G  V  A  A  A  G  S  S  S           D  
-                     N  D  D  D  D  D  D  D  C  D  D  D  N  C  D  D  D  N  I  I  I           R  
-                     D  D  D  D  D  D  D  D  C  D  D  D  D  C  D  D  D  D  M  M  M           A  
-                        R  R  R  R  R  R  R     R  R  R        R  R  R     M  M  M           M  
-                        _  _  _  _  _  _  _     _  _  _        _  _  _     S  P  P           _  
-                        1  1  1  1  1  2  2     2  2  2        2  2  2     Z  D  D           n  
-                        5  6  7  8  9  0  1     2  3  4        5  6  7        _  _           W  
-                                                                              0  1           R  
+                     G  A  A  A  A  A  A  A  V  A  A  A  G  V  A  A  A  G     D  D  D  D  D  D  
+                     N  D  D  D  D  D  D  D  C  D  D  D  N  C  D  D  D  N     R  R  R  R  R  R  
+                     D  D  D  D  D  D  D  D  C  D  D  D  D  C  D  D  D  D     A  A  A  A  A  A  
+                        R  R  R  R  R  R  R     R  R  R        R  R  R        M  M  M  M  M  M  
+                        _  _  _  _  _  _  _     _  _  _        _  _  _        _  _  _  _  _  _  
+                        1  1  1  1  1  2  2     2  2  2        2  2  2        n  A  A  A  A  A  
+                        5  6  7  8  9  0  1     2  3  4        5  6  7        W  D  D  D  D  D  
+                                                                              R  D  D  D  D  D  
+                                                                                 R  R  R  R  R  
+                                                                                 _  _  _  _  _  
+                                                                                 0  1  2  3  4  
 
 
 
@@ -256,249 +269,282 @@ NC = Unused I/O pins which must be unconnected on the board
 
 Universal-Interconnect-Multiplexer assignments
 ------------------------------------------------
-FanIn assignment for block A [24]
+FanIn assignment for block A [20]
 {
-ADDR_1,ADDR_0,
+BERR,
 DSACK_0,
-RnW,
-SIZ_1,SIZ_0,
-id00285,id00246,id00288,id00284,id00292,id00295,id00250,id00290,id00253,id00282,id00283,id00291,id00293,id00289,id00294,id00249,id00286,id00287,
+id00344,id00345,id00310,id00347,id00340,id00306,id00343,id00346,id00342,id00348,id00339,id00341,id00349,id00302,id00350,id00308,id00338,id00351,
 }
 Multiplexer assignment for block A
-id00285			(MC14	FB)  : MUX 1		Ref (A16fb)
-SIZ_1			(MC22	P)   : MUX 2		Ref (B27p)
-id00246			(MC15	FB)  : MUX 4		Ref (B20fb)
-id00288			(MC13	FB)  : MUX 5		Ref (A15fb)
-id00284			(MC7	FB)  : MUX 6		Ref (A8fb)
-id00292			(MC9	FB)  : MUX 7		Ref (A10fb)
-id00295			(MC6	FB)  : MUX 8		Ref (A7fb)
-ADDR_1			(MC20	P)   : MUX 9		Ref (B24p)
-id00250			(MC16	FB)  : MUX 10		Ref (B21fb)
-id00290			(MC12	FB)  : MUX 11		Ref (A14fb)
-id00253			(MC18	FB)  : MUX 12		Ref (B24fb)
-ADDR_0			(MC21	P)   : MUX 14		Ref (B25p)
-DSACK_0			(MC5	P)   : MUX 15		Ref (A6p)
-SIZ_0			(MC23	P)   : MUX 16		Ref (B29p)
-id00282			(MC8	FB)  : MUX 17		Ref (A9fb)
-id00283			(MC17	FB)  : MUX 18		Ref (B23fb)
-RnW			(MC24	P)   : MUX 22		Ref (B30p)
-id00291			(MC1	FB)  : MUX 26		Ref (A1fb)
-id00293			(MC10	FB)  : MUX 27		Ref (A11fb)
-id00289			(MC11	FB)  : MUX 31		Ref (A13fb)
-id00294			(MC2	FB)  : MUX 34		Ref (A2fb)
-id00249			(MC19	FB)  : MUX 35		Ref (B25fb)
-id00286			(MC3	FB)  : MUX 36		Ref (A3fb)
-id00287			(MC4	FB)  : MUX 38		Ref (A4fb)
+id00344			(MC3	FB)  : MUX 0		Ref (A3fb)
+id00345			(MC4	FB)  : MUX 2		Ref (A4fb)
+BERR			(MC7	P)   : MUX 3		Ref (A8p)
+id00310			(MC1	FB)  : MUX 4		Ref (A1fb)
+id00347			(MC14	FB)  : MUX 7		Ref (A15fb)
+id00340			(MC6	FB)  : MUX 8		Ref (A7fb)
+DSACK_0			(MC5	P)   : MUX 9		Ref (A6p)
+id00306			(MC16	FB)  : MUX 10		Ref (C39fb)
+id00343			(MC15	FB)  : MUX 11		Ref (A16fb)
+id00346			(MC9	FB)  : MUX 13		Ref (A10fb)
+id00342			(MC12	FB)  : MUX 15		Ref (A13fb)
+id00348			(MC2	FB)  : MUX 16		Ref (A2fb)
+id00339			(MC8	FB)  : MUX 17		Ref (A9fb)
+id00341			(MC11	FB)  : MUX 21		Ref (A12fb)
+id00349			(MC10	FB)  : MUX 27		Ref (A11fb)
+id00302			(MC17	FB)  : MUX 28		Ref (C40fb)
+id00350			(MC13	FB)  : MUX 29		Ref (A14fb)
+id00308			(MC18	FB)  : MUX 31		Ref (C46fb)
+id00338			(MC20	FB)  : MUX 35		Ref (D63fb)
+id00351			(MC19	FB)  : MUX 39		Ref (D60fb)
 
 FanIn assignment for block B [25]
 {
-ADDR_1,ADDR_0,
-DRAM_nCASA_2,DRAM_nCASB_2,
+ADDR_27,ADDR_26,ADDR_1,ADDR_0,ADDR_25,
+DRAM_nCASB_2,DRAM_nCASA_2,
 RnW,
-SIZ_1,SIZ_0,
-id00252,id00246,id00249,id00030QN,id00026Q,id00068QN,id00253,id00299,id00247,id00255,id00254,id00250,id00296,id00248,id00282,id00003,id00283,
-nRST,
+SIMMSZ,SIZ_1,SIMMPDA_0,SIMMPDA_2,SIMMPDB_0,SIMMPDB_1,SIZ_0,SIMMPDB_2,SIMMPDB_3,SIMMPDA_1,SIMMPDA_3,
+id00078QN,id00028QN,id00303,id00299,id00024Q,id00302,
 }
 Multiplexer assignment for block B
-id00252			(MC3	FB)  : MUX 0		Ref (B18fb)
-ADDR_1			(MC20	P)   : MUX 3		Ref (B24p)
-id00246			(MC5	FB)  : MUX 4		Ref (B20fb)
-DRAM_nCASA_2		(MC18	P)   : MUX 5		Ref (H113p)
-DRAM_nCASB_2		(MC19	P)   : MUX 6		Ref (H126p)
-id00249			(MC9	FB)  : MUX 7		Ref (B25fb)
-id00030QN		(MC11	FB)  : MUX 9		Ref (B28fb)
-id00026Q		(MC13	FB)  : MUX 10		Ref (C39fb)
-id00068QN		(MC10	FB)  : MUX 11		Ref (B26fb)
-id00253			(MC8	FB)  : MUX 12		Ref (B24fb)
-ADDR_0			(MC21	P)   : MUX 14		Ref (B25p)
-id00299			(MC14	FB)  : MUX 15		Ref (C41fb)
-id00247			(MC4	FB)  : MUX 16		Ref (B19fb)
-id00255			(MC16	FB)  : MUX 17		Ref (C45fb)
-SIZ_1			(MC22	P)   : MUX 20		Ref (B27p)
-RnW			(MC24	P)   : MUX 22		Ref (B30p)
-id00254			(MC2	FB)  : MUX 26		Ref (B17fb)
-id00250			(MC6	FB)  : MUX 28		Ref (B21fb)
-id00296			(MC15	FB)  : MUX 29		Ref (C44fb)
-id00248			(MC17	FB)  : MUX 31		Ref (C46fb)
-SIZ_0			(MC23	P)   : MUX 32		Ref (B29p)
-id00282			(MC1	FB)  : MUX 33		Ref (A9fb)
-nRST			(MC25	FB)  : MUX 36		Ref (GCLR)
-id00003			(MC12	FB)  : MUX 37		Ref (B30fb)
-id00283			(MC7	FB)  : MUX 38		Ref (B23fb)
+SIMMSZ			(MC9	P)   : MUX 0		Ref (H128p)
+id00078QN		(MC4	FB)  : MUX 1		Ref (C41fb)
+SIZ_1			(MC15	P)   : MUX 2		Ref (B27p)
+RnW			(MC10	P)   : MUX 4		Ref (B30p)
+id00028QN		(MC5	FB)  : MUX 5		Ref (C44fb)
+SIMMPDA_0		(MC17	P)   : MUX 6		Ref (H121p)
+DRAM_nCASB_2		(MC8	P)   : MUX 7		Ref (H118p)
+SIMMPDA_2		(MC20	P)   : MUX 8		Ref (H125p)
+ADDR_27			(MC21	P)   : MUX 9		Ref (E69p)
+SIMMPDB_0		(MC25	P)   : MUX 10		Ref (A16p)
+SIMMPDB_1		(MC24	P)   : MUX 12		Ref (A14p)
+ADDR_26			(MC11	P)   : MUX 15		Ref (E67p)
+SIZ_0			(MC14	P)   : MUX 16		Ref (B29p)
+id00303			(MC1	FB)  : MUX 18		Ref (C36fb)
+SIMMPDB_2		(MC23	P)   : MUX 20		Ref (A13p)
+SIMMPDB_3		(MC22	P)   : MUX 24		Ref (A11p)
+ADDR_1			(MC12	P)   : MUX 25		Ref (B24p)
+SIMMPDA_1		(MC16	P)   : MUX 26		Ref (H123p)
+SIMMPDA_3		(MC19	P)   : MUX 28		Ref (H126p)
+ADDR_0			(MC13	P)   : MUX 30		Ref (B25p)
+DRAM_nCASA_2		(MC7	P)   : MUX 35		Ref (G104p)
+id00299			(MC2	FB)  : MUX 36		Ref (C37fb)
+id00024Q		(MC6	FB)  : MUX 37		Ref (D64fb)
+id00302			(MC3	FB)  : MUX 38		Ref (C40fb)
+ADDR_25			(MC18	P)   : MUX 39		Ref (E65p)
 
-FanIn assignment for block C [14]
+FanIn assignment for block C [25]
 {
-ADDR_24,ADDR_27,ADDR_25,ADDR_26,
-SIMMPD_0,SIMMSZ,SIMMPD_1,
-XXL_605,
-id00250,id00298,id00251,id00297,
-nAS,nRAMSEL,
+ADDR_25,ADDR_27,ADDR_24,
+SIMMPDA_0,SIMMPDA_1,SIMMPDA_2,SIMMSZ,SIMMPDA_3,
+XXL_691,
+id00303,id00300,id00301,id00310,id00354,id00305,id00308,id00299,id00200QN,id00003,id00351,id00024Q,id00306,id00302,id00309,
+nRST,
 }
 Multiplexer assignment for block C
-XXL_605			(MC5	FB)  : MUX 3		Ref (C48fb)
-ADDR_24			(MC8	P)   : MUX 5		Ref (D49p)
-SIMMPD_0		(MC13	P)   : MUX 7		Ref (E72p)
-ADDR_27			(MC11	P)   : MUX 9		Ref (E69p)
-id00250			(MC1	FB)  : MUX 10		Ref (B21fb)
-ADDR_25			(MC9	P)   : MUX 13		Ref (E65p)
-id00298			(MC3	FB)  : MUX 15		Ref (C42fb)
-nAS			(MC7	P)   : MUX 17		Ref (A3p)
-nRAMSEL			(MC6	P)   : MUX 21		Ref (A1p)
-SIMMSZ			(MC12	P)   : MUX 27		Ref (E70p)
-ADDR_26			(MC10	P)   : MUX 29		Ref (E67p)
-id00251			(MC2	FB)  : MUX 30		Ref (B22fb)
-SIMMPD_1		(MC14	P)   : MUX 34		Ref (E73p)
-id00297			(MC4	FB)  : MUX 35		Ref (C43fb)
+id00303			(MC5	FB)  : MUX 0		Ref (C36fb)
+id00300			(MC15	FB)  : MUX 1		Ref (D62fb)
+nRST			(MC18	FB)  : MUX 2		Ref (GCLR)
+id00301			(MC14	FB)  : MUX 3		Ref (D61fb)
+id00310			(MC1	FB)  : MUX 4		Ref (A1fb)
+id00354			(MC12	FB)  : MUX 5		Ref (D57fb)
+SIMMPDA_0		(MC20	P)   : MUX 6		Ref (H121p)
+ADDR_25			(MC21	P)   : MUX 7		Ref (E65p)
+SIMMPDA_1		(MC19	P)   : MUX 8		Ref (H123p)
+id00305			(MC3	FB)  : MUX 9		Ref (B28fb)
+ADDR_27			(MC25	P)   : MUX 11		Ref (E69p)
+id00308			(MC10	FB)  : MUX 13		Ref (C46fb)
+ADDR_24			(MC22	P)   : MUX 15		Ref (D49p)
+id00299			(MC6	FB)  : MUX 16		Ref (C37fb)
+id00200QN		(MC9	FB)  : MUX 17		Ref (C45fb)
+SIMMPDA_2		(MC24	P)   : MUX 18		Ref (H125p)
+XXL_691			(MC4	FB)  : MUX 19		Ref (B30fb)
+SIMMSZ			(MC17	P)   : MUX 20		Ref (H128p)
+id00003			(MC11	FB)  : MUX 21		Ref (C48fb)
+id00351			(MC13	FB)  : MUX 25		Ref (D60fb)
+SIMMPDA_3		(MC23	P)   : MUX 28		Ref (H126p)
+id00024Q		(MC16	FB)  : MUX 29		Ref (D64fb)
+id00306			(MC7	FB)  : MUX 36		Ref (C39fb)
+id00302			(MC8	FB)  : MUX 38		Ref (C40fb)
+id00309			(MC2	FB)  : MUX 39		Ref (B27fb)
 
-FanIn assignment for block E [5]
+FanIn assignment for block D [14]
 {
-DRAM_nWR,
+ADDR_26,
+SIMMSZ,SIMMPDA_0,SIMMPDA_1,
+XXL_690,
+id00352,id00304,id00307,id00303,id00338,id00302,id00353,
+nRAMSEL,nAS,
+}
+Multiplexer assignment for block D
+SIMMSZ			(MC9	P)   : MUX 0		Ref (H128p)
+nRAMSEL			(MC13	P)   : MUX 1		Ref (A1p)
+SIMMPDA_0		(MC12	P)   : MUX 2		Ref (H121p)
+id00352			(MC7	FB)  : MUX 3		Ref (D59fb)
+SIMMPDA_1		(MC11	P)   : MUX 8		Ref (H123p)
+ADDR_26			(MC10	P)   : MUX 11		Ref (E67p)
+id00304			(MC3	FB)  : MUX 12		Ref (C38fb)
+id00307			(MC1	FB)  : MUX 16		Ref (C35fb)
+id00303			(MC2	FB)  : MUX 18		Ref (C36fb)
+id00338			(MC8	FB)  : MUX 19		Ref (D63fb)
+nAS			(MC14	P)   : MUX 29		Ref (A3p)
+XXL_690			(MC5	FB)  : MUX 37		Ref (C47fb)
+id00302			(MC4	FB)  : MUX 38		Ref (C40fb)
+id00353			(MC6	FB)  : MUX 39		Ref (D58fb)
+
+FanIn assignment for block E [24]
+{
+ADDR_14,ADDR_2,ADDR_4,ADDR_3,ADDR_6,ADDR_5,ADDR_13,ADDR_16,ADDR_18,ADDR_17,ADDR_15,
+DRAM_ADDR_0,DRAM_nWR,DRAM_ADDR_1,DRAM_ADDR_3,DRAM_ADDR_2,DRAM_ADDR_4,
 RnW,
-id00250,id00254,
+SIMMSZ,
+id00304,id00303,id00302,id00307,
 nRST,
 }
 Multiplexer assignment for block E
-RnW			(MC4	P)   : MUX 4		Ref (B30p)
-id00250			(MC2	FB)  : MUX 10		Ref (B21fb)
-id00254			(MC1	FB)  : MUX 26		Ref (B17fb)
-DRAM_nWR		(MC3	P)   : MUX 32		Ref (E80p)
-nRST			(MC5	FB)  : MUX 36		Ref (GCLR)
+DRAM_ADDR_0		(MC6	P)   : MUX 0		Ref (E73p)
+ADDR_14			(MC17	P)   : MUX 1		Ref (C33p)
+id00304			(MC3	FB)  : MUX 2		Ref (C38fb)
+RnW			(MC13	P)   : MUX 4		Ref (B30p)
+DRAM_nWR		(MC5	P)   : MUX 5		Ref (E72p)
+DRAM_ADDR_1		(MC7	P)   : MUX 6		Ref (E75p)
+ADDR_2			(MC19	P)   : MUX 7		Ref (B22p)
+DRAM_ADDR_3		(MC9	P)   : MUX 8		Ref (E78p)
+ADDR_4			(MC21	P)   : MUX 9		Ref (B19p)
+SIMMSZ			(MC11	P)   : MUX 10		Ref (H128p)
+ADDR_3			(MC18	P)   : MUX 11		Ref (B21p)
+ADDR_6			(MC24	P)   : MUX 12		Ref (C46p)
+nRST			(MC12	FB)  : MUX 14		Ref (GCLR)
+ADDR_5			(MC23	P)   : MUX 15		Ref (B17p)
+DRAM_ADDR_2		(MC8	P)   : MUX 16		Ref (E77p)
+id00303			(MC2	FB)  : MUX 18		Ref (C36fb)
+id00302			(MC4	FB)  : MUX 20		Ref (C40fb)
+ADDR_13			(MC14	P)   : MUX 23		Ref (C35p)
+ADDR_16			(MC20	P)   : MUX 28		Ref (D62p)
+ADDR_18			(MC15	P)   : MUX 30		Ref (D59p)
+DRAM_ADDR_4		(MC10	P)   : MUX 32		Ref (E80p)
+id00307			(MC1	FB)  : MUX 34		Ref (C35fb)
+ADDR_17			(MC22	P)   : MUX 36		Ref (D61p)
+ADDR_15			(MC16	P)   : MUX 38		Ref (D64p)
 
 FanIn assignment for block F [33]
 {
-ADDR_19,ADDR_14,ADDR_2,ADDR_17,ADDR_4,ADDR_8,ADDR_3,ADDR_5,ADDR_20,ADDR_9,ADDR_6,ADDR_10,ADDR_22,ADDR_18,ADDR_16,ADDR_21,ADDR_7,ADDR_13,ADDR_15,
-DRAM_ADDR_1,DRAM_ADDR_5,DRAM_ADDR_0,DRAM_ADDR_6,DRAM_ADDR_7,DRAM_ADDR_4,DRAM_ADDR_3,DRAM_ADDR_8,DRAM_ADDR_2,
+ADDR_24,ADDR_19,ADDR_11,ADDR_8,ADDR_25,ADDR_7,ADDR_26,ADDR_18,ADDR_12,ADDR_9,ADDR_10,ADDR_13,ADDR_22,ADDR_23,ADDR_21,ADDR_20,
+DRAM_ADDR_6,DRAM_ADDR_10,DRAM_ADDR_5,DRAM_nRASA_1,DRAM_ADDR_8,DRAM_nRASA_0,DRAM_ADDR_9,DRAM_ADDR_11,DRAM_ADDR_7,
 SIMMSZ,
-id00251,id00254,id00249,
+id00302,id00092QN,id00307,id00305,id00304,id00309,
 nRST,
 }
 Multiplexer assignment for block F
-DRAM_ADDR_1		(MC5	P)   : MUX 1		Ref (F83p)
-DRAM_ADDR_5		(MC9	P)   : MUX 2		Ref (F89p)
-DRAM_ADDR_0		(MC4	P)   : MUX 3		Ref (F81p)
-ADDR_19			(MC27	P)   : MUX 4		Ref (D57p)
-ADDR_14			(MC17	P)   : MUX 5		Ref (C33p)
-DRAM_ADDR_6		(MC10	P)   : MUX 6		Ref (F91p)
-ADDR_2			(MC16	P)   : MUX 7		Ref (B22p)
-ADDR_17			(MC29	P)   : MUX 8		Ref (D61p)
-ADDR_4			(MC14	P)   : MUX 9		Ref (B19p)
-ADDR_8			(MC21	P)   : MUX 10		Ref (C43p)
-ADDR_3			(MC15	P)   : MUX 11		Ref (B21p)
-DRAM_ADDR_7		(MC11	P)   : MUX 12		Ref (F93p)
-ADDR_5			(MC13	P)   : MUX 13		Ref (B17p)
-ADDR_20			(MC26	P)   : MUX 15		Ref (D56p)
-ADDR_9			(MC20	P)   : MUX 16		Ref (C41p)
-DRAM_ADDR_4		(MC8	P)   : MUX 17		Ref (F88p)
-DRAM_ADDR_3		(MC7	P)   : MUX 19		Ref (F86p)
-ADDR_6			(MC23	P)   : MUX 20		Ref (C46p)
-ADDR_10			(MC19	P)   : MUX 21		Ref (C40p)
-DRAM_ADDR_8		(MC12	P)   : MUX 22		Ref (F94p)
-DRAM_ADDR_2		(MC6	P)   : MUX 23		Ref (F85p)
-nRST			(MC33	FB)  : MUX 24		Ref (GCLR)
-ADDR_22			(MC24	P)   : MUX 25		Ref (D53p)
-ADDR_18			(MC28	P)   : MUX 26		Ref (D59p)
-SIMMSZ			(MC32	P)   : MUX 27		Ref (E70p)
-id00251			(MC2	FB)  : MUX 30		Ref (B22fb)
-ADDR_16			(MC30	P)   : MUX 32		Ref (D62p)
-ADDR_21			(MC25	P)   : MUX 33		Ref (D54p)
-ADDR_7			(MC22	P)   : MUX 34		Ref (C45p)
-ADDR_13			(MC18	P)   : MUX 35		Ref (C35p)
-id00254			(MC1	FB)  : MUX 36		Ref (B17fb)
-id00249			(MC3	FB)  : MUX 37		Ref (B25fb)
-ADDR_15			(MC31	P)   : MUX 38		Ref (D64p)
+id00302			(MC5	FB)  : MUX 0		Ref (C40fb)
+DRAM_ADDR_6		(MC8	P)   : MUX 1		Ref (F83p)
+DRAM_ADDR_10		(MC12	P)   : MUX 2		Ref (F89p)
+DRAM_ADDR_5		(MC7	P)   : MUX 3		Ref (F81p)
+ADDR_24			(MC20	P)   : MUX 5		Ref (D49p)
+ADDR_19			(MC23	P)   : MUX 6		Ref (D57p)
+ADDR_11			(MC32	P)   : MUX 7		Ref (C38p)
+DRAM_nRASA_1		(MC15	P)   : MUX 8		Ref (F94p)
+ADDR_8			(MC26	P)   : MUX 10		Ref (C43p)
+DRAM_ADDR_8		(MC10	P)   : MUX 11		Ref (F86p)
+DRAM_nRASA_0		(MC14	P)   : MUX 12		Ref (F93p)
+ADDR_25			(MC19	P)   : MUX 13		Ref (E65p)
+ADDR_7			(MC24	P)   : MUX 14		Ref (C45p)
+ADDR_26			(MC18	P)   : MUX 15		Ref (E67p)
+ADDR_18			(MC22	P)   : MUX 16		Ref (D59p)
+DRAM_ADDR_9		(MC11	P)   : MUX 17		Ref (F88p)
+ADDR_12			(MC33	P)   : MUX 19		Ref (C37p)
+ADDR_9			(MC28	P)   : MUX 20		Ref (C41p)
+ADDR_10			(MC30	P)   : MUX 21		Ref (C40p)
+ADDR_13			(MC21	P)   : MUX 23		Ref (C35p)
+DRAM_ADDR_11		(MC13	P)   : MUX 24		Ref (F91p)
+ADDR_22			(MC29	P)   : MUX 25		Ref (D53p)
+ADDR_23			(MC31	P)   : MUX 27		Ref (D51p)
+ADDR_21			(MC27	P)   : MUX 29		Ref (D54p)
+DRAM_ADDR_7		(MC9	P)   : MUX 31		Ref (F85p)
+SIMMSZ			(MC16	P)   : MUX 32		Ref (H128p)
+id00092QN		(MC6	FB)  : MUX 33		Ref (C42fb)
+id00307			(MC3	FB)  : MUX 34		Ref (C35fb)
+ADDR_20			(MC25	P)   : MUX 35		Ref (D56p)
+nRST			(MC17	FB)  : MUX 36		Ref (GCLR)
+id00305			(MC2	FB)  : MUX 37		Ref (B28fb)
+id00304			(MC4	FB)  : MUX 38		Ref (C38fb)
+id00309			(MC1	FB)  : MUX 39		Ref (B27fb)
 
-FanIn assignment for block G [34]
+FanIn assignment for block G [27]
 {
-ADDR_1,ADDR_23,ADDR_0,ADDR_12,ADDR_24,ADDR_11,ADDR_26,ADDR_22,ADDR_13,ADDR_25,
-DRAM_nRASA_0,DRAM_nCASA_0,DRAM_ADDR_10,DRAM_ADDR_9,DRAM_nCASA_1,DRAM_ADDR_11,DRAM_nRASA_1,
+ADDR_24,ADDR_26,ADDR_0,ADDR_1,
+DRAM_nCASA_1,DRAM_nCASA_3,DRAM_nRASB_1,DRAM_nCASA_0,DRAM_nRASA_1,DRAM_nRASA_0,DRAM_nRASB_0,
 RnW,
 SIZ_1,SIMMSZ,SIZ_0,
-id00252,id00026Q,id00068QN,id00254,id00255,id00246,id00046QN,id00247,id00251,id00250,id00074QN,id00249,
+XXL_692,
+id00064QN,id00078QN,id00300,id00299,id00303,id00024Q,id00049QN,id00305,id00302,id00309,
 nRST,
 }
 Multiplexer assignment for block G
-RnW			(MC24	P)   : MUX 0		Ref (B30p)
-DRAM_nRASA_0		(MC16	P)   : MUX 1		Ref (G102p)
-nRST			(MC34	FB)  : MUX 2		Ref (GCLR)
-ADDR_1			(MC20	P)   : MUX 3		Ref (B24p)
-DRAM_nCASA_0		(MC18	P)   : MUX 4		Ref (G109p)
-DRAM_ADDR_10		(MC14	P)   : MUX 5		Ref (G99p)
-id00252			(MC3	FB)  : MUX 6		Ref (B18fb)
-DRAM_ADDR_9		(MC13	P)   : MUX 7		Ref (G97p)
-DRAM_nCASA_1		(MC19	P)   : MUX 8		Ref (G110p)
-DRAM_ADDR_11		(MC15	P)   : MUX 9		Ref (G101p)
-id00026Q		(MC11	FB)  : MUX 10		Ref (C39fb)
-id00068QN		(MC9	FB)  : MUX 11		Ref (B26fb)
-id00254			(MC2	FB)  : MUX 12		Ref (B17fb)
-ADDR_23			(MC29	P)   : MUX 13		Ref (D51p)
-ADDR_0			(MC21	P)   : MUX 14		Ref (B25p)
-DRAM_nRASA_1		(MC17	P)   : MUX 15		Ref (G104p)
-id00255			(MC12	FB)  : MUX 17		Ref (C45fb)
-id00246			(MC5	FB)  : MUX 18		Ref (B20fb)
-ADDR_12			(MC26	P)   : MUX 19		Ref (C37p)
-SIZ_1			(MC22	P)   : MUX 20		Ref (B27p)
-id00046QN		(MC1	FB)  : MUX 21		Ref (A12fb)
-id00247			(MC4	FB)  : MUX 22		Ref (B19fb)
-ADDR_24			(MC28	P)   : MUX 23		Ref (D49p)
-ADDR_11			(MC27	P)   : MUX 25		Ref (C38p)
-id00251			(MC7	FB)  : MUX 26		Ref (B22fb)
-SIMMSZ			(MC33	P)   : MUX 27		Ref (E70p)
-id00250			(MC6	FB)  : MUX 28		Ref (B21fb)
-ADDR_26			(MC32	P)   : MUX 29		Ref (E67p)
-ADDR_22			(MC30	P)   : MUX 31		Ref (D53p)
-SIZ_0			(MC23	P)   : MUX 32		Ref (B29p)
-id00074QN		(MC10	FB)  : MUX 33		Ref (B27fb)
-ADDR_13			(MC25	P)   : MUX 35		Ref (C35p)
-id00249			(MC8	FB)  : MUX 37		Ref (B25fb)
-ADDR_25			(MC31	P)   : MUX 39		Ref (E65p)
+SIZ_1			(MC26	P)   : MUX 0		Ref (B27p)
+DRAM_nCASA_1		(MC15	P)   : MUX 1		Ref (G102p)
+DRAM_nCASA_3		(MC16	P)   : MUX 2		Ref (G105p)
+ADDR_24			(MC27	P)   : MUX 5		Ref (D49p)
+DRAM_nRASB_1		(MC18	P)   : MUX 6		Ref (G109p)
+DRAM_nCASA_0		(MC14	P)   : MUX 7		Ref (G101p)
+DRAM_nRASA_1		(MC13	P)   : MUX 8		Ref (F94p)
+SIMMSZ			(MC19	P)   : MUX 10		Ref (H128p)
+ADDR_26			(MC22	P)   : MUX 11		Ref (E67p)
+DRAM_nRASA_0		(MC12	P)   : MUX 12		Ref (F93p)
+id00064QN		(MC9	FB)  : MUX 13		Ref (C43fb)
+id00078QN		(MC8	FB)  : MUX 15		Ref (C41fb)
+ADDR_0			(MC24	P)   : MUX 16		Ref (B25p)
+RnW			(MC21	P)   : MUX 18		Ref (B30p)
+id00300			(MC10	FB)  : MUX 21		Ref (D62fb)
+id00299			(MC6	FB)  : MUX 22		Ref (C37fb)
+ADDR_1			(MC23	P)   : MUX 23		Ref (B24p)
+id00303			(MC5	FB)  : MUX 26		Ref (C36fb)
+DRAM_nRASB_0		(MC17	P)   : MUX 28		Ref (G107p)
+id00024Q		(MC11	FB)  : MUX 29		Ref (D64fb)
+XXL_692			(MC4	FB)  : MUX 31		Ref (B31fb)
+SIZ_0			(MC25	P)   : MUX 32		Ref (B29p)
+id00049QN		(MC3	FB)  : MUX 35		Ref (B29fb)
+nRST			(MC20	FB)  : MUX 36		Ref (GCLR)
+id00305			(MC2	FB)  : MUX 37		Ref (B28fb)
+id00302			(MC7	FB)  : MUX 38		Ref (C40fb)
+id00309			(MC1	FB)  : MUX 39		Ref (B27fb)
 
-FanIn assignment for block H [28]
+FanIn assignment for block H [18]
 {
-ADDR_1,ADDR_24,ADDR_26,ADDR_0,
-DRAM_nCASB_3,DRAM_nCASB_1,DRAM_nCASA_3,DRAM_nRASB_0,DRAM_nRASB_1,DRAM_nCASB_0,
+ADDR_1,ADDR_0,
+DRAM_nCASB_0,DRAM_nCASB_3,DRAM_nCASB_1,DRAM_nRASB_1,
 RnW,
-SIMMSZ,SIZ_1,SIZ_0,
-XXL_607,XXL_606,
-id00046QN,id00246,id00252,id00249,id00026Q,id00247,id00068QN,id00030QN,id00250,id00255,id00058QN,
+SIZ_1,SIZ_0,
+XXL_693,
+id00302,id00028QN,id00299,id00049QN,id00303,id00024Q,id00300,
 nRST,
 }
 Multiplexer assignment for block H
-DRAM_nCASB_3		(MC19	P)   : MUX 0		Ref (H128p)
-id00046QN		(MC1	FB)  : MUX 1		Ref (A12fb)
-ADDR_1			(MC20	P)   : MUX 3		Ref (B24p)
-id00246			(MC4	FB)  : MUX 4		Ref (B20fb)
-ADDR_24			(MC25	P)   : MUX 5		Ref (D49p)
-id00252			(MC2	FB)  : MUX 6		Ref (B18fb)
-id00249			(MC6	FB)  : MUX 7		Ref (B25fb)
-DRAM_nCASB_1		(MC18	P)   : MUX 8		Ref (H125p)
-DRAM_nCASA_3		(MC14	P)   : MUX 9		Ref (H115p)
-id00026Q		(MC12	FB)  : MUX 10		Ref (C39fb)
-ADDR_26			(MC26	P)   : MUX 11		Ref (E67p)
-DRAM_nRASB_0		(MC15	P)   : MUX 13		Ref (H117p)
-ADDR_0			(MC21	P)   : MUX 14		Ref (B25p)
-id00247			(MC3	FB)  : MUX 16		Ref (B19fb)
-SIMMSZ			(MC27	P)   : MUX 17		Ref (E70p)
-SIZ_1			(MC22	P)   : MUX 20		Ref (B27p)
-id00068QN		(MC7	FB)  : MUX 21		Ref (B26fb)
-RnW			(MC24	P)   : MUX 22		Ref (B30p)
-DRAM_nRASB_1		(MC16	P)   : MUX 25		Ref (H118p)
-DRAM_nCASB_0		(MC17	P)   : MUX 26		Ref (H123p)
-id00030QN		(MC8	FB)  : MUX 27		Ref (B28fb)
-id00250			(MC5	FB)  : MUX 28		Ref (B21fb)
-XXL_607			(MC10	FB)  : MUX 31		Ref (B31fb)
-SIZ_0			(MC23	P)   : MUX 32		Ref (B29p)
-id00255			(MC13	FB)  : MUX 35		Ref (C45fb)
-nRST			(MC28	FB)  : MUX 36		Ref (GCLR)
-XXL_606			(MC11	FB)  : MUX 37		Ref (B32fb)
-id00058QN		(MC9	FB)  : MUX 39		Ref (B29fb)
+SIZ_1			(MC18	P)   : MUX 0		Ref (B27p)
+id00302			(MC5	FB)  : MUX 6		Ref (C40fb)
+id00028QN		(MC6	FB)  : MUX 7		Ref (C44fb)
+id00299			(MC4	FB)  : MUX 8		Ref (C37fb)
+ADDR_1			(MC15	P)   : MUX 9		Ref (B24p)
+XXL_693			(MC2	FB)  : MUX 11		Ref (B32fb)
+DRAM_nCASB_0		(MC10	P)   : MUX 13		Ref (H115p)
+id00049QN		(MC1	FB)  : MUX 15		Ref (B29fb)
+SIZ_0			(MC17	P)   : MUX 16		Ref (B29p)
+RnW			(MC14	P)   : MUX 18		Ref (B30p)
+DRAM_nCASB_3		(MC12	P)   : MUX 19		Ref (H120p)
+DRAM_nCASB_1		(MC11	P)   : MUX 21		Ref (H117p)
+DRAM_nRASB_1		(MC9	P)   : MUX 22		Ref (G109p)
+id00303			(MC3	FB)  : MUX 26		Ref (C36fb)
+ADDR_0			(MC16	P)   : MUX 30		Ref (B25p)
+nRST			(MC13	FB)  : MUX 36		Ref (GCLR)
+id00024Q		(MC8	FB)  : MUX 37		Ref (D64fb)
+id00300			(MC7	FB)  : MUX 39		Ref (D62fb)
 
 Creating JEDEC file dramctl.jed ...
 
 TQFP100 programmed logic:
 -----------------------------------
-DRAM_nRASA_3 = DRAM_nRASA_1.Q;
-
 DRAM_nRASA_2 = DRAM_nRASA_0.Q;
+
+DRAM_nRASA_3 = DRAM_nRASA_1.Q;
 
 DRAM_nRASB_2 = DRAM_nRASB_0.Q;
 
@@ -506,410 +552,446 @@ DRAM_nRASB_3 = DRAM_nRASB_1.Q;
 
 DSACK_1 = DSACK_0.Q;
 
-id00003.D = ((id00003.Q & !id00282.Q & !id00296.Q)
-	# id00249.Q
-	# (!id00299.Q & id00003.Q & !id00282.Q));
+id00299.D = id00309.Q;
 
-id00246.D = id00255.Q;
+id00300.D = id00307.Q;
 
-id00247.D = id00254.Q;
+id00301.D = id00304.Q;
 
-id00248.D = id00251.Q;
+id00303.D = (id00310.Q & id00003.Q);
 
-id00250.D = (id00282.Q & id00003.Q);
+id00306.D = (id00300.Q
+	# (id00351.Q & id00306.Q));
 
-id00251.D = (id00299.Q & id00296.Q & id00003.Q & !id00282.Q);
+id00305.D = id00299.Q;
 
-id00252.D = id00246.Q;
+id00307.D = id00301.Q;
 
-id00253.D = (id00247.Q
-	# (id00253.Q & id00296.Q));
+id00309.D = id00303.Q;
 
-id00254.D = id00248.Q;
+!DRAM_nWR.D = ((!id00303.Q & id00307.Q & !RnW)
+	# (!id00303.Q & !id00307.Q & !DRAM_nWR.Q));
 
-id00255.D = id00250.Q;
+BERR.D = ((!id00308.Q & BERR.Q)
+	# (id00308.Q & id00351.Q));
 
-!DRAM_nWR.D = ((!id00250.Q & id00254.Q & !RnW)
-	# (!id00250.Q & !id00254.Q & !DRAM_nWR.Q));
+id00351.D = id00352.Q;
 
-id00297.D = !nAS;
+id00352.D = !nAS;
 
-id00296.D = id00297.Q;
+id00353.D = !nRAMSEL;
 
-id00298.D = !nRAMSEL;
+id00354.D = id00353.Q;
 
-id00299.D = id00298.Q;
+!id00189QN = (!id00339.Q & id00340.Q & id00341.Q & !id00342.Q & id00343.Q & id00344.Q & id00345.Q & !id00346.Q & id00347.Q & !id00348.Q & !id00349.Q & !id00350.Q);
 
-!id00011QN = (!id00284.Q & id00285.Q & id00286.Q & !id00287.Q & id00288.Q & id00289.Q & id00290.Q & !id00291.Q & id00292.Q & !id00293.Q & !id00294.Q & !id00295.Q);
+id00003.D = ((id00003.Q & !id00310.Q & !id00354.Q)
+	# (!id00351.Q & id00308.Q)
+	# id00302.Q
+	# (!id00351.Q & id00003.Q & !id00310.Q));
 
-id00249.D = (id00252.Q
-	# (id00253.Q & !id00296.Q));
+id00302.D = (id00305.Q
+	# (id00306.Q & !id00351.Q));
 
-DSACK_0.D = ((!id00249.Q & DSACK_0.Q)
-	# (!id00249.Q & id00253.Q));
+DSACK_0.D = ((!id00302.Q & DSACK_0.Q)
+	# (!id00302.Q & id00306.Q));
 
-id00283.D = ((!id00249.Q & id00283.Q)
-	# (!id00249.Q & id00250.Q));
+id00338.D = ((!id00302.Q & id00338.Q)
+	# (!id00302.Q & id00303.Q));
 
-id00026Q = ((!SIMMPD_1 & SIMMPD_0 & !SIMMSZ & !ADDR_27)
-	# XXL_605);
+id00024Q = ((!SIMMPDA_0 & SIMMPDA_1 & !SIMMSZ & !ADDR_26)
+	# XXL_690);
 
-id00046QN = (id00249.Q
-	# id00246.Q
-	# (!id00250.Q & !RnW & !ADDR_1 & !ADDR_0 & !SIZ_0 & SIZ_1)
-	# (!id00250.Q & !RnW & !ADDR_1 & SIZ_0 & !SIZ_1)
-	# (!id00250.Q & !RnW & ADDR_1 & ADDR_0));
+id00049QN = (id00302.Q
+	# id00299.Q
+	# (!id00303.Q & !RnW & !ADDR_1 & !ADDR_0 & !SIZ_0 & SIZ_1)
+	# (!id00303.Q & !RnW & !ADDR_1 & SIZ_0 & !SIZ_1)
+	# (!id00303.Q & !RnW & ADDR_1 & ADDR_0));
 
-!id00186Q = (id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q);
+!id00225Q = (id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q);
 
-id00282.D = ((id00282.Q & !id00283.Q)
-	# (!id00284.Q & id00285.Q & id00286.Q & !id00287.Q & id00288.Q & id00289.Q & id00290.Q & !id00291.Q & id00292.Q & !id00293.Q & !id00294.Q & !id00295.Q));
+id00342.D = ((id00342.Q & !id00340.Q)
+	# (!id00342.Q & id00339.Q & id00340.Q & id00341.Q)
+	# (id00342.Q & !id00341.Q)
+	# (id00342.Q & !id00339.Q));
 
-id00284.D = (!id00284.Q & id00011QN);
+id00310.D = ((id00310.Q & !id00338.Q)
+	# (!id00339.Q & id00340.Q & id00341.Q & !id00342.Q & id00343.Q & id00344.Q & id00345.Q & !id00346.Q & id00347.Q & !id00348.Q & !id00349.Q & !id00350.Q));
 
-id00285.D = ((id00011QN & id00284.Q & !id00285.Q)
-	# (id00011QN & !id00284.Q & id00285.Q));
+id00339.D = (!id00339.Q & id00189QN);
 
-id00286.D = ((id00011QN & id00286.Q & !id00285.Q)
-	# (id00011QN & !id00286.Q & id00284.Q & id00285.Q)
-	# (id00011QN & id00286.Q & !id00284.Q));
+id00340.D = ((id00189QN & id00339.Q & !id00340.Q)
+	# (id00189QN & !id00339.Q & id00340.Q));
 
-id00030QN = ((!id00247.Q & !id00249.Q & !id00246.Q & !id00250.Q)
-	# (id00247.Q & id00026Q));
+id00341.D = ((id00189QN & id00341.Q & !id00340.Q)
+	# (id00189QN & !id00341.Q & id00339.Q & id00340.Q)
+	# (id00189QN & id00341.Q & !id00339.Q));
 
-id00074QN = ((id00248.Q & !id00026Q)
-	# (!id00248.Q & !id00249.Q & !id00252.Q & !id00255.Q));
+id00343.D = ((id00189QN & id00343.Q & !id00342.Q)
+	# (id00189QN & id00343.Q & !id00340.Q)
+	# (id00189QN & id00343.Q & !id00341.Q)
+	# (id00189QN & !id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q)
+	# (id00189QN & id00343.Q & !id00339.Q));
 
-id00058QN = ((!id00248.Q & !id00249.Q & !id00252.Q & !id00255.Q)
-	# (id00248.Q & id00026Q));
+id00028QN = ((!id00300.Q & !id00302.Q & !id00299.Q & !id00303.Q)
+	# (id00300.Q & id00024Q));
 
-id00068QN = ((id00247.Q & !id00026Q)
-	# (!id00247.Q & !id00249.Q & !id00246.Q & !id00250.Q));
+id00064QN = ((!id00301.Q & !id00302.Q & !id00305.Q & !id00309.Q)
+	# (id00301.Q & id00024Q));
 
-DRAM_ADDR_0.D = ((!nRST & DRAM_ADDR_0.Q)
-	# (!id00254.Q & DRAM_ADDR_0.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_13)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_2)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_14));
+id00078QN = ((id00300.Q & !id00024Q)
+	# (!id00300.Q & !id00302.Q & !id00299.Q & !id00303.Q));
 
-DRAM_ADDR_1.D = ((!nRST & DRAM_ADDR_1.Q)
-	# (!id00254.Q & DRAM_ADDR_1.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_14)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_3)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_15));
+id00092QN = ((id00301.Q & !id00024Q)
+	# (!id00301.Q & !id00302.Q & !id00305.Q & !id00309.Q));
 
-DRAM_ADDR_4.D = ((!nRST & DRAM_ADDR_4.Q)
-	# (!id00254.Q & DRAM_ADDR_4.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_17)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_6)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_18));
+id00200QN = ((SIMMPDA_3 & SIMMPDA_2 & !SIMMPDA_1 & SIMMPDA_0 & id00024Q)
+	# XXL_691);
 
-DRAM_ADDR_2.D = ((!nRST & DRAM_ADDR_2.Q)
-	# (!id00254.Q & DRAM_ADDR_2.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_15)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_4)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_16));
-
-DRAM_ADDR_3.D = ((!nRST & DRAM_ADDR_3.Q)
-	# (!id00254.Q & DRAM_ADDR_3.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_16)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_5)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_17));
-
-DRAM_ADDR_5.D = ((!nRST & DRAM_ADDR_5.Q)
-	# (!id00254.Q & DRAM_ADDR_5.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_18)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_7)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_19));
-
-DRAM_ADDR_6.D = ((!nRST & DRAM_ADDR_6.Q)
-	# (!id00254.Q & DRAM_ADDR_6.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_19)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_8)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_20));
-
-DRAM_ADDR_7.D = ((!nRST & DRAM_ADDR_7.Q)
-	# (!id00254.Q & DRAM_ADDR_7.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_20)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_9)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_21));
-
-DRAM_ADDR_8.D = ((!nRST & DRAM_ADDR_8.Q)
-	# (!id00254.Q & DRAM_ADDR_8.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_21)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_10)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_22));
-
-DRAM_ADDR_11.D = ((DRAM_ADDR_11.Q & !id00249.Q & !id00254.Q & !id00251.Q)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_25)
-	# (nRST & !id00249.Q & !id00254.Q & id00251.Q & !SIMMSZ & ADDR_13)
-	# (!nRST & DRAM_ADDR_11.Q));
-
-DRAM_ADDR_9.D = ((!nRST & DRAM_ADDR_9.Q)
-	# (!id00254.Q & DRAM_ADDR_9.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_22)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_11)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_23));
-
-DRAM_ADDR_10.D = ((!nRST & DRAM_ADDR_10.Q)
-	# (!id00254.Q & DRAM_ADDR_10.Q & !id00249.Q & !id00251.Q)
-	# (nRST & id00254.Q & SIMMSZ & ADDR_23)
-	# (nRST & !id00254.Q & !id00249.Q & id00251.Q & ADDR_12)
-	# (nRST & id00254.Q & !SIMMSZ & ADDR_24));
-
-id00287.D = ((id00287.Q & !id00284.Q)
-	# (!id00287.Q & id00286.Q & id00284.Q & id00285.Q)
-	# (id00287.Q & !id00285.Q)
-	# (id00287.Q & !id00286.Q));
-
-id00288.D = ((id00011QN & id00288.Q & !id00284.Q)
-	# (id00011QN & !id00288.Q & id00286.Q & id00284.Q & id00285.Q & id00287.Q)
-	# (id00011QN & id00288.Q & !id00287.Q)
-	# (id00011QN & id00288.Q & !id00285.Q)
-	# (id00011QN & id00288.Q & !id00286.Q));
-
-id00289.D = ((id00011QN & id00186Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q)
-	# (id00011QN & id00186Q & id00289.Q));
-
-!id00194QN = (id00290.Q & id00291.Q & id00292.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q);
-
-!DRAM_nCASA_0.D = ((!id00246.Q & !id00247.Q & !id00249.Q & !DRAM_nCASA_0.Q)
-	# (id00247.Q & !DRAM_nCASA_0.Q & !id00026Q)
-	# (!id00246.Q & id00247.Q & !id00249.Q & id00026Q & RnW)
-	# (!id00246.Q & id00247.Q & !id00249.Q & id00026Q & !SIZ_1 & !SIZ_0)
-	# (!id00246.Q & !id00249.Q & id00250.Q & id00026Q)
-	# (!id00246.Q & id00247.Q & !id00249.Q & id00026Q & ADDR_1 & ADDR_0)
-	# (!id00246.Q & id00247.Q & !id00249.Q & id00026Q & SIZ_1 & ADDR_1)
-	# (!id00246.Q & id00247.Q & !id00249.Q & id00026Q & SIZ_1 & SIZ_0 & ADDR_0)
-	# (!id00246.Q & !id00247.Q & !id00249.Q & id00250.Q));
-
-!DRAM_nRASA_1.D = ((!id00249.Q & !id00252.Q & !id00074QN & id00255.Q)
-	# (SIMMSZ & !id00249.Q & !id00252.Q & !id00074QN & ADDR_24)
-	# (id00074QN & !DRAM_nRASA_1.Q)
-	# (ADDR_26 & !SIMMSZ & !id00249.Q & !id00252.Q & !id00074QN));
-
-!DRAM_nRASA_0.D = ((!id00249.Q & !id00252.Q & !id00074QN & !ADDR_26 & !SIMMSZ)
-	# (!id00249.Q & !id00252.Q & !id00074QN & SIMMSZ & !ADDR_24)
-	# (id00074QN & !DRAM_nRASA_0.Q)
-	# (!id00249.Q & !id00252.Q & id00255.Q & !id00074QN));
-
-DRAM_nCASA_1.D = ((!id00068QN & id00046QN)
-	# (id00068QN & DRAM_nCASA_1.Q));
-
-DRAM_nCASA_2.D = (XXL_606);
-
-!DRAM_nCASA_3.D = ((!id00246.Q & !id00249.Q & !id00068QN & id00250.Q)
-	# (!id00246.Q & !id00249.Q & !id00068QN & !ADDR_1 & !ADDR_0)
-	# (id00068QN & !DRAM_nCASA_3.Q)
-	# (RnW & !id00246.Q & !id00249.Q & !id00068QN));
-
-!DRAM_nRASB_1.D = ((!id00249.Q & !id00252.Q & !id00058QN & id00255.Q)
-	# (SIMMSZ & !id00249.Q & !id00252.Q & !id00058QN & ADDR_24)
-	# (id00058QN & !DRAM_nRASB_1.Q)
-	# (ADDR_26 & !SIMMSZ & !id00249.Q & !id00252.Q & !id00058QN));
-
-DRAM_nCASB_1.D = ((!id00030QN & id00046QN)
-	# (id00030QN & DRAM_nCASB_1.Q));
+DRAM_ADDR_0.D = ((id00307.Q & !SIMMSZ & ADDR_14)
+	# (id00307.Q & SIMMSZ & ADDR_13)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_0.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_2));
 
-!DRAM_nRASB_0.D = ((!id00249.Q & !id00252.Q & !id00058QN & !ADDR_26 & !SIMMSZ)
-	# (!id00249.Q & !id00252.Q & !id00058QN & SIMMSZ & !ADDR_24)
-	# (id00058QN & !DRAM_nRASB_0.Q)
-	# (!id00249.Q & !id00252.Q & id00255.Q & !id00058QN));
-
-!DRAM_nCASB_0.D = ((!id00246.Q & !id00247.Q & !id00249.Q & !DRAM_nCASB_0.Q)
-	# (!id00246.Q & id00247.Q & !id00249.Q & RnW & !id00026Q)
-	# (!id00246.Q & id00247.Q & !id00249.Q & !id00026Q & !SIZ_1 & !SIZ_0)
-	# (!id00246.Q & !id00249.Q & id00250.Q & !id00026Q)
-	# (!id00246.Q & id00247.Q & !id00249.Q & !id00026Q & ADDR_1 & ADDR_0)
-	# (!id00246.Q & id00247.Q & !id00249.Q & !id00026Q & SIZ_1 & ADDR_1)
-	# (!id00246.Q & id00247.Q & !id00249.Q & !id00026Q & SIZ_1 & SIZ_0 & ADDR_0)
-	# (id00247.Q & !DRAM_nCASB_0.Q & id00026Q)
-	# (!id00246.Q & !id00247.Q & !id00249.Q & id00250.Q));
-
-DRAM_nCASB_2.D = (XXL_607);
-
-!DRAM_nCASB_3.D = ((!id00246.Q & !id00249.Q & !id00030QN & id00250.Q)
-	# (!id00246.Q & !id00249.Q & !id00030QN & !ADDR_1 & !ADDR_0)
-	# (id00030QN & !DRAM_nCASB_3.Q)
-	# (RnW & !id00246.Q & !id00249.Q & !id00030QN));
-
-id00290.D = ((id00011QN & id00290.Q & id00186Q)
-	# (id00011QN & !id00290.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q));
-
-id00291.D = ((id00291.Q & id00186Q)
-	# (id00291.Q & !id00290.Q)
-	# (!id00291.Q & id00290.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q));
-
-id00293.D = ((id00293.Q & id00194QN)
-	# (!id00293.Q & id00290.Q & id00291.Q & id00292.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q));
-
-id00292.D = ((id00011QN & !id00292.Q & id00290.Q & id00291.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q)
-	# (id00011QN & id00292.Q & !id00291.Q)
-	# (id00011QN & id00292.Q & id00186Q)
-	# (id00011QN & id00292.Q & !id00290.Q));
-
-id00294.D = ((!id00294.Q & id00293.Q & id00290.Q & id00291.Q & id00292.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q)
-	# (id00294.Q & !id00293.Q)
-	# (id00294.Q & id00194QN));
-
-id00295.D = ((!id00295.Q & id00293.Q & id00294.Q & id00290.Q & id00291.Q & id00292.Q & id00289.Q & id00288.Q & id00284.Q & id00287.Q & id00285.Q & id00286.Q)
-	# (id00295.Q & !id00294.Q)
-	# (id00295.Q & id00194QN)
-	# (id00295.Q & !id00293.Q));
-
-XXL_605 = ((SIMMPD_1 & SIMMPD_0 & !ADDR_24)
-	# (SIMMPD_1 & SIMMSZ & !ADDR_24)
-	# (!SIMMPD_1 & SIMMPD_0 & SIMMSZ & !ADDR_25)
-	# (!SIMMPD_1 & !SIMMPD_0 & !ADDR_24)
-	# (SIMMPD_1 & !SIMMPD_0 & !SIMMSZ & !ADDR_26));
-
-XXL_606 = ((!id00068QN & !id00250.Q & !RnW & SIZ_0 & !SIZ_1 & !ADDR_0)
-	# (!id00068QN & !id00250.Q & !RnW & ADDR_1)
-	# (!id00068QN & id00249.Q)
-	# (id00068QN & DRAM_nCASA_2.Q)
-	# (!id00068QN & id00246.Q));
-
-XXL_607 = ((!id00030QN & !id00250.Q & !RnW & SIZ_0 & !SIZ_1 & !ADDR_0)
-	# (!id00030QN & !id00250.Q & !RnW & ADDR_1)
-	# (!id00030QN & id00249.Q)
-	# (id00030QN & DRAM_nCASB_2.Q)
-	# (!id00030QN & id00246.Q));
-
-id00003.C = CLK;
-
-id00003.AP = !nRST;
-
-id00246.C = CLK;
-
-id00246.AR = !nRST;
-
-id00247.C = CLK;
-
-id00247.AR = !nRST;
-
-id00248.C = CLK;
-
-id00248.AR = !nRST;
-
-id00250.C = CLK;
-
-id00250.AR = !nRST;
-
-id00251.C = CLK;
-
-id00251.AR = !nRST;
-
-id00252.C = CLK;
-
-id00252.AR = !nRST;
-
-id00253.C = CLK;
-
-id00253.AR = !nRST;
-
-id00254.C = CLK;
-
-id00254.AR = !nRST;
-
-id00255.C = CLK;
-
-id00255.AR = !nRST;
-
-DRAM_nWR.C = CLK;
-
-DRAM_nWR.AP = !nRST;
-
-id00297.C = CLK;
-
-id00297.AR = !nRST;
-
-id00296.C = CLK;
-
-id00296.AR = !nRST;
-
-id00298.C = CLK;
-
-id00298.AR = !nRST;
+DRAM_ADDR_1.D = ((id00307.Q & !SIMMSZ & ADDR_15)
+	# (id00307.Q & SIMMSZ & ADDR_14)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_1.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_3));
+
+DRAM_ADDR_2.D = ((id00307.Q & !SIMMSZ & ADDR_16)
+	# (id00307.Q & SIMMSZ & ADDR_15)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_2.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_4));
+
+DRAM_ADDR_3.D = ((id00307.Q & !SIMMSZ & ADDR_17)
+	# (id00307.Q & SIMMSZ & ADDR_16)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_3.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_5));
+
+DRAM_ADDR_4.D = ((id00307.Q & !SIMMSZ & ADDR_18)
+	# (id00307.Q & SIMMSZ & ADDR_17)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_4.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_6));
+
+DRAM_ADDR_5.D = ((id00307.Q & !SIMMSZ & ADDR_19)
+	# (id00307.Q & SIMMSZ & ADDR_18)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_5.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_7));
+
+DRAM_ADDR_6.D = ((id00307.Q & !SIMMSZ & ADDR_20)
+	# (id00307.Q & SIMMSZ & ADDR_19)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_6.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_8));
+
+DRAM_ADDR_7.D = ((id00307.Q & !SIMMSZ & ADDR_21)
+	# (id00307.Q & SIMMSZ & ADDR_20)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_7.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_9));
+
+DRAM_ADDR_8.D = ((id00307.Q & !SIMMSZ & ADDR_22)
+	# (id00307.Q & SIMMSZ & ADDR_21)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_8.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_10));
+
+DRAM_ADDR_9.D = ((id00307.Q & !SIMMSZ & ADDR_23)
+	# (id00307.Q & SIMMSZ & ADDR_22)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_9.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_11));
+
+DRAM_ADDR_10.D = ((id00307.Q & !SIMMSZ & ADDR_24)
+	# (id00307.Q & SIMMSZ & ADDR_23)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_10.Q)
+	# (!id00302.Q & !id00307.Q & id00304.Q & ADDR_12));
+
+DRAM_ADDR_11.D = ((id00307.Q & !SIMMSZ & ADDR_25)
+	# (!id00302.Q & !id00307.Q & id00304.Q & !SIMMSZ & ADDR_13)
+	# (!id00302.Q & !id00307.Q & !id00304.Q & DRAM_ADDR_11.Q));
+
+id00344.D = ((id00189QN & id00225Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q)
+	# (id00189QN & id00225Q & id00344.Q));
+
+!id00233QN = (id00345.Q & id00346.Q & id00347.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q);
+
+!DRAM_nRASA_1.D = ((!id00302.Q & !id00305.Q & !id00092QN & id00309.Q)
+	# (SIMMSZ & !id00302.Q & !id00305.Q & !id00092QN & ADDR_24)
+	# (id00092QN & !DRAM_nRASA_1.Q)
+	# (ADDR_26 & !SIMMSZ & !id00302.Q & !id00305.Q & !id00092QN));
+
+id00304.D = (id00200QN & id00351.Q & id00354.Q & id00003.Q & !id00310.Q);
+
+id00308.D = ((id00351.Q & !id00200QN & id00354.Q & id00003.Q & !id00310.Q)
+	# (id00351.Q & id00308.Q));
+
+!DRAM_nRASA_0.D = ((!id00302.Q & !id00305.Q & !id00092QN & !ADDR_26 & !SIMMSZ)
+	# (!id00302.Q & !id00305.Q & !id00092QN & SIMMSZ & !ADDR_24)
+	# (id00092QN & !DRAM_nRASA_0.Q)
+	# (!id00302.Q & !id00305.Q & id00309.Q & !id00092QN));
+
+!DRAM_nCASA_0.D = ((!id00299.Q & !id00300.Q & !id00302.Q & !DRAM_nCASA_0.Q)
+	# (id00300.Q & !DRAM_nCASA_0.Q & !id00024Q)
+	# (!id00299.Q & id00300.Q & !id00302.Q & id00024Q & RnW)
+	# (!id00299.Q & id00300.Q & !id00302.Q & id00024Q & !SIZ_1 & !SIZ_0)
+	# (!id00299.Q & !id00302.Q & id00303.Q & id00024Q)
+	# (!id00299.Q & id00300.Q & !id00302.Q & id00024Q & ADDR_1 & ADDR_0)
+	# (!id00299.Q & id00300.Q & !id00302.Q & id00024Q & SIZ_1 & ADDR_1)
+	# (!id00299.Q & id00300.Q & !id00302.Q & id00024Q & SIZ_1 & SIZ_0 & ADDR_0)
+	# (!id00299.Q & !id00300.Q & !id00302.Q & id00303.Q));
+
+DRAM_nCASA_1.D = ((id00078QN & DRAM_nCASA_1.Q)
+	# (!id00078QN & id00049QN));
+
+DRAM_nCASA_2.D = (XXL_692);
+
+!DRAM_nCASA_3.D = ((!id00299.Q & !id00302.Q & !id00078QN & id00303.Q)
+	# (!id00299.Q & !id00302.Q & !id00078QN & !ADDR_1 & !ADDR_0)
+	# (id00078QN & !DRAM_nCASA_3.Q)
+	# (RnW & !id00299.Q & !id00302.Q & !id00078QN));
+
+!DRAM_nRASB_1.D = ((!id00302.Q & !id00305.Q & !id00064QN & id00309.Q)
+	# (SIMMSZ & !id00302.Q & !id00305.Q & !id00064QN & ADDR_24)
+	# (id00064QN & !DRAM_nRASB_1.Q)
+	# (ADDR_26 & !SIMMSZ & !id00302.Q & !id00305.Q & !id00064QN));
+
+!DRAM_nRASB_0.D = ((!id00302.Q & !id00305.Q & !id00064QN & !ADDR_26 & !SIMMSZ)
+	# (!id00302.Q & !id00305.Q & !id00064QN & SIMMSZ & !ADDR_24)
+	# (id00064QN & !DRAM_nRASB_0.Q)
+	# (!id00302.Q & !id00305.Q & id00309.Q & !id00064QN));
+
+!DRAM_nCASB_0.D = ((!id00299.Q & !id00300.Q & !id00302.Q & !DRAM_nCASB_0.Q)
+	# (!id00299.Q & id00300.Q & !id00302.Q & RnW & !id00024Q)
+	# (!id00299.Q & id00300.Q & !id00302.Q & !id00024Q & !SIZ_1 & !SIZ_0)
+	# (!id00299.Q & !id00302.Q & id00303.Q & !id00024Q)
+	# (!id00299.Q & id00300.Q & !id00302.Q & !id00024Q & ADDR_1 & ADDR_0)
+	# (!id00299.Q & id00300.Q & !id00302.Q & !id00024Q & SIZ_1 & ADDR_1)
+	# (!id00299.Q & id00300.Q & !id00302.Q & !id00024Q & SIZ_1 & SIZ_0 & ADDR_0)
+	# (id00300.Q & !DRAM_nCASB_0.Q & id00024Q)
+	# (!id00299.Q & !id00300.Q & !id00302.Q & id00303.Q));
+
+DRAM_nCASB_1.D = ((id00028QN & DRAM_nCASB_1.Q)
+	# (!id00028QN & id00049QN));
+
+DRAM_nCASB_2.D = (XXL_693);
+
+!DRAM_nCASB_3.D = ((!id00299.Q & !id00302.Q & !id00028QN & id00303.Q)
+	# (!id00299.Q & !id00302.Q & !id00028QN & !ADDR_1 & !ADDR_0)
+	# (id00028QN & !DRAM_nCASB_3.Q)
+	# (RnW & !id00299.Q & !id00302.Q & !id00028QN));
+
+id00345.D = ((id00189QN & id00345.Q & id00225Q)
+	# (id00189QN & !id00345.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q));
+
+id00346.D = ((id00346.Q & id00225Q)
+	# (id00346.Q & !id00345.Q)
+	# (!id00346.Q & id00345.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q));
+
+id00347.D = ((id00189QN & !id00347.Q & id00346.Q & id00345.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q)
+	# (id00189QN & id00347.Q & id00225Q)
+	# (id00189QN & id00347.Q & !id00345.Q)
+	# (id00189QN & id00347.Q & !id00346.Q));
+
+id00348.D = ((id00348.Q & id00233QN)
+	# (!id00348.Q & id00345.Q & id00346.Q & id00347.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q));
+
+id00349.D = ((!id00349.Q & id00348.Q & id00345.Q & id00346.Q & id00347.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q)
+	# (id00349.Q & !id00348.Q)
+	# (id00349.Q & id00233QN));
+
+id00350.D = ((!id00350.Q & id00348.Q & id00349.Q & id00345.Q & id00346.Q & id00347.Q & id00344.Q & id00343.Q & id00339.Q & id00342.Q & id00340.Q & id00341.Q)
+	# (id00350.Q & !id00349.Q)
+	# (id00350.Q & id00233QN)
+	# (id00350.Q & !id00348.Q));
+
+XXL_690 = ((!SIMMPDA_0 & SIMMSZ & !ADDR_24)
+	# (!SIMMPDA_0 & !SIMMPDA_1 & !ADDR_24)
+	# (SIMMPDA_0 & !SIMMPDA_1 & !SIMMSZ & !ADDR_27)
+	# (SIMMPDA_0 & !SIMMPDA_1 & SIMMSZ & !ADDR_25)
+	# (SIMMPDA_0 & SIMMPDA_1 & !ADDR_24));
+
+XXL_691 = ((SIMMPDA_3 & SIMMPDA_2 & SIMMPDA_1 & !SIMMPDA_0 & id00024Q)
+	# (SIMMPDA_3 & SIMMPDA_2 & SIMMPDA_1 & !SIMMPDA_0 & !ADDR_27 & SIMMPDB_3 & SIMMPDB_2 & SIMMPDB_1 & !SIMMPDB_0 & !SIMMSZ)
+	# (SIMMPDA_3 & SIMMPDA_2 & SIMMPDA_1 & !SIMMPDA_0 & SIMMPDB_3 & SIMMPDB_2 & SIMMPDB_1 & !SIMMPDB_0 & SIMMSZ & !ADDR_25)
+	# (SIMMPDA_3 & SIMMPDA_2 & !SIMMPDA_1 & SIMMPDA_0 & SIMMPDB_3 & SIMMPDB_2 & !SIMMPDB_1 & SIMMPDB_0 & !ADDR_26)
+	# (SIMMPDA_3 & SIMMPDA_2 & !SIMMPDA_1 & SIMMPDA_0 & SIMMPDB_3 & SIMMPDB_2 & !SIMMPDB_1 & SIMMPDB_0 & !SIMMSZ));
+
+XXL_692 = ((!id00078QN & !id00303.Q & !RnW & ADDR_1)
+	# (!id00078QN & id00302.Q)
+	# (id00078QN & DRAM_nCASA_2.Q)
+	# (!id00078QN & id00299.Q)
+	# (!id00078QN & !id00303.Q & !RnW & SIZ_0 & !SIZ_1 & !ADDR_0));
+
+XXL_693 = ((!id00028QN & !id00303.Q & !RnW & ADDR_1)
+	# (!id00028QN & id00302.Q)
+	# (id00028QN & DRAM_nCASB_2.Q)
+	# (!id00028QN & id00299.Q)
+	# (!id00028QN & !id00303.Q & !RnW & SIZ_0 & !SIZ_1 & !ADDR_0));
 
 id00299.C = CLK;
 
 id00299.AR = !nRST;
 
-id00249.C = CLK;
+id00300.C = CLK;
 
-id00249.AR = !nRST;
+id00300.AR = !nRST;
+
+id00301.C = CLK;
+
+id00301.AR = !nRST;
+
+id00303.C = CLK;
+
+id00303.AR = !nRST;
+
+id00306.C = CLK;
+
+id00306.AR = !nRST;
+
+id00305.C = CLK;
+
+id00305.AR = !nRST;
+
+id00307.C = CLK;
+
+id00307.AR = !nRST;
+
+id00309.C = CLK;
+
+id00309.AR = !nRST;
+
+DRAM_nWR.C = CLK;
+
+DRAM_nWR.AP = !nRST;
+
+BERR.C = CLK;
+
+BERR.AR = !nRST;
+
+id00351.C = CLK;
+
+id00351.AR = !nRST;
+
+id00352.C = CLK;
+
+id00352.AR = !nRST;
+
+id00353.C = CLK;
+
+id00353.AR = !nRST;
+
+id00354.C = CLK;
+
+id00354.AR = !nRST;
+
+id00003.C = CLK;
+
+id00003.AP = !nRST;
+
+id00302.C = CLK;
+
+id00302.AR = !nRST;
 
 DSACK_0.C = CLK;
 
 DSACK_0.AR = !nRST;
 
-id00283.C = CLK;
+id00338.C = CLK;
 
-id00283.AR = !nRST;
+id00338.AR = !nRST;
 
-id00282.C = CLK;
+id00342.C = CLK;
 
-id00282.AR = !nRST;
+id00342.AR = !nRST;
 
-id00284.C = CLK;
+id00310.C = CLK;
 
-id00284.AR = !nRST;
+id00310.AR = !nRST;
 
-id00285.C = CLK;
+id00339.C = CLK;
 
-id00285.AR = !nRST;
+id00339.AR = !nRST;
 
-id00286.C = CLK;
+id00340.C = CLK;
 
-id00286.AR = !nRST;
+id00340.AR = !nRST;
+
+id00341.C = CLK;
+
+id00341.AR = !nRST;
+
+id00343.C = CLK;
+
+id00343.AR = !nRST;
 
 DRAM_ADDR_0.C = CLK;
 
+DRAM_ADDR_0.AR = !nRST;
+
 DRAM_ADDR_1.C = CLK;
 
-DRAM_ADDR_4.C = CLK;
+DRAM_ADDR_1.AR = !nRST;
 
 DRAM_ADDR_2.C = CLK;
 
+DRAM_ADDR_2.AR = !nRST;
+
 DRAM_ADDR_3.C = CLK;
+
+DRAM_ADDR_3.AR = !nRST;
+
+DRAM_ADDR_4.C = CLK;
+
+DRAM_ADDR_4.AR = !nRST;
 
 DRAM_ADDR_5.C = CLK;
 
+DRAM_ADDR_5.AR = !nRST;
+
 DRAM_ADDR_6.C = CLK;
+
+DRAM_ADDR_6.AR = !nRST;
 
 DRAM_ADDR_7.C = CLK;
 
+DRAM_ADDR_7.AR = !nRST;
+
 DRAM_ADDR_8.C = CLK;
 
-DRAM_ADDR_11.C = CLK;
+DRAM_ADDR_8.AR = !nRST;
 
 DRAM_ADDR_9.C = CLK;
 
+DRAM_ADDR_9.AR = !nRST;
+
 DRAM_ADDR_10.C = CLK;
 
-id00287.C = CLK;
+DRAM_ADDR_10.AR = !nRST;
 
-id00287.AR = !nRST;
+DRAM_ADDR_11.C = CLK;
 
-id00288.C = CLK;
+DRAM_ADDR_11.AR = !nRST;
 
-id00288.AR = !nRST;
+id00344.C = CLK;
 
-id00289.C = CLK;
-
-id00289.AR = !nRST;
-
-DRAM_nCASA_0.C = CLK;
-
-DRAM_nCASA_0.AP = !nRST;
+id00344.AR = !nRST;
 
 DRAM_nRASA_1.C = CLK;
 
 DRAM_nRASA_1.AP = !nRST;
 
+id00304.C = CLK;
+
+id00304.AR = !nRST;
+
+id00308.C = CLK;
+
+id00308.AR = !nRST;
+
 DRAM_nRASA_0.C = CLK;
 
 DRAM_nRASA_0.AP = !nRST;
+
+DRAM_nCASA_0.C = CLK;
+
+DRAM_nCASA_0.AP = !nRST;
 
 DRAM_nCASA_1.C = CLK;
 
@@ -927,10 +1009,6 @@ DRAM_nRASB_1.C = CLK;
 
 DRAM_nRASB_1.AP = !nRST;
 
-DRAM_nCASB_1.C = CLK;
-
-DRAM_nCASB_1.AP = !nRST;
-
 DRAM_nRASB_0.C = CLK;
 
 DRAM_nRASB_0.AP = !nRST;
@@ -938,6 +1016,10 @@ DRAM_nRASB_0.AP = !nRST;
 DRAM_nCASB_0.C = CLK;
 
 DRAM_nCASB_0.AP = !nRST;
+
+DRAM_nCASB_1.C = CLK;
+
+DRAM_nCASB_1.AP = !nRST;
 
 DRAM_nCASB_2.C = CLK;
 
@@ -947,29 +1029,29 @@ DRAM_nCASB_3.C = CLK;
 
 DRAM_nCASB_3.AP = !nRST;
 
-id00290.C = CLK;
+id00345.C = CLK;
 
-id00290.AR = !nRST;
+id00345.AR = !nRST;
 
-id00291.C = CLK;
+id00346.C = CLK;
 
-id00291.AR = !nRST;
+id00346.AR = !nRST;
 
-id00293.C = CLK;
+id00347.C = CLK;
 
-id00293.AR = !nRST;
+id00347.AR = !nRST;
 
-id00292.C = CLK;
+id00348.C = CLK;
 
-id00292.AR = !nRST;
+id00348.AR = !nRST;
 
-id00294.C = CLK;
+id00349.C = CLK;
 
-id00294.AR = !nRST;
+id00349.AR = !nRST;
 
-id00295.C = CLK;
+id00350.C = CLK;
 
-id00295.AR = !nRST;
+id00350.AR = !nRST;
 
 
 TQFP100 Pin/Node Placement:
@@ -1009,85 +1091,95 @@ Pin 37 = ADDR_24; /* MC 49 */
 Pin 40 = ADDR_25; /* MC 65 */ 
 Pin 41 = ADDR_26; /* MC 67 */ 
 Pin 42 = ADDR_27; /* MC 69 */ 
-Pin 44 = SIMMSZ; /* MC 70 */ 
-Pin 45 = SIMMPD_0; /* MC 72 */ 
-Pin 46 = SIMMPD_1; /* MC 73 */ 
-Pin 50 = DRAM_nWR; /* MC 80 */ 
-Pin 52 = DRAM_ADDR_0; /* MC 81 */ 
-Pin 53 = DRAM_ADDR_1; /* MC 83 */ 
-Pin 54 = DRAM_ADDR_2; /* MC 85 */ 
-Pin 55 = DRAM_ADDR_3; /* MC 86 */ 
-Pin 56 = DRAM_ADDR_4; /* MC 88 */ 
-Pin 57 = DRAM_ADDR_5; /* MC 89 */ 
-Pin 58 = DRAM_ADDR_6; /* MC 91 */ 
-Pin 60 = DRAM_ADDR_7; /* MC 93 */ 
-Pin 61 = DRAM_ADDR_8; /* MC 94 */ 
+Pin 45 = DRAM_nWR; /* MC 72 */ 
+Pin 46 = DRAM_ADDR_0; /* MC 73 */ 
+Pin 47 = DRAM_ADDR_1; /* MC 75 */ 
+Pin 48 = DRAM_ADDR_2; /* MC 77 */ 
+Pin 49 = DRAM_ADDR_3; /* MC 78 */ 
+Pin 50 = DRAM_ADDR_4; /* MC 80 */ 
+Pin 52 = DRAM_ADDR_5; /* MC 81 */ 
+Pin 53 = DRAM_ADDR_6; /* MC 83 */ 
+Pin 54 = DRAM_ADDR_7; /* MC 85 */ 
+Pin 55 = DRAM_ADDR_8; /* MC 86 */ 
+Pin 56 = DRAM_ADDR_9; /* MC 88 */ 
+Pin 57 = DRAM_ADDR_10; /* MC 89 */ 
+Pin 58 = DRAM_ADDR_11; /* MC 91 */ 
+Pin 60 = DRAM_nRASA_0; /* MC 93 */ 
+Pin 61 = DRAM_nRASA_1; /* MC 94 */ 
 Pin 62 = TCK; /* MC 96 */ 
-Pin 63 = DRAM_ADDR_9; /* MC 97 */ 
-Pin 64 = DRAM_ADDR_10; /* MC 99 */ 
-Pin 65 = DRAM_ADDR_11; /* MC 101 */ 
-Pin 67 = DRAM_nRASA_0; /* MC 102 */ 
-Pin 68 = DRAM_nRASA_1; /* MC 104 */ 
-Pin 69 = DRAM_nRASA_2; /* MC 105 */ 
-Pin 70 = DRAM_nRASA_3; /* MC 107 */ 
-Pin 71 = DRAM_nCASA_0; /* MC 109 */ 
-Pin 72 = DRAM_nCASA_1; /* MC 110 */ 
+Pin 63 = DRAM_nRASA_2; /* MC 97 */ 
+Pin 64 = DRAM_nRASA_3; /* MC 99 */ 
+Pin 65 = DRAM_nCASA_0; /* MC 101 */ 
+Pin 67 = DRAM_nCASA_1; /* MC 102 */ 
+Pin 68 = DRAM_nCASA_2; /* MC 104 */ 
+Pin 69 = DRAM_nCASA_3; /* MC 105 */ 
+Pin 70 = DRAM_nRASB_0; /* MC 107 */ 
+Pin 71 = DRAM_nRASB_1; /* MC 109 */ 
+Pin 72 = DRAM_nRASB_2; /* MC 110 */ 
 Pin 73 = TDO; /* MC 112 */ 
-Pin 75 = DRAM_nCASA_2; /* MC 113 */ 
-Pin 76 = DRAM_nCASA_3; /* MC 115 */ 
-Pin 77 = DRAM_nRASB_0; /* MC 117 */ 
-Pin 78 = DRAM_nRASB_1; /* MC 118 */ 
-Pin 79 = DRAM_nRASB_2; /* MC 120 */ 
-Pin 80 = DRAM_nRASB_3; /* MC 121 */ 
-Pin 81 = DRAM_nCASB_0; /* MC 123 */ 
-Pin 83 = DRAM_nCASB_1; /* MC 125 */ 
-Pin 84 = DRAM_nCASB_2; /* MC 126 */ 
-Pin 85 = DRAM_nCASB_3; /* MC 128 */ 
+Pin 75 = DRAM_nRASB_3; /* MC 113 */ 
+Pin 76 = DRAM_nCASB_0; /* MC 115 */ 
+Pin 77 = DRAM_nCASB_1; /* MC 117 */ 
+Pin 78 = DRAM_nCASB_2; /* MC 118 */ 
+Pin 79 = DRAM_nCASB_3; /* MC 120 */ 
+Pin 80 = SIMMPDA_0; /* MC 121 */ 
+Pin 81 = SIMMPDA_1; /* MC 123 */ 
+Pin 83 = SIMMPDA_2; /* MC 125 */ 
+Pin 84 = SIMMPDA_3; /* MC 126 */ 
+Pin 85 = SIMMSZ; /* MC 128 */ 
 Pin 89 = nRST;
 Pin 90 = CLK;
+Pin 92 = SIMMPDB_0; /* MC 16 */ 
+Pin 93 = SIMMPDB_1; /* MC 14 */ 
+Pin 94 = SIMMPDB_2; /* MC 13 */ 
+Pin 96 = SIMMPDB_3; /* MC 11 */ 
+Pin 98 = BERR; /* MC  8 */
 Pin 99 = DSACK_0; /* MC  6 */
 Pin 100 = DSACK_1; /* MC  5 */
-PINNODE 313 = id00194QN; /* MC 13 Foldback */
-PINNODE 314 = id00186Q; /* MC 14 Foldback */
-PINNODE 316 = id00011QN; /* MC 16 Foldback */
-PINNODE 601 = id00291; /* MC 1 Feedback */
-PINNODE 602 = id00294; /* MC 2 Feedback */
-PINNODE 603 = id00286; /* MC 3 Feedback */
-PINNODE 604 = id00287; /* MC 4 Feedback */
-PINNODE 607 = id00295; /* MC 7 Feedback */
-PINNODE 608 = id00284; /* MC 8 Feedback */
-PINNODE 609 = id00282; /* MC 9 Feedback */
-PINNODE 610 = id00292; /* MC 10 Feedback */
-PINNODE 611 = id00293; /* MC 11 Feedback */
-PINNODE 612 = id00046QN; /* MC 12 Feedback */
-PINNODE 613 = id00289; /* MC 13 Feedback */
-PINNODE 614 = id00290; /* MC 14 Feedback */
-PINNODE 615 = id00288; /* MC 15 Feedback */
-PINNODE 616 = id00285; /* MC 16 Feedback */
-PINNODE 617 = id00254; /* MC 17 Feedback */
-PINNODE 618 = id00252; /* MC 18 Feedback */
-PINNODE 619 = id00247; /* MC 19 Feedback */
-PINNODE 620 = id00246; /* MC 20 Feedback */
-PINNODE 621 = id00250; /* MC 21 Feedback */
-PINNODE 622 = id00251; /* MC 22 Feedback */
-PINNODE 623 = id00283; /* MC 23 Feedback */
-PINNODE 624 = id00253; /* MC 24 Feedback */
-PINNODE 625 = id00249; /* MC 25 Feedback */
-PINNODE 626 = id00068QN; /* MC 26 Feedback */
-PINNODE 627 = id00074QN; /* MC 27 Feedback */
-PINNODE 628 = id00030QN; /* MC 28 Feedback */
-PINNODE 629 = id00058QN; /* MC 29 Feedback */
-PINNODE 630 = id00003; /* MC 30 Feedback */
-PINNODE 631 = XXL_607; /* MC 31 Feedback */
-PINNODE 632 = XXL_606; /* MC 32 Feedback */
-PINNODE 639 = id00026Q; /* MC 39 Feedback */
-PINNODE 641 = id00299; /* MC 41 Feedback */
-PINNODE 642 = id00298; /* MC 42 Feedback */
-PINNODE 643 = id00297; /* MC 43 Feedback */
-PINNODE 644 = id00296; /* MC 44 Feedback */
-PINNODE 645 = id00255; /* MC 45 Feedback */
-PINNODE 646 = id00248; /* MC 46 Feedback */
-PINNODE 648 = XXL_605; /* MC 48 Feedback */
+PINNODE 313 = id00233QN; /* MC 13 Foldback */
+PINNODE 314 = id00225Q; /* MC 14 Foldback */
+PINNODE 315 = id00189QN; /* MC 15 Foldback */
+PINNODE 601 = id00310; /* MC 1 Feedback */
+PINNODE 602 = id00348; /* MC 2 Feedback */
+PINNODE 603 = id00344; /* MC 3 Feedback */
+PINNODE 604 = id00345; /* MC 4 Feedback */
+PINNODE 607 = id00340; /* MC 7 Feedback */
+PINNODE 609 = id00339; /* MC 9 Feedback */
+PINNODE 610 = id00346; /* MC 10 Feedback */
+PINNODE 611 = id00349; /* MC 11 Feedback */
+PINNODE 612 = id00341; /* MC 12 Feedback */
+PINNODE 613 = id00342; /* MC 13 Feedback */
+PINNODE 614 = id00350; /* MC 14 Feedback */
+PINNODE 615 = id00347; /* MC 15 Feedback */
+PINNODE 616 = id00343; /* MC 16 Feedback */
+PINNODE 627 = id00309; /* MC 27 Feedback */
+PINNODE 628 = id00305; /* MC 28 Feedback */
+PINNODE 629 = id00049QN; /* MC 29 Feedback */
+PINNODE 630 = XXL_691; /* MC 30 Feedback */
+PINNODE 631 = XXL_692; /* MC 31 Feedback */
+PINNODE 632 = XXL_693; /* MC 32 Feedback */
+PINNODE 635 = id00307; /* MC 35 Feedback */
+PINNODE 636 = id00303; /* MC 36 Feedback */
+PINNODE 637 = id00299; /* MC 37 Feedback */
+PINNODE 638 = id00304; /* MC 38 Feedback */
+PINNODE 639 = id00306; /* MC 39 Feedback */
+PINNODE 640 = id00302; /* MC 40 Feedback */
+PINNODE 641 = id00078QN; /* MC 41 Feedback */
+PINNODE 642 = id00092QN; /* MC 42 Feedback */
+PINNODE 643 = id00064QN; /* MC 43 Feedback */
+PINNODE 644 = id00028QN; /* MC 44 Feedback */
+PINNODE 645 = id00200QN; /* MC 45 Feedback */
+PINNODE 646 = id00308; /* MC 46 Feedback */
+PINNODE 647 = XXL_690; /* MC 47 Feedback */
+PINNODE 648 = id00003; /* MC 48 Feedback */
+PINNODE 657 = id00354; /* MC 57 Feedback */
+PINNODE 658 = id00353; /* MC 58 Feedback */
+PINNODE 659 = id00352; /* MC 59 Feedback */
+PINNODE 660 = id00351; /* MC 60 Feedback */
+PINNODE 661 = id00301; /* MC 61 Feedback */
+PINNODE 662 = id00300; /* MC 62 Feedback */
+PINNODE 663 = id00338; /* MC 63 Feedback */
+PINNODE 664 = id00024Q; /* MC 64 Feedback */
 
 ** Resource Usage **
 
@@ -1115,54 +1207,54 @@ SO Pin Options Field = Summary of Allocations.
 
 
 MCell Pin# Oe   PinDrive     DCERP  FBDrive   DCERP  Foldback  CascadeOut      TotPT SO
-MC1   2    --   nRAMSEL      INPUT  id00291   Dg-g-  --        --              3     f- 
-MC2   0         --                  id00294   Dg-g-  --        --              3     f- 
-MC3   1    --   nAS          INPUT  id00286   Dg-g-  --        --              3     f- 
-MC4   0         --                  id00287   Dg-g-  --        --              4     f- 
+MC1   2    --   nRAMSEL      INPUT  id00310   Dg-g-  --        --              2     f- 
+MC2   0         --                  id00348   Dg-g-  --        --              2     f- 
+MC3   1    --   nAS          INPUT  id00344   Dg-g-  --        --              2     f- 
+MC4   0         --                  id00345   Dg-g-  --        --              2     f- 
 MC5   100  on   DSACK_1      C----  --               --        --              1     f- 
 MC6   99   on   DSACK_0      Dg-g-  --               --        --              2     f- 
-MC7   0         --                  id00295   Dg-g-  --        --              4     f- 
-MC8   98        --                  id00284   Dg-g-  --        --              1     f- 
-MC9   97        --                  id00282   Dg-g-  --        --              2     f- 
-MC10  0         --                  id00292   Dg-g-  --        --              4     f- 
-MC11  96        --                  id00293   Dg-g-  --        --              2     f- 
-MC12  0         --                  id00046QN C----  NA        --              5     f- 
-MC13  94        --                  id00289   Dg-g-  id00194QN --              3     f- 
-MC14  93        --                  id00290   Dg-g-  id00186Q  --              3     f- 
-MC15  0         --                  id00288   Dg-g-  NA        --              5     f- 
-MC16  92        --                  id00285   Dg-g-  id00011QN --              3     f- 
-MC17  14   --   ADDR_5       INPUT  id00254   Dg-g-  --        --              1     f- 
-MC18  0         --                  id00252   Dg-g-  --        --              1     f- 
-MC19  13   --   ADDR_4       INPUT  id00247   Dg-g-  --        --              1     f- 
-MC20  0         --                  id00246   Dg-g-  --        --              1     f- 
-MC21  12   --   ADDR_3       INPUT  id00250   Dg-g-  --        --              1     f- 
-MC22  10   --   ADDR_2       INPUT  id00251   Dg-g-  --        --              1     f- 
-MC23  0         --                  id00283   Dg-g-  --        --              2     f- 
-MC24  9    --   ADDR_1       INPUT  id00253   Dg-g-  --        --              2     f- 
-MC25  8    --   ADDR_0       INPUT  id00249   Dg-g-  --        --              2     f- 
-MC26  0         --                  id00068QN C----  --        --              2     f- 
-MC27  7    --   SIZ_1        INPUT  id00074QN C----  --        --              2     f- 
-MC28  0         --                  id00030QN C----  --        --              2     f- 
-MC29  6    --   SIZ_0        INPUT  id00058QN C----  --        --              2     f- 
-MC30  5    --   RnW          INPUT  id00003   Dg--p  --        --              4     f- 
-MC31  0         --                  XXL_607   C----  NA        --              5     f- 
-MC32  4    --   TDI          INPUT  XXL_606   C----  NA        --              5     f- 
+MC7   0         --                  id00340   Dg-g-  --        --              2     f- 
+MC8   98   on   BERR         Dg-g-  --               --        --              2     f- 
+MC9   97        --                  id00339   Dg-g-  --        --              1     f- 
+MC10  0         --                  id00346   Dg-g-  --        --              3     f- 
+MC11  96   --   SIMMPDB_3    INPUT  id00349   Dg-g-  --        --              3     f- 
+MC12  0         --                  id00341   Dg-g-  --        --              3     f- 
+MC13  94   --   SIMMPDB_2    INPUT  id00342   Dg-g-  id00233QN --              5     f- 
+MC14  93   --   SIMMPDB_1    INPUT  id00350   Dg-g-  id00225Q  --              5     f- 
+MC15  0         --                  id00347   Dg-g-  id00189QN --              5     f- 
+MC16  92   --   SIMMPDB_0    INPUT  id00343   Dg-g-  NA        --              5     f- 
+MC17  14   --   ADDR_5       INPUT  --               --        --              0     f- 
+MC18  0         --                  --               --        --              0     f- 
+MC19  13   --   ADDR_4       INPUT  --               --        --              0     f- 
+MC20  0         --                  --               --        --              0     f- 
+MC21  12   --   ADDR_3       INPUT  --               --        --              0     f- 
+MC22  10   --   ADDR_2       INPUT  --               --        --              0     f- 
+MC23  0         --                  --               --        --              0     f- 
+MC24  9    --   ADDR_1       INPUT  --               --        --              0     f- 
+MC25  8    --   ADDR_0       INPUT  --               --        --              0     f- 
+MC26  0         --                  --               --        --              0     f- 
+MC27  7    --   SIZ_1        INPUT  id00309   Dg-g-  --        --              1     f- 
+MC28  0         --                  id00305   Dg-g-  --        --              1     f- 
+MC29  6    --   SIZ_0        INPUT  id00049QN C----  NA        --              5     f- 
+MC30  5    --   RnW          INPUT  XXL_691   C----  NA        --              5     f- 
+MC31  0         --                  XXL_692   C----  NA        --              5     f- 
+MC32  4    --   TDI          INPUT  XXL_693   C----  NA        --              5     f- 
 MC33  25   --   ADDR_14      INPUT  --               --        --              0     f- 
 MC34  0         --                  --               --        --              0     f- 
-MC35  24   --   ADDR_13      INPUT  --               --        --              0     f- 
-MC36  0         --                  --               --        --              0     f- 
-MC37  23   --   ADDR_12      INPUT  --               --        --              0     f- 
-MC38  22   --   ADDR_11      INPUT  --               --        --              0     f- 
-MC39  0         --                  id00026Q  C----  --        --              2     f- 
-MC40  21   --   ADDR_10      INPUT  --               --        --              0     f- 
-MC41  20   --   ADDR_9       INPUT  id00299   Dg-g-  --        --              1     f- 
-MC42  0         --                  id00298   Dg-g-  --        --              1     f- 
-MC43  19   --   ADDR_8       INPUT  id00297   Dg-g-  --        --              1     f- 
-MC44  0         --                  id00296   Dg-g-  --        --              1     f- 
-MC45  17   --   ADDR_7       INPUT  id00255   Dg-g-  --        --              1     f- 
-MC46  16   --   ADDR_6       INPUT  id00248   Dg-g-  --        --              1     f- 
-MC47  0         --                  --               --        --              0     f- 
-MC48  15   --   TMS          INPUT  XXL_605   C----  NA        --              5     f- 
+MC35  24   --   ADDR_13      INPUT  id00307   Dg-g-  --        --              1     f- 
+MC36  0         --                  id00303   Dg-g-  --        --              1     f- 
+MC37  23   --   ADDR_12      INPUT  id00299   Dg-g-  --        --              1     f- 
+MC38  22   --   ADDR_11      INPUT  id00304   Dg-g-  --        --              1     f- 
+MC39  0         --                  id00306   Dg-g-  --        --              2     f- 
+MC40  21   --   ADDR_10      INPUT  id00302   Dg-g-  --        --              2     f- 
+MC41  20   --   ADDR_9       INPUT  id00078QN C----  --        --              2     f- 
+MC42  0         --                  id00092QN C----  --        --              2     f- 
+MC43  19   --   ADDR_8       INPUT  id00064QN C----  --        --              2     f- 
+MC44  0         --                  id00028QN C----  --        --              2     f- 
+MC45  17   --   ADDR_7       INPUT  id00200QN C----  --        --              2     f- 
+MC46  16   --   ADDR_6       INPUT  id00308   Dg-g-  --        --              2     f- 
+MC47  0         --                  XXL_690   C----  NA        --              5     f- 
+MC48  15   --   TMS          INPUT  id00003   Dg--p  NA        --              5     f- 
 MC49  37   --   ADDR_24      INPUT  --               --        --              0     f- 
 MC50  0         --                  --               --        --              0     f- 
 MC51  36   --   ADDR_23      INPUT  --               --        --              0     f- 
@@ -1171,102 +1263,102 @@ MC53  35   --   ADDR_22      INPUT  --               --        --              0
 MC54  33   --   ADDR_21      INPUT  --               --        --              0     f- 
 MC55  0         --                  --               --        --              0     f- 
 MC56  32   --   ADDR_20      INPUT  --               --        --              0     f- 
-MC57  31   --   ADDR_19      INPUT  --               --        --              0     f- 
-MC58  0         --                  --               --        --              0     f- 
-MC59  30   --   ADDR_18      INPUT  --               --        --              0     f- 
-MC60  0         --                  --               --        --              0     f- 
-MC61  29   --   ADDR_17      INPUT  --               --        --              0     f- 
-MC62  28   --   ADDR_16      INPUT  --               --        --              0     f- 
-MC63  0         --                  --               --        --              0     f- 
-MC64  27   --   ADDR_15      INPUT  --               --        --              0     f- 
+MC57  31   --   ADDR_19      INPUT  id00354   Dg-g-  --        --              1     f- 
+MC58  0         --                  id00353   Dg-g-  --        --              1     f- 
+MC59  30   --   ADDR_18      INPUT  id00352   Dg-g-  --        --              1     f- 
+MC60  0         --                  id00351   Dg-g-  --        --              1     f- 
+MC61  29   --   ADDR_17      INPUT  id00301   Dg-g-  --        --              1     f- 
+MC62  28   --   ADDR_16      INPUT  id00300   Dg-g-  --        --              1     f- 
+MC63  0         --                  id00338   Dg-g-  --        --              2     f- 
+MC64  27   --   ADDR_15      INPUT  id00024Q  C----  --        --              2     f- 
 MC65  40   --   ADDR_25      INPUT  --               --        --              0     f- 
 MC66  0         --                  --               --        --              0     f- 
 MC67  41   --   ADDR_26      INPUT  --               --        --              0     f- 
 MC68  0         --                  --               --        --              0     f- 
 MC69  42   --   ADDR_27      INPUT  --               --        --              0     f- 
-MC70  44   --   SIMMSZ       INPUT  --               --        --              0     f- 
+MC70  44        --                  --               --        --              0     f- 
 MC71  0         --                  --               --        --              0     f- 
-MC72  45   --   SIMMPD_0     INPUT  --               --        --              0     f- 
-MC73  46   --   SIMMPD_1     INPUT  --               --        --              0     f- 
+MC72  45   on   DRAM_nWR     Dg--p  --               --        --              3     f- 
+MC73  46   on   DRAM_ADDR_0  Dg-g-  --               --        --              4     f- 
 MC74  0         --                  --               --        --              0     f- 
-MC75  47        --                  --               --        --              0     f- 
+MC75  47   on   DRAM_ADDR_1  Dg-g-  --               --        --              4     f- 
 MC76  0         --                  --               --        --              0     f- 
-MC77  48        --                  --               --        --              0     f- 
-MC78  49        --                  --               --        --              0     f- 
+MC77  48   on   DRAM_ADDR_2  Dg-g-  --               --        --              4     f- 
+MC78  49   on   DRAM_ADDR_3  Dg-g-  --               --        --              4     f- 
 MC79  0         --                  --               --        --              0     f- 
-MC80  50   on   DRAM_nWR     Dg--p  --               --        --              3     f- 
-MC81  52   on   DRAM_ADDR_0  Dg---  --               NA        --              5     f- 
+MC80  50   on   DRAM_ADDR_4  Dg-g-  --               --        --              4     f- 
+MC81  52   on   DRAM_ADDR_5  Dg-g-  --               --        --              4     f- 
 MC82  0         --                  --               --        --              0     f- 
-MC83  53   on   DRAM_ADDR_1  Dg---  --               NA        --              5     f- 
+MC83  53   on   DRAM_ADDR_6  Dg-g-  --               --        --              4     f- 
 MC84  0         --                  --               --        --              0     f- 
-MC85  54   on   DRAM_ADDR_2  Dg---  --               NA        --              5     f- 
-MC86  55   on   DRAM_ADDR_3  Dg---  --               NA        --              5     f- 
+MC85  54   on   DRAM_ADDR_7  Dg-g-  --               --        --              4     f- 
+MC86  55   on   DRAM_ADDR_8  Dg-g-  --               --        --              4     f- 
 MC87  0         --                  --               --        --              0     f- 
-MC88  56   on   DRAM_ADDR_4  Dg---  --               NA        --              5     f- 
-MC89  57   on   DRAM_ADDR_5  Dg---  --               NA        --              5     f- 
+MC88  56   on   DRAM_ADDR_9  Dg-g-  --               --        --              4     f- 
+MC89  57   on   DRAM_ADDR_10 Dg-g-  --               --        --              4     f- 
 MC90  0         --                  --               --        --              0     f- 
-MC91  58   on   DRAM_ADDR_6  Dg---  --               NA        --              5     f- 
+MC91  58   on   DRAM_ADDR_11 Dg-g-  --               --        --              3     f- 
 MC92  0         --                  --               --        --              0     f- 
-MC93  60   on   DRAM_ADDR_7  Dg---  --               NA        --              5     f- 
-MC94  61   on   DRAM_ADDR_8  Dg---  --               NA        --              5     f- 
+MC93  60   on   DRAM_nRASA_0 Dg--p  --               NA        --              5     f- 
+MC94  61   on   DRAM_nRASA_1 Dg--p  --               NA        --              5     f- 
 MC95  0         --                  --               --        --              0     f- 
 MC96  62   --   TCK          INPUT  --               --        --              0     f- 
-MC97  63   on   DRAM_ADDR_9  Dg---  --               NA        --              5     f- 
+MC97  63   on   DRAM_nRASA_2 C----  --               --        --              1     f- 
 MC98  0         --                  --               --        --              0     f- 
-MC99  64   on   DRAM_ADDR_10 Dg---  --               NA        --              5     f- 
-MC100 0         --                  --               --        --              0     f- 
-MC101 65   on   DRAM_ADDR_11 Dg---  --               --        --              4     f- 
-MC102 67   on   DRAM_nRASA_0 Dg--p  --               NA        --              5     f- 
+MC99  64   on   DRAM_nRASA_3 C----  --               --        --              1     f- 
+MC100 0         --                  --               NA        -> DRAM_nCASA_0 5     f- 
+MC101 65   on   DRAM_nCASA_0 Dg--p  --               NA        --              5     f- 
+MC102 67   on   DRAM_nCASA_1 Dg--p  --               --        --              3     f- 
 MC103 0         --                  --               --        --              0     f- 
-MC104 68   on   DRAM_nRASA_1 Dg--p  --               NA        --              5     f- 
-MC105 69   on   DRAM_nRASA_2 C----  --               --        --              1     f- 
+MC104 68   on   DRAM_nCASA_2 Dg--p  --               --        --              2     f- 
+MC105 69   on   DRAM_nCASA_3 Dg--p  --               NA        --              5     f- 
 MC106 0         --                  --               --        --              0     f- 
-MC107 70   on   DRAM_nRASA_3 C----  --               --        --              1     f- 
-MC108 0         --                  --               NA        -> DRAM_nCASA_0 5     f- 
-MC109 71   on   DRAM_nCASA_0 Dg--p  --               NA        --              5     f- 
-MC110 72   on   DRAM_nCASA_1 Dg--p  --               --        --              3     f- 
+MC107 70   on   DRAM_nRASB_0 Dg--p  --               NA        --              5     f- 
+MC108 0         --                  --               --        --              0     f- 
+MC109 71   on   DRAM_nRASB_1 Dg--p  --               NA        --              5     f- 
+MC110 72   on   DRAM_nRASB_2 C----  --               --        --              1     f- 
 MC111 0         --                  --               --        --              0     f- 
 MC112 73   --   TDO          C----  --               --        --              0     f- 
-MC113 75   on   DRAM_nCASA_2 Dg--p  --               --        --              2     f- 
-MC114 0         --                  --               --        --              0     f- 
-MC115 76   on   DRAM_nCASA_3 Dg--p  --               NA        --              5     f- 
+MC113 75   on   DRAM_nRASB_3 C----  --               --        --              1     f- 
+MC114 0         --                  --               NA        -> DRAM_nCASB_0 5     f- 
+MC115 76   on   DRAM_nCASB_0 Dg--p  --               NA        --              5     f- 
 MC116 0         --                  --               --        --              0     f- 
-MC117 77   on   DRAM_nRASB_0 Dg--p  --               NA        --              5     f- 
-MC118 78   on   DRAM_nRASB_1 Dg--p  --               NA        --              5     f- 
+MC117 77   on   DRAM_nCASB_1 Dg--p  --               --        --              3     f- 
+MC118 78   on   DRAM_nCASB_2 Dg--p  --               --        --              2     f- 
 MC119 0         --                  --               --        --              0     f- 
-MC120 79   on   DRAM_nRASB_2 C----  --               --        --              1     f- 
-MC121 80   on   DRAM_nRASB_3 C----  --               --        --              1     f- 
-MC122 0         --                  --               NA        -> DRAM_nCASB_0 5     f- 
-MC123 81   on   DRAM_nCASB_0 Dg--p  --               NA        --              5     f- 
+MC120 79   on   DRAM_nCASB_3 Dg--p  --               NA        --              5     f- 
+MC121 80   --   SIMMPDA_0    INPUT  --               --        --              0     f- 
+MC122 0         --                  --               --        --              0     f- 
+MC123 81   --   SIMMPDA_1    INPUT  --               --        --              0     f- 
 MC124 0         --                  --               --        --              0     f- 
-MC125 83   on   DRAM_nCASB_1 Dg--p  --               --        --              3     f- 
-MC126 84   on   DRAM_nCASB_2 Dg--p  --               --        --              2     f- 
+MC125 83   --   SIMMPDA_2    INPUT  --               --        --              0     f- 
+MC126 84   --   SIMMPDA_3    INPUT  --               --        --              0     f- 
 MC127 0         --                  --               --        --              0     f- 
-MC128 85   on   DRAM_nCASB_3 Dg--p  --               NA        --              5     f- 
+MC128 85   --   SIMMSZ       INPUT  --               --        --              0     f- 
 MC0   90        CLK          INPUT  --               --        --              0     f- 
 MC0   89        nRST         INPUT  --               --        --              0     f- 
 MC0   88        --                  --               --        --              0     f- 
 MC0   87        --                  --               --        --              0     f- 
 
 Logic Array Block			Macro Cells	I/O Pins	Foldbacks	TotalPT	FanIN		Cascades
-A: MC1	- MC16		16/16(100%)	4/16(25%)	3/16(18%)	48/80(60%)	24/40(60%)	0
-B: MC17	- MC32		16/16(100%)	10/16(62%)	0/16(0%)	34/80(42%)	25/40(62%)	0
-C: MC33	- MC48		8/16(50%)	10/16(62%)	0/16(0%)	13/80(16%)	14/40(35%)	0
-D: MC49	- MC64		0/16(0%)	10/16(62%)	0/16(0%)	0/80(0%)	5/40(12%)	0
-E: MC65	- MC80		1/16(6%)	7/16(43%)	0/16(0%)	3/80(3%)	33/40(82%)	0
-F: MC81	- MC96		9/16(56%)	10/16(62%)	0/16(0%)	45/80(56%)	34/40(85%)	0
-G: MC97	- MC112		10/16(62%)	10/16(62%)	0/16(0%)	39/80(48%)	28/40(70%)	1
-H: MC113- MC128		10/16(62%)	10/16(62%)	0/16(0%)	39/80(48%)	28/40(70%)	1
+A: MC1	- MC16		16/16(100%)	9/16(56%)	3/16(18%)	45/80(56%)	20/40(50%)	0
+B: MC17	- MC32		6/16(37%)	10/16(62%)	0/16(0%)	22/80(27%)	25/40(62%)	0
+C: MC33	- MC48		14/16(87%)	10/16(62%)	0/16(0%)	30/80(37%)	25/40(62%)	0
+D: MC49	- MC64		8/16(50%)	10/16(62%)	0/16(0%)	10/80(12%)	14/40(35%)	0
+E: MC65	- MC80		6/16(37%)	9/16(56%)	0/16(0%)	23/80(28%)	24/40(60%)	0
+F: MC81	- MC96		9/16(56%)	10/16(62%)	0/16(0%)	37/80(46%)	33/40(82%)	0
+G: MC97	- MC112		10/16(62%)	10/16(62%)	0/16(0%)	33/80(41%)	27/40(67%)	1
+H: MC113- MC128		5/16(31%)	10/16(62%)	0/16(0%)	21/80(26%)	18/40(45%)	1
 
 Total dedicated input used:	2/4 	(50%)
-Total I/O pins used		71/80 	(88%)
-Total Macro cells used 		72/128 	(56%)
-Total Flip-Flop used 		55/128 	(42%)
+Total I/O pins used		78/80 	(97%)
+Total Macro cells used 		76/128 	(59%)
+Total Flip-Flop used 		57/128 	(44%)
 Total Foldback logic used 	3/128 	(2%)
-Total Nodes+FB/MCells 		73/128 	(57%)
+Total Nodes+FB/MCells 		77/128 	(60%)
 Total cascade used 		2
-Total input pins 			41
-Total output pins 		32
+Total input pins 			47
+Total output pins 		33
 Total Pts 				221
 Creating pla file dramctl.tt3 with 0 inputs 0 outputs, 0 pins 0 nodes and 0 pterms...
 

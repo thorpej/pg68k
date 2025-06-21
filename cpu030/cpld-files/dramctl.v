@@ -168,7 +168,7 @@ end
  */
 reg [3:0] ByteEnables;
 always @(*) begin
-	case ({RnW, SIZ[1], SIZ[0], ADDR[1], ADDR[0]})
+	case ({RnW, SIZ[1:0], ADDR[1:0]})
 	/* byte writes */
 	5'b00100:	ByteEnables = 4'b1000;
 	5'b00101:	ByteEnables = 4'b0100;

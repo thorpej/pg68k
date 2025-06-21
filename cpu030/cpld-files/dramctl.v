@@ -32,8 +32,9 @@ module dramctl(
 
 	input wire [27:0] ADDR,	/* good for 256MB (2x128MB) */
 
-	input wire SIMMSZ,	/* size jumper: 1=11 bit, 0=12 bit */
-	input wire [3:0] SIMMPD,/* Presence Detect from 1st SIMM */
+	input wire SIMMSZ,	 /* size jumper: 1=11 bit, 0=12 bit */
+	input wire [3:0] SIMMPDA,/* Presence Detect from 1st SIMM */
+	input wire [3:0] SIMMPDB,/* Presence Detect from 2nd SIMM */
 
 	output reg DRAM_nWR,
 	output reg [11:0] DRAM_ADDR,
@@ -153,7 +154,7 @@ assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
  */
 reg SecondSIMM;
 always @(*) begin
-	case ({SIMMSZ, SIMMPD[0], SIMMPD[1]})
+	case ({SIMMSZ, SIMMPDA[0], SIMMPDA[1]})
 	SZ32:		SecondSIMM = ADDR[25];
 	SZ64:		SecondSIMM = ADDR[26];
 	SZ128:		SecondSIMM = ADDR[27];
@@ -359,8 +360,6 @@ endmodule
 //PIN: CHIP "dramctl" ASSIGNED TO AN TQFP100
 //
 //     === Inputs ===
-//PIN: nRST		: 89
-//PIN: CLK		: 90
 //PIN: nAS		: 1
 //PIN: nRAMSEL		: 2
 //PIN: RnW		: 5
@@ -394,42 +393,48 @@ endmodule
 //PIN: ADDR_25		: 40
 //PIN: ADDR_26		: 41
 //PIN: ADDR_27		: 42
-//PIN: SIMMSZ		: 44
-//PIN: SIMMPD_0		: 45
-//PIN: SIMMPD_1		: 46
-//PIN: SIMMPD_2		: 47
-//PIN: SIMMPD_3		: 48
+//PIN: SIMMPDA_0	: 80
+//PIN: SIMMPDA_1	: 81
+//PIN: SIMMPDA_2	: 83
+//PIN: SIMMPDA_3	: 84
+//PIN: SIMMSZ		: 85
+//PIN: nRST		: 89
+//PIN: CLK		: 90
+//PIN: SIMMPDB_0	: 92
+//PIN: SIMMPDB_1	: 93
+//PIN: SIMMPDB_2	: 94
+//PIN: SIMMPDB_3	: 96
 //
 //     === Outputs ===
 //
-//PIN: DRAM_nWR		: 50
-//PIN: DRAM_ADDR_0	: 52
-//PIN: DRAM_ADDR_1	: 53
-//PIN: DRAM_ADDR_2	: 54
-//PIN: DRAM_ADDR_3	: 55
-//PIN: DRAM_ADDR_4	: 56
-//PIN: DRAM_ADDR_5	: 57
-//PIN: DRAM_ADDR_6	: 58
-//PIN: DRAM_ADDR_7	: 60
-//PIN: DRAM_ADDR_8	: 61
-//PIN: DRAM_ADDR_9	: 63
-//PIN: DRAM_ADDR_10	: 64
-//PIN: DRAM_ADDR_11	: 65
-//PIN: DRAM_nRASA_0	: 67
-//PIN: DRAM_nRASA_1	: 68
-//PIN: DRAM_nRASA_2	: 69
-//PIN: DRAM_nRASA_3	: 70
-//PIN: DRAM_nCASA_0	: 71
-//PIN: DRAM_nCASA_1	: 72
-//PIN: DRAM_nCASA_2	: 75
-//PIN: DRAM_nCASA_3	: 76
-//PIN: DRAM_nRASB_0	: 77
-//PIN: DRAM_nRASB_1	: 78
-//PIN: DRAM_nRASB_2	: 79
-//PIN: DRAM_nRASB_3	: 80
-//PIN: DRAM_nCASB_0	: 81
-//PIN: DRAM_nCASB_1	: 83
-//PIN: DRAM_nCASB_2	: 84
-//PIN: DRAM_nCASB_3	: 85
+//PIN: DRAM_nWR		: 45
+//PIN: DRAM_ADDR_0	: 46
+//PIN: DRAM_ADDR_1	: 47
+//PIN: DRAM_ADDR_2	: 48
+//PIN: DRAM_ADDR_3	: 49
+//PIN: DRAM_ADDR_4	: 50
+//PIN: DRAM_ADDR_5	: 52
+//PIN: DRAM_ADDR_6	: 53
+//PIN: DRAM_ADDR_7	: 54
+//PIN: DRAM_ADDR_8	: 55
+//PIN: DRAM_ADDR_9	: 56
+//PIN: DRAM_ADDR_10	: 57
+//PIN: DRAM_ADDR_11	: 58
+//PIN: DRAM_nRASA_0	: 60
+//PIN: DRAM_nRASA_1	: 61
+//PIN: DRAM_nRASA_2	: 63
+//PIN: DRAM_nRASA_3	: 64
+//PIN: DRAM_nCASA_0	: 65
+//PIN: DRAM_nCASA_1	: 67
+//PIN: DRAM_nCASA_2	: 68
+//PIN: DRAM_nCASA_3	: 69
+//PIN: DRAM_nRASB_0	: 70
+//PIN: DRAM_nRASB_1	: 71
+//PIN: DRAM_nRASB_2	: 72
+//PIN: DRAM_nRASB_3	: 75
+//PIN: DRAM_nCASB_0	: 76
+//PIN: DRAM_nCASB_1	: 77
+//PIN: DRAM_nCASB_2	: 78
+//PIN: DRAM_nCASB_3	: 79
 //PIN: DSACK_0		: 99
 //PIN: DSACK_1		: 100

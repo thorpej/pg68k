@@ -46,6 +46,7 @@ module dramctl(
 	output reg [3:0] DRAM_nCASB,
 
 	/* Drives external open-drain inverters. */
+	output reg BERR;
 	output reg [1:0] DSACK
 );
 
@@ -436,5 +437,6 @@ endmodule
 //PIN: DRAM_nCASB_1	: 77
 //PIN: DRAM_nCASB_2	: 78
 //PIN: DRAM_nCASB_3	: 79
+//PIN: BERR		: 98
 //PIN: DSACK_0		: 99
 //PIN: DSACK_1		: 100

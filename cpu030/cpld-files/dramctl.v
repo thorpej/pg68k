@@ -82,7 +82,7 @@ end
  * refreshes.  Since memory cycles take a few clock cycles each, we'll
  * give ourselves a 16 clock cycle margin.
  */
-localparam REFRESH_CYCLE_CNT = 374;
+localparam REFRESH_CYCLE_CNT = 12'd374;
 
 /*
  * DRAM refresh generator.  We count clocks and when we reach the
@@ -276,6 +276,14 @@ always @(posedge CLK, negedge nRST) begin
 			else
 				DRAM_nCASA <= ~ByteEnables;
 
+			/*
+			 * If we wanted to support 70ns or slower
+			 * RAM, we would need to insert additional
+			 * states here before asserting DSACK.  If
+			 * I have enough inputs pins for it, I will
+			 * add it, but I'd rather use available
+			 * pins for size detection.
+			 */
 			state <= RW5;
 		end
 

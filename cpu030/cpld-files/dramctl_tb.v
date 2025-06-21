@@ -109,7 +109,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 		/* 60ns 16MB SIMM */
 		simmsz = 1;
-		simmpd = 2'b1110;
+		simmpd = 4'b1110;
 
 		siz = 2'd0;
 		addr = 28'h0000000;

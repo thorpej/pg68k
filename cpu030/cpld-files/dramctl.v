@@ -1,9 +1,37 @@
 /*
+ * Copyright (c) 2025 Jason R. Thorpe.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+/*
  * DRAM controller for the Playground 68030.  This is based on crmaykish's
  * mackerel-30 DRAM controller, but has been modified to support multiple
  * SIMM sizes (16MB, 32MB, 64MB, or 128MB -- all SIMMs must be the same size)
- * and 2 SIMMs.  This consumes almost all of the available I/O on a TQFP100
- * ATF1508AS.
+ * and 2 SIMMs, as well as to generate bus errors when the request does not
+ * fit within the SIMM configuration.
+ *
+ * This consumes almost all of the available I/O on a TQFP100 ATF1508AS.
  *
  * 72-pin SIMMs are 32-bits wide, and thus they are addressed in terms of
  * 32-bit (or 36-bit with parity) words.  Thus, DA0 is connected to A2.
@@ -18,7 +46,8 @@
  * N.B. at 50MHz, this particular DRAM access state machine requires 60ns
  * SIMMs.  We can detect the SIMM speed via the Presence Detect pins, and
  * inserting additional states to support 70ns DRAM shouldn't be too bad,
- * so maybe I'll do it someday.
+ * so maybe I'll do it someday.  But for now, we require 60ns SIMMs, and
+ * validate this using Presence Detect.
  */
 module dramctl(
 	input wire nRST,
@@ -116,7 +145,7 @@ end
  * PD bits are arranged according to the table in JEDEC 21-C, pg 4.4.2-3,
  * just to make it easier to read.  SZ is the SIMMSZ input.
  *
- *	SIMMSZ	PD1	PD2
+ *	SZ	PD1	PD2
  *	x	0	0	4MB	10-bit	1-rank	not supported
  *	x	1	1	8MB	10-bit	2-rank	not supported
  *	1	0	1	16MB	11-bit	1-rank
@@ -164,7 +193,8 @@ assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
 			    : {~ADDR[26], ADDR[26], ~ADDR[26], ADDR[26]};
 
 /*
- * Which SIMM computation.
+ * Which SIMM computation.  Does the request exceed the limit of the
+ * first SIMM?
  */
 reg SecondSIMM;
 always @(*) begin
@@ -173,6 +203,22 @@ always @(*) begin
 	SZ64:		SecondSIMM = ADDR[26];
 	SZ128:		SecondSIMM = ADDR[27];
 	default:	SecondSIMM = ADDR[24];	/* default to 16MB boundary */
+	endcase
+end
+
+/*
+ * Does the request fit in the second SIMM?  Since both SIMMs must be the
+ * same size, we're essentially looking for "is the request <= 2x the SIMM
+ * size?"
+ */
+reg FitsSecondSIMM;
+always @(*) begin
+	case ({SIMMSZ, SIMMPDB[0], SIMMPDB[1]})
+	SZ16:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[25];
+	SZ32:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[26];
+	SZ64:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[27];
+	SZ128:		FitsSecondSIMM = ValidSecondSIMM;
+	default:	FitsSecondSIMM = 1'b0;	/* invalid second SIMM */
 	endcase
 end
 
@@ -254,11 +300,12 @@ always @(posedge CLK, negedge nRST) begin
 			else if (RAMSEL && AS) begin
 				/*
 				 * DRAM selected.  If we have a valid SIMM
-				 * configuration, start a normal R/W cycle.
-				 * Otherwise, signal a bus error.
+				 * configuration and the request fits within
+				 * it, start a normal R/W cycle.  Otherwise,
+				 * signal a bus error.
 				 */
 				if (~ValidFirstSIMM ||
-				    (SecondSIMM & ~ValidSecondSIMM))
+				    (SecondSIMM && ~FitsSecondSIMM))
 					state <= SIGNALBERR;
 				else
 					state <= RW1;

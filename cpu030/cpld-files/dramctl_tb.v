@@ -72,6 +72,9 @@ wire [3:0] dram_n_rasb;
 wire [3:0] dram_n_casb;
 
 wire [1:0] dsack;
+wire berr;
+
+wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 	/* Instantiate the device under test. */
 	dramctl dut (
@@ -83,14 +86,16 @@ wire [1:0] dsack;
 		.SIZ(siz),
 		.ADDR(addr),
 		.SIMMSZ(simmsz),
-		.SIMMPD(simmpd),
+		.SIMMPDA(simmpd),
+		.SIMMPDB(simmpd),
 		.DRAM_nWR(dram_n_wr),
 		.DRAM_ADDR(dram_addr),
 		.DRAM_nRASA(dram_n_rasa),
 		.DRAM_nCASA(dram_n_casa),
 		.DRAM_nRASB(dram_n_rasb),
 		.DRAM_nCASB(dram_n_casb),
-		.DSACK(dsack)
+		.DSACK(dsack),
+		.BERR(berr)
 	);
 
 	initial begin
@@ -102,9 +107,9 @@ wire [1:0] dsack;
 		n_ramsel = 1;
 		rnw = 1;
 
-		/* 16MB SIMM */
+		/* 60ns 16MB SIMM */
 		simmsz = 1;
-		simmpd = 2'b10;
+		simmpd = 2'b1110;
 
 		siz = 2'd0;
 		addr = 28'h0000000;
@@ -141,7 +146,7 @@ wire [1:0] dsack;
 		 * ** S2 **
 		 * Wait for DSACK.
 		 */
-		while (~dsack[0] && ~dsack[1]) begin
+		while (~cycle_terminated) begin
 			#CLK30;
 		end
 
@@ -184,7 +189,7 @@ wire [1:0] dsack;
 		 * ** S2 **
 		 * Wait for DSACK.
 		 */
-		while (~dsack[0] && ~dsack[1]) begin
+		while (~cycle_terminated) begin
 			#CLK30;
 		end
 

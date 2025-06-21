@@ -46,7 +46,7 @@ module dramctl(
 	output reg [3:0] DRAM_nCASB,
 
 	/* Drives external open-drain inverters. */
-	output reg BERR;
+	output reg BERR,
 	output reg [1:0] DSACK
 );
 
@@ -123,11 +123,24 @@ end
  *	1	1	0	32MB	11-bit	2-rank
  *	0	0	1	64MB	12-bit	1-rank
  *	0	1	0	128MB	12-bit	2-rank
+ *
+ *	60ns SIMMs are indicated by (PD3 & PD4) == 1;
  */
 localparam SZ16  = 3'b101;
 localparam SZ32  = 3'b110;
 localparam SZ64  = 3'b001;
 localparam SZ128 = 3'b010;
+
+/*
+ * Compute if the first SIMM is a valid configuration.
+ */
+wire ValidFirstSIMM = (SIMMPDA[0] ^ SIMMPDA[1]) & (SIMMPDA[2] & SIMMPDA[3]);
+
+/*
+ * Compute if the second SIMM is a valid configuration.  We require that
+ * both SIMMs be the same.  If they're not, the second SIMM is ignored.
+ */
+wire ValidSecondSIMM = (SIMMPDB == SIMMPDA);
 
 /*
  * Row address computation.
@@ -214,6 +227,7 @@ localparam REFRESH2	= 4'd7;
 localparam REFRESH3	= 4'd8;
 localparam REFRESH4	= 4'd9;
 localparam PRECHARGE	= 4'd10;
+localparam SIGNALBERR	= 4'd11;
 
 reg [3:0] state;
 
@@ -227,6 +241,7 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
 		DSACK <= 2'b00;
+		BERR <= 1'b0;
 		refresh_ack <= 1'b0;
 	end
 	else begin
@@ -237,8 +252,16 @@ always @(posedge CLK, negedge nRST) begin
 				state <= REFRESH1;
 			end
 			else if (RAMSEL && AS) begin
-				/* DRAM selected, start normal R/W cycle */
-				state <= RW1;
+				/*
+				 * DRAM selected.  If we have a valid SIMM
+				 * configuration, start a normal R/W cycle.
+				 * Otherwise, signal a bus error.
+				 */
+				if (~ValidFirstSIMM ||
+				    (SecondSIMM & ~ValidSecondSIMM))
+					state <= SIGNALBERR;
+				else
+					state <= RW1;
 			end
 		end
 
@@ -349,6 +372,16 @@ always @(posedge CLK, negedge nRST) begin
 			refresh_ack <= 1'b0;
 
 			state <= IDLE;
+		end
+
+		SIGNALBERR: begin
+			/* Stay here until the CPU ends the cycle. */
+			if (AS)
+				BERR <= 1'b1;
+			else begin
+				BERR <= 1'b0;
+				state <= IDLE;
+			end
 		end
 		endcase
 	end

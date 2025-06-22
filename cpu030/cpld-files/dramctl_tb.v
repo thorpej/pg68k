@@ -144,7 +144,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 		/*
 		 * ** S2 **
-		 * Wait for DSACK.
+		 * Wait cycle termination.
 		 */
 		while (~cycle_terminated) begin
 			#CLK30;
@@ -187,7 +187,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 		/*
 		 * ** S2 **
-		 * Wait for DSACK.
+		 * Wait cycle termination.
 		 */
 		while (~cycle_terminated) begin
 			#CLK30;
@@ -207,6 +207,51 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		n_ramsel = 1;
 
 		#(CLK30 * 4);	/* wait for DRAM controller to finish */
+
+		/*
+		 * Do a long word read at 0x2000000 (just beyond 2x 16MB).
+		 * This should generate a bus error.
+		 */
+
+		/*
+		 * ** S0 **
+		 * - Address, RnW, and SIZ become valid.
+		 */
+		addr = 28'h2000000;
+		rnw = 1;
+		siz = 2'b00;
+
+		/*
+		 * ** S1 **
+		 * /AS is asserted.
+		 */
+		#(HCLK30)
+		n_as = 0;
+		n_ramsel = 0;
+
+		/*
+		 * ** S2 **
+		 * Wait cycle termination.
+		 */
+		while (~cycle_terminated) begin
+			#CLK30;
+		end
+
+		/*
+		 * ** S4 **
+		 * Wait for 1/2 clock.
+		 */
+		#HCLK30;
+
+		/*
+		 * ** S5 **
+		 * De-assert /AS.
+		 */
+		n_as = 1;
+		n_ramsel = 1;
+
+		#(CLK30 * 4);	/* wait for DRAM controller to finish */
+
 
 		/* Wait for 1000 DRAM clocks to see some refreshes. */
 		#(1000*2);

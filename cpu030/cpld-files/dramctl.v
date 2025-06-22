@@ -199,10 +199,10 @@ assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
 reg SecondSIMM;
 always @(*) begin
 	case ({SIMMSZ, SIMMPDA[0], SIMMPDA[1]})
-	SZ32:		SecondSIMM = ADDR[25];
-	SZ64:		SecondSIMM = ADDR[26];
-	SZ128:		SecondSIMM = ADDR[27];
-	default:	SecondSIMM = ADDR[24];	/* default to 16MB boundary */
+	SZ32:    SecondSIMM = ADDR[25] || ADDR[26] || ADDR[27];
+	SZ64:    SecondSIMM = ADDR[26] || ADDR[27];
+	SZ128:   SecondSIMM = ADDR[27];
+	default: SecondSIMM = ADDR[24] || ADDR[25] || ADDR[26] || ADDR[27];
 	endcase
 end
 
@@ -214,11 +214,12 @@ end
 reg FitsSecondSIMM;
 always @(*) begin
 	case ({SIMMSZ, SIMMPDB[0], SIMMPDB[1]})
-	SZ16:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[25];
-	SZ32:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[26];
-	SZ64:		FitsSecondSIMM = ValidSecondSIMM && ~ADDR[27];
-	SZ128:		FitsSecondSIMM = ValidSecondSIMM;
-	default:	FitsSecondSIMM = 1'b0;	/* invalid second SIMM */
+	SZ16:    FitsSecondSIMM =
+	             ValidSecondSIMM && ~(ADDR[25] || ADDR[26] || ADDR[27]);
+	SZ32:    FitsSecondSIMM = ValidSecondSIMM && ~(ADDR[26] || ADDR[27]);
+	SZ64:    FitsSecondSIMM = ValidSecondSIMM && ~ADDR[27];
+	SZ128:   FitsSecondSIMM = ValidSecondSIMM;
+	default: FitsSecondSIMM = 1'b0;	/* invalid second SIMM */
 	endcase
 end
 

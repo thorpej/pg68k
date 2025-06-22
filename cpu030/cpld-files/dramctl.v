@@ -274,7 +274,7 @@ localparam REFRESH2	= 4'd7;
 localparam REFRESH3	= 4'd8;
 localparam REFRESH4	= 4'd9;
 localparam PRECHARGE	= 4'd10;
-localparam SIGNALBERR	= 4'd11;
+localparam BERRWAIT	= 4'd11;
 
 reg [3:0] state;
 
@@ -306,8 +306,10 @@ always @(posedge CLK, negedge nRST) begin
 				 * signal a bus error.
 				 */
 				if (~ValidFirstSIMM ||
-				    (SecondSIMM && ~FitsSecondSIMM))
-					state <= SIGNALBERR;
+				    (SecondSIMM && ~FitsSecondSIMM)) begin
+					BERR <= 1'b1;
+					state <= BERRWAIT;
+				end
 				else
 					state <= RW1;
 			end
@@ -422,11 +424,9 @@ always @(posedge CLK, negedge nRST) begin
 			state <= IDLE;
 		end
 
-		SIGNALBERR: begin
+		BERRWAIT: begin
 			/* Stay here until the CPU ends the cycle. */
-			if (AS)
-				BERR <= 1'b1;
-			else begin
+			if (~AS) begin
 				BERR <= 1'b0;
 				state <= IDLE;
 			end

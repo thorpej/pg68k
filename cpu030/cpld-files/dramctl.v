@@ -276,13 +276,12 @@ localparam RW1		= 4'd1;
 localparam RW2		= 4'd2;
 localparam RW3		= 4'd3;
 localparam RW4		= 4'd4;
-localparam RW5		= 4'd5;
-localparam REFRESH1	= 4'd6;
-localparam REFRESH2	= 4'd7;
-localparam REFRESH3	= 4'd8;
-localparam REFRESH4	= 4'd9;
-localparam PRECHARGE	= 4'd10;
-localparam BERRWAIT	= 4'd11;
+localparam REFRESH1	= 4'd5;
+localparam REFRESH2	= 4'd6;
+localparam REFRESH3	= 4'd7;
+localparam REFRESH4	= 4'd8;
+localparam PRECHARGE	= 4'd9;
+localparam BERRWAIT	= 4'd10;
 
 reg [3:0] state;
 
@@ -313,8 +312,11 @@ always @(posedge CLK, negedge nRST) begin
 				 * it, start a normal R/W cycle.  Otherwise,
 				 * signal a bus error.
 				 */
-				if (ValidAddress)
+				if (ValidAddress) begin
+					/* Mux in the row address. */
+					DRAM_ADDR <= RowAddress;
 					state <= RW1;
+				end
 				else begin
 					BERR <= 1'b1;
 					state <= BERRWAIT;
@@ -323,32 +325,26 @@ always @(posedge CLK, negedge nRST) begin
 		end
 
 		RW1: begin
-			/* Mux in the row address. */
-			DRAM_ADDR <= RowAddress;
-			state <= RW2;
-		end
-
-		RW2: begin
 			/* Row address is valid, assert RAS. */
 			if (SecondSIMM)
 				DRAM_nRASB <= nRowSelects;
 			else
 				DRAM_nRASA <= nRowSelects;
 
-			state <= RW3;
+			state <= RW2;
 		end
 
-		RW3: begin
+		RW2: begin
 			/* Mux in the column address. */
 			DRAM_ADDR <= ColumnAddress;
 
 			/* Set the WE line. */
 			DRAM_nWR <= RnW;
 
-			state <= RW4;
+			state <= RW3;
 		end
 
-		RW4: begin
+		RW3: begin
 			/*
 			 * Column address is valid, assert CAS based on
 			 * the byte enables.
@@ -366,10 +362,10 @@ always @(posedge CLK, negedge nRST) begin
 			 * add it, but I'd rather use available
 			 * pins for size detection.
 			 */
-			state <= RW5;
+			state <= RW4;
 		end
 
-		RW5: begin
+		RW4: begin
 			/* Data is valid; terminate the cycle. */
 			DSACK <= 2'b11;
 

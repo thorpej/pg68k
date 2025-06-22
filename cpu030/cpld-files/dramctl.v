@@ -302,6 +302,12 @@ always @(posedge CLK, negedge nRST) begin
 	else begin
 		case (state)
 		IDLE: begin
+			/*
+			 * N.B. the time spent in IDLE counts for some
+			 * of the precharge time.  (We actually get another
+			 * time slice because /RAS isn't asserted until
+			 * the end of RW1.)
+			 */
 			if (refresh_req) begin
 				/* Start CAS-before-RAS refresh cycle. */
 				state <= REFRESH1;
@@ -332,15 +338,18 @@ always @(posedge CLK, negedge nRST) begin
 			else
 				DRAM_nRASA <= nRowSelects;
 
+			/*
+			 * Set the /WE line now to ensure we meet any
+			 * write set-up time.
+			 */
+			DRAM_nWR <= RnW;
+
 			state <= RW2;
 		end
 
 		RW2: begin
 			/* Mux in the column address. */
 			DRAM_ADDR <= ColumnAddress;
-
-			/* Set the WE line. */
-			DRAM_nWR <= RnW;
 
 			state <= RW3;
 		end
@@ -378,6 +387,10 @@ always @(posedge CLK, negedge nRST) begin
 			 * detect de-assertion of /AS (since, due to
 			 * synchronization, it happened up to one CPU
 			 * clock cycle ago).
+			 *
+			 * Also note that for slower-than-60ns DRAM, we
+			 * would possibly need to extend the precharge
+			 * time.
 			 */
 			if (~AS) begin
 				DRAM_nRASA <= 4'b1111;
@@ -430,6 +443,13 @@ always @(posedge CLK, negedge nRST) begin
 		end
 
 		PRECHARGE: begin
+			/*
+			 * /RAS and /CAS are de-asserted before we get
+			 * here, so this is effectly a 20ns delay for the
+			 * precharge time.  For 60ns DRAM, we typically
+			 * need 40ns after /RAS is de-asserted, but we
+			 * get another 20ns in the IDLE state.
+			 */
 			state <= IDLE;
 		end
 

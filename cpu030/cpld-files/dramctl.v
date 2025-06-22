@@ -224,6 +224,14 @@ always @(*) begin
 end
 
 /*
+ * We have a valid address if:
+ * 1- We have a valid first SIMM, and
+ * 2- Either the request does not require the second SIMM or fits
+ *    within it.
+ */
+wire ValidAddress = ValidFirstSIMM && (~SecondSIMM || FitsSecondSIMM);
+
+/*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
  * N.B. for reads, we enable all bytes.  We mix the RnW signal
  * in to the type and catch it in the default case.
@@ -305,13 +313,12 @@ always @(posedge CLK, negedge nRST) begin
 				 * it, start a normal R/W cycle.  Otherwise,
 				 * signal a bus error.
 				 */
-				if (~ValidFirstSIMM ||
-				    (SecondSIMM && ~FitsSecondSIMM)) begin
+				if (ValidAddress)
+					state <= RW1;
+				else begin
 					BERR <= 1'b1;
 					state <= BERRWAIT;
 				end
-				else
-					state <= RW1;
 			end
 		end
 

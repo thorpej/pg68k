@@ -276,12 +276,13 @@ localparam RW1		= 4'd1;
 localparam RW2		= 4'd2;
 localparam RW3		= 4'd3;
 localparam RW4		= 4'd4;
-localparam REFRESH1	= 4'd5;
-localparam REFRESH2	= 4'd6;
-localparam REFRESH3	= 4'd7;
-localparam REFRESH4	= 4'd8;
-localparam PRECHARGE	= 4'd9;
-localparam BERRWAIT	= 4'd10;
+localparam RW5		= 4'd5;
+localparam REFRESH1	= 4'd6;
+localparam REFRESH2	= 4'd7;
+localparam REFRESH3	= 4'd8;
+localparam REFRESH4	= 4'd9;
+localparam PRECHARGE	= 4'd10;
+localparam BERRWAIT	= 4'd11;
 
 reg [3:0] state;
 
@@ -366,19 +367,33 @@ always @(posedge CLK, negedge nRST) begin
 		end
 
 		RW4: begin
-			/* Data is valid; terminate the cycle. */
+			/* Terminate the bus cycle. */
 			DSACK <= 2'b11;
+			state <= RW5;
+		end
 
-			/* Stay in RW5 until the CPU ends the cycle. */
-			if (~AS) state <= PRECHARGE;
+		RW5: begin
+			/*
+			 * De-assert our DRAM controls as soon as we
+			 * detect de-assertion of /AS (since, due to
+			 * synchronization, it happened up to one CPU
+			 * clock cycle ago).
+			 */
+			if (~AS) begin
+				DRAM_nRASA <= 4'b1111;
+				DRAM_nRASB <= 4'b1111;
+				DRAM_nCASA <= 4'b1111;
+				DRAM_nCASB <= 4'b1111;
+				DRAM_nWR <= 1'b1;
+				DRAM_ADDR <= 12'b0;
+				DSACK <= 2'b00;
+				state <= PRECHARGE;
+			end
 		end
 
 		REFRESH1: begin
 			/* Acknowledge refresh request. */
 			refresh_ack <= 1'b1;
-
-			/* De-assert WE. */
-			DRAM_nWR <= 1'b1;
 
 			/* Assert CAS. */
 			DRAM_nCASA <= 4'b0000;
@@ -408,22 +423,13 @@ always @(posedge CLK, negedge nRST) begin
 			DRAM_nRASA <= 4'b1111;
 			DRAM_nRASB <= 4'b1111;
 
+			/* Refresh cycle is complete. */
+			refresh_ack <= 1'b0;
+
 			state <= PRECHARGE;
 		end
 
 		PRECHARGE: begin
-			/*
-			 * DRAM cycle finished.  De-assert RAS and CAS,
-			 * de-assert DSACK.
-			 */
-			DRAM_nRASA <= 4'b1111;
-			DRAM_nRASB <= 4'b1111;
-			DRAM_nCASA <= 4'b1111;
-			DRAM_nCASB <= 4'b1111;
-			DRAM_ADDR <= 12'b0;
-			DSACK <= 2'b00;
-			refresh_ack <= 1'b0;
-
 			state <= IDLE;
 		end
 

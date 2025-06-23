@@ -45,7 +45,7 @@ module sysctl(
 
 	output wire STERM,		/* external open-drain inv */
 	output wire CI,			/* external open-drain inv */
-	output wire nBERR,
+	output wire BERR,		/* external open-drain inv */
 
 	output wire nROMSEL,
 	output wire nDEVSEL,
@@ -97,7 +97,7 @@ assign ResetVecFetch = (BootState != 2'd3);
 /*
  * Bus error generation.
  *
- * This will drive the /BERR output to the CPU if a bus cycle fails
+ * This will drive the BERR output to the CPU if a bus cycle fails
  * to terminate after 64 CPU clock cycles.
  *
  * If /RESET is asserted or there is not active bus cycle (/AS not asserted),
@@ -119,7 +119,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			BerrState <= BerrState + 6'd1;
 	end
 end
-assign nBERR = (BerrState != 6'd63);
+assign BERR = (BerrState == 6'd63);
 
 /*
  * Function bits for address space encodings:

@@ -22,7 +22,8 @@ INTC1
 ; I1	IPL <- 1
 ;
 ; There is a single global interrupt enable bit, and it is cleared upon
-; reset.  Yes, this also masks the non-maskable interrupt.
+; reset.  I7 (IPL7, the non-maskable interrupt) is not affected by the
+; enable bit, and thus is truly non-maskable.
 ;
 ; The IRQ inputs are active-low (and assumed to be pulled up and driven
 ; by open-drain / open-collector outputs to allow wired-OR configuration,
@@ -82,7 +83,7 @@ DSACK0 = CS * DS;
 ; Truth table for /IPLx outputs:
 ;
 ; ENAB I7  I6  I5  I4  I3  I2  I1     IPL2  IPL1  IPL0
-;   F   x   x   x   x   x   x   x        F     F     F       0
+;   F   F   x   x   x   x   x   x        F     F     F       0
 ;   T   F   F   F   F   F   F   F        F     F     F       0
 ;   T   F   F   F   F   F   F   T        F     F     T       1
 ;   T   F   F   F   F   F   T   x        F     T     F       2
@@ -90,23 +91,23 @@ DSACK0 = CS * DS;
 ;   T   F   F   F   T   x   x   x        T     F     F       4
 ;   T   F   F   T   x   x   x   x        T     F     T       5
 ;   T   F   T   x   x   x   x   x        T     T     F       6
-;   T   T   x   x   x   x   x   x        T     T     T       7
+;   x   T   x   x   x   x   x   x        T     T     T       7
 ;
 
 IPL0 = ENAB * /I7 * /I6 * /I5 * /I4 * /I3 * /I2 *  I1
      + ENAB * /I7 * /I6 * /I5 * /I4 *  I3
      + ENAB * /I7 * /I6 *  I5
-     + ENAB *  I7;
+     +         I7;
 
 IPL1 = ENAB * /I7 * /I6 * /I5 * /I4 * /I3 *  I2
      + ENAB * /I7 * /I6 * /I5 * /I4 *  I3
      + ENAB * /I7 *  I6
-     + ENAB *  I7;
+     +         I7;
 
 IPL2 = ENAB * /I7 * /I6 * /I5 *  I4
      + ENAB * /I7 * /I6 *  I5
      + ENAB * /I7 *  I6
-     + ENAB *  I7;
+     +         I7;
 
 ;
 ; Assert our /AVEC output if the CPU is performing an interrupt acknowledge

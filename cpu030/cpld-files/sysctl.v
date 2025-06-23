@@ -33,14 +33,14 @@
 
 module sysctl(
 	input wire nRST,
-	input wire CPU_CLK,
+	input wire DRAM_CLK,
 
 	input wire nAS,
 	input wire nDS,
 	input wire RnW,
-	input wire [2:0] FC,
 	input wire [1:0] SIZ,
 
+	input wire [2:0] FC,
 	input wire [31:0] ADDR,
 
 	output wire STERM,		/* external open-drain inv */
@@ -54,9 +54,26 @@ module sysctl(
 	output wire nFPUSEL,
 	output wire nIACKSEL,
 
+	output wire CPU_CLK,
+
 	output wire nFRAM_RD,
-	output wire [3:0] nFRAM_WR,
+	output wire [3:0] nFRAM_WR
 );
+
+/*
+ * Clock generation.  We receive the DRAM clock as input (50MHz).  We
+ * produce the following clock outputs:
+ *
+ * - CPU_CLK (25MHz)   DRAM_CLK / 2
+ */
+reg ClockDivider;
+always @(posedge DRAM_CLK, negedge nRST) begin
+	if (~nRST)
+		ClockDivider <= 1'b0;
+	else
+		ClockDivider <= ~ClockDivider;
+end
+assign CPU_CLK = ClockDivider;
 
 /*
  * We count the first 4 bus cycles after a /RESET occurs, and use that

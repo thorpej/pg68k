@@ -1,7 +1,7 @@
 GAL22V10
 INTC1
 
- FFCI /I0 /I1   /I2   /I3   /I4   /I5   /I6      IACK /RESET /CS   GND
+ FFCI /I7 /I6   /I5   /I4   /I3   /I2   /I1      IACK /RESET /CS   GND
 /DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  DSACK0  D0    ENAB   FFCO VCC
 
 ;
@@ -13,13 +13,13 @@ INTC1
 ; This is essentially a simple priority encoder that encodes interrupts
 ; according to the following priority:
 ;
-; I0	IPL <- 7
-; I1	IPL <- 6
-; I2	IPL <- 5
-; I3	IPL <- 4
-; I4	IPL <- 3
-; I5	IPL <- 2
-; I6	IPL <- 1
+; I7	IPL <- 7
+; I6	IPL <- 6
+; I5	IPL <- 5
+; I4	IPL <- 4
+; I3	IPL <- 3
+; I2	IPL <- 2
+; I1	IPL <- 1
 ;
 ; There is a single global interrupt enable bit, and it is cleared upon
 ; reset.  Yes, this also masks the non-maskable interrupt.
@@ -81,7 +81,7 @@ DSACK0 = CS * DS;
 ;
 ; Truth table for /IPLx outputs:
 ;
-; ENAB I0  I1  I2  I3  I4  I5  I6     IPL2  IPL1  IPL0
+; ENAB I7  I6  I5  I4  I3  I2  I1     IPL2  IPL1  IPL0
 ;   F   x   x   x   x   x   x   x        F     F     F       0
 ;   T   F   F   F   F   F   F   F        F     F     F       0
 ;   T   F   F   F   F   F   F   T        F     F     T       1
@@ -93,20 +93,20 @@ DSACK0 = CS * DS;
 ;   T   T   x   x   x   x   x   x        T     T     T       7
 ;
 
-IPL0 = ENAB * /I0 * /I1 * /I2 * /I3 * /I4 * /I5 *  I6
-     + ENAB * /I0 * /I1 * /I2 * /I3 *  I4
-     + ENAB * /I0 * /I1 *  I2
-     + ENAB *  I0;
+IPL0 = ENAB * /I7 * /I6 * /I5 * /I4 * /I3 * /I2 *  I1
+     + ENAB * /I7 * /I6 * /I5 * /I4 *  I3
+     + ENAB * /I7 * /I6 *  I5
+     + ENAB *  I7;
 
-IPL1 = ENAB * /I0 * /I1 * /I2 * /I3 * /I4 *  I5
-     + ENAB * /I0 * /I1 * /I2 * /I3 *  I4
-     + ENAB * /I0 *  I1
-     + ENAB *  I0;
+IPL1 = ENAB * /I7 * /I6 * /I5 * /I4 * /I3 *  I2
+     + ENAB * /I7 * /I6 * /I5 * /I4 *  I3
+     + ENAB * /I7 *  I6
+     + ENAB *  I7;
 
-IPL2 = ENAB * /I0 * /I1 * /I2 *  I3
-     + ENAB * /I0 * /I1 *  I2
-     + ENAB * /I0 *  I1
-     + ENAB *  I0;
+IPL2 = ENAB * /I7 * /I6 * /I5 *  I4
+     + ENAB * /I7 * /I6 *  I5
+     + ENAB * /I7 *  I6
+     + ENAB *  I7;
 
 ;
 ; Assert our /AVEC output if the CPU is performing an interrupt acknowledge

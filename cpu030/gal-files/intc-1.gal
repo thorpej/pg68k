@@ -1,7 +1,7 @@
 GAL22V10
 INTC1
 
- FFCI /I7 /I6   /I5   /I4   /I3   /I2   /I1      IACK /RESET /CS   GND
+ FFCI /I7 /I6   /I5   /I4   /I3   /I2   /I1     /IACK /RESET /CS   GND
 /DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  DSACK0  D0    ENAB   FFCO VCC
 
 ;
@@ -116,7 +116,7 @@ IPL2 = ENAB * /I7 * /I6 * /I5 *  I4
 ; propagation delay isn't a concern because IPLx will have already propagated
 ; in order for the IACK cycle to begin in the first place.
 ;
-; If we see IACK and no interrupt is pending, we assert BERR (an active-high
+; If we see /IACK and no interrupt is pending, we assert BERR (an active-high
 ; output that drives an external open-drain inverter that is wire-OR'd to
 ; the CPU /BERR input).
 ;

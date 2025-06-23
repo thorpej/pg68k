@@ -19,7 +19,7 @@
                           |                 |
                       /I1 |  8           17 | /IPL2
                           |                 |
-                     IACK |  9           16 | /IPL1
+                    /IACK |  9           16 | /IPL1
                           |                 |
                    /RESET | 10           15 | /IPL0
                           |                 |

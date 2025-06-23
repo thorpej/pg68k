@@ -50,7 +50,7 @@ module sysctl(
 	output wire nROMSEL,
 	output wire nDEVSEL,
 	output wire nMMIOSEL,
-	output wire nRAMSEL,
+	output wire nDRAMSEL,
 	output wire nFPUSEL,
 	output wire nIACKSEL,
 
@@ -207,7 +207,7 @@ always @(*) begin
 	default:                                  SelectOutputs = SEL_NONE;
 	endcase
 end
-assign {nIACKSEL, nFPUSEL, nRAMSEL, nMMIOSEL, nDEVSEL, nROMSEL}
+assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSEL, nROMSEL}
     = SelectOutputs;
 
 localparam REGION_FRAM = 10'b1111111110;
@@ -285,3 +285,72 @@ assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 assign CI = (ResetVecFetch || ~nDEVSEL);
 
 endmodule
+
+// Pin assignment for Yosys workflow.
+//
+//PIN: CHIP "sysctl" ASSIGNED TO AN TQFP100
+//
+//     === Inputs ===
+//PIN: nAS		: 1
+//PIN: nDS		: 2
+//PIN: RnW		: 5
+//PIN: SIZ_0		: 6
+//PIN: SIZ_1		: 7
+//PIN: ADDR_0		: 8
+//PIN: ADDR_1		: 9
+//PIN: ADDR_2		: 10
+//PIN: ADDR_3		: 12
+//PIN: ADDR_4		: 13
+//PIN: ADDR_5		: 14
+//PIN: ADDR_6		: 16
+//PIN: ADDR_7		: 17
+//PIN: ADDR_8		: 19
+//PIN: ADDR_9		: 20
+//PIN: ADDR_10		: 21
+//PIN: ADDR_11		: 22
+//PIN: ADDR_12		: 23
+//PIN: ADDR_13		: 24
+//PIN: ADDR_14		: 25
+//PIN: ADDR_15		: 27
+//PIN: ADDR_16		: 28
+//PIN: ADDR_17		: 29
+//PIN: ADDR_18		: 30
+//PIN: ADDR_19		: 31
+//PIN: ADDR_20		: 32
+//PIN: ADDR_21		: 33
+//PIN: ADDR_22		: 35
+//PIN: ADDR_23		: 36
+//PIN: ADDR_24		: 37
+//PIN: ADDR_25		: 40
+//PIN: ADDR_26		: 41
+//PIN: ADDR_27		: 42
+//PIN: ADDR_28		: 44
+//PIN: ADDR_29		: 45
+//PIN: ADDR_30		: 46
+//PIN: ADDR_31		: 47
+//PIN: FC_0		: 48
+//PIN: FC_1		: 49
+//PIN: FC_2		: 50
+//PIN: nRST		: 89
+//PIN: DRAM_CLK		: 90
+//
+//     === Outputs ===
+//
+// XXX note might want more DRAMSEL signals in the future.
+//PIN: nDRAMSEL		: 76
+//PIN: nFRAM_WR_0	: 77
+//PIN: nFRAM_WR_1	: 78
+//PIN: nFRAM_WR_2	: 79
+//PIN: nFRAM_WR_3	: 80
+//PIN: nFRAM_RD		: 81
+//PIN: nMMIOSEL		: 83
+//PIN: nDEVSEL		: 84
+//PIN: nROMSEL		: 85
+//PIN: nFPUSEL		: 92
+//PIN: nIACKSEL		: 93
+//PIN: CPU_CLK		: 94
+//PIN: CI		: 96
+//PIN: STERM		: 97
+//PIN: BERR		: 98
+//PIN: DSACK_0		: 99
+//PIN: DSACK_1		: 100

@@ -48,7 +48,7 @@ module sysctl(
 	output wire nBERR,
 
 	output wire nROMSEL,
-	output wire nDEV8SEL,
+	output wire nDEVSEL,
 	output wire nMMIOSEL,
 	output wire nRAMSEL,
 	output wire nFPUSEL,
@@ -164,7 +164,7 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  *			      31               13
  *			      |                 |			*/
 localparam REGION_ROM	= 19'b111111111111xxxxxxx;
-localparam REGION_DEV8	= 19'b111111111110xxxxxxx;
+localparam REGION_DEV	= 19'b111111111110xxxxxxx;
 /*         REGION_FRAM	= 19'b1111111110xxxxxxxxx; Handled below.	*/
 localparam REGION_MMIO	= 19'b10xxxxxxxxxxxxxxxxx;
 localparam REGION_RAM	= 19'b0xxxxxxxxxxxxxxxxxx;
@@ -181,7 +181,7 @@ localparam RV_X		= 1'bx;
 
 localparam SEL_NONE	= 6'b111111;
 localparam SEL_ROM	= 6'b111110;
-localparam SEL_DEV8	= 6'b111101;
+localparam SEL_DEV	= 6'b111101;
 localparam SEL_MMIO	= 6'b111011;
 localparam SEL_RAM	= 6'b110111;
 localparam SEL_FPU	= 6'b101111;
@@ -192,7 +192,7 @@ always @(*) begin
 	casex ({AddrQual, AddrSpace, ResetVecFetch, ADDR[31:13]})
 	{QUAL_nAS,  SPC_NORM, RV_X, REGION_ROM}:  SelectOutputs = SEL_ROM;
 
-	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV8}: SelectOutputs = SEL_DEV8;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV}: SelectOutputs = SEL_DEV;
 
 	{QUAL_nAS,  SPC_NORM, RV_X, REGION_MMIO}: SelectOutputs = SEL_MMIO;
 
@@ -207,7 +207,7 @@ always @(*) begin
 	default:                                  SelectOutputs = SEL_NONE;
 	endcase
 end
-assign {nIACKSEL, nFPUSEL, nRAMSEL, nMMIOSEL, nDEV8SEL, nROMSEL}
+assign {nIACKSEL, nFPUSEL, nRAMSEL, nMMIOSEL, nDEVSEL, nROMSEL}
     = SelectOutputs;
 
 localparam REGION_FRAM = 10'b1111111110;
@@ -281,7 +281,7 @@ always @(*) begin
 end
 assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 
-/* Inhibit cache if fetching the reset vector or accessing DEV8 space. */
-assign CI = (ResetVecFetch || ~nDEV8SEL);
+/* Inhibit cache if fetching the reset vector or accessing DEV space. */
+assign CI = (ResetVecFetch || ~nDEVSEL);
 
 endmodule

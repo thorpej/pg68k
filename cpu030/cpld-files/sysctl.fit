@@ -1,4 +1,4 @@
-Atmel ATF1508 Fitter Version 1918 ,running Tue Jun 24 06:04:31 2025
+Atmel ATF1508 Fitter Version 1918 ,running Tue Jun 24 06:17:15 2025
 
 
 
@@ -69,6 +69,7 @@ Performing global pin assignments ...
 Final global control pins assignment (if applicable)...
 -------------------------------------------------------
 DRAM_CLK assigned to pin  90
+nAS assigned to pin  87
 nRST assigned to pin  89
 
 
@@ -76,13 +77,13 @@ nRST assigned to pin  89
 Performing input pin pre-assignments ...
 ------------------------------------
 DRAM_CLK assigned to pin  90
+nAS assigned to pin  87
 nRST assigned to pin  89
+nDS assigned to pin  88
 
 Attempt to place floating signals ...
 ------------------------------------
-nDS is placed at pin 2 (MC 1)
-nAS is placed at pin 1 (MC 3)
-id00097 is placed at feedback node 603 (MC 3)
+id00097 is placed at feedback node 602 (MC 2)
 id00003 is placed at feedback node 604 (MC 4)
 id00093 is placed at feedback node 607 (MC 7)
 BERR is placed at pin 98 (MC 8)
@@ -99,12 +100,12 @@ ADDR_4 is placed at pin 13 (MC 19)
 ADDR_1 is placed at pin 9 (MC 24)
 ADDR_0 is placed at pin 8 (MC 25)
 SIZ_1 is placed at pin 7 (MC 27)
-id00049Q is placed at feedback node 627 (MC 27)
-id00036Q is placed at feedback node 628 (MC 28)
+id00102 is placed at feedback node 627 (MC 27)
+id00101 is placed at feedback node 628 (MC 28)
 SIZ_0 is placed at pin 6 (MC 29)
-id00102 is placed at feedback node 629 (MC 29)
+id00049Q is placed at feedback node 629 (MC 29)
 RnW is placed at pin 5 (MC 30)
-id00101 is placed at feedback node 630 (MC 30)
+id00036Q is placed at feedback node 630 (MC 30)
 XXL_284 is placed at feedback node 631 (MC 31)
 TDI is placed at pin 4 (MC 32)
 XXL_281 is placed at feedback node 632 (MC 32)
@@ -167,13 +168,13 @@ id00051Q is placed at foldback expander node 428 (MC 128)
                                        P  A  F     A              R  D  M     R  M  M  M  M  R  
                               S        U  C  P     M              O  E  I     A  _  _  _  _  A  
                            B  T        _  K  U     _  n           M  V  O     M  W  W  W  W  M  
-                           E  E     G  C  S  S  V  C  R        G  S  S  S  V  _  R  R  R  R  S  
-                           R  R  C  N  L  E  E  C  L  S        N  E  E  E  C  R  _  _  _  _  E  
-                           R  M  I  D  K  L  L  C  K  T        D  L  L  L  C  D  3  2  1  0  L  
+                           E  E     G  C  S  S  V  C  R  n  n  G  S  S  S  V  _  R  R  R  R  S  
+                           R  R  C  N  L  E  E  C  L  S  D  A  N  E  E  E  C  R  _  _  _  _  E  
+                           R  M  I  D  K  L  L  C  K  T  S  S  D  L  L  L  C  D  3  2  1  0  L  
                  +------------------------------------------------------------------------------+
                  | 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76  |
-              nAS| 1                                                                         75 |   
-              nDS| 2                                                                         74 |GND
+                 | 1                                                                         75 |   
+                 | 2                                                                         74 |GND
               VCC| 3                                                                         73 |TDO
               TDI| 4                                                                         72 |   
               RnW| 5                                                                         71 |   
@@ -222,74 +223,74 @@ Universal-Interconnect-Multiplexer assignments
 ------------------------------------------------
 FanIn assignment for block A [25]
 {
-ADDR_14,ADDR_22,ADDR_19,ADDR_23,ADDR_16,ADDR_18,ADDR_13,ADDR_21,ADDR_17,ADDR_15,
+ADDR_14,ADDR_22,ADDR_21,ADDR_23,ADDR_16,ADDR_18,ADDR_17,ADDR_13,ADDR_19,ADDR_15,
 CPU_CLK,
-FC_0,FC_1,FC_2,
-id00003,id00049Q,id00095,id00101,id00096,id00093,id00097,id00094,id00036Q,id00102,
+FC_1,FC_2,FC_0,
+id00003,id00097,id00095,id00036Q,id00096,id00093,id00094,id00102,id00101,id00049Q,
 nAS,
 }
 Multiplexer assignment for block A
-FC_0			(MC21	P)   : MUX 0		Ref (E77p)
+CPU_CLK			(MC4	P)   : MUX 0		Ref (A13p)
 ADDR_14			(MC18	P)   : MUX 1		Ref (C33p)
 id00003			(MC2	FB)  : MUX 2		Ref (A4fb)
 ADDR_22			(MC22	P)   : MUX 3		Ref (D53p)
-id00049Q		(MC6	FB)  : MUX 5		Ref (B27fb)
-ADDR_19			(MC13	P)   : MUX 6		Ref (D57p)
-nAS			(MC12	P)   : MUX 7		Ref (A3p)
+nAS			(MC12	FB)  : MUX 5		Ref (GCLK)
+ADDR_21			(MC24	P)   : MUX 7		Ref (D54p)
 FC_1			(MC20	P)   : MUX 8		Ref (E78p)
 ADDR_23			(MC23	P)   : MUX 9		Ref (D51p)
-ADDR_16			(MC16	P)   : MUX 10		Ref (D62p)
-ADDR_18			(MC14	P)   : MUX 12		Ref (D59p)
-FC_2			(MC25	P)   : MUX 14		Ref (E80p)
-id00095			(MC10	FB)  : MUX 15		Ref (C47fb)
-id00101			(MC9	FB)  : MUX 19		Ref (B30fb)
-CPU_CLK			(MC4	P)   : MUX 20		Ref (A13p)
+id00097			(MC1	FB)  : MUX 10		Ref (A2fb)
+id00095			(MC10	FB)  : MUX 11		Ref (C47fb)
+ADDR_16			(MC16	P)   : MUX 14		Ref (D62p)
+ADDR_18			(MC14	P)   : MUX 16		Ref (D59p)
+id00036Q		(MC9	FB)  : MUX 19		Ref (B30fb)
+ADDR_17			(MC15	P)   : MUX 20		Ref (D61p)
 id00096			(MC11	FB)  : MUX 21		Ref (C48fb)
-id00093			(MC3	FB)  : MUX 22		Ref (A7fb)
+FC_2			(MC25	P)   : MUX 22		Ref (E80p)
 ADDR_13			(MC19	P)   : MUX 23		Ref (C35p)
-id00097			(MC1	FB)  : MUX 24		Ref (A3fb)
+id00093			(MC3	FB)  : MUX 24		Ref (A7fb)
 id00094			(MC5	FB)  : MUX 25		Ref (A15fb)
-ADDR_21			(MC24	P)   : MUX 33		Ref (D54p)
-ADDR_17			(MC15	P)   : MUX 36		Ref (D61p)
-id00036Q		(MC7	FB)  : MUX 37		Ref (B28fb)
+ADDR_19			(MC13	P)   : MUX 28		Ref (D57p)
+id00102			(MC6	FB)  : MUX 33		Ref (B27fb)
+FC_0			(MC21	P)   : MUX 34		Ref (E77p)
+id00101			(MC7	FB)  : MUX 37		Ref (B28fb)
 ADDR_15			(MC17	P)   : MUX 38		Ref (D64p)
-id00102			(MC8	FB)  : MUX 39		Ref (B29fb)
+id00049Q		(MC8	FB)  : MUX 39		Ref (B29fb)
 
 FanIn assignment for block B [25]
 {
-ADDR_20,ADDR_24,ADDR_31,ADDR_27,ADDR_21,ADDR_23,ADDR_22,ADDR_29,ADDR_30,ADDR_1,ADDR_28,ADDR_26,ADDR_0,ADDR_25,
+ADDR_20,ADDR_22,ADDR_24,ADDR_31,ADDR_23,ADDR_25,ADDR_26,ADDR_29,ADDR_30,ADDR_27,ADDR_1,ADDR_28,ADDR_0,ADDR_21,
 FC_0,FC_2,FC_1,
 RnW,
 SIZ_1,SIZ_0,
-id00102,id00101,id00049Q,
+id00049Q,id00101,id00102,
 nAS,nRST,
 }
 Multiplexer assignment for block B
 FC_0			(MC6	P)   : MUX 0		Ref (E77p)
 ADDR_20			(MC24	P)   : MUX 1		Ref (D56p)
 SIZ_1			(MC15	P)   : MUX 2		Ref (B27p)
+ADDR_22			(MC7	P)   : MUX 3		Ref (D53p)
 FC_2			(MC11	P)   : MUX 4		Ref (E80p)
 ADDR_24			(MC23	P)   : MUX 5		Ref (D49p)
 ADDR_31			(MC12	P)   : MUX 6		Ref (E75p)
-nAS			(MC4	P)   : MUX 7		Ref (A3p)
 FC_1			(MC5	P)   : MUX 8		Ref (E78p)
-ADDR_27			(MC20	P)   : MUX 9		Ref (E69p)
-ADDR_21			(MC9	P)   : MUX 11		Ref (D54p)
-ADDR_23			(MC8	P)   : MUX 13		Ref (D51p)
+ADDR_23			(MC8	P)   : MUX 9		Ref (D51p)
+ADDR_25			(MC22	P)   : MUX 13		Ref (E65p)
+ADDR_26			(MC21	P)   : MUX 15		Ref (E67p)
 SIZ_0			(MC16	P)   : MUX 16		Ref (B29p)
-ADDR_22			(MC7	P)   : MUX 17		Ref (D53p)
+nAS			(MC4	FB)  : MUX 17		Ref (GCLK)
 RnW			(MC10	P)   : MUX 18		Ref (B30p)
 ADDR_29			(MC18	P)   : MUX 19		Ref (E72p)
 ADDR_30			(MC13	P)   : MUX 20		Ref (E73p)
-ADDR_1			(MC14	P)   : MUX 23		Ref (B24p)
+ADDR_27			(MC20	P)   : MUX 23		Ref (E69p)
+ADDR_1			(MC14	P)   : MUX 25		Ref (B24p)
 ADDR_28			(MC19	P)   : MUX 27		Ref (E70p)
-ADDR_26			(MC21	P)   : MUX 29		Ref (E67p)
 ADDR_0			(MC17	P)   : MUX 30		Ref (B25p)
-ADDR_25			(MC22	P)   : MUX 31		Ref (E65p)
-id00102			(MC2	FB)  : MUX 35		Ref (B29fb)
+ADDR_21			(MC9	P)   : MUX 33		Ref (D54p)
+id00049Q		(MC3	FB)  : MUX 35		Ref (B29fb)
 nRST			(MC25	FB)  : MUX 36		Ref (GCLR)
-id00101			(MC3	FB)  : MUX 37		Ref (B30fb)
-id00049Q		(MC1	FB)  : MUX 39		Ref (B27fb)
+id00101			(MC2	FB)  : MUX 37		Ref (B28fb)
+id00102			(MC1	FB)  : MUX 39		Ref (B27fb)
 
 FanIn assignment for block C [7]
 {
@@ -301,11 +302,11 @@ nAS,
 Multiplexer assignment for block C
 XXL_282			(MC3	FB)  : MUX 1		Ref (A12fb)
 id00003			(MC1	FB)  : MUX 2		Ref (A4fb)
-nAS			(MC7	P)   : MUX 7		Ref (A3p)
-id00099			(MC5	FB)  : MUX 13		Ref (C46fb)
+id00099			(MC5	FB)  : MUX 7		Ref (C46fb)
 CPU_CLK			(MC4	P)   : MUX 20		Ref (A13p)
-id00096			(MC6	FB)  : MUX 21		Ref (C48fb)
-XXL_283			(MC2	FB)  : MUX 27		Ref (A10fb)
+id00096			(MC6	FB)  : MUX 27		Ref (C48fb)
+XXL_283			(MC2	FB)  : MUX 29		Ref (A10fb)
+nAS			(MC7	FB)  : MUX 39		Ref (GCLK)
 
 FanIn assignment for block F [5]
 {
@@ -318,16 +319,15 @@ Multiplexer assignment for block F
 RnW			(MC4	P)   : MUX 0		Ref (B30p)
 CPU_CLK			(MC1	P)   : MUX 6		Ref (A13p)
 id00099			(MC2	FB)  : MUX 7		Ref (C46fb)
-nDS			(MC5	P)   : MUX 11		Ref (A1p)
-CLK_6_25		(MC3	P)   : MUX 25		Ref (F81p)
+CLK_6_25		(MC3	P)   : MUX 11		Ref (F81p)
+nDS			(MC5	FB)  : MUX 25		Ref (OE1)
 
 FanIn assignment for block G [17]
 {
-ADDR_12,ADDR_7,ADDR_14,ADDR_15,ADDR_17,ADDR_13,ADDR_8,ADDR_6,ADDR_5,ADDR_9,ADDR_10,ADDR_4,ADDR_19,ADDR_18,ADDR_16,ADDR_11,
+ADDR_7,ADDR_14,ADDR_15,ADDR_17,ADDR_13,ADDR_8,ADDR_6,ADDR_5,ADDR_9,ADDR_12,ADDR_10,ADDR_4,ADDR_19,ADDR_18,ADDR_16,ADDR_11,
 id00036Q,
 }
 Multiplexer assignment for block G
-ADDR_12			(MC10	P)   : MUX 1		Ref (C37p)
 ADDR_7			(MC15	P)   : MUX 4		Ref (C45p)
 ADDR_14			(MC7	P)   : MUX 5		Ref (C33p)
 ADDR_15			(MC6	P)   : MUX 6		Ref (D64p)
@@ -337,60 +337,61 @@ ADDR_8			(MC14	P)   : MUX 10		Ref (C43p)
 ADDR_6			(MC16	P)   : MUX 12		Ref (C46p)
 ADDR_5			(MC17	P)   : MUX 13		Ref (B17p)
 ADDR_9			(MC13	P)   : MUX 16		Ref (C41p)
+ADDR_12			(MC10	P)   : MUX 19		Ref (C37p)
 ADDR_10			(MC12	P)   : MUX 21		Ref (C40p)
 ADDR_4			(MC9	P)   : MUX 27		Ref (B19p)
 ADDR_19			(MC2	P)   : MUX 28		Ref (D57p)
 ADDR_18			(MC3	P)   : MUX 30		Ref (D59p)
 ADDR_16			(MC5	P)   : MUX 32		Ref (D62p)
 ADDR_11			(MC11	P)   : MUX 35		Ref (C38p)
-id00036Q		(MC1	FB)  : MUX 37		Ref (B28fb)
+id00036Q		(MC1	FB)  : MUX 37		Ref (B30fb)
 
 FanIn assignment for block H [35]
 {
-ADDR_30,ADDR_9,ADDR_10,ADDR_19,ADDR_14,ADDR_31,ADDR_4,ADDR_16,ADDR_21,ADDR_18,ADDR_23,ADDR_7,ADDR_13,ADDR_0,ADDR_11,ADDR_12,ADDR_6,ADDR_1,ADDR_22,ADDR_8,ADDR_5,ADDR_17,ADDR_15,
+ADDR_30,ADDR_14,ADDR_9,ADDR_12,ADDR_19,ADDR_31,ADDR_11,ADDR_1,ADDR_16,ADDR_4,ADDR_18,ADDR_23,ADDR_7,ADDR_13,ADDR_0,ADDR_22,ADDR_6,ADDR_10,ADDR_8,ADDR_5,ADDR_21,ADDR_17,ADDR_15,
 FC_1,FC_0,
 RnW,
 SIZ_1,SIZ_0,
-XXL_281,XXL_284,
-id00036Q,id00102,id00101,id00049Q,
+XXL_284,XXL_281,
+id00102,id00036Q,id00049Q,id00101,
 nAS,
 }
 Multiplexer assignment for block H
 ADDR_30			(MC22	P)   : MUX 0		Ref (E73p)
+ADDR_14			(MC13	P)   : MUX 1		Ref (C33p)
 ADDR_9			(MC31	P)   : MUX 2		Ref (C41p)
-ADDR_10			(MC30	P)   : MUX 3		Ref (C40p)
+ADDR_12			(MC28	P)   : MUX 3		Ref (C37p)
 ADDR_19			(MC8	P)   : MUX 4		Ref (D57p)
-ADDR_14			(MC13	P)   : MUX 5		Ref (C33p)
+id00102			(MC1	FB)  : MUX 5		Ref (B27fb)
 ADDR_31			(MC21	P)   : MUX 6		Ref (E75p)
-nAS			(MC7	P)   : MUX 7		Ref (A3p)
+ADDR_11			(MC29	P)   : MUX 7		Ref (C38p)
 FC_1			(MC15	P)   : MUX 8		Ref (E78p)
-ADDR_4			(MC27	P)   : MUX 9		Ref (B19p)
+ADDR_1			(MC23	P)   : MUX 9		Ref (B24p)
 ADDR_16			(MC11	P)   : MUX 10		Ref (D62p)
-ADDR_21			(MC19	P)   : MUX 11		Ref (D54p)
+ADDR_4			(MC27	P)   : MUX 11		Ref (B19p)
 ADDR_18			(MC9	P)   : MUX 12		Ref (D59p)
 ADDR_23			(MC18	P)   : MUX 13		Ref (D51p)
 ADDR_7			(MC33	P)   : MUX 14		Ref (C45p)
 ADDR_13			(MC14	P)   : MUX 15		Ref (C35p)
 ADDR_0			(MC26	P)   : MUX 16		Ref (B25p)
-ADDR_11			(MC29	P)   : MUX 17		Ref (C38p)
+ADDR_22			(MC17	P)   : MUX 17		Ref (D53p)
 FC_0			(MC16	P)   : MUX 18		Ref (E77p)
-ADDR_12			(MC28	P)   : MUX 19		Ref (C37p)
+id00036Q		(MC4	FB)  : MUX 19		Ref (B30fb)
 ADDR_6			(MC34	P)   : MUX 20		Ref (C46p)
+ADDR_10			(MC30	P)   : MUX 21		Ref (C40p)
 RnW			(MC20	P)   : MUX 22		Ref (B30p)
-ADDR_1			(MC23	P)   : MUX 23		Ref (B24p)
+id00049Q		(MC3	FB)  : MUX 23		Ref (B29fb)
 SIZ_1			(MC24	P)   : MUX 24		Ref (B27p)
-ADDR_22			(MC17	P)   : MUX 25		Ref (D53p)
-id00036Q		(MC2	FB)  : MUX 27		Ref (B28fb)
+XXL_284			(MC5	FB)  : MUX 25		Ref (B31fb)
+id00101			(MC2	FB)  : MUX 27		Ref (B28fb)
 ADDR_8			(MC32	P)   : MUX 28		Ref (C43p)
-XXL_281			(MC6	FB)  : MUX 29		Ref (B32fb)
-XXL_284			(MC5	FB)  : MUX 31		Ref (B31fb)
+ADDR_5			(MC35	P)   : MUX 31		Ref (B17p)
 SIZ_0			(MC25	P)   : MUX 32		Ref (B29p)
-ADDR_5			(MC35	P)   : MUX 33		Ref (B17p)
-id00102			(MC3	FB)  : MUX 35		Ref (B29fb)
+ADDR_21			(MC19	P)   : MUX 33		Ref (D54p)
+nAS			(MC7	FB)  : MUX 35		Ref (GCLK)
 ADDR_17			(MC10	P)   : MUX 36		Ref (D61p)
-id00101			(MC4	FB)  : MUX 37		Ref (B30fb)
+XXL_281			(MC6	FB)  : MUX 37		Ref (B32fb)
 ADDR_15			(MC12	P)   : MUX 38		Ref (D64p)
-id00049Q		(MC1	FB)  : MUX 39		Ref (B27fb)
 
 Creating JEDEC file sysctl.jed ...
 
@@ -560,8 +561,6 @@ id00096.AR = !nRST;
 
 TQFP100 Pin/Node Placement:
 ------------------------------------
-Pin 1  = nAS; /* MC 3 */
-Pin 2  = nDS; /* MC 1 */
 Pin 4  = TDI; /* MC 32 */
 Pin 5  = RnW; /* MC 30 */
 Pin 6  = SIZ_0; /* MC 29 */
@@ -617,6 +616,8 @@ Pin 81 = nFRAM_RD; /* MC 123 */
 Pin 83 = nMMIOSEL; /* MC 125 */ 
 Pin 84 = nDEVSEL; /* MC 126 */ 
 Pin 85 = nROMSEL; /* MC 128 */ 
+Pin 87 = nAS;
+Pin 88 = nDS;
 Pin 89 = nRST;
 Pin 90 = DRAM_CLK;
 Pin 92 = nFPUSEL; /* MC 16 */ 
@@ -626,16 +627,16 @@ Pin 96 = CI; /* MC 11 */
 Pin 97 = STERM; /* MC  9 */
 Pin 98 = BERR; /* MC  8 */
 PINNODE 428 = id00051Q; /* MC 128 Foldback */
-PINNODE 603 = id00097; /* MC 3 Feedback */
+PINNODE 602 = id00097; /* MC 2 Feedback */
 PINNODE 604 = id00003; /* MC 4 Feedback */
 PINNODE 607 = id00093; /* MC 7 Feedback */
 PINNODE 610 = XXL_283; /* MC 10 Feedback */
 PINNODE 612 = XXL_282; /* MC 12 Feedback */
 PINNODE 615 = id00094; /* MC 15 Feedback */
-PINNODE 627 = id00049Q; /* MC 27 Feedback */
-PINNODE 628 = id00036Q; /* MC 28 Feedback */
-PINNODE 629 = id00102; /* MC 29 Feedback */
-PINNODE 630 = id00101; /* MC 30 Feedback */
+PINNODE 627 = id00102; /* MC 27 Feedback */
+PINNODE 628 = id00101; /* MC 28 Feedback */
+PINNODE 629 = id00049Q; /* MC 29 Feedback */
+PINNODE 630 = id00036Q; /* MC 30 Feedback */
 PINNODE 631 = XXL_284; /* MC 31 Feedback */
 PINNODE 632 = XXL_281; /* MC 32 Feedback */
 PINNODE 646 = id00099; /* MC 46 Feedback */
@@ -668,9 +669,9 @@ SO Pin Options Field = Summary of Allocations.
 
 
 MCell Pin# Oe   PinDrive   DCERP  FBDrive  DCERP  Foldback  CascadeOut     TotPT SO
-MC1   2    --   nDS        INPUT  --              --        --             0     f- 
-MC2   0         --                --              --        --             0     f- 
-MC3   1    --   nAS        INPUT  id00097  Dc-g-  --        --             3     f- 
+MC1   2         --                --              --        --             0     f- 
+MC2   0         --                id00097  Dc-g-  --        --             3     f- 
+MC3   1         --                --              --        --             0     f- 
 MC4   0         --                id00003  Dc-g-  --        --             3     f- 
 MC5   100       --                --              --        --             0     f- 
 MC6   99        --                --              --        --             0     f- 
@@ -694,10 +695,10 @@ MC23  0         --                --              --        --             0    
 MC24  9    --   ADDR_1     INPUT  --              --        --             0     f- 
 MC25  8    --   ADDR_0     INPUT  --              --        --             0     f- 
 MC26  0         --                --              --        --             0     f- 
-MC27  7    --   SIZ_1      INPUT  id00049Q C----  --        --             2     f- 
-MC28  0         --                id00036Q C----  --        --             2     f- 
-MC29  6    --   SIZ_0      INPUT  id00102  Dc--p  --        --             3     f- 
-MC30  5    --   RnW        INPUT  id00101  Dc--p  --        --             3     f- 
+MC27  7    --   SIZ_1      INPUT  id00102  Dg--p  --        --             2     f- 
+MC28  0         --                id00101  Dg--p  --        --             2     f- 
+MC29  6    --   SIZ_0      INPUT  id00049Q C----  --        --             2     f- 
+MC30  5    --   RnW        INPUT  id00036Q C----  --        --             2     f- 
 MC31  0         --                XXL_284  C----  NA        --             5     f- 
 MC32  4    --   TDI        INPUT  XXL_281  C----  NA        --             5     f- 
 MC33  25   --   ADDR_14    INPUT  --              --        --             0     f- 
@@ -798,12 +799,12 @@ MC127 0         --                --              --        --             0    
 MC128 85   on   nROMSEL    C----  --              id00051Q  --             3     f- 
 MC0   90        DRAM_CLK   INPUT  --              --        --             0     f- 
 MC0   89        nRST       INPUT  --              --        --             0     f- 
-MC0   88        --                --              --        --             0     f- 
-MC0   87        --                --              --        --             0     f- 
+MC0   88        nDS        INPUT  --              --        --             0     f- 
+MC0   87        nAS        INPUT  --              --        --             0     f- 
 
 Logic Array Block			Macro Cells	I/O Pins	Foldbacks	TotalPT	FanIN		Cascades
-A: MC1	- MC16		12/16(75%)	8/16(50%)	0/16(0%)	32/80(40%)	25/40(62%)	0
-B: MC17	- MC32		6/16(37%)	8/16(50%)	0/16(0%)	20/80(25%)	25/40(62%)	0
+A: MC1	- MC16		12/16(75%)	6/16(37%)	0/16(0%)	32/80(40%)	25/40(62%)	0
+B: MC17	- MC32		6/16(37%)	8/16(50%)	0/16(0%)	18/80(22%)	25/40(62%)	0
 C: MC33	- MC48		3/16(18%)	10/16(62%)	0/16(0%)	7/80(8%)	7/40(17%)	0
 D: MC49	- MC64		0/16(0%)	10/16(62%)	0/16(0%)	0/80(0%)	5/40(12%)	0
 E: MC65	- MC80		0/16(0%)	10/16(62%)	0/16(0%)	0/80(0%)	17/40(42%)	0
@@ -811,8 +812,8 @@ F: MC81	- MC96		3/16(18%)	4/16(25%)	0/16(0%)	5/80(6%)	35/40(87%)	0
 G: MC97	- MC112		4/16(25%)	4/16(25%)	0/16(0%)	3/80(3%)	35/40(87%)	0
 H: MC113- MC128		9/16(56%)	9/16(56%)	1/16(6%)	23/80(28%)	35/40(87%)	0
 
-Total dedicated input used:	2/4 	(50%)
-Total I/O pins used		63/80 	(78%)
+Total dedicated input used:	4/4 	(100%)
+Total I/O pins used		61/80 	(76%)
 Total Macro cells used 		37/128 	(28%)
 Total Flip-Flop used 		11/128 	(8%)
 Total Foldback logic used 	1/128 	(0%)
@@ -820,7 +821,7 @@ Total Nodes+FB/MCells 		38/128 	(29%)
 Total cascade used 		0
 Total input pins 			43
 Total output pins 		22
-Total Pts 				90
+Total Pts 				88
 Creating pla file sysctl.tt3 with 0 inputs 0 outputs, 0 pins 0 nodes and 0 pterms...
 
 ----------------  End fitter, Design FITS

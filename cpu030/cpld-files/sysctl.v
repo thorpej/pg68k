@@ -339,8 +339,6 @@ endmodule
 //PIN: CHIP "sysctl" ASSIGNED TO AN TQFP100
 //
 //     === Inputs ===
-//PIN: nAS		: 1
-//PIN: nDS		: 2
 //PIN: RnW		: 5
 //PIN: SIZ_0		: 6
 //PIN: SIZ_1		: 7
@@ -379,6 +377,8 @@ endmodule
 //PIN: FC_0		: 48
 //PIN: FC_1		: 49
 //PIN: FC_2		: 50
+//PIN: nAS		: 87
+//PIN: nDS		: 88
 //PIN: nRST		: 89
 //PIN: DRAM_CLK		: 90
 //

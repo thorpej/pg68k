@@ -62,7 +62,10 @@ module sysctl(
 	output wire CLK_6_25,
 
 	output wire nFRAM_RD,
-	output wire [3:0] nFRAM_WR
+	output wire [3:0] nFRAM_WR,
+
+	output wire nIORD,
+	output wire nIOWR
 );
 
 /*
@@ -75,7 +78,7 @@ module sysctl(
 reg [2:0] ClockDivider;
 always @(posedge DRAM_CLK, negedge nRST) begin
 	if (~nRST)
-		ClockDivider <= 1'b0;
+		ClockDivider <= 3'd0;
 	else
 		ClockDivider <= ClockDivider + 3'd1;
 end
@@ -325,6 +328,10 @@ assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
 assign CI = (ResetVecFetch || ~nDEVSELx);
 
+/* Generate /IORD and /IOWR read and write strobes. */
+assign nIORD = ~(~nDS & RnW);
+assign nIOWR = ~(~nDS & ~RnW);
+
 endmodule
 
 // Pin assignment for Yosys workflow.
@@ -379,6 +386,8 @@ endmodule
 //
 // XXX note might want more DRAMSEL signals in the future.
 //PIN: CLK_6_25		: 52
+//PIN: IORD		: 53
+//PIN: IOWR		: 54
 //PIN: nTMRSEL		: 68
 //PIN: nDUARTSEL	: 69
 //PIN: nINTCSEL		: 70

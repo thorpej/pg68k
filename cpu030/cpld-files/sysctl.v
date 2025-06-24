@@ -56,8 +56,10 @@ module sysctl(
 
 	output wire nINTCSEL,
 	output wire nDUARTSEL,
+	output wire nTMRSEL,
 
 	output wire CPU_CLK,
+	output wire CLK_6_25,
 
 	output wire nFRAM_RD,
 	output wire [3:0] nFRAM_WR
@@ -67,16 +69,18 @@ module sysctl(
  * Clock generation.  We receive the DRAM clock as input (50MHz).  We
  * produce the following clock outputs:
  *
- * - CPU_CLK (25MHz)   DRAM_CLK / 2
+ * - CPU_CLK (25MHz)	DRAM_CLK / 2
+ * - CLK_6_25 (6.25MHz)	DRAM_CLK / 8
  */
-reg ClockDivider;
+reg [2:0] ClockDivider;
 always @(posedge DRAM_CLK, negedge nRST) begin
 	if (~nRST)
 		ClockDivider <= 1'b0;
 	else
-		ClockDivider <= ~ClockDivider;
+		ClockDivider <= ClockDivider + 3'd1;
 end
-assign CPU_CLK = ClockDivider;
+assign CPU_CLK = ClockDivider[0];
+assign CLK_6_25 = ClockDivider[2];
 
 /*
  * We count the first 4 bus cycles after a /RESET occurs, and use that
@@ -218,25 +222,28 @@ assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSEL}
  * Further qualify the DEV space:
  *
  * 0.000x	TL16C2552 DUART
+ * 0.001x	CP82C54-10Z timer
  * F.FFFx	Interrupt controller
  */
 localparam DEV_DUART	= 20'h0000x;
+localparam DEV_TMR	= 20'h0001x;
 localparam DEV_INTC	= 20'hFFFFx;
 
-localparam DSEL_NONE	= 2'b11;
-localparam DSEL_DUART	= 2'b01;
-localparam DSEL_INTC	= 2'b10;
+localparam DSEL_NONE	= 3'b111;
+localparam DSEL_DUART	= 3'b011;
+localparam DSEL_TMR	= 3'b101;
+localparam DSEL_INTC	= 3'b110;
 
-reg DevSelectOutputs;
+reg [2:0] DevSelectOutputs;
 always @(*) begin
 	casex ({nDEVSELx, ADDR[19:0]})
-	{1'b0, DEV_DUART}:    DevSelectOutputs = DSEL_DUART;
-	{1'b0, DEV_INTC}:     DevSelectOutputs = DSEL_INTC;
-	default:              DevSelectOutputs = DSEL_NONE;
+	{1'b0, DEV_DUART}: DevSelectOutputs = DSEL_DUART;
+	{1'b0, DEV_TMR}:   DevSelectOutputs = DSEL_TMR;
+	{1'b0, DEV_INTC}:  DevSelectOutputs = DSEL_INTC;
+	default:           DevSelectOutputs = DSEL_NONE;
 	endcase
 end
-assign {nDUARTSEL, nINTCSEL}
-    = DevSelectOutputs;
+assign {nDUARTSEL, nTMRSEL, nINTCSEL} = DevSelectOutputs;
 
 /*
  * Assert the external /DEVSEL signal if we don't match any devices
@@ -371,6 +378,8 @@ endmodule
 //     === Outputs ===
 //
 // XXX note might want more DRAMSEL signals in the future.
+//PIN: CLK_6_25		: 52
+//PIN: nTMRSEL		: 68
 //PIN: nDUARTSEL	: 69
 //PIN: nINTCSEL		: 70
 //			: 71

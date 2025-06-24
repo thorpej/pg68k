@@ -50,7 +50,7 @@ module sysctl(
 	output wire nROMSEL,
 	output wire nDEVSEL,
 	output wire nMMIOSEL,
-	output wire nDRAMSEL,
+	output wire [3:0] nDRAMSEL,
 	output wire nFPUSEL,
 	output wire nIACKSEL,
 
@@ -161,13 +161,19 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  * Top-level address decoding:
  *
  * $FFF0.0000 - $FFFF.FFFF      System ROM (1MB)
- * $FFE0.0000 - $FFEF.FFFF      8-bit peripheral space (1MB)
+ * $FFE0.0000 - $FFEF.FFFF      Peripheral device space (1MB)
  * $FF80.0000 - $FFBF.FFFF      Fast RAM (4MB)
  * $8000.0000 - $BFFF.FFFF      Memory mapped I/O space (1GB)
- * $0000.0000 - $7FFF.FFFF      RAM (2GB)
+ * $0000.0000 - $3FFF.FFFF      DRAM (1GB, as 4x256MB)
  *
- * The bottom 3GB are futher decoded by external decoding logic
- * (qualified by /RAMSEL and /MMIOSEL).
+ * The DRAM region is arranged as up-to-four discrete 256MB banks, each
+ * controlled by a DRAMCTL.
+ *
+ * MMIO space is further decoded externally, qualified by /MMIOSEL.
+ *
+ * The peripheral device space is mainly on-board peripherals (UARTs, timer,
+ * etc.).  Some of this address is further decoded below, with the remaining
+ * being externally decoded and qualified by /DEVSEL.
  */
 
 /*			          Address bits
@@ -177,7 +183,10 @@ localparam REGION_ROM	= 19'b111111111111xxxxxxx;
 localparam REGION_DEV	= 19'b111111111110xxxxxxx;
 /*         REGION_FRAM	= 19'b1111111110xxxxxxxxx; Handled below.	*/
 localparam REGION_MMIO	= 19'b10xxxxxxxxxxxxxxxxx;
-localparam REGION_DRAM	= 19'b0xxxxxxxxxxxxxxxxxx;
+localparam REGION_DRAM0	= 19'b0000xxxxxxxxxxxxxxx;
+localparam REGION_DRAM1	= 19'b0001xxxxxxxxxxxxxxx;
+localparam REGION_DRAM2	= 19'b0010xxxxxxxxxxxxxxx;
+localparam REGION_DRAM3	= 19'b0011xxxxxxxxxxxxxxx;
 
 	/* (CPU space) ACCTYPE = 0x02 (coproc), CPID = 0x01 */
 localparam REGION_FPU	= 19'bxxxxxxxxxxxx0010001;
@@ -189,33 +198,39 @@ localparam RV_Y		= 1'b1;
 localparam RV_N		= 1'b0;
 localparam RV_X		= 1'bx;
 
-localparam SEL_NONE	= 6'b111111;
-localparam SEL_ROM	= 6'b111110;
-localparam SEL_DEV	= 6'b111101;
-localparam SEL_MMIO	= 6'b111011;
-localparam SEL_DRAM	= 6'b110111;
-localparam SEL_FPU	= 6'b101111;
-localparam SEL_IACK	= 6'b011111;
+localparam SEL_NONE	= 6'b111111111;
+localparam SEL_ROM	= 6'b111111110;
+localparam SEL_DEV	= 6'b111111101;
+localparam SEL_MMIO	= 6'b111111011;
+localparam SEL_DRAM0	= 6'b111110111;
+localparam SEL_DRAM1	= 6'b111101111;
+localparam SEL_DRAM2	= 6'b111011111;
+localparam SEL_DRAM3	= 6'b110111111;
+localparam SEL_FPU	= 6'b101111111;
+localparam SEL_IACK	= 6'b011111111;
 
 wire nDEVSELx;
-reg [5:0] SelectOutputs;
+reg [8:0] SelectOutputs;
 always @(*) begin
 	casex ({AddrQual, AddrSpace, ResetVecFetch, ADDR[31:13]})
-	{QUAL_nAS,  SPC_NORM, RV_X, REGION_ROM}:  SelectOutputs = SEL_ROM;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_ROM}:   SelectOutputs = SEL_ROM;
 
-	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV}:  SelectOutputs = SEL_DEV;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV}:   SelectOutputs = SEL_DEV;
 
-	{QUAL_nAS,  SPC_NORM, RV_X, REGION_MMIO}: SelectOutputs = SEL_MMIO;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_MMIO}:  SelectOutputs = SEL_MMIO;
 
-	{QUAL_nAS,  SPC_NORM, RV_Y, REGION_DRAM}: SelectOutputs = SEL_ROM;
-	{QUAL_nAS,  SPC_NORM, RV_N, REGION_DRAM}: SelectOutputs = SEL_DRAM;
+	{QUAL_nAS,  SPC_NORM, RV_Y, REGION_DRAM0}: SelectOutputs = SEL_ROM;
+	{QUAL_nAS,  SPC_NORM, RV_N, REGION_DRAM0}: SelectOutputs = SEL_DRAM0;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DRAM1}: SelectOutputs = SEL_DRAM1;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DRAM2}: SelectOutputs = SEL_DRAM2;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DRAM3}: SelectOutputs = SEL_DRAM3;
 
-	{QUAL_nCLK, SPC_CPU,  RV_X, REGION_FPU}:  SelectOutputs = SEL_FPU;
-	{QUAL_nAS,  SPC_CPU,  RV_X, REGION_FPU}:  SelectOutputs = SEL_FPU;
+	{QUAL_nCLK, SPC_CPU,  RV_X, REGION_FPU}:   SelectOutputs = SEL_FPU;
+	{QUAL_nAS,  SPC_CPU,  RV_X, REGION_FPU}:   SelectOutputs = SEL_FPU;
 
-	{QUAL_nAS,  SPC_CPU,  RV_X, REGION_IACK}: SelectOutputs = SEL_IACK;
+	{QUAL_nAS,  SPC_CPU,  RV_X, REGION_IACK}:  SelectOutputs = SEL_IACK;
 
-	default:                                  SelectOutputs = SEL_NONE;
+	default:                                   SelectOutputs = SEL_NONE;
 	endcase
 end
 assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSEL}
@@ -392,10 +407,10 @@ endmodule
 //PIN: nTMRSEL		: 68
 //PIN: nDUARTSEL	: 69
 //PIN: nINTCSEL		: 70
-//			: 71
-//			: 72
-//			: 75
-//PIN: nDRAMSEL		: 76
+//PIN: nDRAMSEL_0	: 71
+//PIN: nDRAMSEL_1	: 72
+//PIN: nDRAMSEL_2	: 75
+//PIN: nDRAMSEL_3	: 76
 //PIN: nFRAM_WR_0	: 77
 //PIN: nFRAM_WR_1	: 78
 //PIN: nFRAM_WR_2	: 79

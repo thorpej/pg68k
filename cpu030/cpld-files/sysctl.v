@@ -54,6 +54,9 @@ module sysctl(
 	output wire nFPUSEL,
 	output wire nIACKSEL,
 
+	output wire nINTCSEL,
+	output wire nDUARTSEL,
+
 	output wire CPU_CLK,
 
 	output wire nFRAM_RD,
@@ -187,12 +190,13 @@ localparam SEL_RAM	= 6'b110111;
 localparam SEL_FPU	= 6'b101111;
 localparam SEL_IACK	= 6'b011111;
 
+wire nDEVSELx;
 reg [5:0] SelectOutputs;
 always @(*) begin
 	casex ({AddrQual, AddrSpace, ResetVecFetch, ADDR[31:13]})
 	{QUAL_nAS,  SPC_NORM, RV_X, REGION_ROM}:  SelectOutputs = SEL_ROM;
 
-	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV}: SelectOutputs = SEL_DEV;
+	{QUAL_nAS,  SPC_NORM, RV_X, REGION_DEV}:  SelectOutputs = SEL_DEV;
 
 	{QUAL_nAS,  SPC_NORM, RV_X, REGION_MMIO}: SelectOutputs = SEL_MMIO;
 
@@ -207,8 +211,38 @@ always @(*) begin
 	default:                                  SelectOutputs = SEL_NONE;
 	endcase
 end
-assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSEL, nROMSEL}
+assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSEL}
     = SelectOutputs;
+
+/*
+ * Further qualify the DEV space:
+ *
+ * 0.000x	TL16C2552 DUART
+ * F.FFFx	Interrupt controller
+ */
+localparam DEV_DUART	= 20'h0000x;
+localparam DEV_INTC	= 20'hFFFFx;
+
+localparam DSEL_NONE	= 2'b11;
+localparam DSEL_DUART	= 2'b01;
+localparam DSEL_INTC	= 2'b10;
+
+reg DevSelectOutputs;
+always @(*) begin
+	casex ({nDEVSELx, ADDR[19:0]})
+	{1'b0, DEV_DUART}:    DevSelectOutputs = DSEL_DUART;
+	{1'b0, DEV_INTC}:     DevSelectOutputs = DSEL_INTC;
+	default:              DevSelectOutputs = DSEL_NONE;
+	endcase
+end
+assign {nDUARTSEL, nINTCSEL}
+    = DevSelectOutputs;
+
+/*
+ * Assert the external /DEVSEL signal if we don't match any devices
+ * decoded internally.
+ */
+assign nDEVSEL = ~(~nDEVSELx && (DevSelectOutputs == DSEL_NONE));
 
 localparam REGION_FRAM = 10'b1111111110;
 
@@ -337,6 +371,11 @@ endmodule
 //     === Outputs ===
 //
 // XXX note might want more DRAMSEL signals in the future.
+//PIN: nDUARTSEL	: 69
+//PIN: nINTCSEL		: 70
+//			: 71
+//			: 72
+//			: 75
 //PIN: nDRAMSEL		: 76
 //PIN: nFRAM_WR_0	: 77
 //PIN: nFRAM_WR_1	: 78

@@ -177,7 +177,7 @@ localparam REGION_ROM	= 19'b111111111111xxxxxxx;
 localparam REGION_DEV	= 19'b111111111110xxxxxxx;
 /*         REGION_FRAM	= 19'b1111111110xxxxxxxxx; Handled below.	*/
 localparam REGION_MMIO	= 19'b10xxxxxxxxxxxxxxxxx;
-localparam REGION_RAM	= 19'b0xxxxxxxxxxxxxxxxxx;
+localparam REGION_DRAM	= 19'b0xxxxxxxxxxxxxxxxxx;
 
 	/* (CPU space) ACCTYPE = 0x02 (coproc), CPID = 0x01 */
 localparam REGION_FPU	= 19'bxxxxxxxxxxxx0010001;
@@ -193,7 +193,7 @@ localparam SEL_NONE	= 6'b111111;
 localparam SEL_ROM	= 6'b111110;
 localparam SEL_DEV	= 6'b111101;
 localparam SEL_MMIO	= 6'b111011;
-localparam SEL_RAM	= 6'b110111;
+localparam SEL_DRAM	= 6'b110111;
 localparam SEL_FPU	= 6'b101111;
 localparam SEL_IACK	= 6'b011111;
 
@@ -207,8 +207,8 @@ always @(*) begin
 
 	{QUAL_nAS,  SPC_NORM, RV_X, REGION_MMIO}: SelectOutputs = SEL_MMIO;
 
-	{QUAL_nAS,  SPC_NORM, RV_Y, REGION_RAM}:  SelectOutputs = SEL_ROM;
-	{QUAL_nAS,  SPC_NORM, RV_N, REGION_RAM}:  SelectOutputs = SEL_RAM;
+	{QUAL_nAS,  SPC_NORM, RV_Y, REGION_DRAM}: SelectOutputs = SEL_ROM;
+	{QUAL_nAS,  SPC_NORM, RV_N, REGION_DRAM}: SelectOutputs = SEL_DRAM;
 
 	{QUAL_nCLK, SPC_CPU,  RV_X, REGION_FPU}:  SelectOutputs = SEL_FPU;
 	{QUAL_nAS,  SPC_CPU,  RV_X, REGION_FPU}:  SelectOutputs = SEL_FPU;

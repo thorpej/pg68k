@@ -471,8 +471,6 @@ endmodule
 //PIN: CHIP "dramctl" ASSIGNED TO AN TQFP100
 //
 //     === Inputs ===
-//PIN: nAS		: 1
-//PIN: nRAMSEL		: 2
 //PIN: RnW		: 5
 //PIN: SIZ_0		: 6
 //PIN: SIZ_1		: 7
@@ -509,6 +507,8 @@ endmodule
 //PIN: SIMMPDA_2	: 83
 //PIN: SIMMPDA_3	: 84
 //PIN: SIMMSZ		: 85
+//PIN: nAS		: 87
+//PIN: nRAMSEL		: 88
 //PIN: nRST		: 89
 //PIN: CLK		: 90
 //PIN: SIMMPDB_0	: 92
@@ -518,6 +518,8 @@ endmodule
 //
 //     === Outputs ===
 //
+//PIN: DSACK_0		: 1
+//PIN: DSACK_1		: 2
 //PIN: DRAM_nWR		: 45
 //PIN: DRAM_ADDR_0	: 46
 //PIN: DRAM_ADDR_1	: 47
@@ -547,6 +549,4 @@ endmodule
 //PIN: DRAM_nCASB_1	: 77
 //PIN: DRAM_nCASB_2	: 78
 //PIN: DRAM_nCASB_3	: 79
-//PIN: BERR		: 98
-//PIN: DSACK_0		: 99
-//PIN: DSACK_1		: 100
+//PIN: BERR		: 100

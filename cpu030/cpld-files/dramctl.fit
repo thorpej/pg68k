@@ -1,4 +1,4 @@
-Atmel ATF1508 Fitter Version 1918 ,running Sun Jun 22 10:11:24 2025
+Atmel ATF1508 Fitter Version 1918 ,running Tue Jun 24 06:27:33 2025
 
 
 
@@ -76,21 +76,21 @@ nRST assigned to pin  89
 Performing input pin pre-assignments ...
 ------------------------------------
 CLK assigned to pin  90
+nAS assigned to pin  87
 nRST assigned to pin  89
+nRAMSEL assigned to pin  88
 
 Attempt to place floating signals ...
 ------------------------------------
-nRAMSEL is placed at pin 2 (MC 1)
-id00350 is placed at feedback node 601 (MC 1)
-id00344 is placed at feedback node 602 (MC 2)
-nAS is placed at pin 1 (MC 3)
-id00340 is placed at feedback node 603 (MC 3)
+DSACK_1 is placed at pin 2 (MC 1)
+id00340 is placed at feedback node 602 (MC 2)
+DSACK_0 is placed at pin 1 (MC 3)
 id00339 is placed at feedback node 604 (MC 4)
-DSACK_1 is placed at pin 100 (MC 5)
-DSACK_0 is placed at pin 99 (MC 6)
+BERR is placed at pin 100 (MC 5)
+id00334 is placed at feedback node 606 (MC 6)
 id00335 is placed at feedback node 607 (MC 7)
-BERR is placed at pin 98 (MC 8)
-id00334 is placed at feedback node 609 (MC 9)
+id00350 is placed at feedback node 608 (MC 8)
+id00344 is placed at feedback node 609 (MC 9)
 id00341 is placed at feedback node 610 (MC 10)
 SIMMPDB_3 is placed at pin 96 (MC 11)
 id00345 is placed at feedback node 611 (MC 11)
@@ -211,17 +211,17 @@ SIMMSZ is placed at pin 85 (MC 128)
                                                                                     A  A  A  A  
                                  S     S  S  S                       S  S     S  S  M  M  M  M  
                                  I     I  I  I                       I  I     I  I  _  _  _  _  
-                     D  D        M     M  M  M                       M  M     M  M  n  n  n  n  
-                     S  S        M     M  M  M                    S  M  M     M  M  C  C  C  C  
-                     A  A        P     P  P  P                    I  P  P     P  P  A  A  A  A  
-                     C  C  B     D     D  D  D        n           M  D  D     D  D  S  S  S  S  
-                     K  K  E     B  G  B  B  B  V  C  R        G  M  A  A  V  A  A  B  B  B  B  
-                     _  _  R     _  N  _  _  _  C  L  S        N  S  _  _  C  _  _  _  _  _  _  
-                     1  0  R     3  D  2  1  0  C  K  T        D  Z  3  2  C  1  0  3  2  1  0  
+                                 M     M  M  M           n           M  M     M  M  n  n  n  n  
+                                 M     M  M  M           R        S  M  M     M  M  C  C  C  C  
+                                 P     P  P  P           A        I  P  P     P  P  A  A  A  A  
+                     B           D     D  D  D        n  M        M  D  D     D  D  S  S  S  S  
+                     E           B  G  B  B  B  V  C  R  S  n  G  M  A  A  V  A  A  B  B  B  B  
+                     R           _  N  _  _  _  C  L  S  E  A  N  S  _  _  C  _  _  _  _  _  _  
+                     R           3  D  2  1  0  C  K  T  L  S  D  Z  3  2  C  1  0  3  2  1  0  
                  +------------------------------------------------------------------------------+
                  | 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76  |
-              nAS| 1                                                                         75 |DRAM_nRASB_3
-          nRAMSEL| 2                                                                         74 |GND
+          DSACK_0| 1                                                                         75 |DRAM_nRASB_3
+          DSACK_1| 2                                                                         74 |GND
               VCC| 3                                                                         73 |TDO
               TDI| 4                                                                         72 |DRAM_nRASB_2
               RnW| 5                                                                         71 |DRAM_nRASB_1
@@ -277,30 +277,30 @@ FanIn assignment for block A [21]
 BERR,
 DSACK_0,
 XXL_709,
-id00340,id00339,id00350,id00341,id00335,id00353,id00338,id00359,id00351,id00344,id00334,id00336,id00345,id00343,id00342,id00337,id00333,id00346,
+id00343,id00353,id00338,id00341,id00351,id00350,id00344,id00336,id00335,id00345,id00359,id00340,id00342,id00337,id00333,id00334,id00346,id00339,
 }
 Multiplexer assignment for block A
-id00340			(MC3	FB)  : MUX 0		Ref (A3fb)
-id00339			(MC4	FB)  : MUX 2		Ref (A4fb)
-BERR			(MC7	P)   : MUX 3		Ref (A8p)
-id00350			(MC1	FB)  : MUX 4		Ref (A1fb)
-id00341			(MC9	FB)  : MUX 7		Ref (A10fb)
-id00335			(MC6	FB)  : MUX 8		Ref (A7fb)
-DSACK_0			(MC5	P)   : MUX 9		Ref (A6p)
+BERR			(MC4	P)   : MUX 1		Ref (A5p)
+XXL_709			(MC18	FB)  : MUX 3		Ref (C48fb)
+id00343			(MC14	FB)  : MUX 5		Ref (A15fb)
+DSACK_0			(MC2	P)   : MUX 7		Ref (A3p)
 id00353			(MC16	FB)  : MUX 10		Ref (C39fb)
 id00338			(MC15	FB)  : MUX 11		Ref (A16fb)
-id00359			(MC21	FB)  : MUX 13		Ref (D62fb)
+id00341			(MC9	FB)  : MUX 13		Ref (A10fb)
 id00351			(MC17	FB)  : MUX 15		Ref (C47fb)
-id00344			(MC2	FB)  : MUX 16		Ref (A2fb)
-id00334			(MC8	FB)  : MUX 17		Ref (A9fb)
-id00336			(MC11	FB)  : MUX 21		Ref (A12fb)
+id00350			(MC7	FB)  : MUX 16		Ref (A8fb)
+id00344			(MC8	FB)  : MUX 17		Ref (A9fb)
+id00336			(MC11	FB)  : MUX 19		Ref (A12fb)
+id00335			(MC6	FB)  : MUX 20		Ref (A7fb)
 id00345			(MC10	FB)  : MUX 23		Ref (A11fb)
-id00343			(MC14	FB)  : MUX 25		Ref (A15fb)
-XXL_709			(MC18	FB)  : MUX 27		Ref (C48fb)
+id00359			(MC21	FB)  : MUX 27		Ref (D62fb)
+id00340			(MC1	FB)  : MUX 28		Ref (A2fb)
 id00342			(MC13	FB)  : MUX 29		Ref (A14fb)
 id00337			(MC12	FB)  : MUX 31		Ref (A13fb)
 id00333			(MC20	FB)  : MUX 33		Ref (D61fb)
+id00334			(MC5	FB)  : MUX 34		Ref (A6fb)
 id00346			(MC19	FB)  : MUX 35		Ref (D59fb)
+id00339			(MC3	FB)  : MUX 38		Ref (A4fb)
 
 FanIn assignment for block B [25]
 {
@@ -339,59 +339,59 @@ ADDR_25			(MC18	P)   : MUX 39		Ref (E65p)
 
 FanIn assignment for block C [25]
 {
-ADDR_24,ADDR_25,ADDR_26,ADDR_27,
+ADDR_24,ADDR_26,ADDR_25,ADDR_27,
 BERR,
-SIMMPDA_0,SIMMPDA_3,SIMMPDA_2,SIMMSZ,SIMMPDA_1,
+SIMMPDA_0,SIMMPDA_2,SIMMSZ,SIMMPDA_1,SIMMPDA_3,
 XXL_704,
-id00356,id00359,id00350,id00355,id00360,id00346,id00038QN,id00354,id00030Q,id00349,id00361,id00351,id00352,
+id00349,id00030Q,id00350,id00355,id00360,id00352,id00346,id00038QN,id00354,id00359,id00361,id00351,id00356,
 nRST,
 }
 Multiplexer assignment for block C
-id00356			(MC6	FB)  : MUX 0		Ref (C40fb)
-id00359			(MC15	FB)  : MUX 1		Ref (D62fb)
+id00349			(MC12	FB)  : MUX 0		Ref (D56fb)
+BERR			(MC1	P)   : MUX 1		Ref (A5p)
 SIMMPDA_0		(MC21	P)   : MUX 2		Ref (H121p)
-BERR			(MC2	P)   : MUX 3		Ref (A8p)
-id00350			(MC1	FB)  : MUX 4		Ref (A1fb)
+id00030Q		(MC3	FB)  : MUX 3		Ref (B26fb)
+SIMMPDA_2		(MC24	P)   : MUX 4		Ref (H125p)
 ADDR_24			(MC19	P)   : MUX 5		Ref (D49p)
-SIMMPDA_3		(MC25	P)   : MUX 6		Ref (H126p)
-ADDR_25			(MC20	P)   : MUX 7		Ref (E65p)
-SIMMPDA_2		(MC24	P)   : MUX 8		Ref (H125p)
+id00350			(MC2	FB)  : MUX 6		Ref (A8fb)
 id00355			(MC14	FB)  : MUX 9		Ref (D60fb)
 SIMMSZ			(MC16	P)   : MUX 10		Ref (H128p)
 ADDR_26			(MC18	P)   : MUX 11		Ref (E67p)
 id00360			(MC5	FB)  : MUX 12		Ref (C38fb)
+ADDR_25			(MC20	P)   : MUX 13		Ref (E65p)
+id00352			(MC11	FB)  : MUX 14		Ref (D55fb)
 id00346			(MC13	FB)  : MUX 17		Ref (D59fb)
 id00038QN		(MC7	FB)  : MUX 19		Ref (C45fb)
 id00354			(MC10	FB)  : MUX 20		Ref (D54fb)
-id00030Q		(MC3	FB)  : MUX 21		Ref (B26fb)
-id00349			(MC12	FB)  : MUX 22		Ref (D56fb)
+id00359			(MC15	FB)  : MUX 21		Ref (D62fb)
 ADDR_27			(MC23	P)   : MUX 23		Ref (E69p)
 nRST			(MC17	FB)  : MUX 24		Ref (GCLR)
 id00361			(MC8	FB)  : MUX 25		Ref (C46fb)
 SIMMPDA_1		(MC22	P)   : MUX 26		Ref (H123p)
+SIMMPDA_3		(MC25	P)   : MUX 28		Ref (H126p)
 id00351			(MC9	FB)  : MUX 29		Ref (C47fb)
 XXL_704			(MC4	FB)  : MUX 37		Ref (B28fb)
-id00352			(MC11	FB)  : MUX 38		Ref (D55fb)
+id00356			(MC6	FB)  : MUX 38		Ref (C40fb)
 
 FanIn assignment for block D [13]
 {
-id00362,id00347,id00358,id00353,id00348,id00359,id00357,id00346,id00356,id00030Q,id00333,
-nRAMSEL,nAS,
+id00362,id00358,id00353,id00333,id00346,id00356,id00359,id00030Q,id00357,id00348,id00347,
+nAS,nRAMSEL,
 }
 Multiplexer assignment for block D
 id00362			(MC1	FB)  : MUX 2		Ref (B24fb)
-id00347			(MC7	FB)  : MUX 5		Ref (D57fb)
+nAS			(MC13	FB)  : MUX 5		Ref (GCLK)
 id00358			(MC2	FB)  : MUX 7		Ref (B25fb)
 id00353			(MC4	FB)  : MUX 10		Ref (C39fb)
-id00348			(MC8	FB)  : MUX 11		Ref (D58fb)
-id00359			(MC11	FB)  : MUX 13		Ref (D62fb)
-id00357			(MC6	FB)  : MUX 15		Ref (C41fb)
+id00333			(MC10	FB)  : MUX 11		Ref (D61fb)
 id00346			(MC9	FB)  : MUX 17		Ref (D59fb)
 id00356			(MC5	FB)  : MUX 20		Ref (C40fb)
-nRAMSEL			(MC12	P)   : MUX 21		Ref (A1p)
+id00359			(MC11	FB)  : MUX 21		Ref (D62fb)
 id00030Q		(MC3	FB)  : MUX 23		Ref (B26fb)
-id00333			(MC10	FB)  : MUX 25		Ref (D61fb)
-nAS			(MC13	P)   : MUX 31		Ref (A3p)
+id00357			(MC6	FB)  : MUX 25		Ref (C41fb)
+id00348			(MC8	FB)  : MUX 29		Ref (D58fb)
+id00347			(MC7	FB)  : MUX 31		Ref (D57fb)
+nRAMSEL			(MC12	FB)  : MUX 37		Ref (OE1)
 
 FanIn assignment for block E [25]
 {
@@ -1072,8 +1072,8 @@ id00345.AR = !nRST;
 
 TQFP100 Pin/Node Placement:
 ------------------------------------
-Pin 1  = nAS; /* MC 3 */
-Pin 2  = nRAMSEL; /* MC 1 */
+Pin 1  = DSACK_0; /* MC 3 */
+Pin 2  = DSACK_1; /* MC 1 */
 Pin 4  = TDI; /* MC 32 */
 Pin 5  = RnW; /* MC 30 */
 Pin 6  = SIZ_0; /* MC 29 */
@@ -1143,24 +1143,24 @@ Pin 81 = SIMMPDA_1; /* MC 123 */
 Pin 83 = SIMMPDA_2; /* MC 125 */ 
 Pin 84 = SIMMPDA_3; /* MC 126 */ 
 Pin 85 = SIMMSZ; /* MC 128 */ 
+Pin 87 = nAS;
+Pin 88 = nRAMSEL;
 Pin 89 = nRST;
 Pin 90 = CLK;
 Pin 92 = SIMMPDB_0; /* MC 16 */ 
 Pin 93 = SIMMPDB_1; /* MC 14 */ 
 Pin 94 = SIMMPDB_2; /* MC 13 */ 
 Pin 96 = SIMMPDB_3; /* MC 11 */ 
-Pin 98 = BERR; /* MC  8 */
-Pin 99 = DSACK_0; /* MC  6 */
-Pin 100 = DSACK_1; /* MC  5 */
+Pin 100 = BERR; /* MC  5 */
 PINNODE 312 = id00232QN; /* MC 12 Foldback */
 PINNODE 313 = id00225Q; /* MC 13 Foldback */
 PINNODE 314 = id00007QN; /* MC 14 Foldback */
-PINNODE 601 = id00350; /* MC 1 Feedback */
-PINNODE 602 = id00344; /* MC 2 Feedback */
-PINNODE 603 = id00340; /* MC 3 Feedback */
+PINNODE 602 = id00340; /* MC 2 Feedback */
 PINNODE 604 = id00339; /* MC 4 Feedback */
+PINNODE 606 = id00334; /* MC 6 Feedback */
 PINNODE 607 = id00335; /* MC 7 Feedback */
-PINNODE 609 = id00334; /* MC 9 Feedback */
+PINNODE 608 = id00350; /* MC 8 Feedback */
+PINNODE 609 = id00344; /* MC 9 Feedback */
 PINNODE 610 = id00341; /* MC 10 Feedback */
 PINNODE 611 = id00345; /* MC 11 Feedback */
 PINNODE 612 = id00336; /* MC 12 Feedback */
@@ -1226,15 +1226,15 @@ SO Pin Options Field = Summary of Allocations.
 
 
 MCell Pin# Oe   PinDrive     DCERP  FBDrive   DCERP  Foldback  CascadeOut     TotPT SO
-MC1   2    --   nRAMSEL      INPUT  id00350   Dg-g-  --        --             2     f- 
-MC2   0         --                  id00344   Dg-g-  --        --             2     f- 
-MC3   1    --   nAS          INPUT  id00340   Dg-g-  --        --             2     f- 
+MC1   2    on   DSACK_1      C----  --               --        --             1     f- 
+MC2   0         --                  id00340   Dg-g-  --        --             2     f- 
+MC3   1    on   DSACK_0      Dg-g-  --               --        --             3     f- 
 MC4   0         --                  id00339   Dg-g-  --        --             2     f- 
-MC5   100  on   DSACK_1      C----  --               --        --             1     f- 
-MC6   99   on   DSACK_0      Dg-g-  --               --        --             3     f- 
+MC5   100  on   BERR         Dg-g-  --               --        --             2     f- 
+MC6   99        --                  id00334   Dg-g-  --        --             1     f- 
 MC7   0         --                  id00335   Dg-g-  --        --             2     f- 
-MC8   98   on   BERR         Dg-g-  --               --        --             2     f- 
-MC9   97        --                  id00334   Dg-g-  --        --             1     f- 
+MC8   98        --                  id00350   Dg-g-  --        --             2     f- 
+MC9   97        --                  id00344   Dg-g-  --        --             2     f- 
 MC10  0         --                  id00341   Dg-g-  --        --             3     f- 
 MC11  96   --   SIMMPDB_3    INPUT  id00345   Dg-g-  --        --             3     f- 
 MC12  0         --                  id00336   Dg-g-  id00232QN --             4     f- 
@@ -1356,11 +1356,11 @@ MC127 0         --                  --               --        --             0 
 MC128 85   --   SIMMSZ       INPUT  --               --        --             0     f- 
 MC0   90        CLK          INPUT  --               --        --             0     f- 
 MC0   89        nRST         INPUT  --               --        --             0     f- 
-MC0   88        --                  --               --        --             0     f- 
-MC0   87        --                  --               --        --             0     f- 
+MC0   88        nRAMSEL      INPUT  --               --        --             0     f- 
+MC0   87        nAS          INPUT  --               --        --             0     f- 
 
 Logic Array Block			Macro Cells	I/O Pins	Foldbacks	TotalPT	FanIN		Cascades
-A: MC1	- MC16		16/16(100%)	9/16(56%)	3/16(18%)	47/80(58%)	21/40(52%)	0
+A: MC1	- MC16		16/16(100%)	7/16(43%)	3/16(18%)	47/80(58%)	21/40(52%)	0
 B: MC17	- MC32		9/16(56%)	10/16(62%)	0/16(0%)	36/80(45%)	25/40(62%)	0
 C: MC33	- MC48		11/16(68%)	10/16(62%)	0/16(0%)	31/80(38%)	25/40(62%)	0
 D: MC49	- MC64		11/16(68%)	10/16(62%)	0/16(0%)	18/80(22%)	13/40(32%)	0
@@ -1369,8 +1369,8 @@ F: MC81	- MC96		9/16(56%)	10/16(62%)	0/16(0%)	37/80(46%)	33/40(82%)	0
 G: MC97	- MC112		10/16(62%)	10/16(62%)	0/16(0%)	27/80(33%)	25/40(62%)	0
 H: MC113- MC128		5/16(31%)	10/16(62%)	0/16(0%)	15/80(18%)	16/40(40%)	0
 
-Total dedicated input used:	2/4 	(50%)
-Total I/O pins used		78/80 	(97%)
+Total dedicated input used:	4/4 	(100%)
+Total I/O pins used		76/80 	(95%)
 Total Macro cells used 		77/128 	(60%)
 Total Flip-Flop used 		57/128 	(44%)
 Total Foldback logic used 	3/128 	(2%)

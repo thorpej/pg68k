@@ -385,6 +385,8 @@ endmodule
 //     === Outputs ===
 //
 // XXX note might want more DRAMSEL signals in the future.
+//PIN: DSACK_0		: 1
+//PIN: DSACK_1		: 2
 //PIN: CLK_6_25		: 52
 //PIN: IORD		: 53
 //PIN: IOWR		: 54
@@ -406,8 +408,6 @@ endmodule
 //PIN: nFPUSEL		: 92
 //PIN: nIACKSEL		: 93
 //PIN: CPU_CLK		: 94
-//PIN: CI		: 96
-//PIN: STERM		: 97
-//PIN: BERR		: 98
-//PIN: DSACK_0		: 99
-//PIN: DSACK_1		: 100
+//PIN: CI		: 98
+//PIN: STERM		: 99
+//PIN: BERR		: 100

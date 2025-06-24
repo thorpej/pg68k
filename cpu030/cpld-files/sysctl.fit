@@ -1,4 +1,4 @@
-Atmel ATF1508 Fitter Version 1918 ,running Tue Jun 24 06:17:15 2025
+Atmel ATF1508 Fitter Version 1918 ,running Tue Jun 24 06:27:36 2025
 
 
 
@@ -85,11 +85,11 @@ Attempt to place floating signals ...
 ------------------------------------
 id00097 is placed at feedback node 602 (MC 2)
 id00003 is placed at feedback node 604 (MC 4)
+BERR is placed at pin 100 (MC 5)
+STERM is placed at pin 99 (MC 6)
 id00093 is placed at feedback node 607 (MC 7)
-BERR is placed at pin 98 (MC 8)
-STERM is placed at pin 97 (MC 9)
+CI is placed at pin 98 (MC 8)
 XXL_283 is placed at feedback node 610 (MC 10)
-CI is placed at pin 96 (MC 11)
 XXL_282 is placed at feedback node 612 (MC 12)
 CPU_CLK is placed at pin 94 (MC 13)
 nIACKSEL is placed at pin 93 (MC 14)
@@ -166,11 +166,11 @@ id00051Q is placed at foldback expander node 428 (MC 128)
                                           n        D                    n     n  R  R  R  R  n  
                                        C  I  n     R              n  n  M     F  A  A  A  A  D  
                                        P  A  F     A              R  D  M     R  M  M  M  M  R  
-                              S        U  C  P     M              O  E  I     A  _  _  _  _  A  
-                           B  T        _  K  U     _  n           M  V  O     M  W  W  W  W  M  
-                           E  E     G  C  S  S  V  C  R  n  n  G  S  S  S  V  _  R  R  R  R  S  
-                           R  R  C  N  L  E  E  C  L  S  D  A  N  E  E  E  C  R  _  _  _  _  E  
-                           R  M  I  D  K  L  L  C  K  T  S  S  D  L  L  L  C  D  3  2  1  0  L  
+                        S              U  C  P     M              O  E  I     A  _  _  _  _  A  
+                     B  T              _  K  U     _  n           M  V  O     M  W  W  W  W  M  
+                     E  E           G  C  S  S  V  C  R  n  n  G  S  S  S  V  _  R  R  R  R  S  
+                     R  R  C        N  L  E  E  C  L  S  D  A  N  E  E  E  C  R  _  _  _  _  E  
+                     R  M  I        D  K  L  L  C  K  T  S  S  D  L  L  L  C  D  3  2  1  0  L  
                  +------------------------------------------------------------------------------+
                  | 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76  |
                  | 1                                                                         75 |   
@@ -623,9 +623,9 @@ Pin 90 = DRAM_CLK;
 Pin 92 = nFPUSEL; /* MC 16 */ 
 Pin 93 = nIACKSEL; /* MC 14 */ 
 Pin 94 = CPU_CLK; /* MC 13 */ 
-Pin 96 = CI; /* MC 11 */ 
-Pin 97 = STERM; /* MC  9 */
-Pin 98 = BERR; /* MC  8 */
+Pin 98 = CI; /* MC  8 */
+Pin 99 = STERM; /* MC  6 */
+Pin 100 = BERR; /* MC  5 */
 PINNODE 428 = id00051Q; /* MC 128 Foldback */
 PINNODE 602 = id00097; /* MC 2 Feedback */
 PINNODE 604 = id00003; /* MC 4 Feedback */
@@ -673,13 +673,13 @@ MC1   2         --                --              --        --             0    
 MC2   0         --                id00097  Dc-g-  --        --             3     f- 
 MC3   1         --                --              --        --             0     f- 
 MC4   0         --                id00003  Dc-g-  --        --             3     f- 
-MC5   100       --                --              --        --             0     f- 
-MC6   99        --                --              --        --             0     f- 
+MC5   100  on   BERR       C----  --              --        --             1     f- 
+MC6   99   on   STERM      C----  --              --        --             1     f- 
 MC7   0         --                id00093  Dc-g-  --        --             4     f- 
-MC8   98   on   BERR       C----  --              --        --             1     f- 
-MC9   97   on   STERM      C----  --              --        --             1     f- 
+MC8   98   on   CI         C----  --              --        --             1     f- 
+MC9   97        --                --              --        --             0     f- 
 MC10  0         --                XXL_283  C----  NA        --             5     f- 
-MC11  96   on   CI         C----  --              --        --             1     f- 
+MC11  96        --                --              --        --             0     f- 
 MC12  0         --                XXL_282  C----  NA        --             5     f- 
 MC13  94   on   CPU_CLK    Dg-g-  --              --        --             1     f- 
 MC14  93   on   nIACKSEL   C----  --              --        --             1     f- 

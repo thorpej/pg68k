@@ -323,7 +323,7 @@ end
 assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
-assign CI = (ResetVecFetch || ~nDEVSEL);
+assign CI = (ResetVecFetch || ~nDEVSELx);
 
 endmodule
 

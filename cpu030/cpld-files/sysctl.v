@@ -46,6 +46,7 @@ module sysctl(
 	output wire STERM,		/* external open-drain inv */
 	output wire CI,			/* external open-drain inv */
 	output wire BERR,		/* external open-drain inv */
+	output wire [1:0] DSACK,	/* external open-drain inv */
 
 	output wire nROMSEL,
 	output wire nDEVSEL,
@@ -202,18 +203,19 @@ localparam RV_Y		= 1'b1;
 localparam RV_N		= 1'b0;
 localparam RV_X		= 1'bx;
 
-localparam SEL_NONE	= 6'b111111111;
-localparam SEL_ROM	= 6'b111111110;
-localparam SEL_DEV	= 6'b111111101;
-localparam SEL_MMIO	= 6'b111111011;
-localparam SEL_DRAM0	= 6'b111110111;
-localparam SEL_DRAM1	= 6'b111101111;
-localparam SEL_DRAM2	= 6'b111011111;
-localparam SEL_DRAM3	= 6'b110111111;
-localparam SEL_FPU	= 6'b101111111;
-localparam SEL_IACK	= 6'b011111111;
+localparam SEL_NONE	= 9'b111111111;
+localparam SEL_ROM	= 9'b111111110;
+localparam SEL_DEV	= 9'b111111101;
+localparam SEL_MMIO	= 9'b111111011;
+localparam SEL_DRAM0	= 9'b111110111;
+localparam SEL_DRAM1	= 9'b111101111;
+localparam SEL_DRAM2	= 9'b111011111;
+localparam SEL_DRAM3	= 9'b110111111;
+localparam SEL_FPU	= 9'b101111111;
+localparam SEL_IACK	= 9'b011111111;
 
 wire nDEVSELx;
+wire nROMSELx;
 reg [8:0] SelectOutputs;
 always @(*) begin
 	casex ({AddrQual, AddrSpace, ResetVecFetch, ADDR[31:13]})
@@ -237,8 +239,14 @@ always @(*) begin
 	default:                                   SelectOutputs = SEL_NONE;
 	endcase
 end
-assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSEL}
+assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSELx}
     = SelectOutputs;
+
+/*
+ * ROM only selected for read cycles.  /ROMSEL can be connected to /CS
+ * and /OE on both of the SST39SF040-70s.
+ */
+assign nROMSEL = nROMSELx | ~RnW;
 
 /*
  * Further qualify the DEV space:
@@ -361,9 +369,65 @@ assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
 assign CI = (ResetVecFetch || ~nDEVSELx);
 
-/* Generate /IORD and /IOWR read and write strobes. */
-assign nIORD = ~(~nDS & RnW);
-assign nIOWR = ~(~nDS & ~RnW);
+/*
+ * Generate /IORD, /IOWR, and DSACKx based on the selected device and
+ * its timing constraints.
+ */
+reg io_strobe_d;
+reg [1:0] dsack;
+reg [1:0] BCState;
+
+localparam BC_Idle	= 2'd0;
+localparam BC_ROMRead	= 2'd1;
+localparam BC_Wait	= 2'd2;
+
+always @(posedge CPU_CLK, negedge nRST) begin
+	if (~nRST) begin
+		BCState <= 2'd0;
+		io_strobe_d <= 1'b0;
+		dsack <= 2'b00;
+	end
+	else begin
+		case (BCState)
+		BC_Idle: begin
+			if (~nROMSEL) begin
+				/*
+				 * /ROMSEL is doing all the work required,
+				 * but we need 1 wait state.
+				 */
+				BCState <= BC_ROMRead;
+			end
+		end
+
+		BC_ROMRead: begin
+			dsack <= 2'b10;	/* 16-bit port */
+			BCState <= BC_Wait;
+		end
+
+		BC_Wait: begin
+			if (nDS) begin
+				BCState <= BC_Idle;
+				io_strobe_d <= 1'b0;
+				dsack <= 2'b00;
+			end
+		end
+		endcase
+	end
+end
+
+/*
+ * Qual with /DS from the CPU so they de-assert immediately.
+ */
+assign DSACK = dsack & {~nDS, ~nDS};
+
+/*
+ * If we've selected an external device that we're not decoding ourselves,
+ * always let /IORD and /IOWR be asserted.  Otherwise, they are gated based
+ * on the requirements of the device.
+ */
+wire io_strobe = ~nDEVSEL | io_strobe_d;
+assign nIORD = ~(io_strobe & ~nDS & RnW);
+assign nIOWR = ~(io_strobe & ~nDS & ~RnW);
 
 /* Generate a positive-level reset signal for anything that needs it. */
 assign RESET = ~nRST;

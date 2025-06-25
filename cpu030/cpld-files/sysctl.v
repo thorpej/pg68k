@@ -57,6 +57,8 @@ module sysctl(
 	output wire nINTCSEL,
 	output wire nDUARTSEL,
 	output wire nTMRSEL,
+	output wire nATASEL,
+	output wire nI2CSEL,
 
 	output wire CPU_CLK,
 	output wire CLK_6_25,
@@ -243,16 +245,22 @@ assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSEL}
  *
  * 0.000x	TL16C2552 DUART
  * 0.001x	CP82C54-10Z timer
+ * 0.002x	ATA registers
+ * 0.010x	PCF8584 I2C controller
  * F.FFFx	Interrupt controller
  */
 localparam DEV_DUART	= 20'h0000x;
 localparam DEV_TMR	= 20'h0001x;
+localparam DEV_ATA	= 20'h0002x;
+localparam DEV_I2C	= 20'h0010x;
 localparam DEV_INTC	= 20'hFFFFx;
 
-localparam DSEL_NONE	= 3'b111;
-localparam DSEL_DUART	= 3'b011;
-localparam DSEL_TMR	= 3'b101;
-localparam DSEL_INTC	= 3'b110;
+localparam DSEL_NONE	= 5'b11111;
+localparam DSEL_DUART	= 5'b01111;
+localparam DSEL_TMR	= 5'b10111;
+localparam DSEL_ATA	= 5'b11011;
+localparam DSEL_I2C	= 5'b11101;
+localparam DSEL_INTC	= 5'b11110;
 
 reg [2:0] DevSelectOutputs;
 always @(*) begin
@@ -260,10 +268,12 @@ always @(*) begin
 	{1'b0, DEV_DUART}: DevSelectOutputs = DSEL_DUART;
 	{1'b0, DEV_TMR}:   DevSelectOutputs = DSEL_TMR;
 	{1'b0, DEV_INTC}:  DevSelectOutputs = DSEL_INTC;
+	{1'b0, DEV_ATA}:   DevSelectOutputs = DSEL_ATA;
 	default:           DevSelectOutputs = DSEL_NONE;
 	endcase
 end
-assign {nDUARTSEL, nTMRSEL, nINTCSEL} = DevSelectOutputs;
+assign {nDUARTSEL, nTMRSEL, nATASEL, nI2CSEL, nINTCSEL}
+    = DevSelectOutputs;
 
 /*
  * Assert the external /DEVSEL signal if we don't match any devices
@@ -409,6 +419,8 @@ endmodule
 //PIN: RESET		: 52
 //PIN: nIORD		: 53
 //PIN: nIOWR		: 54
+//PIN: nI2CSEL		: 65
+//PIN: nATASEL		: 67
 //PIN: nTMRSEL		: 68
 //PIN: nDUARTSEL	: 69
 //PIN: nINTCSEL		: 70

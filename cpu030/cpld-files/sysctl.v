@@ -264,12 +264,18 @@ localparam DSEL_INTC	= 5'b11110;
 
 reg [2:0] DevSelectOutputs;
 always @(*) begin
-	casex ({nDEVSELx, ADDR[19:0]})
-	{1'b0, DEV_DUART}: DevSelectOutputs = DSEL_DUART;
-	{1'b0, DEV_TMR}:   DevSelectOutputs = DSEL_TMR;
-	{1'b0, DEV_INTC}:  DevSelectOutputs = DSEL_INTC;
-	{1'b0, DEV_ATA}:   DevSelectOutputs = DSEL_ATA;
-	default:           DevSelectOutputs = DSEL_NONE;
+	casex ({nDEVSELx, nDS, ADDR[19:0]})
+	{1'b0, 1'bx, DEV_DUART}: DevSelectOutputs = DSEL_DUART;
+	{1'b0, 1'bx, DEV_TMR}:   DevSelectOutputs = DSEL_TMR;
+	{1'b0, 1'bx, DEV_INTC}:  DevSelectOutputs = DSEL_INTC;
+	{1'b0, 1'bx, DEV_ATA}:   DevSelectOutputs = DSEL_ATA;
+	/*
+	 * Also need to qual /I2CSEL on /DS because we want to
+	 * ensure that the PCF8584 comes up in 68000 interface
+	 * mode.
+	 */
+	{1'b0, 1'b0, DEV_I2C}:   DevSelectOutputs = DSEL_I2C;
+	default:                 DevSelectOutputs = DSEL_NONE;
 	endcase
 end
 assign {nDUARTSEL, nTMRSEL, nATASEL, nI2CSEL, nINTCSEL}

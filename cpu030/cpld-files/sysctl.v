@@ -65,7 +65,9 @@ module sysctl(
 	output wire [3:0] nFRAM_WR,
 
 	output wire nIORD,
-	output wire nIOWR
+	output wire nIOWR,
+
+	output wire RESET
 );
 
 /*
@@ -347,6 +349,9 @@ assign CI = (ResetVecFetch || ~nDEVSELx);
 assign nIORD = ~(~nDS & RnW);
 assign nIOWR = ~(~nDS & ~RnW);
 
+/* Generate a positive-level reset signal for anything that needs it. */
+assign RESET = ~nRST;
+
 endmodule
 
 // Pin assignment for Yosys workflow.
@@ -402,6 +407,7 @@ endmodule
 // XXX note might want more DRAMSEL signals in the future.
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
+//PIN: RESET		: 52
 //PIN: IORD		: 53
 //PIN: IOWR		: 54
 //PIN: nTMRSEL		: 68

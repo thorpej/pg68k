@@ -408,8 +408,8 @@ endmodule
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
 //PIN: RESET		: 52
-//PIN: IORD		: 53
-//PIN: IOWR		: 54
+//PIN: nIORD		: 53
+//PIN: nIOWR		: 54
 //PIN: nTMRSEL		: 68
 //PIN: nDUARTSEL	: 69
 //PIN: nINTCSEL		: 70

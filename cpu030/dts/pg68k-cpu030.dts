@@ -1,0 +1,127 @@
+/ {
+	interrupt-parent = <&intc>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	model = "Playground 68030 Mk I";
+	compatible = "pg68k,cpu030-mk1";
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "motorola,mc68030";
+			device_type = "cpu";
+			reg = <0>;
+			clocks = <&cpu_clk>;
+		};
+	};
+
+	clocks {
+		#address-cells = <0>;
+		#size-cells = <0>;
+
+		cpu_clk: osc25M_clk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <25000000>;
+		};
+
+		cpu_div4_clk: osc6_25M_clk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <6250000>;
+		};
+
+		uart_clk: osc1_8432M_clk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <1843200>;
+		};
+	};
+
+	memory@ff800000 {
+		compatible = "pg68k,fastmem";
+		device_type = "memory";
+		reg = <0xff800000 0x00400000>
+	};
+
+	obp {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		intc: interrupt-controller@0xffeffff0 {
+			compatible = "pg68k,intc-1";
+			reg = <0xffeffff0 0x10>;
+			interrupt-controller;
+			/*
+			 * INTC irq pin interrupt priorities:
+			 *
+			 *  HIGHEST
+			 *  7: ipl 7
+			 *  6: ipl 6
+			 *  5: ipl 5
+			 *  4: ipl 4
+			 *  3: ipl 3
+			 *  2: ipl 2
+			 *  1: ipl 1
+			 *  LOWEST
+			 *
+			 * These are all active-low level-triggered
+			 * interrupts.
+			 *
+			 * INTC cells:
+			 * - irq input pin
+			 * - interrupt priority level (1-6)
+			 * - vector (0 == auto-vector)
+			 *
+			 * N.B. intc-1 only supports auto-vector interrupts,
+			 * and there is a single control input: a global
+			 * interrupt enable bit.
+			 */
+			#interrupt-cells = <3>;
+		};
+
+		uart0: serial@0xffe00000 {
+			compatible = "ns16550a";
+			reg = <0xffe00000 0x8>;
+			clocks = <&uart_clk>;
+			interrupts = <5 5 0>;
+			okay = "yes";
+		};
+
+		uart1: serial@0xffe00008 {
+			compatible = "ns16550a";
+			reg = <0xffe00008 0x8>;
+			clocks = <&uart_clk>;
+			interrupts = <5 5 0>;
+			okay = "yes";
+		};
+
+		timer@0xffe00010 {
+			compatible = "isl,cp82c54";
+			reg = <0xffe00010 0x4>;
+			clocks = <&cpu_div4_clk>;
+			interrupts = <6 6 0>;
+			okay = "yes";
+		};
+
+		ata: ata@0xfffe0020 {
+			compatible = "pg68k,atac-1";
+			reg = <0xfffe0020 0x8>,	/* command */
+			      <0xfffe0028 0x8>;	/* control */
+			pio-mode = 3;
+			okay = "yes";
+		};
+
+		i2c: i2c@0xfffe0100 {
+			compatible = "nxp,pcf8584";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0xfffe0100 0x2>;
+			clocks = <&cpu_div4_clk>;
+		};
+	};
+};

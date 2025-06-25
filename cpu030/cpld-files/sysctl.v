@@ -404,7 +404,6 @@ endmodule
 //
 //     === Outputs ===
 //
-// XXX note might want more DRAMSEL signals in the future.
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
 //PIN: RESET		: 52

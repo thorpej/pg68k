@@ -6540,10 +6540,6 @@
 		(uuid "78ba6f8c-6adb-4dcd-9564-fbc45070e0ec")
 	)
 	(no_connect
-		(at 264.16 58.42)
-		(uuid "89562fad-ad04-41d3-8fbb-02a1e20faa92")
-	)
-	(no_connect
 		(at 264.16 111.76)
 		(uuid "9d971b0d-ab7a-4bb5-bdb4-59ee1ec2452e")
 	)
@@ -7303,7 +7299,7 @@
 	)
 	(global_label "CPU_CLK"
 		(shape output)
-		(at 264.16 53.34 0)
+		(at 264.16 58.42 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7313,7 +7309,7 @@
 		)
 		(uuid "06edc4c6-d31b-4ea2-9184-930a3c647bd5")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 275.5514 53.34 0)
+			(at 275.5514 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9855,7 +9851,7 @@
 	)
 	(global_label "SYSCTL_CI"
 		(shape output)
-		(at 264.16 50.8 0)
+		(at 264.16 55.88 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9865,7 +9861,7 @@
 		)
 		(uuid "adb9aba5-0eb3-4b40-9014-ca81d9658349")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.7609 50.8 0)
+			(at 276.7609 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10119,7 +10115,7 @@
 	)
 	(global_label "CLK_6_25"
 		(shape output)
-		(at 264.16 55.88 0)
+		(at 264.16 63.5 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10129,7 +10125,7 @@
 		)
 		(uuid "c726d5fd-3245-49ec-b39b-5b095ae44e58")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.277 55.88 0)
+			(at 276.277 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)

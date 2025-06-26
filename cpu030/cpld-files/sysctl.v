@@ -614,8 +614,8 @@ endmodule
 //PIN: nMMIOSEL		: 83
 //PIN: nDEVSEL		: 84
 //PIN: nROMSEL		: 85
-//PIN: CLK_6_25		: 96
-//PIN: CPU_CLK		: 97
-//PIN: CI		: 98
+//PIN: CLK_6_25		: 92
+//PIN: CPU_CLK		: 94
+//PIN: CI		: 96
 //PIN: STERM		: 99
 //PIN: BERR		: 100

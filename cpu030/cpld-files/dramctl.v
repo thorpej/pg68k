@@ -65,6 +65,8 @@ module dramctl(
 	input wire [3:0] SIMMPDA,/* Presence Detect from 1st SIMM */
 	input wire [3:0] SIMMPDB,/* Presence Detect from 2nd SIMM */
 
+	input wire nCBREQ,
+
 	output reg DRAM_nWR,
 	output reg [11:0] DRAM_ADDR,
 
@@ -75,6 +77,7 @@ module dramctl(
 	output reg [3:0] DRAM_nCASB,
 
 	/* Drives external open-drain inverters. */
+	output reg CBACK,
 	output reg BERR,
 	output reg [1:0] DSACK
 );
@@ -296,6 +299,7 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
 		DSACK <= 2'b00;
+		CBACK <= 1'b0;
 		BERR <= 1'b0;
 		refresh_ack <= 1'b0;
 	end
@@ -515,6 +519,7 @@ endmodule
 //PIN: SIMMPDB_1	: 93
 //PIN: SIMMPDB_2	: 94
 //PIN: SIMMPDB_3	: 96
+//PIN: nCBREQ		: 97
 //
 //     === Outputs ===
 //
@@ -549,4 +554,5 @@ endmodule
 //PIN: DRAM_nCASB_1	: 77
 //PIN: DRAM_nCASB_2	: 78
 //PIN: DRAM_nCASB_3	: 79
+//PIN: CBACK		: 98
 //PIN: BERR		: 100

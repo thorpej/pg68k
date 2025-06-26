@@ -74,6 +74,9 @@ wire [3:0] dram_n_casb;
 wire [1:0] dsack;
 wire berr;
 
+wire cbreq_n;
+wire cback;
+
 wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 	/* Instantiate the device under test. */
@@ -88,6 +91,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		.SIMMSZ(simmsz),
 		.SIMMPDA(simmpd),
 		.SIMMPDB(simmpd),
+		.CBREQ(cbreq_n),
 		.DRAM_nWR(dram_n_wr),
 		.DRAM_ADDR(dram_addr),
 		.DRAM_nRASA(dram_n_rasa),
@@ -95,7 +99,8 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		.DRAM_nRASB(dram_n_rasb),
 		.DRAM_nCASB(dram_n_casb),
 		.DSACK(dsack),
-		.BERR(berr)
+		.BERR(berr),
+		.CBACK(cback)
 	);
 
 	initial begin
@@ -110,6 +115,8 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		/* 60ns 16MB SIMM */
 		simmsz = 1;
 		simmpd = 4'b1110;
+
+		cbreq_n = 1;
 
 		siz = 2'd0;
 		addr = 28'h0000000;

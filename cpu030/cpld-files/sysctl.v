@@ -595,6 +595,8 @@ endmodule
 //PIN: RESET		: 52
 //PIN: nIORD		: 53
 //PIN: nIOWR		: 54
+//PIN: nFPUSEL		: 55
+//PIN: nIACKSEL		: 56
 //PIN: nI2CSEL		: 65
 //PIN: nATASEL		: 67
 //PIN: nTMRSEL		: 68
@@ -612,8 +614,6 @@ endmodule
 //PIN: nMMIOSEL		: 83
 //PIN: nDEVSEL		: 84
 //PIN: nROMSEL		: 85
-//PIN: nFPUSEL		: 92
-//PIN: nIACKSEL		: 93
 //PIN: CLK_6_25		: 96
 //PIN: CPU_CLK		: 97
 //PIN: CI		: 98

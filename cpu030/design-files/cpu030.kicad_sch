@@ -6488,10 +6488,6 @@
 		(uuid "ff67d69b-94e1-4f52-aef1-55a9bed11154")
 	)
 	(no_connect
-		(at 264.16 132.08)
-		(uuid "1502192c-5a7f-4172-82ec-c545bae6bc91")
-	)
-	(no_connect
 		(at 264.16 114.3)
 		(uuid "16a5b00d-1b8f-471d-8eb7-e2603daf70fe")
 	)
@@ -6530,10 +6526,6 @@
 	(no_connect
 		(at 171.45 29.21)
 		(uuid "4545a444-2ea0-4102-b4ca-3962b2e530a5")
-	)
-	(no_connect
-		(at 264.16 129.54)
-		(uuid "59d9a6e0-2702-4a35-9a0d-a30ad90444a7")
 	)
 	(no_connect
 		(at 102.87 143.51)
@@ -8455,7 +8447,7 @@
 	)
 	(global_label "~{IACKSEL}"
 		(shape output)
-		(at 264.16 60.96 0)
+		(at 264.16 129.54 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8465,7 +8457,7 @@
 		)
 		(uuid "5e2135cd-31b3-4940-8bc6-892c615a25e6")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 274.7652 60.96 0)
+			(at 274.7652 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10501,7 +10493,7 @@
 	)
 	(global_label "~{FPUSEL}"
 		(shape output)
-		(at 264.16 63.5 0)
+		(at 264.16 132.08 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10511,7 +10503,7 @@
 		)
 		(uuid "e9301c5f-8102-4ce9-92ae-6032f332e47b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 274.2209 63.5 0)
+			(at 274.2209 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)

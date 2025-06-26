@@ -370,16 +370,37 @@ assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
 assign CI = (ResetVecFetch || ~nDEVSELx);
 
 /*
+ * Bus cycle state machine.
+ *
  * Generate /IORD, /IOWR, and DSACKx based on the selected device and
  * its timing constraints.
+ *
+ * Note we only do this for devices that don't do the 68000 bus protocol
+ * natively, which means: the ROM, the DUART, and the timer.
+ */
+reg [1:0] dsack;
+localparam PORT_1	= 2'b01;
+localparam PORT_2	= 2'b10;
+
+reg [3:0] BCState;
+localparam BC_Idle	= 4'd0;
+localparam BC_B1W1	= 4'd1;	/* bytes: 1, waits: 1 */
+localparam BC_B2W1	= 4'd2;	/* bytes: 2, waits: 1 */
+localparam BC_TMR_RD1	= 4'd3;
+localparam BC_TMR_RW2	= 4'd4;
+localparam BC_TMR_RW3	= 4'd5;
+localparam BC_TMR_RW4	= 4'd6;
+localparam BC_TMR_F1	= 4'd7;
+localparam BC_TMR_F2	= 4'd8;
+localparam BC_TMR_F3	= 4'd9;
+localparam BC_Finish	= 4'd10;
+
+/*
+ * Some devides need to delay the I/O strobes to meet setup times.
+ * See the state machine below for commentary on when they're needed.
  */
 reg io_strobe_d;
-reg [1:0] dsack;
-reg [1:0] BCState;
-
-localparam BC_Idle	= 2'd0;
-localparam BC_ROMRead	= 2'd1;
-localparam BC_Wait	= 2'd2;
+wire io_strobe_d_needed = (~nTMRSEL & RnW);
 
 always @(posedge CPU_CLK, negedge nRST) begin
 	if (~nRST) begin
@@ -393,22 +414,107 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			if (~nROMSEL) begin
 				/*
 				 * /ROMSEL is doing all the work required,
-				 * but we need 1 wait state.
+				 * but we need 1 wait state to meet the
+				 * 70ns access time.
 				 */
-				BCState <= BC_ROMRead;
+				BCState <= BC_B2W1;
+			end
+			else if (~nDUARTSEL & RnW) begin
+				/* DUART read: no wait states */
+				dsack <= PORT_1;
+				BCState <= BC_Finish;
+			end
+			else if (~nDUARTSEL & ~RnW) begin
+				/* DUART write: 1 wait state */
+				/*
+				 * XXX Might be unnecessary; revisit
+				 * UART timing diagram
+				 */
+				BCState <= BC_B1W1;
+			end
+			else if (~nTMRSEL & RnW) begin
+				/*
+				 * The 82C54(-10) is a mess.  The
+				 * address bus needs to be stable
+				 * for 25ns before /IORD, so we have
+				 * to delay the strobe by one cycle.
+				 *
+				 * Then we need a 95ns /IORD pulse width,
+				 * which means 3(2?) wait states before we
+				 * can assert DSACK.
+				 *
+				 * **THEN** we need to wait for 165ns (4!
+				 * more cycles) for the "recovery time"
+				 * before we can come around again to service
+				 * something else (because there might be a
+				 * back-to-back timer access).  But, we can
+				 * shave one of those off because we delay
+				 * the strobe artificially on read and it's
+				 * delayed naturally (by the CPU) on write.
+				 */
+				BCState <= BC_TMR_RD1;
+			end
+			else if (~nTMRSEL & ~RnW & ~nDS) begin
+				/*
+				 * Ironically, writes are not that bad.
+				 * There are no weird setup times before
+				 * the strobe, but we need to hold it for
+				 * the same 3 clock cycles and observe the
+				 * same recovery time as in the read case.
+				 */
+				BCState <= BC_TMR_RW2;
 			end
 		end
 
-		BC_ROMRead: begin
-			dsack <= 2'b10;	/* 16-bit port */
-			BCState <= BC_Wait;
+		BC_B1W1: begin
+			dsack <= PORT_1;
+			BCState <= BC_Finish;
 		end
 
-		BC_Wait: begin
+		BC_B2W1: begin
+			dsack <= PORT_2;
+			BCState <= BC_Finish;
+		end
+
+		BC_TMR_RD1: begin
+			io_strobe_d <= 1'b1;
+			BCState <= BC_TMR_RW2;
+		end
+
+		BC_TMR_RW2: begin
+			BCState <= BC_TMR_RW3;
+		end
+
+		BC_TMR_RW3: begin
+			BCState <= BC_TMR_RW4;
+		end
+
+		BC_TMR_RW4: begin
+			dsack <= PORT_1;
+			BCState = BC_TMR_F1;
+		end
+
+		BC_TMR_F1: begin
 			if (nDS) begin
-				BCState <= BC_Idle;
 				io_strobe_d <= 1'b0;
 				dsack <= 2'b00;
+				BCState <= BC_TMR_F2;
+			end
+		end
+
+		BC_TMR_F2: begin
+			BCState <= BC_TMR_F3;
+		end
+
+		BC_TMR_F3: begin
+			BCState <= BC_Idle;
+		end
+
+		BC_Finish: begin
+			if (nDS) begin
+				io_strobe_d <= 1'b0;
+				dsack <= 2'b00;
+				BCState <= BC_Idle;
 			end
 		end
 		endcase
@@ -425,7 +531,7 @@ assign DSACK = dsack & {~nDS, ~nDS};
  * always let /IORD and /IOWR be asserted.  Otherwise, they are gated based
  * on the requirements of the device.
  */
-wire io_strobe = ~nDEVSEL | io_strobe_d;
+wire io_strobe = (~nDEVSELx & ~io_strobe_d_needed) | io_strobe_d;
 assign nIORD = ~(io_strobe & ~nDS & RnW);
 assign nIOWR = ~(io_strobe & ~nDS & ~RnW);
 

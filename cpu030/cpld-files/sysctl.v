@@ -43,8 +43,11 @@ module sysctl(
 	input wire [2:0] FC,
 	input wire [31:0] ADDR,
 
+	input wire nCBREQ,
+
 	output wire STERM,		/* external open-drain inv */
 	output wire CI,			/* external open-drain inv */
+	output wire CBACK,		/* external open-drain inv */
 	output wire BERR,		/* external open-drain inv */
 	output wire [1:0] DSACK,	/* external open-drain inv */
 
@@ -365,6 +368,7 @@ always @(*) begin
 	endcase
 end
 assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
+assign CBACK = 1'b0;
 
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
 assign CI = (ResetVecFetch || ~nDEVSELx);
@@ -587,6 +591,7 @@ endmodule
 //PIN: nDS		: 88
 //PIN: nRST		: 89
 //PIN: DRAM_CLK		: 90
+//PIN: nCBREQ		: 97
 //
 //     === Outputs ===
 //
@@ -617,5 +622,6 @@ endmodule
 //PIN: CLK_6_25		: 92
 //PIN: CPU_CLK		: 94
 //PIN: CI		: 96
+//PIN: CBACK		: 98
 //PIN: STERM		: 99
 //PIN: BERR		: 100

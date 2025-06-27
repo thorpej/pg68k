@@ -67,6 +67,7 @@ module sysctl(
 	output wire CPU_CLK,
 	output wire CLK_6_25,
 
+	output wire nFRAMSEL,
 	output wire nFRAM_RD,
 	output wire nFRAM_WR,
 	output wire [3:0] nFRAM_BE,
@@ -370,6 +371,7 @@ always @(*) begin
 	endcase
 end
 assign {STERM, nFRAM_RD, nFRAM_WR, nFRAM_BE} = FRSOutputs;
+assign nFRAMSEL = ~STERM;	/* we only assert STERM for Fast RAM */
 assign CBACK = 1'b0;
 
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
@@ -604,21 +606,22 @@ endmodule
 //PIN: nIOWR		: 54
 //PIN: nFPUSEL		: 55
 //PIN: nIACKSEL		: 56
-//PIN: nI2CSEL		: 64
-//PIN: nATASEL		: 65
-//PIN: nTMRSEL		: 67
-//PIN: nDUARTSEL	: 68
-//PIN: nINTCSEL		: 69
-//PIN: nDRAMSEL_0	: 70
-//PIN: nDRAMSEL_1	: 71
-//PIN: nDRAMSEL_2	: 72
-//PIN: nDRAMSEL_3	: 75
-//PIN: nFRAM_BE_0	: 76
-//PIN: nFRAM_BE_1	: 77
-//PIN: nFRAM_BE_2	: 78
-//PIN: nFRAM_BE_3	: 79
-//PIN: nFRAM_WR		: 80
-//PIN: nFRAM_RD		: 81
+//PIN: nI2CSEL		: 63
+//PIN: nATASEL		: 64
+//PIN: nTMRSEL		: 65
+//PIN: nDUARTSEL	: 67
+//PIN: nINTCSEL		: 68
+//PIN: nDRAMSEL_0	: 69
+//PIN: nDRAMSEL_1	: 70
+//PIN: nDRAMSEL_2	: 71
+//PIN: nDRAMSEL_3	: 72
+//PIN: nFRAM_BE_0	: 75
+//PIN: nFRAM_BE_1	: 76
+//PIN: nFRAM_BE_2	: 77
+//PIN: nFRAM_BE_3	: 78
+//PIN: nFRAM_WR		: 79
+//PIN: nFRAM_RD		: 80
+//PIN: nFRAMSEL		: 81
 //PIN: nMMIOSEL		: 83
 //PIN: nDEVSEL		: 84
 //PIN: nROMSEL		: 85

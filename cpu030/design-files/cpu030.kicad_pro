@@ -619,6 +619,10 @@
     [
       "6696b89f-f6cc-4e49-bcfb-68bdb218d2a6",
       "Root"
+    ],
+    [
+      "6473b99a-f5fc-46a4-ae73-90633955ad5d",
+      "FRAM + DRAM0"
     ]
   ],
   "text_variables": {}

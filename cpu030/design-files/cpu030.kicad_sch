@@ -7469,10 +7469,6 @@
 		(uuid "ff67d69b-94e1-4f52-aef1-55a9bed11154")
 	)
 	(no_connect
-		(at 264.16 106.68)
-		(uuid "16a5b00d-1b8f-471d-8eb7-e2603daf70fe")
-	)
-	(no_connect
 		(at 50.8 147.32)
 		(uuid "2743b33c-99d3-4991-887a-3b988776e244")
 	)
@@ -7523,10 +7519,6 @@
 	(no_connect
 		(at 50.8 162.56)
 		(uuid "78ba6f8c-6adb-4dcd-9564-fbc45070e0ec")
-	)
-	(no_connect
-		(at 264.16 104.14)
-		(uuid "9d971b0d-ab7a-4bb5-bdb4-59ee1ec2452e")
 	)
 	(no_connect
 		(at 264.16 116.84)
@@ -9198,9 +9190,9 @@
 			)
 		)
 	)
-	(global_label "~{FRAM_WR2}"
+	(global_label "~{FRAM_BE2}"
 		(shape output)
-		(at 264.16 71.12 0)
+		(at 264.16 76.2 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9210,7 +9202,7 @@
 		)
 		(uuid "0cfbd641-29ca-4e90-92cd-bc0814b0cbda")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.9423 71.12 0)
+			(at 276.6399 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9464,7 +9456,7 @@
 	)
 	(global_label "~{DRAM1SEL}"
 		(shape output)
-		(at 264.16 86.36 0)
+		(at 264.16 91.44 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9474,7 +9466,7 @@
 		)
 		(uuid "2c33fcd3-06e0-4783-846f-c08f7d76e451")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.8213 86.36 0)
+			(at 276.8213 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10190,7 +10182,7 @@
 	)
 	(global_label "~{DUARTSEL}"
 		(shape output)
-		(at 264.16 93.98 0)
+		(at 264.16 99.06 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10200,7 +10192,7 @@
 		)
 		(uuid "5d756ca0-f137-4698-ac5c-762393a8ca8d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.4585 93.98 0)
+			(at 276.4585 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10278,7 +10270,7 @@
 	)
 	(global_label "~{ATASEL}"
 		(shape output)
-		(at 264.16 99.06 0)
+		(at 264.16 104.14 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10288,7 +10280,7 @@
 		)
 		(uuid "6174a433-f8a4-428f-8984-f4e674568baa")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 273.6766 99.06 0)
+			(at 273.6766 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10740,7 +10732,7 @@
 	)
 	(global_label "~{INTCSEL}"
 		(shape output)
-		(at 264.16 91.44 0)
+		(at 264.16 96.52 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10750,7 +10742,7 @@
 		)
 		(uuid "7ffaac82-1fb6-4cc5-a355-89fa551b5da6")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 274.7047 91.44 0)
+			(at 274.7047 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11048,7 +11040,7 @@
 	)
 	(global_label "~{I2CSEL}"
 		(shape output)
-		(at 264.16 101.6 0)
+		(at 264.16 106.68 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11058,7 +11050,7 @@
 		)
 		(uuid "8fc60847-1fa8-4532-9037-06c814190035")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 273.6161 101.6 0)
+			(at 273.6161 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11090,9 +11082,9 @@
 			)
 		)
 	)
-	(global_label "~{FRAM_WR0}"
+	(global_label "~{FRAM_BE0}"
 		(shape output)
-		(at 264.16 76.2 0)
+		(at 264.16 81.28 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11102,7 +11094,7 @@
 		)
 		(uuid "919f6667-340f-4b6c-956c-556bdc5d77a9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.9423 76.2 0)
+			(at 276.6399 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11244,9 +11236,9 @@
 			)
 		)
 	)
-	(global_label "~{FRAM_WR3}"
+	(global_label "~{FRAM_BE3}"
 		(shape output)
-		(at 264.16 68.58 0)
+		(at 264.16 73.66 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11256,7 +11248,7 @@
 		)
 		(uuid "96d79658-b7d0-43cc-9748-1807288b2a46")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.9423 68.58 0)
+			(at 276.6399 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11486,9 +11478,9 @@
 			)
 		)
 	)
-	(global_label "~{FRAM_WR1}"
+	(global_label "~{FRAM_BE1}"
 		(shape output)
-		(at 264.16 73.66 0)
+		(at 264.16 78.74 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11498,7 +11490,7 @@
 		)
 		(uuid "a1f90714-4622-4bcc-a81d-e5cb37075dcf")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.9423 73.66 0)
+			(at 276.6399 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11664,7 +11656,7 @@
 	)
 	(global_label "~{FRAM_RD}"
 		(shape output)
-		(at 264.16 66.04 0)
+		(at 264.16 68.58 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11674,7 +11666,7 @@
 		)
 		(uuid "b67a8755-8e8d-4789-b47a-fbc24247296b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 275.5514 66.04 0)
+			(at 275.5514 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11686,7 +11678,7 @@
 	)
 	(global_label "~{DRAM2SEL}"
 		(shape output)
-		(at 264.16 81.28 0)
+		(at 264.16 88.9 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11696,7 +11688,7 @@
 		)
 		(uuid "b77c7cb8-4477-43d3-9554-47db1842111c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.8213 81.28 0)
+			(at 276.8213 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11838,6 +11830,28 @@
 			)
 		)
 	)
+	(global_label "~{FRAMSEL}"
+		(shape output)
+		(at 264.16 66.04 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c428c893-82ea-4100-9bbc-d18ce5dd4110")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 275.4304 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D11"
 		(shape bidirectional)
 		(at 102.87 54.61 0)
@@ -11906,7 +11920,7 @@
 	)
 	(global_label "~{TMRSEL}"
 		(shape output)
-		(at 264.16 96.52 0)
+		(at 264.16 101.6 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11916,7 +11930,7 @@
 		)
 		(uuid "cb7b6cfe-573b-4953-89f2-e94d7f97e3a8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 274.2208 96.52 0)
+			(at 274.2208 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12124,6 +12138,28 @@
 			)
 		)
 	)
+	(global_label "~{FRAM_WR}"
+		(shape output)
+		(at 264.16 71.12 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e5208e7c-b62a-4888-85df-e56660024674")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 275.7328 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "A22"
 		(shape input)
 		(at 208.28 116.84 180)
@@ -12324,7 +12360,7 @@
 	)
 	(global_label "~{DRAM0SEL}"
 		(shape output)
-		(at 264.16 88.9 0)
+		(at 264.16 93.98 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12334,7 +12370,7 @@
 		)
 		(uuid "f37f32d7-fc50-4874-a070-1efe8f6ef69b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.8213 88.9 0)
+			(at 276.8213 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12478,7 +12514,7 @@
 	)
 	(global_label "~{DRAM3SEL}"
 		(shape output)
-		(at 264.16 78.74 0)
+		(at 264.16 86.36 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12488,7 +12524,7 @@
 		)
 		(uuid "fc662b44-af23-4339-b130-844dd68ecef7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 276.8213 78.74 0)
+			(at 276.8213 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12710,6 +12746,15 @@
 			)
 		)
 		(property "Description" "Crystal Clock Oscillator, DIP8-style metal package"
+			(at 179.07 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "ECS-2200B-500"
 			(at 179.07 29.21 0)
 			(effects
 				(font
@@ -12989,6 +13034,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 132.08 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "MC74ACT05DG"
 			(at 132.08 153.67 0)
 			(effects
 				(font
@@ -13369,6 +13423,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 137.16 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "MC74ACT05DG"
 			(at 137.16 100.33 0)
 			(effects
 				(font
@@ -14312,6 +14375,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "DS1813R-10+T&R"
+			(at 160.02 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "bf25ee06-5fe5-4bae-8458-8699284212fc")
 		)
@@ -14377,6 +14449,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 236.22 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "ATF1508AS-7AX100"
 			(at 236.22 78.74 0)
 			(effects
 				(font
@@ -15463,6 +15544,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "MC74ACT05DG"
+			(at 137.16 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "7b7875fb-d5b4-42dc-b4d5-f5d1f61da036")
 		)
@@ -16319,6 +16409,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "MC74ACT05DG"
+			(at 137.16 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "7b7875fb-d5b4-42dc-b4d5-f5d1f61da037")
 		)
@@ -17070,6 +17169,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 137.16 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "MC74ACT05DG"
 			(at 137.16 54.61 0)
 			(effects
 				(font
@@ -17857,6 +17965,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "MC74ACT05DG"
+			(at 137.16 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "7b7875fb-d5b4-42dc-b4d5-f5d1f61da039")
 		)
@@ -18096,6 +18213,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "MC74ACT05DG"
+			(at 137.16 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "7b7875fb-d5b4-42dc-b4d5-f5d1f61da03a")
 		)
@@ -18213,6 +18339,48 @@
 				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
 					(reference "C120")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet
+		(at 19.05 197.612)
+		(size 25.146 9.398)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "6473b99a-f5fc-46a4-ae73-90633955ad5d")
+		(property "Sheetname" "FRAM + DRAM0"
+			(at 19.05 196.9004 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu030_fram_dram0.kicad_sch"
+			(at 19.05 207.5946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(page "2")
 				)
 			)
 		)

@@ -68,7 +68,8 @@ module sysctl(
 	output wire CLK_6_25,
 
 	output wire nFRAM_RD,
-	output wire [3:0] nFRAM_WR,
+	output wire nFRAM_WR,
+	output wire [3:0] nFRAM_BE,
 
 	output wire nIORD,
 	output wire nIOWR,
@@ -301,35 +302,36 @@ assign nDEVSEL = ~(~nDEVSELx && (DevSelectOutputs == DSEL_NONE));
 localparam REGION_FRAM = 10'b1111111110;
 
 /* 
- *           nFRAM_WR[3:0] -----++
- *                nFRAM_RD ---+ ||
- *                   STERM --+| ||
- *                           ||-++-				*/
-localparam FRS_NONE	= 6'b011111;
+ *           nFRAM_BE[3:0] ------++
+ *                nFRAM_WR ----+ ||
+ *                nFRAM_RD ---+| ||
+ *                   STERM --+|| ||
+ *                           |||-++-				*/
+localparam FRS_NONE	= 7'b0111111;
 
-localparam FRS_RD	= 6'b101111;
+localparam FRS_RD	= 7'b1011111;
 
-localparam FRS_WR1_0	= 6'b110111;
-localparam FRS_WR1_1	= 6'b111011;
-localparam FRS_WR1_2	= 6'b111101;
-localparam FRS_WR1_3	= 6'b111110;
+localparam FRS_WR1_0	= 7'b1100111;
+localparam FRS_WR1_1	= 7'b1101011;
+localparam FRS_WR1_2	= 7'b1101101;
+localparam FRS_WR1_3	= 7'b1101110;
 
-localparam FRS_WR2_0	= 6'b110011;
-localparam FRS_WR2_1	= 6'b111001;
-localparam FRS_WR2_2	= 6'b111100;
-localparam FRS_WR2_3	= 6'b111110;
+localparam FRS_WR2_0	= 7'b1100011;
+localparam FRS_WR2_1	= 7'b1101001;
+localparam FRS_WR2_2	= 7'b1101100;
+localparam FRS_WR2_3	= 7'b1101110;
 
-localparam FRS_WR3_0	= 6'b110001;
-localparam FRS_WR3_1	= 6'b111000;
-localparam FRS_WR3_2	= 6'b111100;
-localparam FRS_WR3_3	= 6'b111110;
+localparam FRS_WR3_0	= 7'b1100001;
+localparam FRS_WR3_1	= 7'b1101000;
+localparam FRS_WR3_2	= 7'b1101100;
+localparam FRS_WR3_3	= 7'b1101110;
 
-localparam FRS_WR4_0	= 6'b110000;
-localparam FRS_WR4_1	= 6'b111000;
-localparam FRS_WR4_2	= 6'b111100;
-localparam FRS_WR4_3	= 6'b111110;
+localparam FRS_WR4_0	= 7'b1100000;
+localparam FRS_WR4_1	= 7'b1101000;
+localparam FRS_WR4_2	= 7'b1101100;
+localparam FRS_WR4_3	= 7'b1101110;
 
-reg [5:0] FRSOutputs;
+reg [6:0] FRSOutputs;
 always @(*) begin
 	casex ({nAS, AddrSpace, ADDR[31:21], RnW, SIZ[1:0], ADDR[1:0]})
 	/*
@@ -367,7 +369,7 @@ always @(*) begin
 	default:                                  FRSOutputs = FRS_NONE;
 	endcase
 end
-assign {STERM, nFRAM_RD, nFRAM_WR} = FRSOutputs;
+assign {STERM, nFRAM_RD, nFRAM_WR, nFRAM_BE} = FRSOutputs;
 assign CBACK = 1'b0;
 
 /* Inhibit cache if fetching the reset vector or accessing DEV space. */
@@ -602,19 +604,20 @@ endmodule
 //PIN: nIOWR		: 54
 //PIN: nFPUSEL		: 55
 //PIN: nIACKSEL		: 56
-//PIN: nI2CSEL		: 65
-//PIN: nATASEL		: 67
-//PIN: nTMRSEL		: 68
-//PIN: nDUARTSEL	: 69
-//PIN: nINTCSEL		: 70
-//PIN: nDRAMSEL_0	: 71
-//PIN: nDRAMSEL_1	: 72
-//PIN: nDRAMSEL_2	: 75
-//PIN: nDRAMSEL_3	: 76
-//PIN: nFRAM_WR_0	: 77
-//PIN: nFRAM_WR_1	: 78
-//PIN: nFRAM_WR_2	: 79
-//PIN: nFRAM_WR_3	: 80
+//PIN: nI2CSEL		: 64
+//PIN: nATASEL		: 65
+//PIN: nTMRSEL		: 67
+//PIN: nDUARTSEL	: 68
+//PIN: nINTCSEL		: 69
+//PIN: nDRAMSEL_0	: 70
+//PIN: nDRAMSEL_1	: 71
+//PIN: nDRAMSEL_2	: 72
+//PIN: nDRAMSEL_3	: 75
+//PIN: nFRAM_BE_0	: 76
+//PIN: nFRAM_BE_1	: 77
+//PIN: nFRAM_BE_2	: 78
+//PIN: nFRAM_BE_3	: 79
+//PIN: nFRAM_WR		: 80
 //PIN: nFRAM_RD		: 81
 //PIN: nMMIOSEL		: 83
 //PIN: nDEVSEL		: 84

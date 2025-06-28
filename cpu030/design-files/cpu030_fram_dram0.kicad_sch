@@ -8669,6 +8669,16 @@
 		)
 		(uuid "56f432da-373a-4215-8fdb-7815e9f62eb6")
 	)
+	(label "DRAM0_TMS"
+		(at 173.99 121.92 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5993eee4-7244-4cd7-adba-3a7623662449")
+	)
 	(label "~{DRAM0B_CAS3}"
 		(at 259.08 67.31 0)
 		(effects
@@ -8698,26 +8708,6 @@
 			(justify right bottom)
 		)
 		(uuid "66828537-2ecd-422c-b4ef-f7a1c583d9ab")
-	)
-	(label "SYSCTL_TDI"
-		(at 181.61 118.11 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "673aed3f-408e-40bd-824f-589c3a75f8ed")
-	)
-	(label "SYSCTL_TMS"
-		(at 173.99 121.92 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "68760f94-969d-41ae-aa2e-a2199f5eb639")
 	)
 	(label "DRAM0_A2"
 		(at 50.8 114.3 180)
@@ -8758,6 +8748,16 @@
 			(justify right bottom)
 		)
 		(uuid "72070cbf-6139-4774-b9ba-eccc496a12b0")
+	)
+	(label "DRAM0_TCK"
+		(at 190.5 114.3 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "7291f267-087a-448d-a4e6-45bdc684dc81")
 	)
 	(label "~{DRAM0A_RAS3}"
 		(at 50.8 148.59 180)
@@ -9169,6 +9169,16 @@
 		)
 		(uuid "cdb047c7-3b9c-4448-b372-514ef24fa4dd")
 	)
+	(label "DRAM0_TDI"
+		(at 181.61 118.11 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "cf61d381-6437-425d-91e8-9ef2f147f8bf")
+	)
 	(label "DRAM0_A0"
 		(at 203.2 133.35 180)
 		(effects
@@ -9228,16 +9238,6 @@
 			(justify left bottom)
 		)
 		(uuid "dfea7721-8168-4e98-8366-e52d526be0cf")
-	)
-	(label "SYSCTL_TCK"
-		(at 190.5 114.3 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "e011571b-d5b5-427e-9748-346856600b5d")
 	)
 	(label "DRAM0_A4"
 		(at 50.8 119.38 180)

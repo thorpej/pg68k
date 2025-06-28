@@ -636,6 +636,10 @@
     [
       "6473b99a-f5fc-46a4-ae73-90633955ad5d",
       "FRAM + DRAM0"
+    ],
+    [
+      "8279e4df-c634-403f-9bee-2e9907ba990a",
+      "DUART"
     ]
   ],
   "text_variables": {}

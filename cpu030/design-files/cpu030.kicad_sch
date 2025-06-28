@@ -14720,7 +14720,7 @@
 				(hide yes)
 			)
 		)
-		(property "Part" "ECS-2200B-500"
+		(property "Part" "MXO45HS-3C-50M0000"
 			(at 179.07 29.21 0)
 			(effects
 				(font
@@ -21205,6 +21205,48 @@
 			(project "cpu030"
 				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
 					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 54.61 197.612)
+		(size 22.352 9.906)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "8279e4df-c634-403f-9bee-2e9907ba990a")
+		(property "Sheetname" "DUART"
+			(at 54.61 196.9004 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu030_duart.kicad_sch"
+			(at 54.61 208.1026 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(page "3")
 				)
 			)
 		)

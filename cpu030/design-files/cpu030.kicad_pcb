@@ -2433,7 +2433,7 @@
 	(footprint "jrt-SIMMs:SIMM-72"
 		(layer "F.Cu")
 		(uuid "1a0d63b7-0bf6-4283-a7d8-27b51979c51f")
-		(at 235.9914 160.5026)
+		(at 235.9914 142.6464)
 		(property "Reference" "U205"
 			(at 48.25 7 0)
 			(unlocked yes)
@@ -4332,7 +4332,7 @@
 	(footprint "jrt-SIMMs:SIMM-72"
 		(layer "F.Cu")
 		(uuid "2b124b58-cd6e-4636-a9e6-bb7232adc641")
-		(at 235.9914 142.6464)
+		(at 235.9914 160.5026)
 		(property "Reference" "U204"
 			(at 48.25 7 0)
 			(unlocked yes)

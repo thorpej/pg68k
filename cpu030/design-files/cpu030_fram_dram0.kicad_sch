@@ -6771,6 +6771,18 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "DRAMCTL"
+		(exclude_from_sim no)
+		(at 255.778 18.034 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "366a2469-b940-4e5e-a934-55eed8a4af9c")
+	)
 	(junction
 		(at 158.75 135.89)
 		(diameter 0)

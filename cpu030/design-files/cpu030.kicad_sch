@@ -22583,7 +22583,7 @@
 				)
 			)
 		)
-		(property "Value" "Reset button"
+		(property "Value" "Reset"
 			(at 170.18 132.08 0)
 			(effects
 				(font
@@ -26692,7 +26692,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_Tantalum_SMD:CP_EIA-6032-15_Kemet-U_HandSolder"
 			(at 142.24 123.19 0)
 			(effects
 				(font
@@ -26711,6 +26711,15 @@
 			)
 		)
 		(property "Description" "Polarized capacitor, small symbol"
+			(at 142.24 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "T495C107K016ATE200"
 			(at 142.24 123.19 0)
 			(effects
 				(font

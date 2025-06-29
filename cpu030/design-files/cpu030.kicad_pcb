@@ -7462,11 +7462,11 @@
 	(footprint "Resistor_THT:R_Array_SIP9"
 		(layer "F.Cu")
 		(uuid "3f520702-11a6-4176-9fb3-59de7f53a855")
-		(at 300.863 151.8666)
+		(at 183.0324 217.6272)
 		(descr "9-pin Resistor SIP pack")
 		(tags "R")
 		(property "Reference" "RN103"
-			(at 24.3586 0 0)
+			(at 24.3586 -0.8128 0)
 			(layer "F.SilkS")
 			(uuid "2ee4741f-5193-4686-8312-3ecbbb6a1b89")
 			(effects
@@ -7477,7 +7477,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 11.43 2.31 0)
+			(at 24.4602 0.7112 0)
 			(layer "F.SilkS")
 			(uuid "0d40aef1-ef88-405a-8750-fdf8ffc202d9")
 			(effects
@@ -12380,11 +12380,11 @@
 	(footprint "Resistor_THT:R_Array_SIP9"
 		(layer "F.Cu")
 		(uuid "67286695-641a-4466-85f7-0c3db723f5e1")
-		(at 238.1758 169.7228)
+		(at 183.0324 214.503)
 		(descr "9-pin Resistor SIP pack")
 		(tags "R")
 		(property "Reference" "RN102"
-			(at 24.4602 0.0508 0)
+			(at 24.4602 -0.8128 0)
 			(layer "F.SilkS")
 			(uuid "69cb4e80-3a5e-4b20-a268-ec30cb0d83f3")
 			(effects
@@ -12395,7 +12395,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 11.43 2.31 0)
+			(at 24.4602 0.7112 0)
 			(layer "F.SilkS")
 			(uuid "054521df-ee23-46a7-8af8-b4090ce17c11")
 			(effects
@@ -13102,11 +13102,11 @@
 	(footprint "Resistor_THT:R_Array_SIP9"
 		(layer "F.Cu")
 		(uuid "72c74e2c-90f1-43f0-8c32-03cd5056371e")
-		(at 238.1758 151.8412)
+		(at 159.512 214.503)
 		(descr "9-pin Resistor SIP pack")
 		(tags "R")
 		(property "Reference" "RN104"
-			(at 24.3078 0.0254 0)
+			(at -4.0386 -0.8128 0)
 			(layer "F.SilkS")
 			(uuid "e61472cc-2c53-4ed0-aed8-433a20a616da")
 			(effects
@@ -13117,7 +13117,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 11.43 2.31 0)
+			(at -3.9116 0.7112 0)
 			(layer "F.SilkS")
 			(uuid "a517c1de-5712-4f93-ad86-f51f5b5f59e4")
 			(effects
@@ -18870,11 +18870,11 @@
 	(footprint "Resistor_THT:R_Array_SIP9"
 		(layer "F.Cu")
 		(uuid "ae7afdea-026c-4650-91c7-7cfec95f37e3")
-		(at 300.863 169.7228)
+		(at 159.512 217.6272)
 		(descr "9-pin Resistor SIP pack")
 		(tags "R")
 		(property "Reference" "RN105"
-			(at 24.3332 0.0254 0)
+			(at -4.0386 -0.8128 0)
 			(layer "F.SilkS")
 			(uuid "bd5fbddf-42dd-428c-b81f-d4ca2f1d49e0")
 			(effects
@@ -18885,7 +18885,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 11.43 2.31 0)
+			(at -3.9116 0.7112 0)
 			(layer "F.SilkS")
 			(uuid "215b96bc-0f36-4935-a665-7240c8f65754")
 			(effects

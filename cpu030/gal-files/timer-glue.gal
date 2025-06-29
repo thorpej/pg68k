@@ -1,0 +1,40 @@
+GAL22V10
+TMRGLUE
+
+ FFCI  A3 NC NC NC NC  NC      NC   /IORD /IOWR /CS    GND
+/RESET D0 D1 D2 NC NC /TMRSEL  G0    G1    G2    FFCO  VCC
+
+;
+; When reset is asserted, clear all the D-FFs (G0-G2)
+;
+AR = RESET;
+
+;
+; When A3=1, access the glue logic.  Otherwise, forward the chip
+; select on to the 82c54.
+;
+TMRSEL = /A3;
+
+;
+; Reflect the value of G0-G2 onto the data bus when the read strobe is
+; asserted.
+;
+D0.T = G0;
+D0.E = CS * A3 * IORD;
+
+D1.T = G1;
+D1.E = CS * A3 * IORD;
+
+D2.T = G2;
+D2.E = CS * A3 * IORD;
+
+;
+; We want the idle state of FFCO to be high, and for it to go low when we
+; get a write strobe.  When the write strobe ends, FFCO will go high again,
+; which is fed back eternally to FFCI to latch the new G0-G2 value from the
+; data bus.
+;
+/FFCO = CS * A3 * IOWR;
+G0.R = D0;
+G1.R = D1;
+G2.R = D2;

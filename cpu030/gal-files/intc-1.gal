@@ -46,8 +46,8 @@ INTC1
 ; We also check for the CPU performing an interrupt acknowledge cycle
 ; (the SYSCTL CPLD decodes this for us and provides the IACK signal).
 ; If this is happening and an interrupt is pending, we assert the /AVEC
-; output that's connected to the CPU.  Otherwise, BERR (driving an open-drain
-; inverter) is generated so the CPU can perform a suprious interrupt.
+; output that's connected to the CPU.  Otherwise, /BERR is generated so
+; the CPU can perform a suprious interrupt.
 ;
 ; This isn't a particularly sophisticated interrupt controller, obviously.
 ; This is merely a very simple first step to get the system up and running.
@@ -117,12 +117,13 @@ IPL2 = ENAB * /I7 * /I6 * /I5 *  I4
 ; propagation delay isn't a concern because IPLx will have already propagated
 ; in order for the IACK cycle to begin in the first place.
 ;
-; If we see /IACK and no interrupt is pending, we assert BERR (an active-high
-; output that drives an external open-drain inverter that is wire-OR'd to
-; the CPU /BERR input).
+; If we see /IACK and no interrupt is pending, we assert /BERR.  Note that
+; /BERR is a tri-state because we don't natively have open-drain outputs
+; in a 22V10.
 ;
 AVEC = IACK * IPL0
      + IACK * IPL1
      + IACK * IPL2;
 
-BERR = IACK * /IPL0 * /IPL1 * /IPL2;
+BERR.T = GND;
+BERR.E = IACK * /IPL0 * /IPL1 * /IPL2;

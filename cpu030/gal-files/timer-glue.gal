@@ -31,7 +31,7 @@ D2.E = CS * A3 * IORD;
 ;
 ; We want the idle state of FFCO to be high, and for it to go low when we
 ; get a write strobe.  When the write strobe ends, FFCO will go high again,
-; which is fed back eternally to FFCI to latch the new G0-G2 value from the
+; which is fed back externally to FFCI to latch the new G0-G2 value from the
 ; data bus.
 ;
 /FFCO = CS * A3 * IOWR;

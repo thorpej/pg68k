@@ -67,7 +67,7 @@ D0.E = CS * DS * RW;
 ;
 ; We want the idle state of FFCO to be high, and for it to go low when we
 ; get a write strobe.  When the write strobe ends, FFCO will go high again,
-; which is fed back eternally to FFCI to latch the new ENAB value from D0.
+; which is fed back externally to FFCI to latch the new ENAB value from D0.
 ;
 /FFCO = CS * DS * /RW;
 ENAB.R = D0;

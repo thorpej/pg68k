@@ -40,8 +40,7 @@ INTC1
 ; from the address decoder.  We internally generate the D-FF clock (FFCO),
 ; but have to feed it back in externally (FFCI); when the data strobe for
 ; a write is complete, we have to generate a rising edge on FFCI.  We also
-; generate /DSACK0 ourselves, although active-high because it's driving an
-; open-drain inverter (wire-OR'd to the CPU's input).
+; generate /DSACK0 ourselves.
 ;
 ; We also check for the CPU performing an interrupt acknowledge cycle
 ; (the SYSCTL CPLD decodes this for us and provides the IACK signal).
@@ -77,7 +76,8 @@ ENAB.R = D0;
 ; Acknowledge an 8-bit transfer as soon as we detect the data strobe.
 ; The 22V10 is fast enough that no wait states are required.
 ;
-DSACK0 = CS * DS;
+DSACK0.T = GND;
+DSACK0.E = CS * DS;
 
 ;
 ; Truth table for /IPLx outputs:

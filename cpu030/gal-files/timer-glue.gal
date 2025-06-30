@@ -1,8 +1,8 @@
 GAL22V10
 TMRGLUE
 
- FFCI  A2 NC NC NC NC  NC      NC   /IORD /IOWR /CS    GND
-/RESET D0 D1 D2 NC NC /TMRSEL  G0    G1    G2    FFCO  VCC
+IOWR   /IORD /CS A2 O0 O1 O2 NC NC NC  NC     GND
+/RESET  D0    D1 D2 Q0 Q1 Q2 G0 G1 G2 /TMRSEL VCC
 
 ;
 ; When reset is asserted, clear all the D-FFs (G0-G2)
@@ -29,12 +29,25 @@ D2.T = G2;
 D2.E = CS * A2 * IORD;
 
 ;
-; We want the idle state of FFCO to be high, and for it to go low when we
-; get a write strobe.  When the write strobe ends, FFCO will go high again,
-; which is fed back externally to FFCI to latch the new G0-G2 value from the
-; data bus.
+; We have to latch a new value into the D-FF's on every rising edge of
+; /IOWR.  Take the value from the data bus if the glue logic is being
+; accessed, or the previous value if not.
 ;
-/FFCO = CS * A2 * IOWR;
-G0.R = D0;
-G1.R = D1;
-G2.R = D2;
+G0.R = D0 *  CS * /TMRSEL
+     + G0 *  CS *  TMRSEL
+     + G0 * /CS;
+
+G1.R = D1 *  CS * /TMRSEL
+     + G1 *  CS *  TMRSEL
+     + G1 * /CS;
+
+G2.R = D2 *  CS * /TMRSEL
+     + G2 *  CS *  TMRSEL
+     + G2 * /CS;
+
+;
+; The outputs are enabled when the gates are enabled.
+;
+Q0 = O0 * G0;
+Q1 = O1 * G1;
+Q2 = O2 * G2;

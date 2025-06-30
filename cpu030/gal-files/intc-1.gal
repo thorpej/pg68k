@@ -1,8 +1,8 @@
 GAL22V10
 INTC1
 
- FFCI /I1 /I2   /I3   /I4   /I5   /I6   /I7     /IACK /RESET /CS   GND
-/DS    RW /IPL0 /IPL1 /IPL2 /AVEC  BERR  DSACK0  D0    ENAB   FFCO VCC
+DS  /I1 /I2   /I3   /I4   /I5   /I6   /I7     /IACK /RESET /CS GND
+RnW  NC /IPL0 /IPL1 /IPL2 /AVEC  BERR  DSACK0  D0    ENAB   NC VCC
 
 ;
 ; == intc-1 ==
@@ -36,7 +36,7 @@ INTC1
 ; has to be brought out to a pin.  It is NOT tri-stated and should be left
 ; unconnected on the board.
 ;
-; We take the /DS and RW signals directly from the CPU, and a chip-select
+; We take the /DS and RnW signals directly from the CPU, and a chip-select
 ; from the address decoder.  We internally generate the D-FF clock (FFCO),
 ; but have to feed it back in externally (FFCI); when the data strobe for
 ; a write is complete, we have to generate a rising edge on FFCI.  We also
@@ -62,15 +62,16 @@ AR = RESET;
 ; asserted.
 ;
 D0.T = ENAB;
-D0.E = CS * DS * RW;
+D0.E = CS * DS * RnW;
 
 ;
-; We want the idle state of FFCO to be high, and for it to go low when we
-; get a write strobe.  When the write strobe ends, FFCO will go high again,
-; which is fed back externally to FFCI to latch the new ENAB value from D0.
+; We have to latch a new value into the D-FF's on every rising edge of
+; /DS.  Take the value from the data bus if we're being addressed for
+; write, or the previous value if not.
 ;
-/FFCO = CS * DS * /RW;
-ENAB.R = D0;
+ENAB.R = D0   *  CS * /RnW
+       + ENAB *  CS *  RnW
+       + ENAB * /CS;
 
 ;
 ; Acknowledge an 8-bit transfer as soon as we detect the data strobe.

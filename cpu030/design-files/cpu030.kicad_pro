@@ -640,6 +640,10 @@
     [
       "8279e4df-c634-403f-9bee-2e9907ba990a",
       "DUART"
+    ],
+    [
+      "73c5e65c-632f-4863-98b7-0d11c2a0ac33",
+      "System Timer"
     ]
   ],
   "text_variables": {}

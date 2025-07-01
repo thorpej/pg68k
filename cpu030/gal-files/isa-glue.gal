@@ -1,0 +1,53 @@
+GAL22V10
+ISAGLUE
+
+/CS1 /CS2 RnW /DS     ISARDY  ISAINT NC     NC NC NC NC GND
+ NC  /BEN TEN  DSACK /IORD   /IOWR   INTOUT NC NC NC NC VCC
+
+;
+; This per-device GAL works in conjunction with a the shared ISATERM
+; GAL to initiate and terminate ISA bus cycles.
+;
+; Our 68k inputs are a chip select from the address decoder, the
+; data strobe signal, and the R/W signal.  We use these to generate
+; /IORD and /IOWR.  Yes, the SYSCTL is already generating those for
+; other on-board devices, but I decided to generate these signals
+; redundantly because R/W is useful as a signal for bus transcievers.
+;
+; We also get IORDY and INT from the ISA device.  IORDY is used to
+; signal to ISATERM that /DSACKx should be generated.  The active-
+; high INT input is transated into an open-drain active-low output.
+;
+; If we need more facilities later, there's still room!
+;
+
+;
+; Buffers should be enabled if either of our chip selects are enabled.
+;
+BEN = CS1
+    + CS2;
+
+;
+; So should ISATERM.  N.B. we use BEN as a "buried signal" here because
+; enables can have only a single product term.
+;
+TEN.T = GND;
+TEN.E = BEN;
+
+;
+; Generate /IORD and /IOWR.
+;
+IORD = BEN * DS *  RnW;
+IOWR = BEN * DS * /RnW;
+
+;
+; Tell ISATERM to generate the bus cycle acknowledgement signal.
+;
+DSACK.T = GND;
+DSACK.E = BEN * DS * ISARDY;
+
+;
+; Generate the active-low open-drain interrupt output.
+;
+INTOUT.T = GND;
+INTOUT.E = ISAINT;

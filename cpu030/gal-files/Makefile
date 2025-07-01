@@ -3,7 +3,7 @@ GALASM=		galette
 
 GALASM_FLAGS=	-f -p
 
-JEDECS=		intc-1.jed timer-glue.jed
+JEDECS=		intc-1.jed isa-glue.jed isa-term.jed timer-glue.jed
 
 .SUFFIXES:
 .SUFFIXES: .gal .jed

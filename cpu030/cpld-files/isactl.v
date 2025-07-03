@@ -132,18 +132,20 @@ always @(*) begin
 	endcase
 end
 
-assign DATA = enable_data_out ? data_out : 8'bzzzzzzzz;
+assign DATA = (enable_data_out && ~nDS) ? data_out : 8'bzzzzzzzz;
 
 localparam IO_STROBE_NONE  = 2'b00;
 localparam IO_STROBE_READ  = 2'b10;
 localparam IO_STROBE_WRITE = 2'b01;
 wire [1:0] io_strobe_type = {RnW, ~RnW};
 
+/*
+ * Qual with /DS from the CPU so they de-assert immediately.
+ */
 reg [1:0] io_strobe;
-assign {nISA_IORD, nISA_IOWR} = ~io_strobe;
-
 reg [1:0] dsack;
-assign DSACK = dsack;
+assign {nISA_IORD, nISA_IOWR} = ~(io_strobe & {~nDS, ~nDS});
+assign DSACK = dsack & {~nDS, ~nDS};
 
 localparam Idle		= 4'd0;
 localparam ATA_t1_0_8	= 4'd1;
@@ -323,7 +325,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 
 		TermWait: begin
 			if (nAS) begin
-				enable_data_out = 1'b0;
+				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
 				bus_error <= 1'b0;
 				dsack <= 2'b00;

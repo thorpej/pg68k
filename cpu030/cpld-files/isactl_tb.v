@@ -86,7 +86,7 @@ wire n_ataauxsel;
 wire cycle_terminated = berr | dsack[0] | dsack[1];
 
 	/* Instantiate the device under test. */
-	isa_glue dut (
+	isactl dut (
 		.nRST(n_rst),
 		.CPU_CLK(clk),
 		.nAS(n_as),

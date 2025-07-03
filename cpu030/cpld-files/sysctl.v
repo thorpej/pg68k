@@ -58,10 +58,8 @@ module sysctl(
 	output wire nFPUSEL,
 	output wire nIACKSEL,
 
+	output wire nISASEL,
 	output wire nINTCSEL,
-	output wire nDUARTSEL,
-	output wire nTMRSEL,
-	output wire nATASEL,
 	output wire nI2CSEL,
 
 	output wire CPU_CLK,
@@ -71,9 +69,6 @@ module sysctl(
 	output wire nFRAM_RD,
 	output wire nFRAM_WR,
 	output wire [3:0] nFRAM_BE,
-
-	output wire nIORD,
-	output wire nIOWR,
 
 	output wire RESET
 );
@@ -172,6 +167,7 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  *
  * $FFF0.0000 - $FFFF.FFFF      System ROM (1MB)
  * $FFE0.0000 - $FFEF.FFFF      Peripheral device space (1MB)
+ *     0.0000 -     0.FFFF	  (ISA I/O space)
  * $FF80.0000 - $FFBF.FFFF      Fast RAM (4MB)
  * $8000.0000 - $BFFF.FFFF      Memory mapped I/O space (1GB)
  * $0000.0000 - $3FFF.FFFF      DRAM (1GB, as 4x256MB)
@@ -183,7 +179,7 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  *
  * The peripheral device space is mainly on-board peripherals (UARTs, timer,
  * etc.).  Some of this address is further decoded below, with the remaining
- * being externally decoded and qualified by /DEVSEL.
+ * being externally decoded and qualified by /DEVSEL or /ISASEL.
  */
 
 /*			          Address bits
@@ -254,34 +250,30 @@ assign {nIACKSEL, nFPUSEL, nDRAMSEL, nMMIOSEL, nDEVSELx, nROMSELx}
 assign nROMSEL = nROMSELx | ~RnW;
 
 /*
+ * The DEV space is split into two regions:
+ * 
+ *
  * Further qualify the DEV space:
  *
- * 0.000x	TL16C2552 DUART
- * 0.001x	CP82C54-10Z timer
- * 0.002x	ATA registers
- * 0.010x	PCF8584 I2C controller
+ * 0.xxxx	ISA I/O space
+ *			(DUART, Timer, ATA disk, Ethernet)
+ * 1.000x	PCF8584 I2C controller
  * F.FFFx	Interrupt controller
  */
-localparam DEV_DUART	= 20'h0000x;
-localparam DEV_TMR	= 20'h0001x;
-localparam DEV_ATA	= 20'h0002x;
-localparam DEV_I2C	= 20'h0010x;
+localparam DEV_ISA	= 20'h0xxxx;
+localparam DEV_I2C	= 20'h1000x;
 localparam DEV_INTC	= 20'hFFFFx;
 
-localparam DSEL_NONE	= 5'b11111;
-localparam DSEL_DUART	= 5'b01111;
-localparam DSEL_TMR	= 5'b10111;
-localparam DSEL_ATA	= 5'b11011;
-localparam DSEL_I2C	= 5'b11101;
-localparam DSEL_INTC	= 5'b11110;
+localparam DSEL_NONE	= 3'b111;
+localparam DSEL_ISA	= 3'b011;
+localparam DSEL_I2C	= 3'b101;
+localparam DSEL_INTC	= 3'b110;
 
 reg [2:0] DevSelectOutputs;
 always @(*) begin
 	casex ({nDEVSELx, nDS, ADDR[19:0]})
-	{1'b0, 1'bx, DEV_DUART}: DevSelectOutputs = DSEL_DUART;
-	{1'b0, 1'bx, DEV_TMR}:   DevSelectOutputs = DSEL_TMR;
-	{1'b0, 1'bx, DEV_INTC}:  DevSelectOutputs = DSEL_INTC;
-	{1'b0, 1'bx, DEV_ATA}:   DevSelectOutputs = DSEL_ATA;
+	{1'b0, 1'bx, DEV_ISA}:  DevSelectOutputs = DSEL_ISA;
+	{1'b0, 1'bx, DEV_INTC}: DevSelectOutputs = DSEL_INTC;
 	/*
 	 * Also need to qual /I2CSEL on /DS because we want to
 	 * ensure that the PCF8584 comes up in 68000 interface
@@ -291,7 +283,7 @@ always @(*) begin
 	default:                 DevSelectOutputs = DSEL_NONE;
 	endcase
 end
-assign {nDUARTSEL, nTMRSEL, nATASEL, nI2CSEL, nINTCSEL}
+assign {nISASEL, nI2CSEL, nINTCSEL}
     = DevSelectOutputs;
 
 /*
@@ -380,40 +372,24 @@ assign CI = (ResetVecFetch || ~nDEVSELx);
 /*
  * Bus cycle state machine.
  *
- * Generate /IORD, /IOWR, and DSACKx based on the selected device and
- * its timing constraints.
+ * Generate DSACKx based on the selected device and its timing constraints.
  *
  * Note we only do this for devices that don't do the 68000 bus protocol
- * natively, which means: the ROM, the DUART, and the timer.
+ * natively, which means: the ROM.  (ISA devices are handled by the ISA
+ * controller.)
  */
 reg [1:0] dsack;
 localparam PORT_1	= 2'b01;
 localparam PORT_2	= 2'b10;
 
-reg [3:0] BCState;
+reg [1:0] BCState;
 localparam BC_Idle	= 4'd0;
-localparam BC_B1W1	= 4'd1;	/* bytes: 1, waits: 1 */
-localparam BC_B2W1	= 4'd2;	/* bytes: 2, waits: 1 */
-localparam BC_TMR_RD1	= 4'd3;
-localparam BC_TMR_RW2	= 4'd4;
-localparam BC_TMR_RW3	= 4'd5;
-localparam BC_TMR_RW4	= 4'd6;
-localparam BC_TMR_F1	= 4'd7;
-localparam BC_TMR_F2	= 4'd8;
-localparam BC_TMR_F3	= 4'd9;
-localparam BC_Finish	= 4'd10;
-
-/*
- * Some devides need to delay the I/O strobes to meet setup times.
- * See the state machine below for commentary on when they're needed.
- */
-reg io_strobe_d;
-wire io_strobe_d_needed = (~nTMRSEL & RnW);
+localparam BC_B2W1	= 4'd1;	/* bytes: 2, waits: 1 */
+localparam BC_Finish	= 4'd2;
 
 always @(posedge CPU_CLK, negedge nRST) begin
 	if (~nRST) begin
 		BCState <= 2'd0;
-		io_strobe_d <= 1'b0;
 		dsack <= 2'b00;
 	end
 	else begin
@@ -427,56 +403,6 @@ always @(posedge CPU_CLK, negedge nRST) begin
 				 */
 				BCState <= BC_B2W1;
 			end
-			else if (~nDUARTSEL & RnW) begin
-				/* DUART read: no wait states */
-				dsack <= PORT_1;
-				BCState <= BC_Finish;
-			end
-			else if (~nDUARTSEL & ~RnW) begin
-				/* DUART write: 1 wait state */
-				/*
-				 * XXX Might be unnecessary; revisit
-				 * UART timing diagram
-				 */
-				BCState <= BC_B1W1;
-			end
-			else if (~nTMRSEL & RnW) begin
-				/*
-				 * The 82C54(-10) is a mess.  The
-				 * address bus needs to be stable
-				 * for 25ns before /IORD, so we have
-				 * to delay the strobe by one cycle.
-				 *
-				 * Then we need a 95ns /IORD pulse width,
-				 * which means 3(2?) wait states before we
-				 * can assert DSACK.
-				 *
-				 * **THEN** we need to wait for 165ns (4!
-				 * more cycles) for the "recovery time"
-				 * before we can come around again to service
-				 * something else (because there might be a
-				 * back-to-back timer access).  But, we can
-				 * shave one of those off because we delay
-				 * the strobe artificially on read and it's
-				 * delayed naturally (by the CPU) on write.
-				 */
-				BCState <= BC_TMR_RD1;
-			end
-			else if (~nTMRSEL & ~RnW & ~nDS) begin
-				/*
-				 * Ironically, writes are not that bad.
-				 * There are no weird setup times before
-				 * the strobe, but we need to hold it for
-				 * the same 3 clock cycles and observe the
-				 * same recovery time as in the read case.
-				 */
-				BCState <= BC_TMR_RW2;
-			end
-		end
-
-		BC_B1W1: begin
-			dsack <= PORT_1;
-			BCState <= BC_Finish;
 		end
 
 		BC_B2W1: begin
@@ -484,43 +410,8 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			BCState <= BC_Finish;
 		end
 
-		BC_TMR_RD1: begin
-			io_strobe_d <= 1'b1;
-			BCState <= BC_TMR_RW2;
-		end
-
-		BC_TMR_RW2: begin
-			BCState <= BC_TMR_RW3;
-		end
-
-		BC_TMR_RW3: begin
-			BCState <= BC_TMR_RW4;
-		end
-
-		BC_TMR_RW4: begin
-			dsack <= PORT_1;
-			BCState = BC_TMR_F1;
-		end
-
-		BC_TMR_F1: begin
-			if (nDS) begin
-				io_strobe_d <= 1'b0;
-				dsack <= 2'b00;
-				BCState <= BC_TMR_F2;
-			end
-		end
-
-		BC_TMR_F2: begin
-			BCState <= BC_TMR_F3;
-		end
-
-		BC_TMR_F3: begin
-			BCState <= BC_Idle;
-		end
-
 		BC_Finish: begin
 			if (nDS) begin
-				io_strobe_d <= 1'b0;
 				dsack <= 2'b00;
 				BCState <= BC_Idle;
 			end
@@ -533,15 +424,6 @@ end
  * Qual with /DS from the CPU so they de-assert immediately.
  */
 assign DSACK = dsack & {~nDS, ~nDS};
-
-/*
- * If we've selected an external device that we're not decoding ourselves,
- * always let /IORD and /IOWR be asserted.  Otherwise, they are gated based
- * on the requirements of the device.
- */
-wire io_strobe = (~nDEVSELx & ~io_strobe_d_needed) | io_strobe_d;
-assign nIORD = ~(io_strobe & ~nDS & RnW);
-assign nIOWR = ~(io_strobe & ~nDS & ~RnW);
 
 /* Generate a positive-level reset signal for anything that needs it. */
 assign RESET = ~nRST;
@@ -602,15 +484,11 @@ endmodule
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
 //PIN: RESET		: 52
-//PIN: nIORD		: 53
-//PIN: nIOWR		: 54
-//PIN: nFPUSEL		: 55
-//PIN: nIACKSEL		: 56
 //PIN: nI2CSEL		: 63
-//PIN: nATASEL		: 64
-//PIN: nTMRSEL		: 65
-//PIN: nDUARTSEL	: 67
-//PIN: nINTCSEL		: 68
+//PIN: nINTCSEL		: 64
+//PIN: nISASEL		: 65
+//PIN: nIACKSEL		: 67
+//PIN: nFPUSEL		: 68
 //PIN: nDRAMSEL_0	: 69
 //PIN: nDRAMSEL_1	: 70
 //PIN: nDRAMSEL_2	: 71

@@ -23,20 +23,30 @@
 		#size-cells = <0>;
 
 		cpu_clk: osc25M_clk {
-			#clock-cells = <0>;
 			compatible = "fixed-clock";
+			#clock-cells = <0>;
 			clock-frequency = <25000000>;
 		};
 
-		cpu_div4_clk: osc6_25M_clk {
+		cpu_div4_clk: cpu_div4_clk {
+			compatible = "fixed-factor-clock";
+			clocks = <&cpu_clk>;
 			#clock-cells = <0>;
-			compatible = "fixed-clock";
-			clock-frequency = <6250000>;
+			clock-mult = <1>;
+			clock-div = <4>;
+		};
+
+		cpu_div16_clk: cpu_div16_clk {
+			compatible = "fixed-factor-clock";
+			clocks = <&cpu_clk>;
+			#clock-cells = <0>;
+			clock-mult = <1>;
+			clock-div = <16>;
 		};
 
 		uart_clk: osc1_8432M_clk {
-			#clock-cells = <0>;
 			compatible = "fixed-clock";
+			#clock-cells = <0>;
 			clock-frequency = <1843200>;
 		};
 	};
@@ -84,35 +94,43 @@
 			#interrupt-cells = <3>;
 		};
 
-		uart0: serial@0xffe00000 {
+		uart0: serial@0xffe003f8 {	/* ISA-like address */
 			compatible = "ns16550a";
-			reg = <0xffe00000 0x8>;
+			reg = <0xffe003f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 			okay = "yes";
 		};
 
-		uart1: serial@0xffe00008 {
+		uart1: serial@0xffe002f8 {	/* ISA-like address */
 			compatible = "ns16550a";
-			reg = <0xffe00008 0x8>;
+			reg = <0xffe002f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 			okay = "yes";
 		};
 
-		timer@0xffe00010 {
-			compatible = "isl,cp82c54";
-			reg = <0xffe00010 0x4>;
-			clocks = <&cpu_div4_clk>;
+		timer@0xffe00040 {		/* ISA-like address */
+			compatible = "pg68k,isactl-timer";
+			reg = <0xffe00040 0x8>;
+			clocks = <&cpu_div16_clk>;
 			interrupts = <6 6 0>;
 			okay = "yes";
 		};
 
-		ata: ata@0xfffe0020 {
+		ata: ata@0xfffe01f0 {		/* ISA-like addresses */
 			compatible = "pg68k,atac-1";
-			reg = <0xfffe0020 0x8>,	/* command */
-			      <0xfffe0028 0x8>;	/* control */
-			pio-mode = 3;
+			reg = <0xfffe01f0 0x8>,	/* command */
+			      <0xfffe03f6 0x2>;	/* control */
+			interrupts = <3 3 0>;
+			pio-mode = 0;
+			okay = "yes";
+		};
+
+		ethernet: ethernet@0xfffe0300 {	/* ISA-like address */
+			compatible = "realtek,rtl8019as";
+			reg = <0xfffe0300, 0x20>;
+			interrupts = <4 4 0>;
 			okay = "yes";
 		};
 
@@ -123,5 +141,18 @@
 			reg = <0xfffe0100 0x2>;
 			clocks = <&cpu_div4_clk>;
 		};
+
+		/*
+		 * Another possible i2c controller option
+		 * is the NXP PCA9564.  It has its own
+		 * internal clock source.  It is not software
+		 * compatible with the PCF8584, and operates
+		 * at 3.3V instead of 5V.
+		 *
+		 *	compatible = "nxp,pca9564";
+		 *	#address-cells = <1>;
+		 *	#size-cells = <0>;
+		 *	reg = <0xfffe0100 0x2>;
+		 */
 	};
 };

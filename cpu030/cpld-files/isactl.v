@@ -247,7 +247,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ8, SEL_ATA_PMODE}: begin
-				enable_data_out = 1'b1;
+				enable_data_out <= 1'b1;
 				dsack <= SIZ;
 				state <= TermWait;
 			end
@@ -260,7 +260,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 
 			{READ8, SEL_TMR_CSR}: begin
 				Timer_intack <= Timer_int;
-				enable_data_out = 1'b1;
+				enable_data_out <= 1'b1;
 				dsack <= SIZ;
 				state <= TermWait;
 			end
@@ -272,7 +272,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ8, SEL_TMR_LSB}: begin
-				enable_data_out = 1'b1;
+				enable_data_out <= 1'b1;
 				dsack <= SIZ;
 				state <= TermWait;
 			end
@@ -286,7 +286,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ8, SEL_TMR_MSB}: begin
-				enable_data_out = 1'b1;
+				enable_data_out <= 1'b1;
 				dsack <= SIZ;
 				state <= TermWait;
 			end

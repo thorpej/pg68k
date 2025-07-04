@@ -52,8 +52,7 @@ module isactl(
 	input wire [1:0] SIZ,
 
 	input wire ISA_RDY,
-	input wire nISA_IO16,
-	input wire nISA_MEM16,
+	input wire nISA_IO16,		/* not used at this time */
 
 	output wire BERR,		/* external open-drain inv */
 	output wire [1:0] DSACK,	/* external open-drain inv */
@@ -63,9 +62,10 @@ module isactl(
 	output wire nISA_IOWR,
 
 	output wire nDUARTSEL,
-	output wire nTMRSEL,
 	output wire nATASEL,
-	output wire nATAAUXSEL
+	output wire nATAAUXSEL,
+
+	output wire TMRINT
 );
 
 /* /AS will have been asserted by definition. */
@@ -75,7 +75,7 @@ assign ISA_AEN = ~nISASEL;
  * Put devices in ISA-like locations:
  *
  *	DUART     -> 0x3f8 (0), 0x2f8 (1) (DUART checks A8) - 8 bytes
- *	Timer     -> 0x040 - 8 bytes
+ *	Timer     -> 0x040 - 4 bytes (well, 3)
  *	ATA disk  -> 0x1f0, 0x3f6 - 8 bytes, 2 bytes
  *	RTL8019AS -> 0x300 - 32 bytes
  *
@@ -85,28 +85,37 @@ assign ISA_AEN = ~nISASEL;
  */
 wire nETHSEL;
 wire nPIOMODESEL;
+wire nTMRCSRSEL;
+wire nTMRLSBSEL;
+wire nTMRMSBSEL;
 
 localparam DEV_DUART		= 10'b1x11111xxx;
-localparam DEV_TIMER		= 10'b0001000xxx;
+localparam DEV_TMR_CSR		= 10'b0001000000;
+localparam DEV_TMR_LSB		= 10'b0001000001;
+localparam DEV_TMR_MSB		= 10'b0001000010;
 localparam DEV_ATA		= 10'b0111110xxx;
 localparam DEV_ATA_AUX		= 10'b1111110110;
 localparam DEV_ATA_PMODE	= 10'b1111110111;
 localparam DEV_ETH		= 10'b11000xxxxx;
 
-localparam SEL_dc	 = 6'bxxxxxx;
-localparam SEL_NONE	 = 6'b111111;
-localparam SEL_DUART	 = 6'b011111;
-localparam SEL_TIMER	 = 6'b101111;
-localparam SEL_ATA	 = 6'b110111;
-localparam SEL_ATA_AUX	 = 6'b111011;
-localparam SEL_ATA_PMODE = 6'b111101;
-localparam SEL_ETH	 = 6'b111110;
+localparam SEL_dc	 = 8'bxxxxxxxx;
+localparam SEL_NONE	 = 8'b11111111;
+localparam SEL_DUART	 = 8'b01111111;
+localparam SEL_ATA	 = 8'b10111111;
+localparam SEL_ATA_AUX	 = 8'b11011111;
+localparam SEL_ATA_PMODE = 8'b11101111;
+localparam SEL_ETH	 = 8'b11110111;
+localparam SEL_TMR_CSR	 = 8'b11111011;
+localparam SEL_TMR_LSB	 = 8'b11111101;
+localparam SEL_TMR_MSB	 = 8'b11111110;
 
-reg [5:0] DevSelectOutputs;
+reg [7:0] DevSelectOutputs;
 always @(*) begin
 	casex ({nISASEL, ADDR})
 	{1'b0, DEV_DUART}:     DevSelectOutputs = SEL_DUART;
-	{1'b0, DEV_TIMER}:     DevSelectOutputs = SEL_TIMER;
+	{1'b0, DEV_TMR_CSR}:   DevSelectOutputs = SEL_TMR_CSR;
+	{1'b0, DEV_TMR_LSB}:   DevSelectOutputs = SEL_TMR_LSB;
+	{1'b0, DEV_TMR_MSB}:   DevSelectOutputs = SEL_TMR_MSB;
 	{1'b0, DEV_ATA}:       DevSelectOutputs = SEL_ATA;
 	{1'b0, DEV_ATA_AUX}:   DevSelectOutputs = SEL_ATA_AUX;
 	{1'b0, DEV_ATA_PMODE}: DevSelectOutputs = SEL_ATA_PMODE;
@@ -114,8 +123,8 @@ always @(*) begin
 	default:               DevSelectOutputs = SEL_NONE;
 	endcase
 end
-assign {nDUARTSEL, nTMRSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL} =
-    DevSelectOutputs;
+assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
+    nTMRCSRSEL, nTMRLSBSEL, nTMRMSBSEL} = DevSelectOutputs;
 
 reg bus_error;
 assign BERR = bus_error;
@@ -123,11 +132,23 @@ assign BERR = bus_error;
 /* This register holds the current PIO mode for the ATA interface. */
 reg [1:0] PIO_mode;
 
+/* Interface between system timer and bus cycle state machine. */
+reg [15:0] Timer_value;
+reg Timer_valmod;
+reg Timer_intack;
+reg Timer_enab;
+reg Timer_int;
+
+assign TMRINT = Timer_int;
+
 reg enable_data_out;
 reg [7:0] data_out;
 always @(*) begin
 	case (DevSelectOutputs)
 	SEL_ATA_PMODE:	data_out = {6'b0, PIO_mode};
+	SEL_TMR_CSR:	data_out = {6'b0, Timer_int, Timer_enab};
+	SEL_TMR_LSB:	data_out = Timer_value[7:0];
+	SEL_TMR_MSB:	data_out = Timer_value[15:8];
 	default:	data_out = 8'hFF;
 	endcase
 end
@@ -183,11 +204,23 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		dsack <= 2'b00;
 		PIO_mode <= 2'd0;
 		state <= Idle;
+
+		Timer_value <= 16'd0;
+		Timer_valmod <= 1'b0;
+		Timer_intack <= 1'b0;
+		Timer_enab <= 1'b0;
 	end
 	else begin
 		/* NOTE: Each state represents 40ns. */
 		case (state)
 		Idle: begin
+			/*
+			 * The timer has processed these signals, so
+			 * clear them now.
+			 */
+			Timer_valmod <= 1'b0;
+			Timer_intack <= 1'b0;
+
 			/*
 			 * If we get any decode hit here, we know that
 			 * the chip select for the device has already
@@ -225,8 +258,45 @@ always @(posedge CPU_CLK, negedge nRST) begin
 				state <= TermWait;
 			end
 
-			{ANY8, SEL_TIMER}: begin
-				state <= ISA_rw_3w;
+			{READ8, SEL_TMR_CSR}: begin
+				Timer_intack <= Timer_int;
+				enable_data_out = 1'b1;
+				dsack <= SIZ;
+				state <= TermWait;
+			end
+
+			{WRITE8, SEL_TMR_CSR}: begin
+				Timer_enab <= DATA[0];
+				dsack <= SIZ;
+				state <= TermWait;
+			end
+
+			{READ8, SEL_TMR_LSB}: begin
+				enable_data_out = 1'b1;
+				dsack <= SIZ;
+				state <= TermWait;
+			end
+
+			{WRITE8, SEL_TMR_LSB}: begin
+				Timer_valmod <= 1'b1;
+				Timer_enab <= 1'b0;
+				Timer_value[7:0] <= DATA;
+				dsack <= SIZ;
+				state <= TermWait;
+			end
+
+			{READ8, SEL_TMR_MSB}: begin
+				enable_data_out = 1'b1;
+				dsack <= SIZ;
+				state <= TermWait;
+			end
+
+			{WRITE8, SEL_TMR_MSB}: begin
+				Timer_valmod <= 1'b1;
+				Timer_enab <= 1'b0;
+				Timer_value[15:8] <= DATA;
+				dsack <= SIZ;
+				state <= TermWait;
 			end
 
 			{ANY8, SEL_DUART}: begin
@@ -336,4 +406,92 @@ always @(posedge CPU_CLK, negedge nRST) begin
 	end
 end
 
+/* System timer registers */
+reg [19:0] Timer_current;
+reg Timer_was_enab;
+
+always @(posedge CPU_CLK, negedge nRST) begin
+	if (~nRST) begin
+		Timer_current <= 20'd0;
+		Timer_int <= 1'b0;
+		Timer_was_enab <= 1'b0;
+	end
+	else begin
+		Timer_int <= Timer_int && Timer_enab;
+		if (Timer_valmod) begin
+			/*
+			 * If Timer_valmod is true, we know that
+			 * Timer_enab will be false;
+			 */
+			Timer_current <= {Timer_value, 4'b0000};
+		end
+		else if (Timer_enab) begin
+			if (~Timer_was_enab || Timer_current == 20'd0) begin
+				Timer_current <= {Timer_value, 4'b0000};
+				Timer_int <= Timer_was_enab;
+			end
+			else begin
+				if (Timer_intack)
+					Timer_int <= 1'b0;
+				Timer_current <= Timer_current - 1;
+			end
+		end
+		Timer_was_enab <= Timer_enab;
+	end
+end
+
 endmodule
+
+// Pin assignment for Yosys workflow.
+//
+//PIN: CHIP "isactl" ASSIGNED TO AN TQFP100
+//
+//	=== Inputs ===
+//
+//PIN: RnW		: 5
+//PIN: SIZ_0		: 6
+//PIN: SIZ_1		: 7
+//PIN: ADDR_0		: 8
+//PIN: ADDR_1		: 9
+//PIN: ADDR_2		: 10
+//PIN: ADDR_3		: 12
+//PIN: ADDR_4		: 13
+//PIN: ADDR_5		: 14
+//PIN: ADDR_6		: 16
+//PIN: ADDR_7		: 17
+//PIN: ADDR_8		: 19
+//PIN: ADDR_9		: 20
+//
+//	== Bi-directional / High-Z ==
+//
+//PIN: DATA_0		: 21
+//PIN: DATA_1		: 22
+//PIN: DATA_2		: 23
+//PIN: DATA_3		: 24
+//PIN: DATA_4		: 25
+//PIN: DATA_5		: 27
+//PIN: DATA_6		: 28
+//PIN: DATA_7		: 29
+//
+//	=== Inputs ===
+//
+//PIN: ISA_IO16		: 83
+//PIN: ISA_RDY		: 84
+//PIN: nISASEL		: 85
+//PIN: nAS		: 87
+//PIN: nDS		: 88
+//PIN: nRST		: 89
+//PIN: CPU_CLK		: 90
+//     
+//	=== Outputs ===  
+//
+//PIN: DSACK_0		: 1
+//PIN: DSACK_1		: 2
+//PIN: nDUARTSEL	: 72
+//PIN: nATASEL		: 75
+//PIN: nATAAUXSEL	: 76
+//PIN: nISA_IORD	: 77
+//PIN: nISA_IOWR	: 78
+//PIN: ISA_AEN		: 79
+//PIN: TMRINT		: 98
+//PIN: BERR		: 100

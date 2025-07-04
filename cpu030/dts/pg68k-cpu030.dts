@@ -118,27 +118,27 @@
 			okay = "yes";
 		};
 
-		ata: ata@0xfffe01f0 {		/* ISA-like addresses */
+		ata: ata@0xffe001f0 {		/* ISA-like addresses */
 			compatible = "pg68k,atac-1";
-			reg = <0xfffe01f0 0x8>,	/* command */
-			      <0xfffe03f6 0x2>;	/* control */
+			reg = <0xffe001f0 0x8>,	/* command */
+			      <0xffe003f6 0x2>;	/* control */
 			interrupts = <3 3 0>;
 			pio-mode = 0;
 			okay = "yes";
 		};
 
-		ethernet: ethernet@0xfffe0300 {	/* ISA-like address */
+		ethernet: ethernet@0xffe00300 {	/* ISA-like address */
 			compatible = "realtek,rtl8019as";
-			reg = <0xfffe0300, 0x20>;
+			reg = <0xffe00300, 0x20>;
 			interrupts = <4 4 0>;
 			okay = "yes";
 		};
 
-		i2c: i2c@0xfffe0100 {
+		i2c: i2c@0xffe10000 {
 			compatible = "nxp,pcf8584";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			reg = <0xfffe0100 0x2>;
+			reg = <0xffe10000 0x2>;
 			clocks = <&cpu_div4_clk>;
 		};
 
@@ -152,7 +152,7 @@
 		 *	compatible = "nxp,pca9564";
 		 *	#address-cells = <1>;
 		 *	#size-cells = <0>;
-		 *	reg = <0xfffe0100 0x2>;
+		 *	reg = <0xffe10000 0xx>;
 		 */
 	};
 };

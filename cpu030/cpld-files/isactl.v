@@ -169,10 +169,10 @@ assign {nISA_IORD, nISA_IOWR} = ~(io_strobe & {~nDS, ~nDS});
 assign DSACK = dsack & {~nDS, ~nDS};
 
 localparam Idle		= 4'd0;
-localparam ATA_t1_0_8	= 4'd1;
-localparam ATA_t1_0_16	= 4'd2;
-localparam ATA_t1_1_8	= 4'd3;
-localparam ATA_t1_1_16	= 4'd4;
+localparam ATA_t1_8	= 4'd1;
+localparam ATA_t1_16	= 4'd2;
+localparam ATA_t1_m0_8	= 4'd3;
+localparam ATA_t1_m0_16	= 4'd4;
 localparam ISA_rw_3w	= 4'd5;
 localparam ISA_rw_2w	= 4'd6;
 localparam ISA_w8	= 4'd7;
@@ -235,15 +235,15 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			 */
 			casex ({Cycle, DevSelectOutputs})
 			{ANY8, SEL_ATA}: begin
-				state <= ATA_t1_0_8;
+				state <= ATA_t1_8;
 			end
 
 			{ANY8, SEL_ATA_AUX}: begin
-				state <= ATA_t1_0_8;
+				state <= ATA_t1_8;
 			end
 
 			{ANY16, SEL_ATA}: begin
-				state <= ATA_t1_0_16;
+				state <= ATA_t1_16;
 			end
 
 			{READ8, SEL_ATA_PMODE}: begin
@@ -330,20 +330,20 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		/*
 		 * ATA state machine matches timings for PIO mode 0
 		 */
-		ATA_t1_0_8: begin
-			state <= ATA_t1_1_8;
+		ATA_t1_8: begin
+			state <= ATA_t1_m0_8;
 		end
 
-		ATA_t1_0_16: begin
-			state <= ATA_t1_1_16;
+		ATA_t1_16: begin
+			state <= ATA_t1_m0_16;
 		end
 
-		ATA_t1_1_8: begin
+		ATA_t1_m0_8: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w8;
 		end
 
-		ATA_t1_1_16: begin
+		ATA_t1_m0_16: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w5;
 		end

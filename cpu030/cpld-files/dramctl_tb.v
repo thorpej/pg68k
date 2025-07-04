@@ -76,6 +76,7 @@ wire berr;
 
 wire cbreq_n;
 wire cback;
+wire sterm;
 
 wire cycle_terminated = berr | dsack[0] | dsack[1];
 
@@ -101,6 +102,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		.DSACK(dsack),
 		.BERR(berr),
 		.CBACK(cback)
+		.STERM(sterm)
 	);
 
 	initial begin

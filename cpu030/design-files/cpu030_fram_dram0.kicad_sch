@@ -7310,14 +7310,6 @@
 		(uuid "f3196d1d-3ffb-4f9e-a894-2080d0cf804c")
 	)
 	(no_connect
-		(at 139.7 82.55)
-		(uuid "f8b79945-516b-40b2-80b4-81fbd3f9de79")
-	)
-	(no_connect
-		(at 259.08 36.83)
-		(uuid "f8ede6ec-6da9-4b83-9299-58d382f270f5")
-	)
-	(no_connect
 		(at 139.7 67.31)
 		(uuid "fe6fbf2f-28ea-41a5-94c8-4e3926fc1b49")
 	)
@@ -8501,6 +8493,16 @@
 		)
 		(uuid "23cb5c41-9d2b-4bbd-9872-9b1174e93b9e")
 	)
+	(label "DRAM0_STERM"
+		(at 144.78 82.55 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "24ad879c-69ab-4d19-81ff-4aa3a5f546fb")
+	)
 	(label "DRAM0B_PD3"
 		(at 113.03 172.72 180)
 		(effects
@@ -8590,6 +8592,16 @@
 			(justify right bottom)
 		)
 		(uuid "3b63d056-d20c-40ff-8e66-b0661ee6902b")
+	)
+	(label "DRAM0_STERM"
+		(at 259.08 36.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3b84721e-db9d-46a1-875f-9c8f4f018d9f")
 	)
 	(label "DRAM0_TMS"
 		(at 201.93 71.12 180)
@@ -9592,6 +9604,28 @@
 		(uuid "0a4298c3-5d54-4755-816b-0b17446951c0")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 76.0572 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{CPU_STERM}"
+		(shape output)
+		(at 129.54 82.55 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "0af62753-1dfe-45db-b8c3-8e66fffd905f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 115.6692 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15531,72 +15565,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 154.94 82.55 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "577e29e2-df46-43c4-ac77-56d80bce6bc6")
-		(property "Reference" "#PWR0216"
-			(at 154.94 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 154.94 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 154.94 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 154.94 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 154.94 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "903d02e8-c0ba-4079-b7fd-b7c0cf410179")
-		)
-		(instances
-			(project ""
-				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6/6473b99a-f5fc-46a4-ae73-90633955ad5d"
-					(reference "#PWR0216")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+5V")
 		(at 173.99 127 180)
 		(unit 1)
@@ -17480,16 +17448,15 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS05")
-		(at 147.32 82.55 180)
+		(at 137.16 82.55 180)
 		(unit 5)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a82575d8-25ac-491e-9f90-a9ea13aff2ca")
 		(property "Reference" "U206"
-			(at 147.32 73.66 0)
+			(at 137.16 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17497,7 +17464,7 @@
 			)
 		)
 		(property "Value" "MC74ACT05DG"
-			(at 147.32 76.2 0)
+			(at 137.16 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17505,7 +17472,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm"
-			(at 147.32 82.55 0)
+			(at 137.16 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17514,7 +17481,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS05"
-			(at 147.32 82.55 0)
+			(at 137.16 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17523,7 +17490,7 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
-			(at 147.32 82.55 0)
+			(at 137.16 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17532,7 +17499,7 @@
 			)
 		)
 		(property "Part" "MC74ACT05DG"
-			(at 147.32 82.55 0)
+			(at 137.16 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)

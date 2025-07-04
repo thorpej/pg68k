@@ -1,7 +1,8 @@
 RUN_YOSYS=	../atf15xx_yosys/run_yosys.sh
 
 EDIFS=		dramctl.edif isactl.edif sysctl.edif
-VCDS=		dramctl_tb.vcd isactl_tb.vcd isactl_tmr_tb.vcd
+VCDS=		dramctl_tb.vcd isactl_tb.vcd isactl_tmr_tb.vcd \
+		isactl_pio0_tb.vcd
 
 .SUFFIXES:
 .SUFFIXES: .v .edif
@@ -26,6 +27,10 @@ isactl_tb.vvp: isactl_tb.v isactl.v
 isactl_tmr_tb.vcd: isactl_tmr_tb.vvp
 isactl_tmr_tb.vvp: isactl_tmr_tb.v isactl.v
 	iverilog -tvvp -o $@ isactl_tmr_tb.v isactl.v
+
+isactl_pio0_tb.vcd: isactl_pio0_tb.vvp
+isactl_pio0_tb.vvp: isactl_pio0_tb.v isactl.v
+	iverilog -tvvp -o $@ isactl_pio0_tb.v isactl.v
 
 clean:
 	-rm -f *.edif *.io *.pin *.tt3 *.vvp *.vcd

@@ -110,7 +110,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 	);
 
 	initial begin
-		$dumpfile("isactl_pio0_tb.vcd");
+		$dumpfile("isactl_pio1_tb.vcd");
 		$dumpvars;
 		clk = 1;	/* 1 cycle is rising-edge-to-rising-edge */
 		n_rst = 1;

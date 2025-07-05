@@ -343,58 +343,6 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		#HCLK30;
 
 		/*
-		 * Do a TIMER write.
-		 */
-
-		/*
-		 * ** S0 **
-		 * - Address, RnW, and SIZ become valid.
-		 */
-		addr = 10'h040;
-		rnw = 0;
-		siz = 2'b01;
-		#(HCLK30)
-
-		/*
-		 * ** S1 **
-		 * /AS asserted.
-		 */
-		n_as = 0;
-		n_isasel = 0;
-		#(HCLK30)
-
-		/*
-		 * ** S2 **
-		 * Data placed onto data bus.
-		 */
-		#(HCLK30)
-
-		/*
-		 * ** S3 **
-		 * /DS asserted.  Wait for cycle termination.
-		 */
-		n_ds = 0;
-		while (~cycle_terminated) begin
-			#CLK30;
-		end
-		#HCLK30;
-
-		/*
-		 * ** S4 **
-		 * Wait for 1/2 clock.
-		 */
-		#HCLK30;
-
-		/*
-		 * ** S5 **
-		 * De-assert /AS and /DS.
-		 */
-		n_as = 1;
-		n_ds = 1;
-		n_isasel = 1;
-		#HCLK30;
-
-		/*
 		 * Do an 8-bit ATA AUX write.
 		 */
 
@@ -426,58 +374,6 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		 * /DS asserted.  Wait for cycle termination.
 		 */
 		n_ds = 0;
-		while (~cycle_terminated) begin
-			#CLK30;
-		end
-		#HCLK30;
-
-		/*
-		 * ** S4 **
-		 * Wait for 1/2 clock.
-		 */
-		#HCLK30;
-
-		/*
-		 * ** S5 **
-		 * De-assert /AS and /DS.
-		 */
-		n_as = 1;
-		n_ds = 1;
-		n_isasel = 1;
-		#HCLK30;
-
-		/*
-		 * 16-bit ATA data read.
-		 */
-
-		/*
-		 * ** S0 **
-		 * - Address, RnW, and SIZ become valid.
-		 */
-		addr = 10'h1f0;
-		rnw = 1;
-		siz = 2'b10;
-		#(HCLK30)
-
-		/*
-		 * ** S1 **
-		 * /AS and /DS asserted.
-		 */
-		n_as = 0;
-		n_ds = 0;
-		n_isasel = 0;
-		#(HCLK30);
-
-		/*
-		 * ** S2 **
-		 * Unrelated control signals happen.
-		 */
-		#(HCLK30);
-
-		/*
-		 * ** S3 **
-		 * Wait for cycle termination.
-		 */
 		while (~cycle_terminated) begin
 			#CLK30;
 		end
@@ -549,62 +445,6 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		n_ds = 1;
 		n_isasel = 1;
 		#HCLK30;
-
-		/*
-		 * Write 2 to the PIO_mode register.
-		 */
-
-		/*
-		 * ** S0 **
-		 * - Address, RnW, and SIZ become valid.
-		 */
-		addr = 10'h3f7;
-		rnw = 0;
-		siz = 2'b01;
-		#(HCLK30)
-
-		/*
-		 * ** S1 **
-		 * /AS asserted.
-		 */
-		n_as = 0;
-		n_isasel = 0;
-		#(HCLK30)
-
-		/*
-		 * ** S2 **
-		 * Data placed onto data bus.
-		 */
-		data = 2;
-		#(HCLK30)
-
-		/*
-		 * ** S3 **
-		 * /DS asserted.  Wait for cycle termination.
-		 */
-		n_ds = 0;
-		while (~cycle_terminated) begin
-			#CLK30;
-		end
-		#HCLK30;
-
-		/*
-		 * ** S4 **
-		 * Wait for 1/2 clock.
-		 */
-		#HCLK30;
-
-		/*
-		 * ** S5 **
-		 * De-assert /AS and /DS.
-		 */
-		n_as = 1;
-		n_ds = 1;
-		n_isasel = 1;
-		#HCLK30;
-
-
-
 
 		/* 4 clocks to observe idle. */
 		#(CLK30 * 4);

@@ -64,6 +64,7 @@ module isactl(
 	output wire nDUARTSEL,
 	output wire nATASEL,
 	output wire nATAAUXSEL,
+	output wire nATABEN,
 
 	output wire TMRINT
 );
@@ -125,6 +126,9 @@ always @(*) begin
 end
 assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
     nTMRCSRSEL, nTMRLSBSEL, nTMRMSBSEL} = DevSelectOutputs;
+
+/* Enable ATA bus buffers if either drive register set is selected. */
+assign nATABEN = nATASEL & nATAAUXSEL;
 
 reg bus_error;
 assign BERR = bus_error;
@@ -519,9 +523,10 @@ endmodule
 //
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
-//PIN: nDUARTSEL	: 72
-//PIN: nATASEL		: 75
-//PIN: nATAAUXSEL	: 76
+//PIN: nDUARTSEL	: 71
+//PIN: nATASEL		: 72
+//PIN: nATAAUXSEL	: 75
+//PIN: nATABEN		: 76
 //PIN: nISA_IORD	: 77
 //PIN: nISA_IOWR	: 78
 //PIN: ISA_AEN		: 79

@@ -80,6 +80,9 @@ wire n_iso_iowr;
 wire n_duartsel;
 wire n_atasel;
 wire n_ataauxsel;
+wire n_ataben;
+
+wire tmrint;
 
 wire cycle_terminated = berr | dsack[0] | dsack[1];
 
@@ -103,7 +106,9 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		.nISA_IOWR(n_isa_iowr),
 		.nDUARTSEL(n_duartsel),
 		.nATASEL(n_atasel),
-		.nATAAUXSEL(n_ataauxsel)
+		.nATAAUXSEL(n_ataauxsel),
+		.nATABEN(n_ataben),
+		.TMRINT(tmrint)
 	);
 
 	initial begin

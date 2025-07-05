@@ -182,15 +182,13 @@ localparam ATA_t1_rw_8		= 4'd3;
 localparam ATA_t1_rw_16		= 4'd4;
 localparam ATA_t1_r_16_m1	= 4'd5;
 localparam ATA_t1_r_16_m2	= 4'd6;
-localparam ISA_rw_3w		= 4'd7;
-localparam ISA_rw_2w		= 4'd8;
-localparam ISA_w6		= 4'd9;
-localparam ISA_w5		= 4'd10;
-localparam ISA_w4		= 4'd11;
-localparam ISA_w3		= 4'd12;
-localparam ISA_w2		= 4'd13;
-localparam ISA_w1		= 4'd14;
-localparam TermWait		= 4'd15;
+localparam ISA_w6		= 4'd7;
+localparam ISA_w5		= 4'd8;
+localparam ISA_w4		= 4'd9;
+localparam ISA_w3		= 4'd10;
+localparam ISA_w2		= 4'd11;
+localparam ISA_w1		= 4'd12;
+localparam TermWait		= 4'd13;
 
 wire [5:0] Cycle = {nAS, nDS, RnW, SIZ, ADDR[0]};
 localparam NONE		= 6'b1xxxxx;
@@ -399,16 +397,6 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		ATA_t1_r_16_m2: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w1;
-		end
-
-		ISA_rw_3w: begin
-			io_strobe <= io_strobe_type;
-			state <= ISA_w3;
-		end
-
-		ISA_rw_2w: begin
-			io_strobe <= io_strobe_type;
-			state <= ISA_w2;
 		end
 
 		ISA_w6: begin

@@ -133,6 +133,7 @@ assign BERR = bus_error;
 reg [1:0] PIO_mode;
 wire pio_mode0 = (PIO_mode == 2'd0);
 wire pio_mode1 = (PIO_mode == 2'd1);
+wire pio_mode2 = (PIO_mode[1] == 1'b1);
 
 /* Interface between system timer and bus cycle state machine. */
 reg [15:0] Timer_value;
@@ -176,17 +177,18 @@ localparam ATA_t1_r_16		= 5'd2;
 localparam ATA_t1_rw_8		= 5'd3;
 localparam ATA_t1_rw_16		= 5'd4;
 localparam ATA_t1_r_16_m1	= 5'd5;
-localparam ISA_rw_3w		= 5'd6;
-localparam ISA_rw_2w		= 5'd7;
-localparam ISA_w8		= 5'd8;
-localparam ISA_w7		= 5'd9;
-localparam ISA_w6		= 5'd10;
-localparam ISA_w5		= 5'd11;
-localparam ISA_w4		= 5'd12;
-localparam ISA_w3		= 5'd13;
-localparam ISA_w2		= 5'd14;
-localparam ISA_w1		= 5'd15;
-localparam TermWait		= 5'd16;
+localparam ATA_t1_r_16_m2	= 5'd6;
+localparam ISA_rw_3w		= 5'd7;
+localparam ISA_rw_2w		= 5'd8;
+localparam ISA_w8		= 5'd9;
+localparam ISA_w7		= 5'd10;
+localparam ISA_w6		= 5'd11;
+localparam ISA_w5		= 5'd12;
+localparam ISA_w4		= 5'd13;
+localparam ISA_w3		= 5'd14;
+localparam ISA_w2		= 5'd15;
+localparam ISA_w1		= 5'd16;
+localparam TermWait		= 5'd17;
 
 wire [5:0] Cycle = {nAS, nDS, RnW, SIZ, ADDR[0]};
 localparam NONE		= 6'b1xxxxx;
@@ -254,7 +256,10 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ16, SEL_ATA}: begin
-				if (pio_mode1) begin
+				if (pio_mode2) begin
+					state <= ATA_t1_r_16_m2;
+				end
+				else if (pio_mode1) begin
 					state <= ATA_t1_r_16_m1;
 				end
 				else begin
@@ -263,7 +268,11 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{WRITE16, SEL_ATA}: begin
-				if (pio_mode1) begin
+				if (pio_mode2) begin
+					io_strobe <= io_strobe_type;
+					state <= ISA_w1;
+				end
+				else if (pio_mode1) begin
 					io_strobe <= io_strobe_type;
 					state <= ISA_w2;
 				end
@@ -377,6 +386,11 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		ATA_t1_r_16_m1: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w2;
+		end
+
+		ATA_t1_r_16_m2: begin
+			io_strobe <= io_strobe_type;
+			state <= ISA_w1;
 		end
 
 		ISA_rw_3w: begin

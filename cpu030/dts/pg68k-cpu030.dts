@@ -8,7 +8,7 @@
 
 	chosen {
 		bootargs = "";
-		stdout-path = "uart0:115200n8";
+		stdout-path = "uart0:115200n8r";
 		netbsd,hardclock = <&timer0>;
 
 		/*

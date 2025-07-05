@@ -349,11 +349,13 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{ANY8, SEL_ETH}: begin
-				state <= ISA_rw_2w;
+				io_strobe <= io_strobe_type;
+				state <= ISA_w1;
 			end
 
 			{ANY16, SEL_ETH}: begin
-				state <= ISA_rw_2w;
+				io_strobe <= io_strobe_type;
+				state <= ISA_w1;
 			end
 
 			{STARTWRITE, SEL_dc}: begin

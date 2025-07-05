@@ -137,7 +137,6 @@
 			reg = <0xffe003f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
-			okay = "yes";
 		};
 
 		uart1: serial@0xffe002f8 {	/* ISA-like address */
@@ -145,7 +144,6 @@
 			reg = <0xffe002f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
-			okay = "yes";
 		};
 
 		timer0: timer@0xffe00040 {	/* ISA-like address */
@@ -153,7 +151,6 @@
 			reg = <0xffe00040 0x8>;
 			clocks = <&cpu_div16_clk>;
 			interrupts = <6 6 0>;
-			okay = "yes";
 		};
 
 		ata: ata@0xffe001f0 {		/* ISA-like addresses */
@@ -162,14 +159,12 @@
 			      <0xffe003f6 0x2>;	/* control */
 			interrupts = <3 3 0>;
 			pio-mode = 0;
-			okay = "yes";
 		};
 
 		ethernet: ethernet@0xffe00300 {	/* ISA-like address */
 			compatible = "realtek,rtl8019as";
 			reg = <0xffe00300, 0x20>;
 			interrupts = <4 4 0>;
-			okay = "yes";
 		};
 
 		i2c: i2c@0xffe10000 {

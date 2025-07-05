@@ -171,24 +171,22 @@ reg [1:0] dsack;
 assign {nISA_IORD, nISA_IOWR} = ~(io_strobe & {~nDS, ~nDS});
 assign DSACK = dsack & {~nDS, ~nDS};
 
-localparam Idle			= 5'd0;
-localparam ATA_t1_r_8		= 5'd1;
-localparam ATA_t1_r_16		= 5'd2;
-localparam ATA_t1_rw_8		= 5'd3;
-localparam ATA_t1_rw_16		= 5'd4;
-localparam ATA_t1_r_16_m1	= 5'd5;
-localparam ATA_t1_r_16_m2	= 5'd6;
-localparam ISA_rw_3w		= 5'd7;
-localparam ISA_rw_2w		= 5'd8;
-localparam ISA_w8		= 5'd9;
-localparam ISA_w7		= 5'd10;
-localparam ISA_w6		= 5'd11;
-localparam ISA_w5		= 5'd12;
-localparam ISA_w4		= 5'd13;
-localparam ISA_w3		= 5'd14;
-localparam ISA_w2		= 5'd15;
-localparam ISA_w1		= 5'd16;
-localparam TermWait		= 5'd17;
+localparam Idle			= 4'd0;
+localparam ATA_t1_r_8		= 4'd1;
+localparam ATA_t1_r_16		= 4'd2;
+localparam ATA_t1_rw_8		= 4'd3;
+localparam ATA_t1_rw_16		= 4'd4;
+localparam ATA_t1_r_16_m1	= 4'd5;
+localparam ATA_t1_r_16_m2	= 4'd6;
+localparam ISA_rw_3w		= 4'd7;
+localparam ISA_rw_2w		= 4'd8;
+localparam ISA_w6		= 4'd9;
+localparam ISA_w5		= 4'd10;
+localparam ISA_w4		= 4'd11;
+localparam ISA_w3		= 4'd12;
+localparam ISA_w2		= 4'd13;
+localparam ISA_w1		= 4'd14;
+localparam TermWait		= 4'd15;
 
 wire [5:0] Cycle = {nAS, nDS, RnW, SIZ, ADDR[0]};
 localparam NONE		= 6'b1xxxxx;
@@ -200,7 +198,7 @@ localparam WRITE16	= 6'b000100;
 localparam ANY8		= 6'b00x01x;
 localparam ANY16	= 6'b00x100;
 
-reg [4:0] state;
+reg [3:0] state;
 always @(posedge CPU_CLK, negedge nRST) begin
 	if (~nRST) begin
 		enable_data_out <= 1'b0;
@@ -362,9 +360,6 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			endcase
 		end
 
-		/*
-		 * ATA state machine matches timings for PIO mode 0
-		 */
 		ATA_t1_r_8: begin
 			state <= ATA_t1_rw_8;
 		end
@@ -401,14 +396,6 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		ISA_rw_2w: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w2;
-		end
-
-		ISA_w8: begin
-			state <= ISA_w7;
-		end
-
-		ISA_w7: begin
-			state <= ISA_w6;
 		end
 
 		ISA_w6: begin

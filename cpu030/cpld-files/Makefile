@@ -32,5 +32,9 @@ isactl_pio0_tb.vcd: isactl_pio0_tb.vvp
 isactl_pio0_tb.vvp: isactl_pio0_tb.v isactl.v
 	iverilog -tvvp -o $@ isactl_pio0_tb.v isactl.v
 
+isactl_pio1_tb.vcd: isactl_pio1_tb.vvp
+isactl_pio1_tb.vvp: isactl_pio1_tb.v isactl.v
+	iverilog -tvvp -o $@ isactl_pio1_tb.v isactl.v
+
 clean:
 	-rm -f *.edif *.io *.pin *.tt3 *.vvp *.vcd

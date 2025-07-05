@@ -131,6 +131,8 @@ assign BERR = bus_error;
 
 /* This register holds the current PIO mode for the ATA interface. */
 reg [1:0] PIO_mode;
+wire pio_mode0 = (PIO_mode == 2'd0);
+wire pio_mode1 = (PIO_mode == 2'd1);
 
 /* Interface between system timer and bus cycle state machine. */
 reg [15:0] Timer_value;
@@ -252,7 +254,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ16, SEL_ATA}: begin
-				if (PIO_mode == 2'd1) begin
+				if (pio_mode1) begin
 					state <= ATA_t1_r_16_m1;
 				end
 				else begin
@@ -261,7 +263,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{WRITE16, SEL_ATA}: begin
-				if (PIO_mode == 2'd1) begin
+				if (pio_mode1) begin
 					io_strobe <= io_strobe_type;
 					state <= ISA_w2;
 				end

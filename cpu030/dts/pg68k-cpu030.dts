@@ -6,6 +6,38 @@
 	model = "Playground 68030 Mk I";
 	compatible = "pg68k,cpu030-mk1";
 
+	chosen {
+		bootargs = "";
+		stdout-path = "uart0:115200n8";
+		netbsd,hardclock = <&timer0>;
+
+		/*
+		 * Hint to the kernel that it should use TT0 to map
+		 * the last 16MB of address space where ROM and the
+		 * on-board peripherals live.  This corresponds to:
+		 *
+		 * [31:24] Logical Address Base	->	0xff
+		 * [23:16] Logical Address Mask	->	0x00
+		 * [   15] Enable		->	1
+		 * [    8] Read/Write ignored	->	1
+		 * [ 6: 4] Function Code 	->	100
+		 * [ 2: 0] Function Code ignore ->	011
+		 *
+		 * We don't need to set the CI bit; there is no harm in
+		 * caching the ROM, and the SYSCTL CPLD forces CI for
+		 * peripheral space access.
+		 *
+		 * This will result in it being mapped for Supervisor Data
+		 * and Supervisor Program, but also CPU space as well as a
+		 * reserved-for-Motorola space.  This should not be a problem
+		 * as it is an identity mapping so the address placed onto
+		 * the address bus will not be affected in any way.
+		 *
+		 * N.B. this also maps the fastmem.
+		 */
+		netbsd,tt0 = <0x0xff008143>;
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -49,6 +81,12 @@
 			#clock-cells = <0>;
 			clock-frequency = <1843200>;
 		};
+	};
+
+	memory@0 {
+		/* Firmware will size this at run-time. */
+		device_type = "memory";
+		reg = <0x0 0x0>;
 	};
 
 	memory@ff800000 {
@@ -110,7 +148,7 @@
 			okay = "yes";
 		};
 
-		timer@0xffe00040 {		/* ISA-like address */
+		timer0: timer@0xffe00040 {	/* ISA-like address */
 			compatible = "pg68k,isactl-timer";
 			reg = <0xffe00040 0x8>;
 			clocks = <&cpu_div16_clk>;

@@ -2,7 +2,7 @@ RUN_YOSYS=	../atf15xx_yosys/run_yosys.sh
 
 EDIFS=		dramctl.edif isactl.edif sysctl.edif
 VCDS=		dramctl_tb.vcd isactl_tb.vcd isactl_tmr_tb.vcd \
-		isactl_pio0_tb.vcd
+		isactl_pio0_tb.vcd isactl_pio1_tb.vcd
 
 .SUFFIXES:
 .SUFFIXES: .v .edif

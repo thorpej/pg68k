@@ -168,22 +168,23 @@ reg [1:0] dsack;
 assign {nISA_IORD, nISA_IOWR} = ~(io_strobe & {~nDS, ~nDS});
 assign DSACK = dsack & {~nDS, ~nDS};
 
-localparam Idle		= 4'd0;
-localparam ATA_t1_r_8	= 4'd1;
-localparam ATA_t1_r_16	= 4'd2;
-localparam ATA_t1_rw_8	= 4'd3;
-localparam ATA_t1_rw_16	= 4'd4;
-localparam ISA_rw_3w	= 4'd5;
-localparam ISA_rw_2w	= 4'd6;
-localparam ISA_w8	= 4'd7;
-localparam ISA_w7	= 4'd8;
-localparam ISA_w6	= 4'd9;
-localparam ISA_w5	= 4'd10;
-localparam ISA_w4	= 4'd11;
-localparam ISA_w3	= 4'd12;
-localparam ISA_w2	= 4'd13;
-localparam ISA_w1	= 4'd14;
-localparam TermWait	= 4'd15;
+localparam Idle			= 5'd0;
+localparam ATA_t1_r_8		= 5'd1;
+localparam ATA_t1_r_16		= 5'd2;
+localparam ATA_t1_rw_8		= 5'd3;
+localparam ATA_t1_rw_16		= 5'd4;
+localparam ATA_t1_r_16_m1	= 5'd5;
+localparam ISA_rw_3w		= 5'd6;
+localparam ISA_rw_2w		= 5'd7;
+localparam ISA_w8		= 5'd8;
+localparam ISA_w7		= 5'd9;
+localparam ISA_w6		= 5'd10;
+localparam ISA_w5		= 5'd11;
+localparam ISA_w4		= 5'd12;
+localparam ISA_w3		= 5'd13;
+localparam ISA_w2		= 5'd14;
+localparam ISA_w1		= 5'd15;
+localparam TermWait		= 5'd16;
 
 wire [5:0] Cycle = {nAS, nDS, RnW, SIZ, ADDR[0]};
 localparam NONE		= 6'b1xxxxx;
@@ -195,7 +196,7 @@ localparam WRITE16	= 6'b000100;
 localparam ANY8		= 6'b00x01x;
 localparam ANY16	= 6'b00x100;
 
-reg [3:0] state;
+reg [4:0] state;
 always @(posedge CPU_CLK, negedge nRST) begin
 	if (~nRST) begin
 		enable_data_out <= 1'b0;
@@ -251,11 +252,22 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			end
 
 			{READ16, SEL_ATA}: begin
-				state <= ATA_t1_r_16;
+				if (PIO_mode == 2'd1) begin
+					state <= ATA_t1_r_16_m1;
+				end
+				else begin
+					state <= ATA_t1_r_16;
+				end
 			end
 
 			{WRITE16, SEL_ATA}: begin
-				state <= ATA_t1_rw_16;
+				if (PIO_mode == 2'd1) begin
+					io_strobe <= io_strobe_type;
+					state <= ISA_w2;
+				end
+				else begin
+					state <= ATA_t1_rw_16;
+				end
 			end
 
 			{READ8, SEL_ATA_PMODE}: begin
@@ -358,6 +370,11 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		ATA_t1_rw_16: begin
 			io_strobe <= io_strobe_type;
 			state <= ISA_w3;
+		end
+
+		ATA_t1_r_16_m1: begin
+			io_strobe <= io_strobe_type;
+			state <= ISA_w2;
 		end
 
 		ISA_rw_3w: begin

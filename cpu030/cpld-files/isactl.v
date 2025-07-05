@@ -336,9 +336,16 @@ always @(posedge CPU_CLK, negedge nRST) begin
 				state <= TermWait;
 			end
 
+			/*
+			 * DUART timings are for the TL16C2552 at 5V.
+			 * That chip that respond faster than we can
+			 * drive it, but at least no wait states are
+			 * required.
+			 */
 			{ANY8, SEL_DUART}: begin
 				io_strobe <= io_strobe_type;
-				state <= ISA_w1;  /* maybe 1 clock faster? */
+				dsack <= SIZ;
+				state <= TermWait;
 			end
 
 			{ANY8, SEL_ETH}: begin

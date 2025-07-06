@@ -1,3 +1,5 @@
+/dts-v1/;
+
 / {
 	interrupt-parent = <&intc>;
 	#address-cells = <1>;
@@ -8,7 +10,7 @@
 
 	chosen {
 		bootargs = "";
-		stdout-path = "uart0:115200n8r";
+		stdout-path = "serial0:115200n8r";
 		netbsd,hardclock = <&timer0>;
 
 		/*
@@ -35,7 +37,7 @@
 		 *
 		 * N.B. this also maps the fastmem.
 		 */
-		netbsd,tt0 = <0x0xff008143>;
+		netbsd,tt0 = <0xff008143>;
 	};
 
 	cpus {
@@ -92,7 +94,7 @@
 	memory@ff800000 {
 		compatible = "pg68k,fastmem";
 		device_type = "memory";
-		reg = <0xff800000 0x00400000>
+		reg = <0xff800000 0x00400000>;
 	};
 
 	obp {
@@ -132,14 +134,14 @@
 			#interrupt-cells = <3>;
 		};
 
-		uart0: serial@0xffe003f8 {	/* ISA-like address */
+		serial0: serial@0xffe003f8 {	/* ISA-like address */
 			compatible = "ns16550a";
 			reg = <0xffe003f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 		};
 
-		uart1: serial@0xffe002f8 {	/* ISA-like address */
+		serial1: serial@0xffe002f8 {	/* ISA-like address */
 			compatible = "ns16550a";
 			reg = <0xffe002f8 0x8>;
 			clocks = <&uart_clk>;
@@ -153,21 +155,22 @@
 			interrupts = <6 6 0>;
 		};
 
-		ata: ata@0xffe001f0 {		/* ISA-like addresses */
-			compatible = "pg68k,atac-1";
+		ata0: ata@0xffe001f0 {		/* ISA-like addresses */
+			compatible = "pg68k,atac-1", "ata-generic";
 			reg = <0xffe001f0 0x8>,	/* command */
 			      <0xffe003f6 0x2>;	/* control */
 			interrupts = <3 3 0>;
-			pio-mode = 0;
+			ata-generic,use16bit;
+			pio-mode = <2>;
 		};
 
-		ethernet: ethernet@0xffe00300 {	/* ISA-like address */
+		ethernet0: ethernet@0xffe00300 { /* ISA-like address */
 			compatible = "realtek,rtl8019as";
-			reg = <0xffe00300, 0x20>;
+			reg = <0xffe00300 0x20>;
 			interrupts = <4 4 0>;
 		};
 
-		i2c: i2c@0xffe10000 {
+		i2c0: i2c@0xffe10000 {
 			compatible = "nxp,pcf8584";
 			#address-cells = <1>;
 			#size-cells = <0>;

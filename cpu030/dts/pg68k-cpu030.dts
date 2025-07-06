@@ -102,7 +102,7 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		intc: interrupt-controller@0xffeffff0 {
+		intc: interrupt-controller@ffeffff0 {
 			compatible = "pg68k,intc-1";
 			reg = <0xffeffff0 0x10>;
 			interrupt-controller;
@@ -134,28 +134,28 @@
 			#interrupt-cells = <3>;
 		};
 
-		serial0: serial@0xffe003f8 {	/* ISA-like address */
+		serial0: serial@ffe003f8 {	/* ISA-like address */
 			compatible = "ns16550a";
 			reg = <0xffe003f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 		};
 
-		serial1: serial@0xffe002f8 {	/* ISA-like address */
+		serial1: serial@ffe002f8 {	/* ISA-like address */
 			compatible = "ns16550a";
 			reg = <0xffe002f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 		};
 
-		timer0: timer@0xffe00040 {	/* ISA-like address */
+		timer0: timer@ffe00040 {	/* ISA-like address */
 			compatible = "pg68k,isactl-timer";
 			reg = <0xffe00040 0x8>;
 			clocks = <&cpu_div16_clk>;
 			interrupts = <6 6 0>;
 		};
 
-		ata0: ata@0xffe001f0 {		/* ISA-like addresses */
+		ata0: ata@ffe001f0 {		/* ISA-like addresses */
 			compatible = "pg68k,atac-1", "ata-generic";
 			reg = <0xffe001f0 0x8>,	/* command */
 			      <0xffe003f6 0x2>;	/* control */
@@ -164,13 +164,13 @@
 			pio-mode = <2>;
 		};
 
-		ethernet0: ethernet@0xffe00300 { /* ISA-like address */
+		ethernet0: ethernet@ffe00300 {	/* ISA-like address */
 			compatible = "realtek,rtl8019as";
 			reg = <0xffe00300 0x20>;
 			interrupts = <4 4 0>;
 		};
 
-		i2c0: i2c@0xffe10000 {
+		i2c0: i2c@ffe10000 {
 			compatible = "nxp,pcf8584";
 			#address-cells = <1>;
 			#size-cells = <0>;

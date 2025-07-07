@@ -168,7 +168,7 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  * $FFF0.0000 - $FFFF.FFFF      System ROM (1MB)
  * $FFE0.0000 - $FFEF.FFFF      Peripheral device space (1MB)
  *     0.0000 -     0.FFFF	  (ISA I/O space)
- * $FF80.0000 - $FFBF.FFFF      Fast RAM (4MB)
+ * $FE00.0000 - $FE3F.FFFF      Fast RAM (4MB)
  * $8000.0000 - $BFFF.FFFF      Memory mapped I/O space (1GB)
  * $0000.0000 - $3FFF.FFFF      DRAM (1GB, as 4x256MB)
  *
@@ -187,7 +187,7 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  *			      |                 |			*/
 localparam REGION_ROM	= 19'b111111111111xxxxxxx;
 localparam REGION_DEV	= 19'b111111111110xxxxxxx;
-/*         REGION_FRAM	= 19'b1111111110xxxxxxxxx; Handled below.	*/
+/*         REGION_FRAM	= 19'b1111111000xxxxxxxxx; Handled below.	*/
 localparam REGION_MMIO	= 19'b10xxxxxxxxxxxxxxxxx;
 localparam REGION_DRAM0	= 19'b0000xxxxxxxxxxxxxxx;
 localparam REGION_DRAM1	= 19'b0001xxxxxxxxxxxxxxx;
@@ -292,7 +292,7 @@ assign {nISASEL, nI2CSEL, nINTCSEL}
  */
 assign nDEVSEL = ~(~nDEVSELx && (DevSelectOutputs == DSEL_NONE));
 
-localparam REGION_FRAM = 10'b1111111110;
+localparam REGION_FRAM = 10'b1111111100;
 
 /* 
  *           nFRAM_BE[3:0] ------++
@@ -326,7 +326,7 @@ localparam FRS_WR4_3	= 7'b1101110;
 
 reg [6:0] FRSOutputs;
 always @(*) begin
-	casex ({nAS, AddrSpace, ADDR[31:21], RnW, SIZ[1:0], ADDR[1:0]})
+	casex ({nAS, AddrSpace, ADDR[31:22], RnW, SIZ[1:0], ADDR[1:0]})
 	/*
 	 * Byte enables, from Table 7-4 in the 68030 User's Manual.
 	 * N.B. for reads, we enable all bytes.

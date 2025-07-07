@@ -37,7 +37,7 @@
 		 *
 		 * N.B. this also maps the fastmem.
 		 */
-		netbsd,tt0 = <0xff008143>;
+		netbsd,tt = <0xff008143 0x0>;
 	};
 
 	cpus {
@@ -53,8 +53,9 @@
 	};
 
 	clocks {
-		#address-cells = <0>;
-		#size-cells = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
 
 		cpu_clk: osc25M_clk {
 			compatible = "fixed-clock";
@@ -91,10 +92,10 @@
 		reg = <0x0 0x0>;
 	};
 
-	memory@ff800000 {
+	memory@fe000000 {
 		compatible = "pg68k,fastmem";
 		device_type = "memory";
-		reg = <0xff800000 0x00400000>;
+		reg = <0xfe000000 0x00400000>;
 	};
 
 	obp {

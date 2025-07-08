@@ -648,6 +648,10 @@
     [
       "2f986d8b-f53d-4235-93e5-3fe086aff134",
       "IDE interface"
+    ],
+    [
+      "c2b571cb-b18c-478c-828c-d439dda4144c",
+      "I2C interface and devices"
     ]
   ],
   "text_variables": {}

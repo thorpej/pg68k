@@ -643,7 +643,11 @@
     ],
     [
       "73c5e65c-632f-4863-98b7-0d11c2a0ac33",
-      "System Timer"
+      "ISA bus interface"
+    ],
+    [
+      "2f986d8b-f53d-4235-93e5-3fe086aff134",
+      "IDE interface"
     ]
   ],
   "text_variables": {}

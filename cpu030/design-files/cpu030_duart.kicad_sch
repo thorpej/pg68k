@@ -2724,7 +2724,7 @@
 		)
 		(uuid "b2915618-e723-47f2-83e6-b391d50b032a")
 	)
-	(text "Note: A3=0 selects channel B."
+	(text "Note: A8=0 selects channel B."
 		(exclude_from_sim no)
 		(at 136.652 34.798 0)
 		(effects
@@ -3402,7 +3402,7 @@
 		)
 		(uuid "fe8878e2-7c9f-491d-b157-7a63617dafe5")
 	)
-	(global_label "A3"
+	(global_label "A8"
 		(shape input)
 		(at 58.42 69.85 180)
 		(fields_autoplaced yes)
@@ -3468,7 +3468,7 @@
 			)
 		)
 	)
-	(global_label "~{IORD}"
+	(global_label "~{ISA_IORD}"
 		(shape input)
 		(at 58.42 77.47 180)
 		(fields_autoplaced yes)
@@ -3480,7 +3480,7 @@
 		)
 		(uuid "40e47a9f-58b1-477d-943e-f77f58a380f4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 50.9595 77.47 0)
+			(at 47.089 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3534,7 +3534,7 @@
 			)
 		)
 	)
-	(global_label "~{IOWR}"
+	(global_label "~{ISA_IOWR}"
 		(shape input)
 		(at 58.42 80.01 180)
 		(fields_autoplaced yes)
@@ -3546,7 +3546,7 @@
 		)
 		(uuid "69e8b7c8-a589-4fd7-a6f2-8d99e7b0d559")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 50.7781 80.01 0)
+			(at 46.9076 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4012,7 +4012,7 @@
 				)
 			)
 		)
-		(property "Value" "UART1"
+		(property "Value" "UART0"
 			(at 163.83 143.51 0)
 			(effects
 				(font
@@ -4368,7 +4368,7 @@
 				)
 			)
 		)
-		(property "Value" "UART0"
+		(property "Value" "UART1"
 			(at 217.17 143.51 0)
 			(effects
 				(font
@@ -4460,7 +4460,7 @@
 				)
 			)
 		)
-		(property "Value" "UART0 FTDI"
+		(property "Value" "UART1 FTDI"
 			(at 222.885 58.42 0)
 			(effects
 				(font
@@ -4875,7 +4875,7 @@
 				)
 			)
 		)
-		(property "Value" "UART1 FTDI"
+		(property "Value" "UART0 FTDI"
 			(at 221.615 19.05 0)
 			(effects
 				(font

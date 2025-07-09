@@ -652,6 +652,10 @@
     [
       "c2b571cb-b18c-478c-828c-d439dda4144c",
       "I2C interface and devices"
+    ],
+    [
+      "6336b086-612e-4cdf-a612-7ddcb8084a94",
+      "Ethernet"
     ]
   ],
   "text_variables": {}

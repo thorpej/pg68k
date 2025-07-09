@@ -30277,6 +30277,48 @@
 		)
 	)
 	(sheet
+		(at 78.994 214.122)
+		(size 22.606 9.652)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "6336b086-612e-4cdf-a612-7ddcb8084a94")
+		(property "Sheetname" "Ethernet"
+			(at 78.994 213.4104 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu030_ethernet.kicad_sch"
+			(at 78.994 224.3586 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 19.05 197.612)
 		(size 25.146 9.398)
 		(exclude_from_sim no)

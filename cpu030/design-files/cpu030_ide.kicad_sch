@@ -2456,10 +2456,6 @@
 		(uuid "dbd8268c-0e82-4e46-84d1-0e8d001427c5")
 	)
 	(no_connect
-		(at 246.38 100.33)
-		(uuid "6c55fa3a-5c3f-44c2-b8d7-70460ff2d272")
-	)
-	(no_connect
 		(at 246.38 102.87)
 		(uuid "887ded02-16b2-4343-98ef-2b92410184ab")
 	)
@@ -2498,16 +2494,6 @@
 			(type default)
 		)
 		(uuid "26ec9078-c3a2-46e3-b580-6dfa93bb167c")
-	)
-	(wire
-		(pts
-			(xy 222.25 95.25) (xy 233.68 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2bc92493-c1f4-480d-be2c-2c3f23a4d970")
 	)
 	(wire
 		(pts
@@ -3163,7 +3149,7 @@
 	)
 	(global_label "ISA_RDY"
 		(shape output)
-		(at 222.25 95.25 180)
+		(at 233.68 95.25 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3173,7 +3159,7 @@
 		)
 		(uuid "0e0059c9-4ad8-4516-b8c6-0e249607b7b8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 211.7657 95.25 0)
+			(at 223.1957 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3350,6 +3336,28 @@
 		(uuid "4e52bf18-a9d7-4c3e-96d8-b79008ebe671")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 176.6955 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{ISA_IO16}"
+		(shape output)
+		(at 246.38 100.33 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "50e16050-7833-41a8-a014-297a82f30e6e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 257.59 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5472,7 +5480,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "470"
 			(at 242.57 123.1899 0)
 			(effects
 				(font

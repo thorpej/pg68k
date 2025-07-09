@@ -497,6 +497,9 @@
     "netclass_assignments": {
       "Net-(D101-A)": [
         "Power"
+      ],
+      "Vsb": [
+        "Power"
       ]
     },
     "netclass_patterns": []
@@ -656,6 +659,14 @@
     [
       "6336b086-612e-4cdf-a612-7ddcb8084a94",
       "Ethernet"
+    ],
+    [
+      "98a2cadc-62ec-470e-a997-107ac5563ed0",
+      "Expansion interface"
+    ],
+    [
+      "ebdde0e0-0896-4c67-99fd-d2163b7a8e6c",
+      "Power Supply"
     ]
   ],
   "text_variables": {}

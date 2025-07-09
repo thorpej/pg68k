@@ -4329,22 +4329,16 @@
 		(uuid "672569ab-b654-4035-8368-93155fe7d408")
 	)
 	(junction
-		(at 21.59 133.35)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6b28a7ca-12ab-4e45-8d5c-166eb8774747")
-	)
-	(junction
-		(at 13.97 125.73)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "710afc52-cc04-49aa-80ac-ace18f233cbf")
-	)
-	(junction
 		(at 76.2 24.13)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "774d6670-732c-4a0c-a34b-b346d8e2f361")
+	)
+	(junction
+		(at 48.26 135.89)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "789a416d-6ba7-4770-8d28-24d967e760e9")
 	)
 	(junction
 		(at 71.12 179.07)
@@ -4592,16 +4586,6 @@
 	)
 	(wire
 		(pts
-			(xy 21.59 133.35) (xy 48.26 133.35)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "13ff15a6-b01c-40cd-8aff-1417e241da5b")
-	)
-	(wire
-		(pts
 			(xy 163.83 142.24) (xy 177.8 142.24)
 		)
 		(stroke
@@ -4639,16 +4623,6 @@
 			(type default)
 		)
 		(uuid "22642290-2329-4f51-a5c4-89e7c366ccb5")
-	)
-	(wire
-		(pts
-			(xy 13.97 148.59) (xy 13.97 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "29ca903e-1ad1-4960-8d54-b4e95d628e0a")
 	)
 	(wire
 		(pts
@@ -4732,16 +4706,6 @@
 	)
 	(wire
 		(pts
-			(xy 21.59 125.73) (xy 21.59 133.35)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "77ff1e5a-aca4-4e0d-a5f7-438a241af214")
-	)
-	(wire
-		(pts
 			(xy 209.55 153.67) (xy 220.98 153.67)
 		)
 		(stroke
@@ -4819,16 +4783,6 @@
 			(type default)
 		)
 		(uuid "a1e165cc-4a8d-43ae-ad21-5b79682cc7ce")
-	)
-	(wire
-		(pts
-			(xy 13.97 125.73) (xy 21.59 125.73)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a2e58552-419f-46b5-b353-a2a8879ed050")
 	)
 	(wire
 		(pts
@@ -4932,13 +4886,13 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 148.59) (xy 13.97 148.59)
+			(xy 48.26 133.35) (xy 48.26 135.89)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "ef9670cb-9472-4f7e-a004-fd99302a333b")
+		(uuid "ed294066-00f1-45cc-823e-7f76d5bc2a4b")
 	)
 	(wire
 		(pts
@@ -5399,6 +5353,28 @@
 		(uuid "289d58de-7b64-4c24-b817-8c409304a5d0")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 42.9767 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{ISA_IO16}"
+		(shape output)
+		(at 48.26 148.59 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "3406cf21-229d-45de-944e-bff5a78aae80")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 37.05 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7409,7 +7385,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 13.97 125.73 0)
+		(at 21.59 128.27 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7418,7 +7394,7 @@
 		(fields_autoplaced yes)
 		(uuid "72ee8052-7699-43f6-a807-da913a53336d")
 		(property "Reference" "#PWR0712"
-			(at 13.97 129.54 0)
+			(at 21.59 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7427,7 +7403,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 13.97 120.65 0)
+			(at 21.59 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7435,7 +7411,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 13.97 125.73 0)
+			(at 21.59 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7444,7 +7420,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 13.97 125.73 0)
+			(at 21.59 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7453,7 +7429,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 13.97 125.73 0)
+			(at 21.59 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8512,7 +8488,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 13.97 128.27 0)
+		(at 21.59 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8520,7 +8496,7 @@
 		(dnp no)
 		(uuid "e3ccbda0-5b62-41c4-add4-9fbd6c08249c")
 		(property "Reference" "R701"
-			(at 15.24 127 0)
+			(at 22.86 129.54 0)
 			(effects
 				(font
 					(size 1.016 1.016)
@@ -8529,7 +8505,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 15.24 129.54 0)
+			(at 22.86 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8538,7 +8514,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 13.97 128.27 0)
+			(at 21.59 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8547,7 +8523,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 13.97 128.27 0)
+			(at 21.59 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8556,7 +8532,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 13.97 128.27 0)
+			(at 21.59 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)

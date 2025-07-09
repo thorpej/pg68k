@@ -69,9 +69,6 @@ module isactl(
 	output wire TMRINT
 );
 
-/* /AS will have been asserted by definition. */
-assign ISA_AEN = ~nISASEL;
-
 /*
  * Put devices in ISA-like locations:
  *
@@ -126,6 +123,20 @@ always @(*) begin
 end
 assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
     nTMRCSRSEL, nTMRLSBSEL, nTMRMSBSEL} = DevSelectOutputs;
+
+wire internally_decoded =
+    ~(nDUARTSEL && nATASEL && nATAAUXSEL && nPIOMODESEL && nTMRCSRSEL &&
+      nTMRLSBSEL && nTMRMSBSEL);
+
+/*
+ * AEN is a funky signal.  When low, the CPU owns the address
+ * bus.  When high, it's the ISA DMA controller.  So we want
+ * this to be low (like a traditional select signal) when we
+ * want ISA peripherals (like the Ethernet chip) to decode
+ * their address.  We will gate this on non-selection of devices
+ * that we ourselves decode.
+ */
+assign ISA_AEN = nISASEL || internally_decoded;
 
 /* Enable ATA bus buffers if either drive register set is selected. */
 assign nATABEN = nATASEL & nATAAUXSEL;

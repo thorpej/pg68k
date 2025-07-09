@@ -519,7 +519,7 @@ endmodule
 //
 //	=== Inputs ===
 //
-//PIN: ISA_IO16		: 83
+//PIN: nISA_IO16	: 83
 //PIN: ISA_RDY		: 84
 //PIN: nISASEL		: 85
 //PIN: nAS		: 87

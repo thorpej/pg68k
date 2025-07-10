@@ -52,7 +52,6 @@ module sysctl(
 	output wire [1:0] DSACK,	/* external open-drain inv */
 
 	output wire nROMSEL,
-	output wire nDEVSEL,
 	output wire nEXPSEL,
 	output wire [3:0] nDRAMSEL,
 	output wire nFPUSEL,
@@ -177,9 +176,10 @@ wire [1:0] AddrSpace = {SpaceCPU, SpaceNormal};
  *
  * Expansion space is further decoded externally, qualified by /EXPSEL.
  *
- * The peripheral device space is mainly on-board peripherals (UARTs, timer,
- * etc.).  Some of this address is further decoded below, with the remaining
- * being externally decoded and qualified by /DEVSEL or /ISASEL.
+ * The peripheral space is divided into two regions, one with ISA-like
+ * peripherals externally decoded and qualified by /ISASEL, and other
+ * on-board peripherals that speak the native 68030 bus protocol decoded
+ * below.
  */
 
 /*			          Address bits
@@ -250,9 +250,6 @@ assign {nIACKSEL, nFPUSEL, nDRAMSEL, nEXPSEL, nDEVSELx, nROMSELx}
 assign nROMSEL = nROMSELx | ~RnW;
 
 /*
- * The DEV space is split into two regions:
- * 
- *
  * Further qualify the DEV space:
  *
  * 0.xxxx	ISA I/O space
@@ -285,12 +282,6 @@ always @(*) begin
 end
 assign {nISASEL, nI2CSEL, nINTCSEL}
     = DevSelectOutputs;
-
-/*
- * Assert the external /DEVSEL signal if we don't match any devices
- * decoded internally.
- */
-assign nDEVSEL = ~(~nDEVSELx && (DevSelectOutputs == DSEL_NONE));
 
 localparam REGION_FRAM = 10'b1111111100;
 
@@ -501,7 +492,6 @@ endmodule
 //PIN: nFRAM_RD		: 80
 //PIN: nFRAMSEL		: 81
 //PIN: nEXPSEL		: 83
-//PIN: nDEVSEL		: 84
 //PIN: nROMSEL		: 85
 //PIN: CLK_6_25		: 92
 //PIN: CPU_CLK		: 94

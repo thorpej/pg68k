@@ -18029,7 +18029,7 @@
 			)
 		)
 	)
-	(global_label "~{MMIOSEL}"
+	(global_label "~{EXPSEL}"
 		(shape output)
 		(at 264.16 63.5 0)
 		(fields_autoplaced yes)
@@ -18041,7 +18041,7 @@
 		)
 		(uuid "ab4076a8-af98-4a50-8ae2-4682010fb09b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 275.3699 63.5 0)
+			(at 274.1603 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)

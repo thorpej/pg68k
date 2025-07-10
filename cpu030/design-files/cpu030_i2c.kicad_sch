@@ -2441,6 +2441,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "Keystone 500"
+			(at 163.83 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "0b711b6d-fd87-470a-b166-48c4dadc1001")
 		)

@@ -10559,7 +10559,7 @@
 			)
 		)
 	)
-	(global_label "A15"
+	(global_label "A16"
 		(shape input)
 		(at 25.4 62.23 180)
 		(fields_autoplaced yes)
@@ -13199,7 +13199,7 @@
 			)
 		)
 	)
-	(global_label "A15"
+	(global_label "A16"
 		(shape input)
 		(at 82.55 62.23 180)
 		(fields_autoplaced yes)

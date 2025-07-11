@@ -1713,7 +1713,7 @@
 			)
 		)
 	)
-	(global_label "~{I2CINT}"
+	(global_label "~{INT5}"
 		(shape output)
 		(at 107.95 86.36 0)
 		(fields_autoplaced yes)
@@ -1725,7 +1725,7 @@
 		)
 		(uuid "904ec26d-d6e8-4ea0-81b2-2db8667d035b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 116.9224 86.36 0)
+			(at 115.0476 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)

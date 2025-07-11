@@ -4269,7 +4269,7 @@
 		(uuid "d7000f94-4a5f-4d80-b9da-941ba61a45ab")
 	)
 	(junction
-		(at 177.8 142.24)
+		(at 151.13 157.48)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "14bbe6ae-d51c-4c04-8b62-cdab4b343c29")
@@ -4377,7 +4377,7 @@
 		(uuid "99c651f8-0116-481c-9024-53253319de89")
 	)
 	(junction
-		(at 177.8 157.48)
+		(at 151.13 172.72)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a380e9ec-b332-45b7-a9f8-ccd6ce0e27d9")
@@ -4493,7 +4493,7 @@
 		(uuid "5043bf7d-e89a-430e-97f5-80e46e1c04e0")
 	)
 	(no_connect
-		(at 170.18 149.86)
+		(at 143.51 165.1)
 		(uuid "5e941248-ca2d-46a4-914b-c2cf5e8569a5")
 	)
 	(no_connect
@@ -4614,7 +4614,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 142.24) (xy 177.8 142.24)
+			(xy 137.16 157.48) (xy 151.13 157.48)
 		)
 		(stroke
 			(width 0)
@@ -4894,7 +4894,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 95.25) (xy 187.96 100.33)
+			(xy 189.23 95.25) (xy 189.23 100.33)
 		)
 		(stroke
 			(width 0)
@@ -4924,7 +4924,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 95.25) (xy 187.96 95.25)
+			(xy 205.74 95.25) (xy 189.23 95.25)
 		)
 		(stroke
 			(width 0)
@@ -5004,7 +5004,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 157.48) (xy 177.8 157.48)
+			(xy 137.16 172.72) (xy 151.13 172.72)
 		)
 		(stroke
 			(width 0)
@@ -5054,7 +5054,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 147.32) (xy 163.83 157.48)
+			(xy 137.16 162.56) (xy 137.16 172.72)
 		)
 		(stroke
 			(width 0)
@@ -5183,7 +5183,7 @@
 		(uuid "32d2147d-d70c-4f6d-8b1d-cc2275d594d4")
 	)
 	(label "ETH_CLK"
-		(at 185.42 149.86 0)
+		(at 163.83 165.1 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6353,7 +6353,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100nF"
+		(property "Value" "10nF"
 			(at 168.91 129.5462 0)
 			(effects
 				(font
@@ -6778,7 +6778,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Small")
-		(at 187.96 102.87 0)
+		(at 189.23 102.87 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6787,7 +6787,7 @@
 		(fields_autoplaced yes)
 		(uuid "38f971eb-9a73-43a4-acfc-e6d9c721ad9e")
 		(property "Reference" "C710"
-			(at 190.5 101.6062 0)
+			(at 191.77 101.6062 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6795,8 +6795,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10nF"
-			(at 190.5 104.1462 0)
+		(property "Value" "100nF"
+			(at 191.77 104.1462 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6805,7 +6805,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 187.96 102.87 0)
+			(at 189.23 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6814,7 +6814,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 187.96 102.87 0)
+			(at 189.23 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6823,7 +6823,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
-			(at 187.96 102.87 0)
+			(at 189.23 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7183,7 +7183,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Small")
-		(at 163.83 144.78 0)
+		(at 137.16 160.02 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7192,7 +7192,7 @@
 		(fields_autoplaced yes)
 		(uuid "56420768-62be-43b6-822f-6047198562a3")
 		(property "Reference" "C701"
-			(at 166.37 143.5162 0)
+			(at 139.7 158.7562 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7201,7 +7201,7 @@
 			)
 		)
 		(property "Value" "100nF"
-			(at 166.37 146.0562 0)
+			(at 139.7 161.2962 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7210,7 +7210,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 163.83 144.78 0)
+			(at 137.16 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7219,7 +7219,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 163.83 144.78 0)
+			(at 137.16 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7228,7 +7228,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
-			(at 163.83 144.78 0)
+			(at 137.16 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8020,7 +8020,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 177.8 157.48 0)
+		(at 151.13 172.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8029,7 +8029,7 @@
 		(fields_autoplaced yes)
 		(uuid "80d77c70-2d06-4f0f-bbd9-7f4c427bf29d")
 		(property "Reference" "#PWR0709"
-			(at 177.8 163.83 0)
+			(at 151.13 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8038,7 +8038,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 177.8 162.56 0)
+			(at 151.13 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8046,7 +8046,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 177.8 157.48 0)
+			(at 151.13 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8055,7 +8055,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 177.8 157.48 0)
+			(at 151.13 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8064,7 +8064,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 177.8 157.48 0)
+			(at 151.13 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8417,6 +8417,75 @@
 			(project ""
 				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6/6336b086-612e-4cdf-a612-7ddcb8084a94"
 					(reference "#PWR0702")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 161.29 165.1 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b456d9c0-2da2-4732-a002-7b467c637318")
+		(property "Reference" "R709"
+			(at 162.56 166.37 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "22"
+			(at 160.02 166.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 161.29 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 161.29 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 161.29 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "dcb54755-2d01-4513-b4bb-2e3b4b770094")
+		)
+		(pin "1"
+			(uuid "590d5ee1-9992-4cab-aa86-7302941e6d81")
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6/6336b086-612e-4cdf-a612-7ddcb8084a94"
+					(reference "R709")
 					(unit 1)
 				)
 			)
@@ -8784,7 +8853,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100nF"
+		(property "Value" "10nF"
 			(at 158.75 129.5462 0)
 			(effects
 				(font
@@ -8906,7 +8975,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 187.96 105.41 0)
+		(at 189.23 105.41 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8915,7 +8984,7 @@
 		(fields_autoplaced yes)
 		(uuid "c98517e8-86c9-467b-ab3a-36509068dd27")
 		(property "Reference" "#PWR0714"
-			(at 187.96 111.76 0)
+			(at 189.23 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8924,7 +8993,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 187.96 110.49 0)
+			(at 189.23 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8932,7 +9001,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 187.96 105.41 0)
+			(at 189.23 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8941,7 +9010,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 187.96 105.41 0)
+			(at 189.23 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8950,7 +9019,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 187.96 105.41 0)
+			(at 189.23 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8972,7 +9041,7 @@
 	)
 	(symbol
 		(lib_id "Oscillator:CXO_DIP8")
-		(at 177.8 149.86 0)
+		(at 151.13 165.1 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8981,7 +9050,7 @@
 		(fields_autoplaced yes)
 		(uuid "d2c49565-7aed-4305-a7e5-a80a4fea5aba")
 		(property "Reference" "Y701"
-			(at 189.23 143.4398 0)
+			(at 162.56 158.6798 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8989,7 +9058,7 @@
 			)
 		)
 		(property "Value" "20MHz"
-			(at 189.23 145.9798 0)
+			(at 162.56 161.2198 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8997,7 +9066,7 @@
 			)
 		)
 		(property "Footprint" "Oscillator:Oscillator_DIP-8"
-			(at 189.23 158.75 0)
+			(at 162.56 173.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9006,7 +9075,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/B400/OSZI.pdf"
-			(at 175.26 149.86 0)
+			(at 148.59 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9015,7 +9084,7 @@
 			)
 		)
 		(property "Description" "Crystal Clock Oscillator, DIP8-style metal package"
-			(at 177.8 149.86 0)
+			(at 151.13 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9024,7 +9093,7 @@
 			)
 		)
 		(property "Part" "MXO45HS-3C-20M0000"
-			(at 177.8 149.86 0)
+			(at 151.13 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9055,7 +9124,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 177.8 142.24 0)
+		(at 151.13 157.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9064,7 +9133,7 @@
 		(fields_autoplaced yes)
 		(uuid "d576448a-f58d-4bdd-b477-a58a7b608606")
 		(property "Reference" "#PWR0708"
-			(at 177.8 146.05 0)
+			(at 151.13 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9073,7 +9142,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 177.8 137.16 0)
+			(at 151.13 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9081,7 +9150,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 177.8 142.24 0)
+			(at 151.13 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9090,7 +9159,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 177.8 142.24 0)
+			(at 151.13 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9099,7 +9168,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 177.8 142.24 0)
+			(at 151.13 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9208,7 +9277,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10nF"
+		(property "Value" "100nF"
 			(at 180.34 104.1462 0)
 			(effects
 				(font

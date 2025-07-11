@@ -488,6 +488,13 @@
         "via_diameter": 0.8,
         "via_drill": 0.4,
         "wire_width": 6
+      },
+      {
+        "name": "EXP_Power",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0,
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 1.0
       }
     ],
     "meta": {
@@ -495,6 +502,12 @@
     },
     "net_colors": null,
     "netclass_assignments": {
+      "+12V": [
+        "EXP_Power"
+      ],
+      "-12V": [
+        "EXP_Power"
+      ],
       "Net-(D101-A)": [
         "Power"
       ],
@@ -502,7 +515,12 @@
         "Power"
       ]
     },
-    "netclass_patterns": []
+    "netclass_patterns": [
+      {
+        "netclass": "EXP_Power",
+        "pattern": "EXP_Power"
+      }
+    ]
   },
   "pcbnew": {
     "last_paths": {

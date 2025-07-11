@@ -511,6 +511,9 @@
       "Net-(D101-A)": [
         "Power"
       ],
+      "Net-(J901-+5VSB)": [
+        "Power"
+      ],
       "Vsb": [
         "Power"
       ]

@@ -73,7 +73,6 @@ reg n_isa_io16;
 wire berr;
 wire [1:0] dsack;
 
-wire isa_aen;
 wire n_isa_iord;
 wire n_iso_iowr;
 
@@ -81,6 +80,7 @@ wire n_duartsel;
 wire n_atasel;
 wire n_ataauxsel;
 wire n_ataben;
+wire n_ethsel;
 
 wire tmrint;
 
@@ -101,7 +101,7 @@ wire cycle_terminated = berr | dsack[0] | dsack[1];
 		.nISA_IO16(n_isa_io16),
 		.DSACK(dsack),
 		.BERR(berr),
-		.ISA_AEN(isa_aen),
+		.nETHSEL(isa_aen),
 		.nISA_IORD(n_isa_iord),
 		.nISA_IOWR(n_isa_iowr),
 		.nDUARTSEL(n_duartsel),

@@ -57,7 +57,6 @@ module isactl(
 	output wire BERR,		/* external open-drain inv */
 	output wire [1:0] DSACK,	/* external open-drain inv */
 
-	output wire ISA_AEN,
 	output wire nISA_IORD,
 	output wire nISA_IOWR,
 
@@ -65,6 +64,7 @@ module isactl(
 	output wire nATASEL,
 	output wire nATAAUXSEL,
 	output wire nATABEN,
+	output wire nETHSEL,
 
 	output wire TMRINT
 );
@@ -81,7 +81,6 @@ module isactl(
  * provide a chip select output for it, but we do need to know when it
  * is selected.
  */
-wire nETHSEL;
 wire nPIOMODESEL;
 wire nTMRCSRSEL;
 wire nTMRLSBSEL;
@@ -127,16 +126,6 @@ assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
 wire internally_decoded =
     ~(nDUARTSEL && nATASEL && nATAAUXSEL && nPIOMODESEL && nTMRCSRSEL &&
       nTMRLSBSEL && nTMRMSBSEL);
-
-/*
- * AEN is a funky signal.  When low, the CPU owns the address
- * bus.  When high, it's the ISA DMA controller.  So we want
- * this to be low (like a traditional select signal) when we
- * want ISA peripherals (like the Ethernet chip) to decode
- * their address.  We will gate this on non-selection of devices
- * that we ourselves decode.
- */
-assign ISA_AEN = nISASEL || internally_decoded;
 
 /* Enable ATA bus buffers if either drive register set is selected. */
 assign nATABEN = nATASEL & nATAAUXSEL;

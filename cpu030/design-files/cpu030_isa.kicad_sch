@@ -4583,7 +4583,7 @@
 			)
 		)
 	)
-	(global_label "ISA_AEN"
+	(global_label "~{ETHSEL}"
 		(shape output)
 		(at 172.72 76.2 0)
 		(fields_autoplaced yes)
@@ -4595,7 +4595,7 @@
 		)
 		(uuid "45c0d34c-efe8-442e-a7fe-63f1b3f7efcb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 183.1438 76.2 0)
+			(at 182.5389 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)

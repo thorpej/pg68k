@@ -272,17 +272,23 @@ localparam DSEL_INTC	= 4'b1110;
 
 reg [2:0] DevSelectOutputs;
 always @(*) begin
-	casex ({nDEVSELx, nDS, ADDR[19:0]})
-	{1'b0, 1'bx, DEV_ISA}:  DevSelectOutputs = DSEL_ISA;
-	{1'b0, 1'bx, DEV_PSUC}: DevSelectOutputs = DSEL_PSUC;
-	{1'b0, 1'bx, DEV_INTC}: DevSelectOutputs = DSEL_INTC;
+	casex ({nDEVSELx, nDS, RnW, ADDR[19:0]})
+	{1'b0, 1'bx, 1'bx, DEV_ISA}:  DevSelectOutputs = DSEL_ISA;
+	/*
+	 * The PSU controller is wired up so that any time it is
+	 * selected, it will either reset or power off the system
+	 * (depending on the value of D0).  So, avoid errant reads,
+	 * and only select it once the data bus is valid.
+	 */
+	{1'b0, 1'b0, 1'b0, DEV_PSUC}: DevSelectOutputs = DSEL_PSUC;
+	{1'b0, 1'bx, 1'bx, DEV_INTC}: DevSelectOutputs = DSEL_INTC;
 	/*
 	 * Also need to qual /I2CSEL on /DS because we want to
 	 * ensure that the PCF8584 comes up in 68000 interface
 	 * mode.
 	 */
-	{1'b0, 1'b0, DEV_I2C}:   DevSelectOutputs = DSEL_I2C;
-	default:                 DevSelectOutputs = DSEL_NONE;
+	{1'b0, 1'b0, 1'bx, DEV_I2C}:  DevSelectOutputs = DSEL_I2C;
+	default:                      DevSelectOutputs = DSEL_NONE;
 	endcase
 end
 assign {nISASEL, nI2CSEL, nPSUCSEL, nINTCSEL}
@@ -380,8 +386,9 @@ localparam PORT_2	= 2'b10;
 
 reg [1:0] BCState;
 localparam BC_Idle	= 4'd0;
-localparam BC_B2W1	= 4'd1;	/* bytes: 2, waits: 1 */
-localparam BC_Finish	= 4'd2;
+localparam BC_B1W1	= 4'd1;	/* bytes: 1, waits: 1 */
+localparam BC_B2W1	= 4'd2;	/* bytes: 2, waits: 1 */
+localparam BC_Finish	= 4'd3;
 
 always @(posedge CPU_CLK, negedge nRST) begin
 	if (~nRST) begin
@@ -399,6 +406,25 @@ always @(posedge CPU_CLK, negedge nRST) begin
 				 */
 				BCState <= BC_B2W1;
 			end
+			else if (~nPSUCSEL) begin
+				/*
+				 * Writing to the PSU controller will
+				 * either reset or power off the system,
+				 * and it does not participate in the
+				 * bus protocol whatsoever.  Just provide
+				 * a single wait-state to make sure D0 is
+				 * stable in the latch fronting the
+				 * microcontroller, and then terminate
+				 * the bus cycle.  The system will reset
+				 * or power off a few milliseconds later.
+				 */
+				BCState <= BC_B1W1;
+			end
+		end
+
+		BC_B1W1: begin
+			dsack <= PORT_1;
+			BCState <= BC_Finish;
 		end
 
 		BC_B2W1: begin

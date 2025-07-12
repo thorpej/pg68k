@@ -508,10 +508,10 @@
       "-12V": [
         "EXP_Power"
       ],
-      "Net-(D101-A)": [
+      "/Power Supply/Vsb": [
         "Power"
       ],
-      "Net-(J901-+5VSB)": [
+      "Net-(D101-A)": [
         "Power"
       ],
       "Vsb": [

@@ -34,8 +34,6 @@
 		 * reserved-for-Motorola space.  This should not be a problem
 		 * as it is an identity mapping so the address placed onto
 		 * the address bus will not be affected in any way.
-		 *
-		 * N.B. this also maps the fastmem.
 		 */
 		netbsd,tt = <0xff008143 0x0>;
 	};
@@ -135,28 +133,33 @@
 			#interrupt-cells = <3>;
 		};
 
-		serial0: serial@ffe003f8 {	/* ISA-like address */
+		power-controller@ffefffe0 {
+			compatible = "pg68k,psu-ctrl";
+			reg = <0xffefffe0 0x10>;
+		};
+
+		serial0: serial@ffe003f8 {
 			compatible = "ns16550a";
 			reg = <0xffe003f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 		};
 
-		serial1: serial@ffe002f8 {	/* ISA-like address */
+		serial1: serial@ffe002f8 {
 			compatible = "ns16550a";
 			reg = <0xffe002f8 0x8>;
 			clocks = <&uart_clk>;
 			interrupts = <5 5 0>;
 		};
 
-		timer0: timer@ffe00040 {	/* ISA-like address */
+		timer0: timer@ffe00040 {
 			compatible = "pg68k,isactl-timer";
 			reg = <0xffe00040 0x8>;
 			clocks = <&cpu_div16_clk>;
 			interrupts = <6 6 0>;
 		};
 
-		ata0: ata@ffe001f0 {		/* ISA-like addresses */
+		ata0: ata@ffe001f0 {
 			compatible = "pg68k,atac-1", "ata-generic";
 			reg = <0xffe001f0 0x8>,	/* command */
 			      <0xffe003f6 0x2>;	/* control */
@@ -165,7 +168,7 @@
 			pio-mode = <2>;
 		};
 
-		ethernet0: ethernet@ffe00300 {	/* ISA-like address */
+		ethernet0: ethernet@ffe00300 {
 			compatible = "realtek,rtl8019as";
 			reg = <0xffe00300 0x20>;
 			interrupts = <4 4 0>;
@@ -177,6 +180,7 @@
 			#size-cells = <0>;
 			reg = <0xffe10000 0x2>;
 			clocks = <&cpu_div4_clk>;
+			interrupts = <5 5 0>;
 		};
 
 		/*

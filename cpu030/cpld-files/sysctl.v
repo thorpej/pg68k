@@ -58,6 +58,7 @@ module sysctl(
 	output wire nIACKSEL,
 
 	output wire nISASEL,
+	output wire nPSUCSEL,
 	output wire nINTCSEL,
 	output wire nI2CSEL,
 
@@ -255,21 +256,25 @@ assign nROMSEL = nROMSELx | ~RnW;
  * 0.xxxx	ISA I/O space
  *			(DUART, Timer, ATA disk, Ethernet)
  * 1.000x	PCF8584 I2C controller
+ * F.FFEx	PSU controller
  * F.FFFx	Interrupt controller
  */
 localparam DEV_ISA	= 20'h0xxxx;
 localparam DEV_I2C	= 20'h1000x;
+localparam DEV_PSUC	= 20'hFFFEx;
 localparam DEV_INTC	= 20'hFFFFx;
 
-localparam DSEL_NONE	= 3'b111;
-localparam DSEL_ISA	= 3'b011;
-localparam DSEL_I2C	= 3'b101;
-localparam DSEL_INTC	= 3'b110;
+localparam DSEL_NONE	= 4'b1111;
+localparam DSEL_ISA	= 4'b0111;
+localparam DSEL_I2C	= 4'b1011;
+localparam DSEL_PSUC	= 4'b1101;
+localparam DSEL_INTC	= 4'b1110;
 
 reg [2:0] DevSelectOutputs;
 always @(*) begin
 	casex ({nDEVSELx, nDS, ADDR[19:0]})
 	{1'b0, 1'bx, DEV_ISA}:  DevSelectOutputs = DSEL_ISA;
+	{1'b0, 1'bx, DEV_PSUC}: DevSelectOutputs = DSEL_PSUC;
 	{1'b0, 1'bx, DEV_INTC}: DevSelectOutputs = DSEL_INTC;
 	/*
 	 * Also need to qual /I2CSEL on /DS because we want to
@@ -280,7 +285,7 @@ always @(*) begin
 	default:                 DevSelectOutputs = DSEL_NONE;
 	endcase
 end
-assign {nISASEL, nI2CSEL, nINTCSEL}
+assign {nISASEL, nI2CSEL, nPSUCSEL, nINTCSEL}
     = DevSelectOutputs;
 
 localparam REGION_FRAM = 10'b1111111100;
@@ -475,6 +480,7 @@ endmodule
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
 //PIN: RESET		: 52
+//PIN: nPSUCSEL		: 61
 //PIN: nI2CSEL		: 63
 //PIN: nINTCSEL		: 64
 //PIN: nISASEL		: 65

@@ -1,7 +1,11 @@
 CC=	m68k--netbsdelf-gcc
 LD=	m68k--netbsdelf-ld
 
+CPUTYPE=68030
+
 CPPFLAGS=-DCONFIG_MACH_PG68030_MK_I
+CFLAGS=-Os -mcpu=$(CPUTYPE)
+ASFLAGS=-mcpu=$(CPUTYPE)
 
 SYSLIBOBJS= memcmp.o memcpy.o memset.o
 

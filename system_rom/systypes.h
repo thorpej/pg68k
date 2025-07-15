@@ -33,6 +33,9 @@
 #define	true			1
 #define	false			0
 
+#define	NULL			((void *)0)
+#define	NBBY			8
+
 typedef __INT8_TYPE__		int8_t;
 typedef __UINT8_TYPE__		uint8_t;
 
@@ -53,6 +56,18 @@ typedef __UINTPTR_TYPE__	uintptr_t;
 
 typedef __INTMAX_TYPE__		intmax_t;
 typedef __UINTMAX_TYPE__	uintmax_t;
+
+#ifndef __VA_LIST_DECLARED
+typedef __builtin_va_list	va_list;
+#define	__VA_LIST_DECLARED
+#endif
+
+typedef unsigned char		u_char;
+typedef unsigned short int	u_short;
+typedef unsigned int		u_int;
+typedef unsigned long int	u_long;
+typedef long long int		longlong_t;
+typedef unsigned long long int	u_longlong_t;
 
 typedef volatile void *		vptr_t;
 typedef volatile uint8_t *	vptr8_t;

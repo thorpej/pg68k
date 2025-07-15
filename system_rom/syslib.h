@@ -36,6 +36,9 @@ int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memset(void *, int, size_t);
 
-int	printf(const char *, ...) __printflike(1, 2);
+int	printf(const char *, ...) __printflike(1,2);
+int	snprintf(char *, size_t, const char *, ...) __printflike(3,4);
+int	vprintf(const char *, va_list) __printflike(1, 0);
+int	vsnprintf(char *, size_t, const char *, va_list) __printflike(3,0);
 
 #endif /* syslib_h_included */

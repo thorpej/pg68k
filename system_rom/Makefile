@@ -7,7 +7,8 @@ CPPFLAGS=-DCONFIG_MACH_PG68030_MK_I
 CFLAGS=-Os -mcpu=$(CPUTYPE)
 ASFLAGS=-mcpu=$(CPUTYPE)
 
-SYSLIBOBJS= memcmp.o memcpy.o memset.o
+SYSLIBOBJS= memcmp.o memcpy.o memset.o \
+	    subr_prf.o
 
 OBJS=	$(SYSLIBOBJS) start.o main.o uart.o console.o
 BINS=	pg68030mk1.bin

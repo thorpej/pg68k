@@ -59,6 +59,10 @@
 #define	CONFIG_I2C_PCF8584
 #endif /* CONFIG_MACH_PG68030_MK_I */
 
+#ifndef CONFIG_RIISP
+#error No machine configured!
+#endif
+
 #ifndef CONFIG_DEV_REGSHIFT
 #define	CONFIG_DEV_REGSHIFT	0
 #endif

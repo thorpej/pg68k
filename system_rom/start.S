@@ -35,6 +35,7 @@
 |
 
 #include "config.h"
+#include "cache.h"
 #include "psl.h"
 
 	.text
@@ -188,7 +189,21 @@ start:
 #ifndef CONFIG_MC68000
 	| Relocate the vector table to the ROM address.
 	movc	%a0,%vbr
+
+	|
+	| Before we go any further, make sure the MMU is turned off
+	| and the caches are cleared.
+	|
+#ifdef CONFIG_MC68030
+	move.l	#CACHE_OFF,%d0
+	movc	%d0,%cacr
+	clr.l	-(%sp)
+	pmove	(%sp),%tc
+	addq.l	#4,%sp
+#else
+#error Need non-68030 cache+MMU code.
 #endif
+#endif /* ! CONFIG_MC68000 */
 
 	|
 	| Copy the .data segment from ROM to the run-time location
@@ -211,6 +226,7 @@ start:
 	clr.l	-(%sp)
 	pea	_edata
 	jbsr	memset		| memset(_edata, 0, d0)
+	add.l	#12,%sp
 
 	|
 	| Terminate the call stack by loading $0000.0000 into

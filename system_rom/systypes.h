@@ -36,23 +36,28 @@
 typedef __INT8_TYPE__		int8_t;
 typedef __UINT8_TYPE__		uint8_t;
 
-typedef short int		int16_t;
-typedef unsigned short int	uint16_t;
+typedef __INT16_TYPE__		int16_t;
+typedef __UINT16_TYPE__		uint16_t;
 
-typedef int			int32_t;
-typedef unsigned int		uint32_t;
+typedef __INT32_TYPE__		int32_t;
+typedef __UINT32_TYPE__		uint32_t;
 
-typedef long long int		int64_t;
-typedef unsigned long long int	uint64_t;
+typedef __INT64_TYPE__		int64_t;
+typedef __UINT64_TYPE__		uint64_t;
 
 typedef __SIZE_TYPE__		size_t;
 typedef __PTRDIFF_TYPE__	ssize_t;
 typedef __PTRDIFF_TYPE__	ptrdiff_t;
+typedef __INTPTR_TYPE__		intptr_t;
 typedef __UINTPTR_TYPE__	uintptr_t;
+
+typedef __INTMAX_TYPE__		intmax_t;
+typedef __UINTMAX_TYPE__	uintmax_t;
 
 typedef volatile void *		vptr_t;
 typedef volatile uint8_t *	vptr8_t;
 typedef volatile uint16_t *	vptr16_t;
+typedef volatile uint32_t *	vptr32_t;
 
 typedef uint32_t		in_addr_t;
 typedef uint16_t		in_port_t;

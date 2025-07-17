@@ -2,7 +2,7 @@
 # Common Makefile infrastructure for the pg68k system ROM.
 #
 
-CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE)
+CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE) -DKERNEL_USE
 CFLAGS=		-Os
 ASFLAGS=
 
@@ -13,7 +13,8 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 
 SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o
 
-M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o
+COMPRTOBJS=	int_util.o udivdi3.o umoddi3.o udivmoddi4.o
+M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o ${COMPRTOBJS}
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
@@ -21,6 +22,7 @@ CLEANFILES=	assym.h $(MACH_CLEANFILES)
 GENASSYM_FLAGS=${CFLAGS:N-Wa,*:N-fstack-usage*} ${CPPFLAGS}
 
 .PATH: ..
+.PATH: ../compiler_rt
 
 all: ${MACH_IMGS}
 

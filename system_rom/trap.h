@@ -42,7 +42,9 @@
 #ifndef trap_h_included
 #define	trap_h_included
 
-#ifndef __ASSEMBLER__
+#include "config.h"
+
+#if !defined(CONFIG_MACH_HOST_SIM) && !defined(__ASSEMBLER__)
 
 struct frame {
 	struct trapframe {
@@ -145,7 +147,7 @@ struct frame {
 #define	f_fmtA		F_u.F_fmtA
 #define	f_fmtB		F_u.F_fmtB
 
-#endif /* ! __ASSEMBLER__ */
+#endif /* ! CONFIG_MACH_HOST_SIM && ! __ASSEMBLER__ */
 
 /* Trap types */
 #define	T_BUSERR	0
@@ -174,8 +176,10 @@ extern jmp_buf	nofault_env;
 bool	badaddr_read32(volatile uint32_t *, uint32_t *);
 bool	badaddr_write32(volatile uint32_t *, uint32_t);
 
+#ifndef CONFIG_MACH_HOST_SIM
 void	trap(struct frame *, int, unsigned int, uintptr_t);
 void	straytrap(uintptr_t, unsigned short);
+#endif /* ! CONFIG_MACH_HOST_SIM */
 #endif /* ! __ASSEMBLER__ */
 
 #endif	/* trap_h_included */

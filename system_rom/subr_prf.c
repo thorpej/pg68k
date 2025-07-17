@@ -35,6 +35,7 @@
  * Scaled down version of printf(3).
  */
 
+#include "config.h"
 #include "syslib.h"
 #include "stdarg.h"
 #include "console.h"
@@ -158,6 +159,21 @@ printf(const char *fmt, ...)
 
 	return rv;
 }
+
+int
+puts(const char *s)
+{
+	printf("%\n", s);
+}
+
+/* Avoid circular dependency with uart_hostsim.c */
+#ifndef CONFIG_MACH_HOST_SIM
+int
+putchar(int c)
+{
+	cons_putc(c);
+}
+#endif /* ! CONFIG_MACH_HOST_SIM */
 
 int
 vsnprintf(char *buf, size_t size, const char *fmt, va_list ap)

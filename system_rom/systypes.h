@@ -27,6 +27,21 @@
 #ifndef systypes_h_included
 #define	systypes_h_included
 
+#ifdef CONFIG_MACH_HOST_SIM
+
+#include <sys/types.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <setjmp.h>
+
+/* XXX */
+typedef long long int		longlong_t;
+typedef unsigned long long int	u_longlong_t;
+
+#else /* ! CONFIG_MACH_HOST_SIM */
+
 #include "cdefs.h"
 
 #define	bool			_Bool
@@ -76,5 +91,10 @@ typedef volatile uint32_t *	vptr32_t;
 
 typedef uint32_t		in_addr_t;
 typedef uint16_t		in_port_t;
+
+#define	_JBLEN			21
+typedef long			jmp_buf[_JBLEN];
+
+#endif /* CONFIG_MACH_HOST_SIM */
 
 #endif /* systypes_h_included */

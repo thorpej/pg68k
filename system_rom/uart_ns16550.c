@@ -82,6 +82,15 @@ uart_pollc(int unit, int *chp)
 	return false;
 }
 
+int
+uart_getc(int unit)
+{
+	while ((REG_READ(unit, com_lsr) & LSR_RXRDY) == 0) {
+		/* spin */;
+	}
+	return REG_READ(unit, com_data);
+}
+
 static void
 ns16550_txwait(int unit)
 {
@@ -95,6 +104,4 @@ uart_putc(int unit, int c)
 {
 	ns16550_txwait(unit);
 	REG_WRITE(unit, com_data, c);
-	ns16550_txwait(unit);
-	REG_READ(unit, com_iir);
 }

@@ -24,40 +24,32 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
+#include "systypes.h"
 
-#include "uart.h"
-
-#ifdef UART0_ADDR
-const uintptr_t uart_addrs[] = {
-	UART0_ADDR,
-#ifdef UART1_ADDR
-	UART1_ADDR,
-#endif
-};
-int	uart_count = arraycount(uart_addrs);
-#endif /* UART0_ADDR */
+#include <assert.h>
+#include <stdio.h>
 
 void
-uart_configure(void)
+uart_init(int unit, int speed)
 {
-	int i;
-
-	for (i = 0; i < uart_count; i++) {
-		printf("uart%d at 0x%08lx\n", i, (u_long)uart_addrs[i]);
-
-		/* Console UART already configured. */
-		if (i != CONFIG_CONSOLE_UART) {
-			uart_init(i, CONFIG_UART_SPEED);
-		}
-	}
+	assert(unit == 0);
 }
 
-#if defined(CONFIG_UART_16550)
-#include "uart_ns16550.c"
-#elif defined(CONFIG_UART_HOST_SIM)
-#include "uart_hostsim.c"
-#else
-#error No UART configured.
-#endif
+bool
+uart_pollc(int unit, int *chp)
+{
+	/* XXX */
+	return false;
+}
+
+int
+uart_getc(int unit)
+{
+	return getchar();
+}
+
+void
+uart_putc(int unit, int c)
+{
+	putchar(c);
+}

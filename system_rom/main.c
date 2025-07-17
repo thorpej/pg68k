@@ -24,9 +24,162 @@
  * SUCH DAMAGE.
  */
 
+#include "config.h"
+#include "syslib.h"
+
+#include "console.h"
+#include "trap.h"
+#include "uart.h"
+
+struct memory_bank {
+	uintptr_t	start;
+	size_t		size;
+	size_t		maxsize;
+	const char *	desc;
+};
+
+static struct memory_bank memory_banks[] = {
+#ifdef RAM0_START
+	{
+		.start   = RAM0_START,
+		.size    = RAM0_SIZE,
+		.maxsize = RAM0_MAXSIZE,
+		.desc    = RAM0_DESC,
+	},
+#endif
+#ifdef RAM1_START
+	{
+		.start   = RAM1_START,
+		.size    = RAM1_SIZE,
+		.maxsize = RAM1_MAXSIZE,
+		.desc    = RAM1_DESC,
+	},
+#endif
+#ifdef RAM2_START
+	{
+		.start   = RAM2_START,
+		.size    = RAM2_SIZE,
+		.maxsize = RAM2_MAXSIZE,
+		.desc    = RAM2_DESC,
+	},
+#endif
+#ifdef RAM3_START
+	{
+		.start   = RAM3_START,
+		.size    = RAM3_SIZE,
+		.maxsize = RAM3_MAXSIZE,
+		.desc    = RAM3_DESC,
+	},
+#endif
+#ifdef RAM4_START
+	{
+		.start   = RAM4_START,
+		.size    = RAM4_SIZE,
+		.maxsize = RAM4_MAXSIZE,
+		.desc    = RAM4_DESC,
+	},
+#endif
+};
+
+static void
+size_memory_bank(struct memory_bank *mb)
+{
+	/* XXX assume 1MB chunks for now. */
+	uint32_t *p, val;
+	size_t chunksize = 1024 * 1024;
+	size_t maxchunks = mb->maxsize / chunksize;
+	size_t chunk, i;
+
+	for (chunk = 0; chunk < maxchunks; chunk++) {
+		p = (uint32_t *)(mb->start + (chunk * chunksize));
+		if (badaddr_write32(p, chunk)) {
+			/* Bus error writing this chunk. */
+			break;
+		}
+		/* Validate the write. */
+		for (i = 0; i < chunk; i++) {
+			p = (uint32_t *)(mb->start + (i * chunksize));
+			if (badaddr_read32(p, &val)) {
+				/* Bus error reading chunk. */
+				break;
+			}
+			if (val != i) {
+				/* Write wrapped. */
+				break;
+			}
+		}
+		if (i != chunk) {
+			break;
+		}
+	}
+
+	mb->size = chunk * chunksize;
+}
+
+static void
+size_memory(void)
+{
+	struct memory_bank *mb;
+	u_long psize;
+	int i;
+	char mod;
+
+	for (i = 0; i < arraycount(memory_banks); i++) {
+		mb = &memory_banks[i];
+		if (mb->size != 0) {
+			/* fixed size region; skip */
+			continue;
+		}
+		if (mb->maxsize == 0) {
+			/* not supported on this machine; skip */
+			continue;
+		}
+		size_memory_bank(mb);
+		if (mb->size == 0) {
+			/* no memory in this bank; skip */
+			continue;
+		}
+
+		psize = mb->size / 1024;
+		mod = 'K';
+
+		if (psize > 1024) {
+			mod = 'M';
+			psize = psize / 1024;
+		}
+
+		printf("%lu%cB %s @ 0x%08lx\n",
+		    psize, mod, mb->desc, (u_long)mb->start);
+	}
+}
+
+static void
+configure(void)
+{
+	printf("Memory configuration:\n");
+	size_memory();
+	printf("\n");
+
+	printf("Device configuration:\n");
+#ifdef UART0_ADDR
+	uart_configure();
+#endif
+}
+
 int
 main(int argc, char *argv[])
 {
+	/* First step - initialize console so we can see messages. */
+	cons_init();
+
+	/* Hello, world! */
+	printf("%s\n", CONFIG_MACHINE_STRING);
+	printf("Firmware version %d.%d\n\n", CONFIG_ROM_VERSION_MAJOR,
+	    CONFIG_ROM_VERSION_MINOR);
+
+	/* Configure / probe the hardware. */
+	configure();
+
 	/* A stub, obviously. */
 	return 0;
 }

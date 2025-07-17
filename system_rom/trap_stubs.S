@@ -38,6 +38,7 @@
 |	@(#)locore.s	8.6 (Berkeley) 5/27/94
 |
 
+#include "assym.h"
 #include "trap.h"
 
 	.file	"trap_stubs.S"

@@ -50,4 +50,7 @@ int	snprintf(char *, size_t, const char *, ...) __printflike(3,4);
 int	vprintf(const char *, va_list) __printflike(1, 0);
 int	vsnprintf(char *, size_t, const char *, va_list) __printflike(3,0);
 
+int	puts(const char *);
+int	putchar(int);
+
 #endif /* syslib_h_included */

@@ -163,7 +163,15 @@ printf(const char *fmt, ...)
 int
 puts(const char *s)
 {
-	printf("%s\n", s);
+	int ch;
+	int cnt = 0;
+
+	while ((ch = *s++) != '\0') {
+		putchar(ch);
+		cnt++;
+	}
+	putchar('\n');
+	return cnt+1;
 }
 
 /* Avoid circular dependency with uart_hostsim.c */
@@ -172,6 +180,7 @@ int
 putchar(int c)
 {
 	cons_putc(c);
+	return c;
 }
 #endif /* ! CONFIG_MACH_HOST_SIM */
 

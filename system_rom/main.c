@@ -183,3 +183,9 @@ main(int argc, char *argv[])
 	/* A stub, obviously. */
 	return 0;
 }
+
+void
+panic(const char *fmt, ...)
+{
+	/* XXX */
+}

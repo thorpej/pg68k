@@ -163,7 +163,7 @@ printf(const char *fmt, ...)
 int
 puts(const char *s)
 {
-	printf("%\n", s);
+	printf("%s\n", s);
 }
 
 /* Avoid circular dependency with uart_hostsim.c */

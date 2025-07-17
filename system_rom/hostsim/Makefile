@@ -4,5 +4,7 @@ MACH_IMGS=	pgromsim
 
 .include "../sysrom.mk"
 
+OBJS+=		simtrap.o
+
 pgromsim: $(OBJS)
 	${CC} -o ${.TARGET} ${OBJS}

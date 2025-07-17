@@ -80,7 +80,7 @@ vectab:
 	.long	trap_fpfline	| 11: Line 1111 Emulator
 	.long	trap_badtrap	| 12: unassigned, reserved
 	.long	trap_cpv	| 13: Coprocessor Protocol Violation
-	.long	trap_formaterr	| 14: Format Error
+	.long	trap_fmterr	| 14: Format Error
 	.long	trap_badtrap	| 15: Uninitialized Interrupt
 	.long	trap_badtrap	| 16: unassigned, reserved
 	.long	trap_badtrap	| 17: unassigned, reserved
@@ -124,7 +124,7 @@ vectab:
 #ifdef CONFIG_MC68060
 	.long	trap_unimp60	| 55: FP Unimplemented Data Type
 #else
-	.long	trap_badtrap	| 55: unassigned, reserved
+	.long	trap_fpunsupp	| 55: FP Unimplemented Data Type (XXX ??)
 #endif
 #ifdef CONFIG_MC68030
 	.long	trap_badtrap	| 56: PMMU Configuration
@@ -248,25 +248,7 @@ trap_buserr:
 
 trap_addrerr:
 
-trap_illinst:
-
-trap_zerodiv:
-
-trap_chk:
-
-trap_trapv:
-
-trap_priv:
-
-trap_trace:
-
 trap_fpfline:
-
-trap_badtrap:
-
-trap_cpv:
-
-trap_formaterr:
 
 trap_intrav0:
 

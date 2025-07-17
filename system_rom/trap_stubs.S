@@ -38,6 +38,11 @@
 |	@(#)locore.s	8.6 (Berkeley) 5/27/94
 |
 
+#include "trap.h"
+
+	.file	"trap_stubs.S"
+	.text
+
 |
 | Common fault handling code.  Called by exception vector handlers.
 | Registers have been saved, and type for trap() placed in d0.  Upon
@@ -50,7 +55,7 @@ fault:
 	clr.l	-(%sp)			| or code arg
 	move.l	%d0,-(%sp)		| push trap type
 	pea	12(%sp)			| address of trap frame
-	jbsr	_C_LABEL(trap)		| handle trap
+	jbsr	trap			| handle trap
 	lea	16(%sp),%sp		| pop value args
 	move.l	FR_SP(%sp),%a0		| restore
 	move.l	%a0,%usp		|   user SP
@@ -61,9 +66,9 @@ fault:
 |
 | Similar to above, but will tidy up the stack, if necessary.
 |
-faultstakadj:
+faultstkadj:
 	pea	12(%sp)			| address of trap frame
-	jbsr	_C_LABEL(trap)		| handle the error
+	jbsr	trap			| handle the error
 	lea	16(%sp),%sp		| pop value args
 | for new 68060 Branch Prediction Error handler
 faultstkadjnotrap2:

@@ -32,9 +32,18 @@
 
 #define	_REG_OFF(r)	((r) << CONFIG_DEV_REGSHIFT)
 
+/*
+ * Return the number of elements in a statically-allocated array,
+ * __x.
+ */
+#define	arraycount(x)	(sizeof(x) / sizeof(x[0]))
+
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memset(void *, int, size_t);
+
+int	setjmp(jmp_buf);
+void	longjmp(jmp_buf, int);
 
 int	printf(const char *, ...) __printflike(1,2);
 int	snprintf(char *, size_t, const char *, ...) __printflike(3,4);

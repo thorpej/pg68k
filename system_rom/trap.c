@@ -32,6 +32,8 @@
 jmp_buf nofault_env;
 bool nofault;
 
+struct fpframe fpctx;	/* XXX needs work for '060 */
+
 bool
 badaddr_read32(volatile uint32_t *p, uint32_t *valp)
 {

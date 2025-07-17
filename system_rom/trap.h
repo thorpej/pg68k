@@ -147,6 +147,61 @@ struct frame {
 #define	f_fmtA		F_u.F_fmtA
 #define	f_fmtB		F_u.F_fmtB
 
+struct fpframe {
+	union FPF_u1 {
+		u_int	FPF_null;
+		struct {
+			u_char	FPF_version;
+			u_char	FPF_fsize;
+			u_short	FPF_res1;
+		} FPF_nonnull;
+	} FPF_u1;
+	union FPF_u2 {
+		struct fpidle {
+			u_short	fpf_ccr;
+			u_short	fpf_res2;
+			u_int	fpf_iregs1[8];
+			u_int	fpf_xops[3];
+			u_int	fpf_opreg;
+			u_int	fpf_biu;
+		} FPF_idle;
+
+		struct fpbusy {
+			u_int	fpf_iregs[53];
+		} FPF_busy;
+
+		struct fpunimp {
+			u_int	fpf_state[10];
+		} FPF_unimp;
+	} FPF_u2;
+	u_int	fpf_regs[8*3];
+	u_int	fpf_fpcr;
+	u_int	fpf_fpsr;
+	u_int	fpf_fpiar;
+};
+
+#define fpf_null	FPF_u1.FPF_null
+#define fpf_version	FPF_u1.FPF_nonnull.FPF_version
+#define fpf_fsize	FPF_u1.FPF_nonnull.FPF_fsize
+#define fpf_res1	FPF_u1.FPF_nonnull.FPF_res1
+#define fpf_idle	FPF_u2.FPF_idle
+#define fpf_busy	FPF_u2.FPF_busy
+#define fpf_unimp	FPF_u2.FPF_unimp
+
+/*
+ * This is incompatible with the earlier one; especially, an earlier frame
+ * must not be FRESTOREd on a 060 or vv, because a frame error exception is
+ * not guaranteed.
+ */
+struct fpframe060 {
+	u_short	fpf6_excp_exp;
+	u_char	fpf6_frmfmt;
+
+	u_char	fpf6_v;
+
+	u_long	fpf6_upper, fpf6_lower;
+};
+
 #endif /* ! CONFIG_MACH_HOST_SIM && ! __ASSEMBLER__ */
 
 /* Trap types */

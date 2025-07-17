@@ -348,7 +348,7 @@ kprintn(void (*put)(int), UINTMAX_T ul, int base)
 #endif
 {
 					/* hold a INTMAX_T in base 8 */
-	char *p, buf[(sizeof(INTMAX_T) * NBBY / 3) + 1 + 2 /* ALT + SIGN */];
+	char *p, buf[(sizeof(INTMAX_T) * CHAR_BIT / 3) + 1 + 2 /* ALT + SIGN */];
 #ifdef LIBSA_PRINTF_WIDTH_SUPPORT
 	char *q;
 #endif

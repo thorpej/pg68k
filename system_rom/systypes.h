@@ -49,7 +49,8 @@ typedef unsigned long long int	u_longlong_t;
 #define	false			0
 
 #define	NULL			((void *)0)
-#define	NBBY			8
+
+#define	CHAR_BIT		8
 
 typedef __INT8_TYPE__		int8_t;
 typedef __UINT8_TYPE__		uint8_t;

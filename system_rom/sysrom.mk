@@ -14,7 +14,7 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o
 
 COMPRTOBJS=	int_util.o udivdi3.o umoddi3.o udivmoddi4.o
-M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o ${COMPRTOBJS}
+M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)

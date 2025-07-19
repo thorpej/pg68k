@@ -85,6 +85,8 @@ typedef unsigned long int	u_long;
 typedef long long int		longlong_t;
 typedef unsigned long long int	u_longlong_t;
 
+typedef char *			caddr_t;	/* XXX */
+
 typedef volatile void *		vptr_t;
 typedef volatile uint8_t *	vptr8_t;
 typedef volatile uint16_t *	vptr16_t;

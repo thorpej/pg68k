@@ -15,7 +15,7 @@ SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o
 
 COMPRTOBJS=	int_util.o udivdi3.o umoddi3.o udivmoddi4.o
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
-OBJS=		$(SYSLIBOBJS) main.o uart.o console.o
+OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o files.o fs.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
 

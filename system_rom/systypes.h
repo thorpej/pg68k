@@ -86,17 +86,30 @@ typedef long long int		longlong_t;
 typedef unsigned long long int	u_longlong_t;
 
 typedef char *			caddr_t;	/* XXX */
+typedef int64_t			daddr_t;
 
 typedef volatile void *		vptr_t;
 typedef volatile uint8_t *	vptr8_t;
 typedef volatile uint16_t *	vptr16_t;
 typedef volatile uint32_t *	vptr32_t;
 
+typedef int64_t			off_t;
+
+typedef int			uid_t;
+typedef int			gid_t;
+typedef	uint32_t		mode_t;
+typedef	uint32_t		nlink_t;
+
 typedef uint32_t		in_addr_t;
 typedef uint16_t		in_port_t;
 
 #define	_JBLEN			21
 typedef long			jmp_buf[_JBLEN];
+
+struct timespec {
+	int64_t		tv_sec;
+	long		tv_nsec;
+};
 
 #endif /* CONFIG_MACH_HOST_SIM */
 

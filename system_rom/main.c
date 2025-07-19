@@ -166,6 +166,10 @@ configure(void)
 #endif
 }
 
+#ifndef CONFIG_MACH_HOST_SIM
+int	errno;
+#endif
+
 int
 main(int argc, char *argv[])
 {

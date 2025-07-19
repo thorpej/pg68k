@@ -43,6 +43,33 @@
  */
 #define	roundup(x, y)	(((uintptr_t)(x) + ((y) - 1)) & ~((y) - 1))
 
+/*
+ * Convert to/from disk blocks (XXX assume 512 byte sectors).
+ */
+#define	DEV_BSHIFT	9
+#define	DEV_BSIZE	(1U << DEV_BSHIFT)
+
+#define	dbtob(x)	((x) << DEV_BSHIFT)
+#define	btodb(x)	((x) >> DEV_BSHIFT)
+
+#ifndef CONFIG_MACH_HOST_SIM
+#define	ENOENT		1	/* No such file or directory */
+#define	EIO		2	/* Input/output error */
+#define	ENXIO		3	/* Device not configured */
+#define	ENOEXEC		4	/* Exec format error */
+#define	EBADF		5	/* Bad file descriptor */
+#define	ENOMEM		6	/* Cannot allocate memory */
+#define	EEXIST		7	/* File exists */
+#define	ENODEV		8	/* Operation not supported by device */
+#define	EINVAL		9	/* Invalid argument */
+#define	EMFILE		10	/* Too many open files */
+#define	ENOSPC		11	/* No space left on device */
+#define	EROFS		12	/* Read-only file system */
+#define	EOPNOTSUPP	13	/* Operation not supported */
+
+extern int errno;
+#endif /* ! CONFIG_MACH_HOST_SIM */
+
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);

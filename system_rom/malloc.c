@@ -110,15 +110,17 @@ getpagesize(void)
 static inline void *
 round_page(void *addr)
 {
-	const uintptr_t pgmask = getpagesize() - 1;
-
-	return (void *)(((uintptr_t)addr + pgmask) & ~pgmask);
+	return (void *)roundup(addr, getpagesize());
 }
 
 static void *
 init_brk(void *addr)
 {
-	curbrk = (uintptr_t)round_page(addr);
+	/*
+	 * Don't bother rounding the initial break to page size; we
+	 * want the initial overhead to be allocated from the slop.
+	 */
+	curbrk = roundup(addr, 16);
 	return (void *)curbrk;
 }
 

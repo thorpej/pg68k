@@ -38,6 +38,11 @@
  */
 #define	arraycount(x)	(sizeof(x) / sizeof(x[0]))
 
+/*
+ * Round up a value to the next power-of-two.
+ */
+#define	roundup(x, y)	(((uintptr_t)(x) + ((y) - 1)) & ~((y) - 1))
+
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);

@@ -124,9 +124,12 @@ fnd:
 	/* pass file name to the different filesystem open routines */
 	besterror = ENOENT;
 	for (i = 0; i < nfsys; i++) {
-		error = FS_OPEN(&file_system[i])(file, f);
+		if (file_systems[i] == NULL) {
+			continue;
+		}
+		error = FS_OPEN(file_systems[i])(file, f);
 		if (error == 0) {
-			f->f_ops = &file_system[i];
+			f->f_ops = file_systems[i];
 			return fd;
 		}
 		if (error != EINVAL)

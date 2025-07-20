@@ -43,6 +43,8 @@
  */
 #define	roundup(x, y)	(((uintptr_t)(x) + ((y) - 1)) & ~((y) - 1))
 
+#define	offsetof(s, m)	__builtin_offsetof(s, m)
+
 /*
  * Convert to/from disk blocks (XXX assume 512 byte sectors).
  */
@@ -59,19 +61,24 @@
 #define	ENOEXEC		4	/* Exec format error */
 #define	EBADF		5	/* Bad file descriptor */
 #define	ENOMEM		6	/* Cannot allocate memory */
-#define	EEXIST		7	/* File exists */
-#define	ENODEV		8	/* Operation not supported by device */
-#define	ENOTDIR		9	/* /* Not a directory */
-#define	EINVAL		10	/* Invalid argument */
-#define	EMFILE		11	/* Too many open files */
-#define	ENOSPC		12	/* No space left on device */
-#define	EROFS		13	/* Read-only file system */
-#define	EOPNOTSUPP	14	/* Operation not supported */
+#define	EBUSY		7	/* Device busy */
+#define	EEXIST		8	/* File exists */
+#define	ENODEV		9	/* Operation not supported by device */
+#define	ENOTDIR		10	/* /* Not a directory */
+#define	EINVAL		11	/* Invalid argument */
+#define	EMFILE		12	/* Too many open files */
+#define	ENOSPC		13	/* No space left on device */
+#define	EROFS		14	/* Read-only file system */
+#define	EOPNOTSUPP	15	/* Operation not supported */
+#define	ELOOP		16	/* Too many levels of symbolic links */
+#define	ENAMETOOLONG	17	/* File name too long */
 
 extern int errno;
 
 const char *strerror(int);
 #endif /* ! CONFIG_MACH_HOST_SIM */
+
+#define	ffs(x)		__builtin_ffs(x)
 
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);

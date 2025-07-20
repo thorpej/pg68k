@@ -170,13 +170,13 @@ configure(void)
 int	errno;
 
 static const char *errno_strings[] = {
-[0]		=	"unknown error (0)",
 [ENOENT]	=	"No such file or directory",
 [EIO]		=	"Input/output error",
 [ENXIO]		=	"Device not configured",
 [ENOEXEC]	=	"Exec format error",
 [EBADF]		=	"Bad file descriptor",
 [ENOMEM]	=	"Cannot allocate memory",
+[EBUSY]		=	"Device busy",
 [EEXIST]	=	"File exists",
 [ENODEV]	=	"Operation not supported by device",
 [ENOTDIR]	=	"Not a directory",
@@ -185,6 +185,8 @@ static const char *errno_strings[] = {
 [ENOSPC]	=	"No space left on device",
 [EROFS]		=	"Read-only file system",
 [EOPNOTSUPP]	=	"Operation not supported",
+[ELOOP]		=	"Too many levels of symbolic links",
+[ENAMETOOLONG]	=	"File name too long",
 };
 
 const char *

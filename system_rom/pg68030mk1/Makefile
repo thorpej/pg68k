@@ -7,6 +7,8 @@ MACH_CLEANFILES=${MACH_PROG}.list
 .include "../xcomp.mk"
 .include "../sysrom.mk"
 
+OBJS+=		${DOSFSOBJS}
+
 ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \
 	    > $(.TARGET).list

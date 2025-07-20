@@ -28,6 +28,14 @@
 #include "syslib.h"
 #include "sysfile.h"
 
-struct fs_ops file_system[] = {
+#ifdef CONFIG_FS_DOSFS
+extern const struct fs_ops dosfs_fsops;
+#endif
+
+const struct fs_ops *file_systems[] = {
+#ifdef CONFIG_FS_DOSFS
+	&dosfs_fsops,
+#endif
+	NULL
 };
-int nfsys = arraycount(file_system);
+int nfsys = arraycount(file_systems);

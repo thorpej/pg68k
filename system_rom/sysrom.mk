@@ -3,7 +3,7 @@
 #
 
 CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE) -DKERNEL_USE
-CFLAGS=		-Os
+CFLAGS=		-Os -Werror
 ASFLAGS=
 
 .ifdef MACH_CPU
@@ -16,12 +16,14 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 .PATH: ../dosfs
 
 SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o strchr.o strrchr.o \
-		strcmp.o
+		strcmp.o strlen.o
 
 DOSFSOBJS=	dosfs.o
 
-COMPRTOBJS=	int_util.o udivdi3.o umoddi3.o udivmoddi4.o
+COMPRTOBJS=	int_util.o ashldi3.o udivdi3.o umoddi3.o udivmoddi4.o
+
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
+
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o files.o fs.o ls.o \
 		fnmatch.o
 

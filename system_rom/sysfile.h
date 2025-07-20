@@ -122,12 +122,12 @@ struct fs_ops {
 	int	(*fs_close)(struct open_file *);
 	int	(*fs_read)(struct open_file *, void *, size_t, size_t *);
 	int	(*fs_write)(struct open_file *, void *, size_t size, size_t *);
-	int	(*fs_seek)(struct open_file *, off_t, int);
+	off_t	(*fs_seek)(struct open_file *, off_t, int);
 	int	(*fs_stat)(struct open_file *, struct stat *);
-	int	(*fs_ls)(struct open_file *, const char *);
+	void	(*fs_ls)(struct open_file *, const char *);
 };
 
-extern struct fs_ops file_system[];
+extern const struct fs_ops *file_systems[];
 extern int nfsys;
 
 #define	FS_OPEN(fs)		((fs)->fs_open)

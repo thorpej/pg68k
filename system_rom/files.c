@@ -145,6 +145,20 @@ err:
 }
 
 int
+getfile(int fd, struct open_file **fp)
+{
+	struct open_file *f = &files[fd];
+
+	if ((unsigned int)fd >= SOPEN_MAX || f->f_flags == 0) {
+		errno = EBADF;
+		return -1;
+	}
+
+	*fp = f;
+	return 0;
+}
+
+int
 close(int fd)
 {
 	struct open_file *f = &files[fd];

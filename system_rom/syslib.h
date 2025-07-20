@@ -61,19 +61,26 @@
 #define	ENOMEM		6	/* Cannot allocate memory */
 #define	EEXIST		7	/* File exists */
 #define	ENODEV		8	/* Operation not supported by device */
-#define	EINVAL		9	/* Invalid argument */
-#define	EMFILE		10	/* Too many open files */
-#define	ENOSPC		11	/* No space left on device */
-#define	EROFS		12	/* Read-only file system */
-#define	EOPNOTSUPP	13	/* Operation not supported */
+#define	ENOTDIR		9	/* /* Not a directory */
+#define	EINVAL		10	/* Invalid argument */
+#define	EMFILE		11	/* Too many open files */
+#define	ENOSPC		12	/* No space left on device */
+#define	EROFS		13	/* Read-only file system */
+#define	EOPNOTSUPP	14	/* Operation not supported */
 
 extern int errno;
+
+const char *strerror(int);
 #endif /* ! CONFIG_MACH_HOST_SIM */
 
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);
 void *	memset(void *, int, size_t);
+
+char *	strchr(const char *, int);
+char *	strrchr(const char *, int);
+int	strcmp(const char *, const char *);
 
 void *	calloc(size_t, size_t);
 void *	malloc(size_t);

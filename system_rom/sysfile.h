@@ -165,7 +165,22 @@ struct stat {
 	uint32_t	st_gen;		/* file generation number */
 };
 
+#define	S_IFMT		0170000	/* type of file mask */
+#define	S_IFIFO		0010000	/* named pipe (fifo) */
+#define	S_IFCHR		0020000	/* character special */
+#define	S_IFDIR		0040000	/* directory */
+#define	S_IFBLK		0060000	/* block special */
+#define	S_IFREG		0100000	/* regular */
+#define	S_IFLNK		0120000	/* symbolic link */
+#define	S_ISVTX		0001000	/* save swapped text even after use */
+#define	S_IFSOCK	0140000	/* socket */
+#define	S_IFWHT		0160000	/* whiteout */
+#define	S_ARCH1		0200000	/* Archive state 1, ls -l shows 'a' */
+#define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
+
 int	devopen(struct open_file *, const char *, char **);
+int	getfile(int, struct open_file **);
+int	fnmatch(const char *, const char *);
 
 int	open(const char *, int);
 int	close(int);
@@ -175,6 +190,6 @@ ssize_t	write(int, const void *, size_t);
 int	ioctl(int, u_long, void *);
 int	stat(const char *, struct stat *);
 int	fstat(int, struct stat *);
-int	ls(const char *);
+void	ls(const char *);
 
 #endif /* sysfile_h_included */

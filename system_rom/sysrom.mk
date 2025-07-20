@@ -11,18 +11,23 @@ CFLAGS+=	-mcpu=$(MACH_CPU)
 ASFLAGS+=	-mcpu=$(MACH_CPU)
 .endif
 
-SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o
+.PATH: ..
+.PATH: ../compiler_rt
+.PATH: ../dosfs
+
+SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o strchr.o strrchr.o \
+		strcmp.o
+
+DOSFSOBJS=	dosfs.o
 
 COMPRTOBJS=	int_util.o udivdi3.o umoddi3.o udivmoddi4.o
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
-OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o files.o fs.o
+OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o files.o fs.o ls.o \
+		fnmatch.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
 
 GENASSYM_FLAGS=${CFLAGS:N-Wa,*:N-fstack-usage*} ${CPPFLAGS}
-
-.PATH: ..
-.PATH: ../compiler_rt
 
 all: ${MACH_IMGS}
 

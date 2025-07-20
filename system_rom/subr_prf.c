@@ -196,6 +196,19 @@ vsnprintf(char *buf, size_t size, const char *fmt, va_list ap)
 	return sbuf - buf;
 }
 
+int
+snprintf(char *buf, size_t size, const char *fmt, ...)
+{
+	va_list ap;
+	int rv;
+
+	va_start(ap, fmt);
+	rv = vsnprintf(buf, size, fmt, ap);
+	va_end(ap);
+
+	return rv;
+}
+
 static void
 kdoprnt(void (*put)(int), const char *fmt, va_list ap)
 {

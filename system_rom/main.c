@@ -168,6 +168,37 @@ configure(void)
 
 #ifndef CONFIG_MACH_HOST_SIM
 int	errno;
+
+static const char *errno_strings[] = {
+[0]		=	"unknown error (0)",
+[ENOENT]	=	"No such file or directory",
+[EIO]		=	"Input/output error",
+[ENXIO]		=	"Device not configured",
+[ENOEXEC]	=	"Exec format error",
+[EBADF]		=	"Bad file descriptor",
+[ENOMEM]	=	"Cannot allocate memory",
+[EEXIST]	=	"File exists",
+[ENODEV]	=	"Operation not supported by device",
+[ENOTDIR]	=	"Not a directory",
+[EINVAL]	=	"Invalid argument",
+[EMFILE]	=	"Too many open files",
+[ENOSPC]	=	"No space left on device",
+[EROFS]		=	"Read-only file system",
+[EOPNOTSUPP]	=	"Operation not supported",
+};
+
+const char *
+strerror(int err)
+{
+	static char unkerr[sizeof("unknown error XXXXXXXXXXXX")];
+
+	if (err < 0 || err > arraycount(errno_strings) ||
+	    errno_strings[err] == NULL) {
+		snprintf(unkerr, sizeof(unkerr), "unknown error %d", err);
+		return unkerr;
+	}
+	return errno_strings[err];
+}
 #endif
 
 int

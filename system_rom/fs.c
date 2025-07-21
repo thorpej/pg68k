@@ -28,11 +28,18 @@
 #include "syslib.h"
 #include "sysfile.h"
 
+#ifdef CONFIG_FS_UFS
+extern const struct fs_ops ufs_fsops;
+#endif
+
 #ifdef CONFIG_FS_DOSFS
 extern const struct fs_ops dosfs_fsops;
 #endif
 
 const struct fs_ops *file_systems[] = {
+#ifdef CONFIG_FS_UFS
+	&ufs_fsops,
+#endif
 #ifdef CONFIG_FS_DOSFS
 	&dosfs_fsops,
 #endif

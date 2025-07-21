@@ -33,3 +33,9 @@ devopen(struct open_file *f, const char *path, char **fnamep)
 {
 	return ENXIO;
 }
+
+size_t
+getsecsize(struct open_file *f)
+{
+	return DEV_BSIZE;	/* XXX for now */
+}

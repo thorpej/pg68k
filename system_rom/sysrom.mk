@@ -14,13 +14,16 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 .PATH: ..
 .PATH: ../compiler_rt
 .PATH: ../dosfs
+.PATH: ../ufs
 
 SYSLIBOBJS=	memcmp.o memcpy.o memset.o subr_prf.o strchr.o strrchr.o \
 		strcmp.o strlen.o
 
+UFSOBJS=	ufs.o ffs_bswap.o
 DOSFSOBJS=	dosfs.o
 
-COMPRTOBJS=	int_util.o ashldi3.o udivdi3.o umoddi3.o udivmoddi4.o
+COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \
+		udivmoddi4.o
 
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
 

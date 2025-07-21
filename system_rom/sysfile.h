@@ -149,7 +149,7 @@ extern int nfsys;
 #define	SEEK_END	2	/* set file offset to EOF plus offset */
 
 struct stat {
-	uint64_t	st_ino;		/* inode's number */
+	ino_t		st_ino;		/* inode's number */
 	mode_t		st_mode;	/* inode protection mode */
 	nlink_t		st_nlink;	/* number of hard links */
 	uid_t		st_uid;		/* user ID of the file's owner */
@@ -179,6 +179,7 @@ struct stat {
 #define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
 
 int	devopen(struct open_file *, const char *, char **);
+size_t	getsecsize(struct open_file *);
 int	getfile(int, struct open_file **);
 int	fnmatch(const char *, const char *);
 

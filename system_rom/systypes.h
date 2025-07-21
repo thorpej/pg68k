@@ -99,6 +99,7 @@ typedef int			uid_t;
 typedef int			gid_t;
 typedef	uint32_t		mode_t;
 typedef	uint32_t		nlink_t;
+typedef uint64_t		ino_t;
 
 typedef uint32_t		in_addr_t;
 typedef uint16_t		in_port_t;
@@ -110,6 +111,9 @@ struct timespec {
 	int64_t		tv_sec;
 	long		tv_nsec;
 };
+
+#define	PATH_MAX		1024
+#define	MAXSYMLINKS		32
 
 #endif /* CONFIG_MACH_HOST_SIM */
 

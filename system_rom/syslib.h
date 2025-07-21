@@ -67,11 +67,13 @@
 #define	ENOTDIR		10	/* /* Not a directory */
 #define	EINVAL		11	/* Invalid argument */
 #define	EMFILE		12	/* Too many open files */
-#define	ENOSPC		13	/* No space left on device */
-#define	EROFS		14	/* Read-only file system */
-#define	EOPNOTSUPP	15	/* Operation not supported */
-#define	ELOOP		16	/* Too many levels of symbolic links */
-#define	ENAMETOOLONG	17	/* File name too long */
+#define	EFBIG		13	/* File too large */
+#define	ENOSPC		14	/* No space left on device */
+#define	EROFS		15	/* Read-only file system */
+#define	EMLINK		16	/* Too many links */
+#define	EOPNOTSUPP	17	/* Operation not supported */
+#define	ELOOP		18	/* Too many levels of symbolic links */
+#define	ENAMETOOLONG	19	/* File name too long */
 
 extern int errno;
 
@@ -88,6 +90,7 @@ void *	memset(void *, int, size_t);
 char *	strchr(const char *, int);
 char *	strrchr(const char *, int);
 int	strcmp(const char *, const char *);
+size_t	strlen(const char *);
 
 void *	calloc(size_t, size_t);
 void *	malloc(size_t);

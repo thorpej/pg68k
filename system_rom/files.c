@@ -229,7 +229,7 @@ write(int fd, const void *destp, size_t bcount)
 {
 	struct open_file *f = &files[fd];
 	size_t resid;
-	void *dest = __UNCONST(destp);
+	void *dest = UNCONST(destp);
 
 	if ((unsigned int)fd >= SOPEN_MAX || !(f->f_flags & F_WRITE)) {
 		errno = EBADF;

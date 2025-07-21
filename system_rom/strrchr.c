@@ -44,7 +44,7 @@ strrchr(const char *p, int ch)
 	for (save = NULL;; ++p) {
 		if (*p == c) {
 			/* LINTED const cast-away */
-			save = __UNCONST(p);
+			save = UNCONST(p);
 		}
 		if (!*p)
 			return(save);

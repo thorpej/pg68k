@@ -34,6 +34,12 @@
 #ifndef endian_h_included
 #define endian_h_included
 
+#include "config.h"
+
+#ifdef CONFIG_MACH_HOST_SIM
+#include <machine/endian.h>
+#endif
+
 /*
  * Definitions for byte order, according to byte significance from low
  * address to high.
@@ -42,17 +48,27 @@
 #define	_BIG_ENDIAN	4321	/* MSB first: 68000, ibm, net */
 #define	_PDP_ENDIAN	3412	/* LSB first in word, MSW first in long */
 
+#undef htonl
+#undef htons
+#undef ntohl
+#undef ntohs
+
+#undef HTONL
+#undef HTONS
+#undef NTOHL
+#undef NTOHS
+
 __BEGIN_DECLS
-uint32_t htonl(uint32_t) __constfunc;
-uint16_t htons(uint16_t) __constfunc;
-uint32_t ntohl(uint32_t) __constfunc;
-uint16_t ntohs(uint16_t) __constfunc;
+uint32_t htonl(uint32_t);
+uint16_t htons(uint16_t);
+uint32_t ntohl(uint32_t);
+uint16_t ntohs(uint16_t);
 __END_DECLS
 
 /* bswap macros written by Manuel Bouyer. Public domain */
 
 #define	__byte_swap_u64_constant(x) \
-	(__CAST(uint64_t, \
+	((uint64_t) \
 	 ((((x) & 0xff00000000000000ull) >> 56) | \
 	  (((x) & 0x00ff000000000000ull) >> 40) | \
 	  (((x) & 0x0000ff0000000000ull) >> 24) | \
@@ -60,39 +76,41 @@ __END_DECLS
 	  (((x) & 0x00000000ff000000ull) <<  8) | \
 	  (((x) & 0x0000000000ff0000ull) << 24) | \
 	  (((x) & 0x000000000000ff00ull) << 40) | \
-	  (((x) & 0x00000000000000ffull) << 56))))
+	  (((x) & 0x00000000000000ffull) << 56)))
 
 #define	__byte_swap_u32_constant(x) \
-	(__CAST(uint32_t, \
+	((uint32_t) \
 	((((x) & 0xff000000) >> 24) | \
 	 (((x) & 0x00ff0000) >>  8) | \
 	 (((x) & 0x0000ff00) <<  8) | \
-	 (((x) & 0x000000ff) << 24))))
+	 (((x) & 0x000000ff) << 24)))
 
 #define	__byte_swap_u16_constant(x) \
-	(__CAST(uint16_t, \
+	((uint16_t) \
 	((((x) & 0xff00) >> 8) | \
-	 (((x) & 0x00ff) << 8))))
+	 (((x) & 0x00ff) << 8)))
 
-static inline __constfunc uint16_t
+static inline uint16_t
 bswap16(uint16_t x)
 {
 	return __byte_swap_u16_constant(x);
 }
 
-static inline __constfunc uint32_t
+static inline uint32_t
 bswap32(uint32_t x)
 {
 	return __byte_swap_u32_constant(x);
 }
 
-static inline __constfunc uint64_t
+static inline uint64_t
 bswap64(uint64_t x)
 {
 	return __byte_swap_u64_constant(x);
 }
 
+#ifndef CONFIG_MACH_HOST_SIM
 #define	_BYTE_ORDER	_BIG_ENDIAN
+#endif
 
 /*
  * Define the order of 32-bit words in 64-bit words.
@@ -111,27 +129,27 @@ bswap64(uint64_t x)
  * Macros for network/external number representation conversion.
  */
 #if _BYTE_ORDER == _BIG_ENDIAN
-#define	ntohl(x)	__CAST(uint32_t, (x))
-#define	ntohs(x)	__CAST(uint16_t, (x))
-#define	htonl(x)	__CAST(uint32_t, (x))
-#define	htons(x)	__CAST(uint16_t, (x))
+#define	ntohl(x)	((uint32_t) (x))
+#define	ntohs(x)	((uint16_t) (x))
+#define	htonl(x)	((uint32_t) (x))
+#define	htons(x)	((uint16_t) (x))
 
-#define	NTOHL(x)	__CAST(void, (x))
-#define	NTOHS(x)	__CAST(void, (x))
-#define	HTONL(x)	__CAST(void, (x))
-#define	HTONS(x)	__CAST(void, (x))
+#define	NTOHL(x)	((void) (x))
+#define	NTOHS(x)	((void) (x))
+#define	HTONL(x)	((void) (x))
+#define	HTONS(x)	((void) (x))
 
 #else	/* _LITTLE_ENDIAN */
 
-#define	ntohl(x)	bswap32(__CAST(uint32_t, (x)))
-#define	ntohs(x)	bswap16(__CAST(uint16_t, (x)))
-#define	htonl(x)	bswap32(__CAST(uint32_t, (x)))
-#define	htons(x)	bswap16(__CAST(uint16_t, (x)))
+#define	ntohl(x)	bswap32((uint32_t) (x))
+#define	ntohs(x)	bswap16((uint16_t) (x))
+#define	htonl(x)	bswap32((uint32_t) (x))
+#define	htons(x)	bswap16((uint16_t) (x))
 
-#define	NTOHL(x)	(x) = ntohl(__CAST(uint32_t, (x)))
-#define	NTOHS(x)	(x) = ntohs(__CAST(uint16_t, (x)))
-#define	HTONL(x)	(x) = htonl(__CAST(uint32_t, (x)))
-#define	HTONS(x)	(x) = htons(__CAST(uint16_t, (x)))
+#define	NTOHL(x)	(x) = ntohl((uint32_t) (x))
+#define	NTOHS(x)	(x) = ntohs((uint16_t) (x))
+#define	HTONL(x)	(x) = htonl((uint32_t) (x))
+#define	HTONS(x)	(x) = htons((uint16_t) (x))
 #endif	/* _LITTLE_ENDIAN */
 
 /*
@@ -140,35 +158,35 @@ bswap64(uint64_t x)
 
 #if _BYTE_ORDER == _BIG_ENDIAN
 
-#define htobe16(x)	__CAST(uint16_t, (x))
-#define htobe32(x)	__CAST(uint32_t, (x))
-#define htobe64(x)	__CAST(uint64_t, (x))
-#define htole16(x)	bswap16(__CAST(uint16_t, (x)))
-#define htole32(x)	bswap32(__CAST(uint32_t, (x)))
-#define htole64(x)	bswap64(__CAST(uint64_t, (x)))
+#define htobe16(x)	((uint16_t) (x))
+#define htobe32(x)	((uint32_t) (x))
+#define htobe64(x)	((uint64_t) (x))
+#define htole16(x)	bswap16((uint16_t) (x))
+#define htole32(x)	bswap32((uint32_t) (x))
+#define htole64(x)	bswap64((uint64_t) (x))
 
-#define HTOBE16(x)	__CAST(void, (x))
-#define HTOBE32(x)	__CAST(void, (x))
-#define HTOBE64(x)	__CAST(void, (x))
-#define HTOLE16(x)	(x) = bswap16(__CAST(uint16_t, (x)))
-#define HTOLE32(x)	(x) = bswap32(__CAST(uint32_t, (x)))
-#define HTOLE64(x)	(x) = bswap64(__CAST(uint64_t, (x)))
+#define HTOBE16(x)	((void) (x))
+#define HTOBE32(x)	((void) (x))
+#define HTOBE64(x)	((void) (x))
+#define HTOLE16(x)	(x) = bswap16((uint16_t) (x))
+#define HTOLE32(x)	(x) = bswap32((uint32_t) (x))
+#define HTOLE64(x)	(x) = bswap64((uint64_t) (x))
 
 #else	/* _LITTLE_ENDIAN */
 
-#define htobe16(x)	bswap16(__CAST(uint16_t, (x)))
-#define htobe32(x)	bswap32(__CAST(uint32_t, (x)))
-#define htobe64(x)	bswap64(__CAST(uint64_t, (x)))
-#define htole16(x)	__CAST(uint16_t, (x))
-#define htole32(x)	__CAST(uint32_t, (x))
-#define htole64(x)	__CAST(uint64_t, (x))
+#define htobe16(x)	bswap16((uint16_t) (x))
+#define htobe32(x)	bswap32((uint32_t) (x))
+#define htobe64(x)	bswap64((uint64_t) (x))
+#define htole16(x)	((uint16_t) (x))
+#define htole32(x)	((uint32_t) (x))
+#define htole64(x)	((uint64_t) (x))
 
-#define HTOBE16(x)	(x) = bswap16(__CAST(uint16_t, (x)))
-#define HTOBE32(x)	(x) = bswap32(__CAST(uint32_t, (x)))
-#define HTOBE64(x)	(x) = bswap64(__CAST(uint64_t, (x)))
-#define HTOLE16(x)	__CAST(void, (x))
-#define HTOLE32(x)	__CAST(void, (x))
-#define HTOLE64(x)	__CAST(void, (x))
+#define HTOBE16(x)	(x) = bswap16((uint16_t) (x))
+#define HTOBE32(x)	(x) = bswap32((uint32_t) (x))
+#define HTOBE64(x)	(x) = bswap64((uint64_t) (x))
+#define HTOLE16(x)	((void) (x))
+#define HTOLE32(x)	((void) (x))
+#define HTOLE64(x)	((void) (x))
 
 #endif	/* _LITTLE_ENDIAN */
 

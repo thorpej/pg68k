@@ -30,11 +30,14 @@
 #ifdef CONFIG_MACH_HOST_SIM
 
 #include <sys/types.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <setjmp.h>
+#include <time.h>
 
 /* XXX */
 typedef long long int		longlong_t;
@@ -113,8 +116,10 @@ struct timespec {
 };
 
 #define	PATH_MAX		1024
-#define	MAXSYMLINKS		32
 
 #endif /* CONFIG_MACH_HOST_SIM */
+
+#undef MAXSYMLINKS
+#define	MAXSYMLINKS		32
 
 #endif /* systypes_h_included */

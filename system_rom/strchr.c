@@ -43,7 +43,7 @@ strchr(const char *p, int ch)
 	for (;; ++p) {
 		if (*p == cmp) {
 			/* LINTED const cast-away */
-			return(__UNCONST(p));
+			return(UNCONST(p));
 		}
 		if (!*p)
 			return(NULL);

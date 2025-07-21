@@ -43,7 +43,20 @@
  */
 #define	roundup(x, y)	(((uintptr_t)(x) + ((y) - 1)) & ~((y) - 1))
 
+#ifndef CONFIG_MACH_HOST_SIM
 #define	offsetof(s, m)	__builtin_offsetof(s, m)
+#endif
+
+/*
+ * The following macro is used to remove const cast-away warnings
+ * from gcc -Wcast-qual; it should be used with caution because it
+ * can hide valid errors; in particular most valid uses are in
+ * situations where the API requires it, not to cast away string
+ * constants. We don't use *intptr_t on purpose here and we are
+ * explicit about unsigned long so that we don't have additional
+ * dependencies.
+ */
+#define UNCONST(a)	((void *)(uintptr_t)(const void *)(a))
 
 /*
  * Convert to/from disk blocks (XXX assume 512 byte sectors).
@@ -76,9 +89,9 @@
 #define	ENAMETOOLONG	19	/* File name too long */
 
 extern int errno;
-
-const char *strerror(int);
 #endif /* ! CONFIG_MACH_HOST_SIM */
+
+char *	strerror(int);
 
 #define	ffs(x)		__builtin_ffs(x)
 

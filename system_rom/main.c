@@ -191,7 +191,7 @@ static const char *errno_strings[] = {
 [ENAMETOOLONG]	=	"File name too long",
 };
 
-const char *
+char *
 strerror(int err)
 {
 	static char unkerr[sizeof("unknown error XXXXXXXXXXXX")];
@@ -201,7 +201,7 @@ strerror(int err)
 		snprintf(unkerr, sizeof(unkerr), "unknown error %d", err);
 		return unkerr;
 	}
-	return errno_strings[err];
+	return UNCONST(errno_strings[err]);
 }
 #endif
 

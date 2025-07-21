@@ -188,6 +188,7 @@ int	close(int);
 void	closeall(void);
 ssize_t	read(int, void *, size_t);
 ssize_t	write(int, const void *, size_t);
+off_t	lseek(int, off_t, int);
 int	ioctl(int, u_long, void *);
 int	stat(const char *, struct stat *);
 int	fstat(int, struct stat *);

@@ -145,4 +145,6 @@
 #error RAM4_DESC not defined
 #endif
 
+#define	BOOT_ELF32		/* support loading Elf32 binaries */
+
 #endif /* config_h_included */

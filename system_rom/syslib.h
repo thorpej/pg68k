@@ -87,6 +87,7 @@
 #define	EOPNOTSUPP	17	/* Operation not supported */
 #define	ELOOP		18	/* Too many levels of symbolic links */
 #define	ENAMETOOLONG	19	/* File name too long */
+#define	EFTYPE		20	/* Inappropriate file type or format */
 
 extern int errno;
 #endif /* ! CONFIG_MACH_HOST_SIM */
@@ -103,6 +104,7 @@ void *	memset(void *, int, size_t);
 char *	strchr(const char *, int);
 char *	strrchr(const char *, int);
 int	strcmp(const char *, const char *);
+int	strncmp(const char *, const char *, size_t);
 size_t	strlen(const char *);
 
 void *	calloc(size_t, size_t);

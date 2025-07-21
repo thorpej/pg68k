@@ -189,6 +189,7 @@ static const char *errno_strings[] = {
 [EOPNOTSUPP]	=	"Operation not supported",
 [ELOOP]		=	"Too many levels of symbolic links",
 [ENAMETOOLONG]	=	"File name too long",
+[EFTYPE]	=	"Inappropriate file type or format",
 };
 
 char *

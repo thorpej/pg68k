@@ -233,12 +233,24 @@ externalize_shdr(Elf_Byte bo, Elf_Shdr *shdr)
 #define MD_LOADSEG(a) /*CONSTCOND*/0
 #endif
 
+#ifdef CONFIG_MACH_HOST_SIM
+extern ssize_t sim_loader_read(int, uintptr_t, size_t);
+extern void sim_loader_bcopy(const void *, uintptr_t, size_t);
+extern void sim_loader_bzero(uintptr_t, size_t);
+#define	ALLOC(sz)	malloc((sz))
+#define	DEALLOC(p, sz)	free((p))
+#define	READ(f, b, sz)	sim_loader_read((f), (b), (sz))
+#define	BCOPY(s, d, sz)	sim_loader_bcopy((s), (d), (sz))
+#define	BZERO(d, sz)	sim_loader_bzero((d), (sz))
+#define	LOADADDR(x)	(x)
+#else
 #define	ALLOC(sz)	malloc((sz))
 #define	DEALLOC(p, sz)	free((p))
 #define	READ(f, b, sz)	read((f), (void *)(b), (sz))
 #define	BCOPY(s, d, sz)	memmove((void *)(d), (s), (sz))
 #define	BZERO(d, sz)	memset((void *)(d), 0, (sz))
 #define	LOADADDR(x)	(x)
+#endif /* CONFIG_MACH_HOST_SIM */
 
 /* -------------------------------------------------------------------------- */
 

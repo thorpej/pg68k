@@ -108,7 +108,7 @@ fnd:
 	f->f_offset = 0;
 
 	file = NULL;
-	error = devopen(f, fname, &file);
+	error = dev_open(f, fname, &file);
 	if (error
 	    || (((f->f_flags & F_NODEV) == 0) &&
 		f->f_dev == NULL)
@@ -177,7 +177,7 @@ close(int fd)
 			err1 = FS_CLOSE(f->f_ops)(f);
 	if (!(f->f_flags & F_NODEV))
 		if (f->f_dev != NULL)
-			err2 = DEV_CLOSE(f->f_dev)(f);
+			err2 = dev_close(f);
 	f->f_flags = 0;
 	if (err1) {
 		errno = err1;

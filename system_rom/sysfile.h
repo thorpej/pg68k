@@ -66,6 +66,7 @@
 
 #include "config.h"
 #include "systypes.h"
+#include "disklabel.h"
 
 #ifdef CONFIG_MACH_HOST_SIM
 #define	open		libsa_open
@@ -90,6 +91,7 @@ struct open_file {
 	const struct fs_ops *f_ops;	/* pointer to file system operations */
 	void		*f_fsdata;	/* file system specific data */
 	off_t		f_offset;	/* current file offset (F_RAW) */
+	struct partition_list f_partitions; /* disk partition list */
 };
 
 #define	SOPEN_MAX	4		/* # of concurrent open files */
@@ -179,9 +181,10 @@ struct stat {
 #define	S_ARCH1		0200000	/* Archive state 1, ls -l shows 'a' */
 #define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
 
-int	devopen(struct open_file *, const char *, const char **);
+int	dev_open(struct open_file *, const char *, const char **);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);
 int	dev_write(struct open_file *, uint64_t, const void *, size_t);
+int	dev_close(struct open_file *);
 size_t	getsecsize(struct open_file *);
 int	getfile(int, struct open_file **);
 int	fnmatch(const char *, const char *);

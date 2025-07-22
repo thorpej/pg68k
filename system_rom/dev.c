@@ -47,8 +47,8 @@ devlookup(const char *name, size_t namelen)
 		if (devsw[i] == NULL) {
 			continue;
 		}
-		if (strlen(devsw[i]->dv_name) == namelen &&
-		    strncmp(devsw[i]->dv_name, name, namelen) == 0) {
+		if (strlen(DEV_NAME(devsw[i])) == namelen &&
+		    strncmp(DEV_NAME(devsw[i]), name, namelen) == 0) {
 			return devsw[i];
 		}
 	}
@@ -58,7 +58,7 @@ devlookup(const char *name, size_t namelen)
 static void
 devusage(const struct devsw *dv)
 {
-	printf("usage: %s(", dv->dv_name);
+	printf("usage: %s(", DEV_NAME(dv));
 	if (dv->dv_nargs >= 1) {
 		printf("ctlr");
 	}
@@ -74,7 +74,7 @@ devusage(const struct devsw *dv)
 static void
 deverr(const struct devsw *dv, int ctlr, int unit, int part, int error)
 {
-	printf("%s(", dv->dv_name);
+	printf("%s(", DEV_NAME(dv));
 	if (dv->dv_nargs >= 1) {
 		printf("%d", ctlr);
 	}
@@ -197,11 +197,12 @@ devparse(const char *str, const struct devsw **dvp,
 }
 
 int
-devopen(struct open_file *f, const char *path, const char **fnamep)
+dev_open(struct open_file *f, const char *path, const char **fnamep)
 {
 	int ctlr = -1, unit = -1, part = -1;
 	int error;
 	const struct devsw *dv = NULL;
+	bool need_close = false;
 
 	error = devparse(path, &dv, &ctlr, &unit, &part, fnamep);
 	if (error) {
@@ -221,11 +222,33 @@ devopen(struct open_file *f, const char *path, const char **fnamep)
 	}
 
 	f->f_dev = dv;
-	error = (*dv->dv_open)(f, ctlr, unit, part);
+	error = DEV_OPEN(dv)(f, ctlr, unit, part);
+	if (error == 0) {
+		need_close = true;
+		error = partition_list_scan(f, &f->f_partitions);
+		if (error == 0) {
+			printf("Found %s partition scheme",
+			    partition_scheme_name(f->f_partitions.pl_scheme));
+			error = partition_list_choose(&f->f_partitions, part);
+			if (error) {
+				partition_list_discard(&f->f_partitions);
+			}
+		}
+	}
 	if (error) {
 		deverr(dv, ctlr, unit, part, error);
+		if (need_close) {
+			DEV_CLOSE(dv)(f);
+		}
 	}
 	return error;
+}
+
+int
+dev_close(struct open_file *f)
+{
+	partition_list_discard(&f->f_partitions);
+	return DEV_CLOSE(f->f_dev)(f);
 }
 
 int
@@ -234,7 +257,7 @@ dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
 	size_t resid = sz;
 	int error;
 
-	error = (*f->f_dev->dv_strategy)(f->f_devdata, F_READ, blkno,
+	error = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ, blkno,
 	    sz, buf, &resid);
 	if (error == 0 && resid != 0) {
 		error = EIO;
@@ -248,7 +271,7 @@ dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
 	size_t resid = sz;
 	int error;
 
-	error = (*f->f_dev->dv_strategy)(f->f_devdata, F_WRITE, blkno,
+	error = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_WRITE, blkno,
 	    sz, UNCONST(buf)/*XXX*/, &resid);
 	if (error == 0 && resid != 0) {
 		error = EIO;

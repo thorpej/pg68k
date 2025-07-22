@@ -229,6 +229,34 @@ devopen(struct open_file *f, const char *path, const char **fnamep)
 	return error;
 }
 
+int
+dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
+{
+	size_t resid = sz;
+	int error;
+
+	error = (*f->f_dev->dv_strategy)(f->f_devdata, F_READ, blkno,
+	    sz, buf, &resid);
+	if (error == 0 && resid != 0) {
+		error = EIO;
+	}
+	return error;
+}
+
+int
+dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
+{
+	size_t resid = sz;
+	int error;
+
+	error = (*f->f_dev->dv_strategy)(f->f_devdata, F_WRITE, blkno,
+	    sz, UNCONST(buf)/*XXX*/, &resid);
+	if (error == 0 && resid != 0) {
+		error = EIO;
+	}
+	return error;
+}
+
 size_t
 getsecsize(struct open_file *f)
 {

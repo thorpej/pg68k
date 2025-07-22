@@ -180,6 +180,8 @@ struct stat {
 #define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
 
 int	devopen(struct open_file *, const char *, const char **);
+int	dev_read(struct open_file *, uint64_t, void *, size_t);
+int	dev_write(struct open_file *, uint64_t, const void *, size_t);
 size_t	getsecsize(struct open_file *);
 int	getfile(int, struct open_file **);
 int	fnmatch(const char *, const char *);

@@ -16,8 +16,11 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 .PATH: ../dosfs
 .PATH: ../ufs
 
-SYSLIBOBJS=	memcmp.o memcpy.o memmove.o memset.o \
-		subr_prf.o strchr.o strrchr.o strcmp.o strncmp.o strlen.o
+SYSLIBOBJS=	crc32.o \
+		memcmp.o memcpy.o memmove.o memset.o \
+		subr_prf.o \
+		strchr.o strrchr.o strcmp.o strncmp.o strlen.o \
+		unicode.o uuid.o
 
 ATAOBJS=	ata.o
 
@@ -29,8 +32,8 @@ COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \
 
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
 
-OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o files.o fs.o ls.o \
-		fnmatch.o loadfile.o loadfile_elf32.o
+OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o disklabel.o \
+		files.o fs.o ls.o fnmatch.o loadfile.o loadfile_elf32.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
 

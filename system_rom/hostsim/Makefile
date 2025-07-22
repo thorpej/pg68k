@@ -4,7 +4,7 @@ MACH_IMGS=	pgromsim
 
 .include "../sysrom.mk"
 
-CFLAGS+=	-g -Wmissing-prototypes
+CFLAGS+=	-g -Wall -Wmissing-prototypes
 
 OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS}
 OBJS+=		simtrap.o

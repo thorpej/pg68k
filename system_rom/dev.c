@@ -223,7 +223,6 @@ devopen(struct open_file *f, const char *path, const char **fnamep)
 	f->f_dev = dv;
 	error = (*dv->dv_open)(f, ctlr, unit, part);
 	if (error) {
- bad:
 		deverr(dv, ctlr, unit, part, error);
 	}
 	return error;

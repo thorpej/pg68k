@@ -151,6 +151,7 @@ calloc(size_t count, size_t size)
 	if (p != NULL) {
 		memset(p, 0, nbytes);
 	}
+	return p;
 }
 
 void *

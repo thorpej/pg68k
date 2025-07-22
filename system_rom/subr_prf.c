@@ -174,6 +174,19 @@ puts(const char *s)
 	return cnt+1;
 }
 
+int
+putstrn(const char *s, size_t len)
+{
+	int ch;
+	int cnt = 0;
+
+	while (len-- && (ch = *s++) != '\0') {
+		putchar(ch);
+		cnt++;
+	}
+	return cnt;
+}
+
 /* Avoid circular dependency with uart_hostsim.c */
 #ifndef CONFIG_MACH_HOST_SIM
 int

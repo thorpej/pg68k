@@ -46,6 +46,7 @@ typedef unsigned long long int	u_longlong_t;
 #else /* ! CONFIG_MACH_HOST_SIM */
 
 #include "cdefs.h"
+#include "stdarg.h"
 
 #define	bool			_Bool
 #define	true			1

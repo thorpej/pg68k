@@ -102,14 +102,15 @@ struct open_file {
 
 struct devsw {
 	const char *dv_name;
+	int	dv_nargs;
 	int	(*dv_strategy)(void *, int, daddr_t, size_t, void *, size_t *);
 	int	(*dv_open)(struct open_file *, ...);
 	int	(*dv_close)(struct open_file *);
 	int	(*dv_ioctl)(struct open_file *, u_long, void *);
 };
 
-extern struct devsw devsw[];	/* device array */
-extern int ndevs;		/* number of elements in devsw[] */
+extern const struct devsw *devsw[];	/* device array */
+extern const int ndevs;			/* number of elements in devsw[] */
 
 #define	DEV_NAME(d)		((d)->dv_name)
 #define	DEV_STRATEGY(d)		((d)->dv_strategy)
@@ -128,7 +129,7 @@ struct fs_ops {
 };
 
 extern const struct fs_ops *file_systems[];
-extern int nfsys;
+extern const int nfsys;
 
 #define	FS_OPEN(fs)		((fs)->fs_open)
 #define	FS_CLOSE(fs)		((fs)->fs_close)
@@ -178,7 +179,7 @@ struct stat {
 #define	S_ARCH1		0200000	/* Archive state 1, ls -l shows 'a' */
 #define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
 
-int	devopen(struct open_file *, const char *, char **);
+int	devopen(struct open_file *, const char *, const char **);
 size_t	getsecsize(struct open_file *);
 int	getfile(int, struct open_file **);
 int	fnmatch(const char *, const char *);

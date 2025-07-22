@@ -29,6 +29,7 @@
 
 #include "console.h"
 #include "trap.h"
+#include "ata.h"
 #include "uart.h"
 
 struct memory_bank {
@@ -163,6 +164,9 @@ configure(void)
 	printf("Device configuration:\n");
 #ifdef UART0_ADDR
 	uart_configure();
+#endif
+#ifdef ATA_ADDR
+	ata_configure();
 #endif
 }
 

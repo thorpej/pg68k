@@ -28,10 +28,200 @@
 #include "syslib.h"
 #include "sysfile.h"
 
-int
-devopen(struct open_file *f, const char *path, char **fnamep)
+#ifdef CONFIG_DEV_ATA
+extern const struct devsw ata_devsw;
+#endif
+
+const struct devsw *devsw[] = {
+#ifdef CONFIG_DEV_ATA
+	&ata_devsw,
+#endif
+	NULL,
+};
+const int ndevsw = arraycount(devsw);
+
+static const struct devsw *
+devlookup(const char *name, size_t namelen)
 {
-	return ENXIO;
+	for (int i = 0; i < ndevsw; i++) {
+		if (devsw[i] == NULL) {
+			continue;
+		}
+		if (strlen(devsw[i]->dv_name) == namelen &&
+		    strncmp(devsw[i]->dv_name, name, namelen) == 0) {
+			return devsw[i];
+		}
+	}
+	return NULL;
+}
+
+static void
+devusage(const struct devsw *dv)
+{
+	printf("usage: %s(", dv->dv_name);
+	if (dv->dv_nargs >= 1) {
+		printf("ctlr");
+	}
+	if (dv->dv_nargs >= 2) {
+		printf(",unit");
+	}
+	if (dv->dv_nargs >= 3) {
+		printf(",part");
+	}
+	printf(")[/path]\n");
+}
+
+static void
+deverr(const struct devsw *dv, int ctlr, int unit, int part, int error)
+{
+	printf("%s(", dv->dv_name);
+	if (dv->dv_nargs >= 1) {
+		printf("%d", ctlr);
+	}
+	if (dv->dv_nargs >= 2) {
+		printf(",%d", unit);
+	}
+	if (dv->dv_nargs >= 3) {
+		printf(",%d", part);
+	}
+	printf("): %s\n", strerror(error));
+}
+
+/*
+ * Parse a device spec in the form:
+ *
+ *	dev(ctlr,unit,part)
+ *
+ * Where:
+ *
+ *	dev - driver name, e.g. "ata" or "eth".
+ *
+ *	ctlr - the controller instance
+ *
+ *	unit - the specific unit on that controller instance, e.g. drive
+ *	0 or drive 1 on an ATA controller.
+ *
+ *	part - a partition number, which 0 being the first partition of
+ *	the device.
+ *
+ * Unspecified parameters are returned as -1.
+ *
+ * Examples:
+ *
+ *	eth(0) - the first Ethernet controller
+ *
+ *	eth() - also the first Ethernet controller
+ *
+ *	ata(0,1,0) - The first partition on drive 1 (the second drive) of
+ *	the first ATA disk interface.
+ *
+ * Not all devices support all arguments; if a device specfies that it
+ * supports "part", it must also support "unit" and "ctlr".
+ *
+ * Watever is left after the device identifier is passed along as the
+ * file name to the file system.
+ */
+static int
+devparse(const char *str, const struct devsw **dvp,
+    int *ctlrp, int *unitp, int *partp, const char **fnamep)
+{
+	const char *cp;
+	int *devargs[] = {
+		ctlrp,
+		unitp,
+		partp,
+	};
+	const struct devsw *dv;
+	int val, argno, maxargs;
+
+	/* get device name */
+	for (cp = str;
+	     *cp != '\0' && *cp != '/' && *cp != '(';
+	     cp++) {
+		continue;
+	}
+
+	if (*cp == '/') {
+		/* Just got a file name. */
+		*fnamep = cp;
+		return 0;
+	}
+
+	if (*cp != '(') {
+		/* Not sure what we got, give back the whole string. */
+		*fnamep = str;
+		return 0;
+	}
+
+	/* Get the driver entry. */
+	dv = devlookup(str, cp - str);
+	if (dv == NULL) {
+		/* Don't have specified driver, oops. */
+		printf("Unknown device: ");
+		putstrn(str, cp - str);
+		putchar('\n');
+		return ENXIO;
+	}
+	maxargs = dv->dv_nargs;
+	if (maxargs < 0) {
+		maxargs = 0;
+	} else if (maxargs > 3) {
+		maxargs = 3;
+	}
+
+	for (cp++, val = -1, argno = 0; argno < maxargs;) {
+		if (*cp >= '0' && *cp <= 9) {
+			val = (val * 10) + (*cp - '0');
+		} else if (*cp == ',') {
+			*devargs[argno] = val;
+			val = -1;
+			argno++;
+		} else if (*cp == ')') {
+			break;
+		} else {
+			goto bad;
+		}
+	}
+	if (*cp != ')') {
+ bad:
+		devusage(dv);
+		return EINVAL;
+	}
+	*fnamep = ++cp;
+	return 0;
+}
+
+int
+devopen(struct open_file *f, const char *path, const char **fnamep)
+{
+	int ctlr = -1, unit = -1, part = -1;
+	int error;
+	const struct devsw *dv = NULL;
+
+	error = devparse(path, &dv, &ctlr, &unit, &part, fnamep);
+	if (error) {
+		return error;
+	}
+
+	/*
+	 * Default the controller and unit numbers to 0.  Partition
+	 * number gets to say unspecified, hinting that the partition
+	 * code should search for a good candidate.
+	 */
+	if (ctlr == -1) {
+		ctlr = 0;
+	}
+	if (unit == -1) {
+		unit = 0;
+	}
+
+	f->f_dev = dv;
+	error = (*dv->dv_open)(f, ctlr, unit, part);
+	if (error) {
+ bad:
+		deverr(dv, ctlr, unit, part, error);
+	}
+	return error;
 }
 
 size_t

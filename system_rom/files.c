@@ -89,7 +89,7 @@ open(const char *fname, int mode)
 	struct open_file *f;
 	int fd, error;
 	int i, besterror;
-	char *file;
+	const char *file;
 
 	/* find a free file descriptor */
 	for (fd = 0, f = files; fd < SOPEN_MAX; fd++, f++)

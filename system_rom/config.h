@@ -61,6 +61,7 @@
 #define	CONFIG_UART_FREQ	1843200
 #define	CONFIG_UART_SPEED	115200
 #define	CONFIG_CONSOLE_UART	0
+#define	CONFIG_ATA_GENERIC
 #define	CONFIG_ETH_RTL8019AS
 #define	CONFIG_I2C_PCF8584
 #define	CONFIG_FS_UFS
@@ -87,6 +88,7 @@
 #define	CONFIG_UART_HOST_SIM
 #define	CONFIG_UART_SPEED	115200	/* just a dummy */
 #define	CONFIG_CONSOLE_UART	0
+#define	CONFIG_ATA_HOST_SIM
 #endif /* CONFIG_MACH_HOST_SIM */
 
 #ifndef CONFIG_RIISP
@@ -95,6 +97,10 @@
 
 #ifndef CONFIG_DEV_REGSHIFT
 #define	CONFIG_DEV_REGSHIFT	0
+#endif
+
+#if defined(CONFIG_ATA_GENERIC) || defined(CONFIG_ATA_HOST_SIM)
+#define	CONFIG_DEV_ATA
 #endif
 
 #ifndef RAM0_SIZE

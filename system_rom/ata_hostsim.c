@@ -24,25 +24,57 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
+#include "systypes.h"
 #include "syslib.h"
 #include "sysfile.h"
 
-#ifdef CONFIG_FS_UFS
-extern const struct fs_ops ufs_fsops;
-#endif
+#include "ata.h"
 
-#ifdef CONFIG_FS_DOSFS
-extern const struct fs_ops dosfs_fsops;
-#endif
+void
+ata_init(int ctlr)
+{
+}
 
-const struct fs_ops *file_systems[] = {
-#ifdef CONFIG_FS_UFS
-	&ufs_fsops,
-#endif
-#ifdef CONFIG_FS_DOSFS
-	&dosfs_fsops,
-#endif
-	NULL
+static int
+ata_strategy(void *arg, int flags, daddr_t blk, size_t len, void *buf,
+    size_t *residp)
+{
+	*residp = len;
+	return EIO;
+}
+
+static int
+ata_open(struct open_file *f, ...)
+{
+	va_list ap;
+	int ctlr, unit, part;
+
+	va_start(ap, f);
+	ctlr = va_arg(ap, int);
+	unit = va_arg(ap, int);
+	part = va_arg(ap, int);
+	va_end(ap);
+
+	return ENXIO;
+}
+
+static int
+ata_close(struct open_file *f)
+{
+	return 0;
+}
+
+static int
+ata_ioctl(struct open_file *f, u_long cmd, void *data)
+{
+	return EINVAL;
+}
+
+const struct devsw ata_devsw = {
+	.dv_name	=	"ata",
+	.dv_nargs	=	3,	/* ctlr,unit,part */
+	.dv_strategy	=	ata_strategy,
+	.dv_open	=	ata_open,
+	.dv_close	=	ata_close,
+	.dv_ioctl	=	ata_ioctl,
 };
-const int nfsys = arraycount(file_systems);

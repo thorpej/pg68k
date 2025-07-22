@@ -17,7 +17,9 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 .PATH: ../ufs
 
 SYSLIBOBJS=	memcmp.o memcpy.o memmove.o memset.o \
-		subr_prf.o strchr.o strrchr.o strcmp.o strlen.o
+		subr_prf.o strchr.o strrchr.o strcmp.o strncmp.o strlen.o
+
+ATAOBJS=	ata.o
 
 UFSOBJS=	ufs.o ffs_bswap.o
 DOSFSOBJS=	dosfs.o

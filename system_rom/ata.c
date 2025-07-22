@@ -26,23 +26,33 @@
 
 #include "config.h"
 #include "syslib.h"
-#include "sysfile.h"
 
-#ifdef CONFIG_FS_UFS
-extern const struct fs_ops ufs_fsops;
-#endif
+#include "ata.h"
 
-#ifdef CONFIG_FS_DOSFS
-extern const struct fs_ops dosfs_fsops;
-#endif
-
-const struct fs_ops *file_systems[] = {
-#ifdef CONFIG_FS_UFS
-	&ufs_fsops,
-#endif
-#ifdef CONFIG_FS_DOSFS
-	&dosfs_fsops,
-#endif
-	NULL
+#ifdef ATA_ADDR
+const uintptr_t ata_addrs[] = {
+	ATA_ADDR, ATA_AUX_ADDR,
 };
-const int nfsys = arraycount(file_systems);
+int	ata_count = arraycount(ata_addrs) / 2;
+#endif /* ATA_ADDR */
+
+#define	MAXATA		1	/* max # of controllers */
+
+void
+ata_configure(void)
+{
+	int i;
+
+	for (i = 0; i < ata_count; i++) {
+		printf("ata%d at 0x%08lx, 0x%08lx\n", i,
+		    (u_long)ata_addrs[(i << 1)],
+		    (u_long)ata_addrs[(i << 1) + 1]);
+		ata_init(i);
+	}
+}
+
+#if defined(CONFIG_ATA_GENERIC)
+#include "ata_generic.c"
+#elif defined(CONFIG_ATA_HOST_SIM)
+#include "ata_hostsim.c"
+#endif

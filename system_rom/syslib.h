@@ -96,6 +96,12 @@ char *	strerror(int);
 
 #define	ffs(x)		__builtin_ffs(x)
 
+static inline const char *
+plural(long v)
+{
+	return v == 1 ? "" : "s";
+}
+
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);
@@ -123,6 +129,7 @@ int	vsnprintf(char *, size_t, const char *, va_list) __printflike(3,0);
 void	panic(const char *, ...);
 
 int	puts(const char *);
+int	putstrn(const char *, size_t);
 int	putchar(int);
 
 #endif /* syslib_h_included */

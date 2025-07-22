@@ -24,25 +24,12 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
-#include "sysfile.h"
+#ifndef ata_h_included
+#define	ata_h_included
 
-#ifdef CONFIG_FS_UFS
-extern const struct fs_ops ufs_fsops;
-#endif
+#include "systypes.h"
 
-#ifdef CONFIG_FS_DOSFS
-extern const struct fs_ops dosfs_fsops;
-#endif
+void	ata_configure(void);
+void	ata_init(int);
 
-const struct fs_ops *file_systems[] = {
-#ifdef CONFIG_FS_UFS
-	&ufs_fsops,
-#endif
-#ifdef CONFIG_FS_DOSFS
-	&dosfs_fsops,
-#endif
-	NULL
-};
-const int nfsys = arraycount(file_systems);
+#endif /* ata_h_included */

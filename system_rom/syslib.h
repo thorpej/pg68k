@@ -69,25 +69,26 @@
 
 #ifndef CONFIG_MACH_HOST_SIM
 #define	ENOENT		1	/* No such file or directory */
-#define	EIO		2	/* Input/output error */
-#define	ENXIO		3	/* Device not configured */
-#define	ENOEXEC		4	/* Exec format error */
-#define	EBADF		5	/* Bad file descriptor */
-#define	ENOMEM		6	/* Cannot allocate memory */
-#define	EBUSY		7	/* Device busy */
-#define	EEXIST		8	/* File exists */
-#define	ENODEV		9	/* Operation not supported by device */
-#define	ENOTDIR		10	/* /* Not a directory */
-#define	EINVAL		11	/* Invalid argument */
-#define	EMFILE		12	/* Too many open files */
-#define	EFBIG		13	/* File too large */
-#define	ENOSPC		14	/* No space left on device */
-#define	EROFS		15	/* Read-only file system */
-#define	EMLINK		16	/* Too many links */
-#define	EOPNOTSUPP	17	/* Operation not supported */
-#define	ELOOP		18	/* Too many levels of symbolic links */
-#define	ENAMETOOLONG	19	/* File name too long */
-#define	EFTYPE		20	/* Inappropriate file type or format */
+#define	ESRCH		2	/* No such process */
+#define	EIO		3	/* Input/output error */
+#define	ENXIO		4	/* Device not configured */
+#define	ENOEXEC		5	/* Exec format error */
+#define	EBADF		6	/* Bad file descriptor */
+#define	ENOMEM		7	/* Cannot allocate memory */
+#define	EBUSY		8	/* Device busy */
+#define	EEXIST		9	/* File exists */
+#define	ENODEV		10	/* Operation not supported by device */
+#define	ENOTDIR		11	/* /* Not a directory */
+#define	EINVAL		12	/* Invalid argument */
+#define	EMFILE		13	/* Too many open files */
+#define	EFBIG		14	/* File too large */
+#define	ENOSPC		15	/* No space left on device */
+#define	EROFS		16	/* Read-only file system */
+#define	EMLINK		17	/* Too many links */
+#define	EOPNOTSUPP	18	/* Operation not supported */
+#define	ELOOP		19	/* Too many levels of symbolic links */
+#define	ENAMETOOLONG	20	/* File name too long */
+#define	EFTYPE		21	/* Inappropriate file type or format */
 
 extern int errno;
 #endif /* ! CONFIG_MACH_HOST_SIM */

@@ -176,6 +176,7 @@ int	errno;
 
 static const char *errno_strings[] = {
 [ENOENT]	=	"No such file or directory",
+[ESRCH]		=	"No such process",
 [EIO]		=	"Input/output error",
 [ENXIO]		=	"Device not configured",
 [ENOEXEC]	=	"Exec format error",

@@ -132,6 +132,8 @@ int	puts(const char *);
 int	putstrn(const char *, size_t);
 int	putchar(int);
 
+uint32_t crc32(uint32_t, const void *, size_t);
+
 int	ucs2_to_utf8(char *, size_t, uint16_t);
 
 #endif /* syslib_h_included */

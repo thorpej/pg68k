@@ -162,6 +162,7 @@ devparse(const char *str, const struct devsw **dvp,
 		putchar('\n');
 		return ENXIO;
 	}
+	*dvp = dv;
 	maxargs = dv->dv_nargs;
 	if (maxargs < 0) {
 		maxargs = 0;
@@ -169,14 +170,18 @@ devparse(const char *str, const struct devsw **dvp,
 		maxargs = 3;
 	}
 
-	for (cp++, val = -1, argno = 0; argno < maxargs;) {
-		if (*cp >= '0' && *cp <= 9) {
+	for (cp++, val = -1, argno = 0; argno < maxargs; cp++) {
+		if (*cp >= '0' && *cp <= '9') {
+			if (val == -1) {
+				val = 0;
+			}
 			val = (val * 10) + (*cp - '0');
 		} else if (*cp == ',') {
 			*devargs[argno] = val;
 			val = -1;
 			argno++;
 		} else if (*cp == ')') {
+			*devargs[argno] = val;
 			break;
 		} else {
 			goto bad;

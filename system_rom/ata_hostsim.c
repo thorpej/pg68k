@@ -55,6 +55,10 @@ ata_open(struct open_file *f, ...)
 	part = va_arg(ap, int);
 	va_end(ap);
 
+	(void)ctlr;
+	(void)unit;
+	(void)part;
+
 	return ENXIO;
 }
 

@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "syslib.h"
+#include "sysfile.h"
 
 #include "console.h"
 #include "trap.h"
@@ -223,6 +224,23 @@ main(int argc, char *argv[])
 
 	/* Configure / probe the hardware. */
 	configure();
+
+	printf("\n");
+
+	printf(">>> boot ()/vmunix\n");
+	open("()/vmunix", O_RDWR);
+
+	printf(">>> boot unk()/vmunix\n");
+	open("unk()/vmunix", O_RDWR);
+
+	printf(">>> boot ata()/vmunix\n");
+	open("ata()/vmunix", O_RDWR);
+
+	printf(">>> boot ata(0,1,3)/vmunix\n");
+	open("ata(0,1,3)/vmunix", O_RDWR);
+
+	printf(">>> boot ata(0,1,3,5)/vmunix\n");
+	open("ata(0,1,3,5)/vmunix", O_RDWR);
 
 	/* A stub, obviously. */
 	return 0;

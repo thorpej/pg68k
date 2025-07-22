@@ -57,10 +57,10 @@
 
 #include "config.h"
 #include "syslib.h"
+#include "sysfile.h"
 #include "endian.h"
 #include "uuid.h"
 #include "disklabel.h"
-#include "disklabel_gpt.h"
 
 static struct partition *
 partition_list_add_partition(struct partition_list *pl, uint64_t startblk,
@@ -77,6 +77,8 @@ partition_list_add_partition(struct partition_list *pl, uint64_t startblk,
 }
 
 #ifdef CONFIG_DISKLABEL_GPT
+#include "disklabel_gpt.h"
+
 static const struct uuid ent_type_unused = GPT_ENT_TYPE_UNUSED;
 static const struct uuid ent_type_netbsd_ffs = GPT_ENT_TYPE_NETBSD_FFS;
 static const struct uuid ent_type_ms_basic_dat = GPT_ENT_TYPE_MS_BASIC_DATA;
@@ -277,6 +279,183 @@ partition_list_choose_gpt(struct partition_list *pl)
 }
 #endif /* CONFIG_DISKLABEL_GPT */
 
+#ifdef CONFIG_DISKLABEL_BSD44
+#include "disklabel_bsd44.h"
+
+/*
+ * The BSD partition scheme is a bit annoying in that not every
+ * platform that used it kept the label in the same place on disk.
+ * Some placed it in sector 0, some in sector 1, some in sector 2.
+ * Furthermore, it was not always located at the beginning of the
+ * sector -- sometimes offset 64 bytes, sometimes offset 128 bytes.
+ *
+ * To complicate matters, some platforms did something even sillier:
+ * the BSD disk label was stashed inside of the "BSD portion" of a
+ * disk labeled with an MBR partition table (with either the 386BSD
+ * or NETBSD partition type).  Not going to bother supporting that.
+ */
+static const daddr_t bsd44_label_sectors[] = { 0, 1, 2 };
+
+#define	DISKLABEL_BSD44_SIZE(x)						\
+	(offsetof(struct disklabel_bsd44, d_partitions) +		\
+	 (sizeof(struct partition_bsd44) * (x)))
+
+/* Smallest 4.4BSD disklabel that was ever in use. */
+#define	DISKLABEL_BSD44_MINSIZE	DISKLABEL_BSD44_SIZE(8)
+
+static uint16_t
+dkcsum_bsd44(const struct disklabel_bsd44 *lp, size_t nparts)
+{
+	const uint16_t *start = (const uint16_t *)lp;
+	const uint16_t *end   = (const uint16_t *)&lp->d_partitions[nparts];
+	uint16_t sum = 0;
+
+	while (start < end) {
+		sum ^= *start++;
+	}
+	return sum;
+}
+
+static struct disklabel_bsd44 *
+find_bsd44_label_in_sector(void *buf, size_t secsize, bool *swappedp)
+{
+	struct disklabel_bsd44 *lp = buf;
+	uintptr_t lp_lim = ((uintptr_t)buf + secsize - DISKLABEL_BSD44_MINSIZE);
+	uint16_t npartitions;
+
+	for (;; lp = (void *)((uintptr_t)lp + sizeof(uint32_t))) {
+		if ((uintptr_t)lp > lp_lim) {
+			/* Not found in this sector. */
+			return NULL;
+		}
+		if (lp->d_magic != DISKMAGIC || lp->d_magic2 != DISKMAGIC) {
+			if (lp->d_magic != bswap32(DISKMAGIC) ||
+			    lp->d_magic2 != bswap32(DISKMAGIC)) {
+				continue;
+			}
+			/* Need to swap label. */
+			*swappedp = true;
+		} else {
+			*swappedp = false;
+		}
+
+		npartitions = (*swappedp) ? bswap16(lp->d_npartitions)
+					  : lp->d_npartitions;
+
+		if ((uintptr_t)lp + DISKLABEL_BSD44_SIZE(npartitions) >
+		    (uintptr_t)buf + secsize) {
+			printf("4.4BSD partition count out of range\n");
+			continue;
+		}
+
+		if (dkcsum_bsd44(lp, npartitions) != 0) {
+			printf("Bad 4.4BSD disk label checksum\n");
+			continue;
+		}
+
+		/* Label looks OK. */
+		return lp;
+	}
+}
+
+static int
+partition_list_scan_bsd44(struct open_file *f, struct partition_list *pl)
+{
+	size_t secsize = getsecsize(f);
+	void *buf;
+	const struct disklabel_bsd44 *lp;
+	const struct partition_bsd44 *pp;
+	struct partition *p;
+	int error = 0;
+	bool swapped;
+	int i, nparts;
+	uint64_t startblk, nblks;
+
+	buf = malloc(secsize);
+	if (buf == NULL) {
+		return ENOMEM;
+	}
+
+	pl->pl_scheme = PARTITION_SCHEME_BSD44;
+
+	for (i = 0; i < arraycount(bsd44_label_sectors); i++) {
+		/* Different (or first) sector; read it. */
+		error = dev_read(f, bsd44_label_sectors[i], buf, secsize);
+		if (error) {
+			goto out;
+		}
+		lp = find_bsd44_label_in_sector(buf, secsize, &swapped);
+		if (lp != NULL) {
+			/* Found it! */
+			break;
+		}
+	}
+
+	if (lp == NULL) {
+		/* Didn't find one. :-( */
+		error = ESRCH;
+		goto out;
+	}
+
+	nparts = swapped ? bswap16(lp->d_npartitions) : lp->d_npartitions;
+	for (i = 0; i < nparts; i++) {
+		pp = &lp->d_partitions[i];
+		if (pp->p_fstype == FS_UNUSED) {
+			continue;
+		}
+
+		/* XXX Explicitly skip "whole disk" partition? */
+
+		startblk = swapped ? bswap32(pp->p_offset) : pp->p_offset;
+		nblks    = swapped ? bswap32(pp->p_size)   : pp->p_size;
+
+		/* XXX Make sure it falls within the disk's data area. */
+
+		p = partition_list_add_partition(pl, startblk, nblks, i);
+		if (p == NULL) {
+			error = ENOMEM;
+			goto out;
+		}
+		p->p_bsd44_type = pp->p_fstype;
+	}
+
+ out:
+	if (buf != NULL) {
+		free(buf);
+	}
+	return error;
+}
+
+static struct partition *
+bsd44_search_type(struct partition_list *pl, uint8_t fstype)
+{
+	struct partition *p;
+
+	TAILQ_FOREACH(p, &pl->pl_list, p_link) {
+		if (p->p_bsd44_type == fstype) {
+			return p;
+		}
+	}
+	return NULL;
+}
+
+static void
+partition_list_choose_bsd44(struct partition_list *pl)
+{
+	struct partition *p;
+
+	/*
+	 * We're being asked to choose a default partition because one
+	 * was not specified.  Look for the first partition of any of
+	 * these types and, if found, select as the default.
+	 */
+	if ((p = bsd44_search_type(pl, FS_BSDFFS)) != NULL ||
+	    (p = bsd44_search_type(pl, FS_EX2FS)) != NULL) {
+		pl->pl_chosen = p;
+	}
+}
+#endif /* CONFIG_DISKLABEL_BSD44 */
+
 int
 partition_list_scan(struct open_file *f, struct partition_list *pl)
 {
@@ -288,6 +467,12 @@ partition_list_scan(struct open_file *f, struct partition_list *pl)
 
 #ifdef CONFIG_DISKLABEL_GPT
 	error = partition_list_scan_gpt(f, pl);
+	if (error == 0) {
+		return 0;
+	}
+#endif
+#ifdef CONFIG_DISKLABEL_BSD44
+	error = partition_list_scan_bsd44(f, pl);
 	if (error == 0) {
 		return 0;
 	}
@@ -326,6 +511,11 @@ partition_list_choose(struct partition_list *pl, int partnum)
 			partition_list_choose_gpt(pl);
 			break;
 #endif
+#ifdef CONFIG_DISKLABEL_BSD44
+		case PARTITION_SCHEME_BSD44:
+			partition_list_choose_bsd44(pl);
+			break;
+#endif
 		default:
 			break;
 		}
@@ -352,7 +542,7 @@ partition_scheme_name(u_int scheme)
 	[PARTITION_SCHEME_UNKNOWN]	=	"(unknown)",
 	[PARTITION_SCHEME_GPT]		=	"GUID Partition Table",
 	[PARTITION_SCHEME_MBR]		=	"Master Boot Record",
-	[PARTITION_SCHEME_BSD44]	=	"4.4BSD disk label",
+	[PARTITION_SCHEME_BSD44]	=	"4.4BSD",
 	};
 
 	if (scheme > arraycount(names) || names[scheme] == NULL) {

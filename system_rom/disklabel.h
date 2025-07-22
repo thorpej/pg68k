@@ -29,7 +29,6 @@
 
 #include "config.h"
 #include "systypes.h"
-#include "sysfile.h"
 #include "uuid.h"
 #include "queue.h"
 
@@ -65,6 +64,8 @@ struct partition {
 		uint8_t		p_bsd44_type;
 	};
 };
+
+struct open_file;
 
 int	partition_list_scan(struct open_file *, struct partition_list *);
 void	partition_list_discard(struct partition_list *);

@@ -234,9 +234,8 @@ externalize_shdr(Elf_Byte bo, Elf_Shdr *shdr)
 #endif
 
 #ifdef CONFIG_MACH_HOST_SIM
-extern ssize_t sim_loader_read(int, uintptr_t, size_t);
-extern void sim_loader_bcopy(const void *, uintptr_t, size_t);
-extern void sim_loader_bzero(uintptr_t, size_t);
+#include "simglue.h"
+
 #define	ALLOC(sz)	malloc((sz))
 #define	DEALLOC(p, sz)	free((p))
 #define	READ(f, b, sz)	sim_loader_read((f), (b), (sz))

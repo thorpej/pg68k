@@ -227,7 +227,7 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 		need_close = true;
 		error = partition_list_scan(f, &f->f_partitions);
 		if (error == 0) {
-			printf("Found %s partition scheme",
+			printf("Found %s partition scheme\n",
 			    partition_scheme_name(f->f_partitions.pl_scheme));
 			error = partition_list_choose(&f->f_partitions, part);
 			if (error) {

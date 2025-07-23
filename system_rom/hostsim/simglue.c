@@ -30,6 +30,10 @@
 #include "trap.h"
 #include "simglue.h"
 
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 jmp_buf nofault_env;
 bool nofault;
 
@@ -67,23 +71,93 @@ badaddr_write32(volatile uint32_t *p, uint32_t val)
 	return true;
 }
 
+struct sim_ata_softc {
+	int	sc_fd;
+	int	sc_secsize;
+	uint64_t sc_nblks;
+};
+
+static struct sim_ata_softc sim_ata_drives[2];
+
 void
 sim_ata_init(void)
 {
+	char drive_name[32];
+	struct sim_ata_softc *sc;
+	struct stat sb;
+
+	for (int i = 0; i < 2; i++) {
+		sc = &sim_ata_drives[i];
+		snprintf(drive_name, sizeof(drive_name),
+		    "disk%d.img", i);
+		sc->sc_fd = open(drive_name, O_RDWR);
+		if (sc->sc_fd == -1) {
+ bad:
+			memset(sc, 0, sizeof(*sc));
+			continue;
+		}
+		sc->sc_secsize = 512;
+		if (fstat(sc->sc_fd, &sb) == -1) {
+			close(sc->sc_fd);
+			goto bad;
+		}
+		sc->sc_nblks = sb.st_size / sc->sc_secsize;
+		printf("  drive %d: <Host Sim Disk> %llu %d-byte blocks\n",
+		    i, (unsigned long long)sc->sc_nblks, sc->sc_secsize);
+	}
 }
 
 int
 sim_ata_strategy(void *arg, int flags, uint64_t blk, size_t len, void *buf,
     size_t *residp)
 {
-	*residp = len;
-	return EIO;
+	struct sim_ata_softc *sc = arg;
+	size_t blkcnt;
+
+	if (len % sc->sc_secsize) {
+		*residp = len;
+		return EINVAL;
+	}
+	blkcnt = len / sc->sc_secsize;
+
+	if (blk >= sc->sc_nblks) {
+		*residp = len;
+		return EIO;
+	}
+
+	if ((blk + blkcnt) > sc->sc_nblks) {
+		blkcnt -= (blk + blkcnt) - sc->sc_nblks;
+		*residp = len - (blkcnt * sc->sc_secsize);
+		len = blkcnt * sc->sc_secsize;
+	}
+
+	if (flags == 1/*XXX FREAD*/) {
+		if (pread(sc->sc_fd, buf, len,
+			  blk * sc->sc_secsize) != (ssize_t)len) {
+			return EIO;
+		}
+	} else {
+		if (pwrite(sc->sc_fd, buf, len,
+			   blk * sc->sc_secsize) != (ssize_t)len) {
+			return EIO;
+		}
+	}
+
+	*residp = 0;
+	return 0;
 }
 
 int
 sim_ata_open(int unit, void **argp)
 {
-	return ENXIO;
+	if (unit < 0 || unit > 1) {
+		return ENXIO;
+	}
+	if (sim_ata_drives[unit].sc_nblks == 0) {
+		return ENXIO;
+	}
+	*argp = &sim_ata_drives[unit];
+	return 0;
 }
 
 int

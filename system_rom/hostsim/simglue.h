@@ -1,7 +1,7 @@
-/*
+/*      
  * Copyright (c) 2025 Jason R. Thorpe.
  * All rights reserved.
- *
+ *      
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -24,64 +24,11 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
+#ifndef simglue_h_included
+#define	simglue_h_included
 
-#include "trap.h"
-#include "simglue.h"
+ssize_t	sim_loader_read(int, uintptr_t, size_t);
+void	sim_loader_bcopy(const void *, uintptr_t, size_t);
+void	sim_loader_bzero(uintptr_t, size_t);
 
-jmp_buf nofault_env;
-bool nofault;
-
-#undef RAM0_SIZE
-#define	RAM0_SIZE	(8*1024*1024)
-#define	RAM0_MASK	(RAM0_SIZE - 1)
-
-#define	RAM0_OFF(x)	(((x) - RAM0_START) & RAM0_MASK)
-
-static uint8_t ram0[RAM0_SIZE];
-
-bool
-badaddr_read32(volatile uint32_t *p, uint32_t *valp)
-{
-	uintptr_t x = (uintptr_t)p;
-
-	if (x >= RAM0_START && x < RAM0_START+RAM0_MAXSIZE) {
-		memcpy(valp, &ram0[RAM0_OFF(x)], sizeof(*valp));
-		return false;
-	}
-
-	return true;
-}
-
-bool
-badaddr_write32(volatile uint32_t *p, uint32_t val)
-{
-	uintptr_t x = (uintptr_t)p;
-
-	if (x >= RAM0_START && x < RAM0_START+RAM0_MAXSIZE) {
-		memcpy(&ram0[RAM0_OFF(x)], &val, sizeof(val));
-		return false;
-	}
-
-	return true;
-}
-
-ssize_t sim_loader_read(int, uintptr_t, size_t);
-ssize_t
-sim_loader_read(int fd, uintptr_t dst, size_t sz)
-{
-	return sz;
-}
-
-void sim_loader_bcopy(const void *, uintptr_t, size_t);
-void
-sim_loader_bcopy(const void *src, uintptr_t dst, size_t sz)
-{
-}
-
-void sim_loader_bzero(uintptr_t, size_t);
-void
-sim_loader_bzero(uintptr_t dst, size_t sz)
-{
-}
+#endif /* simglue_h_included */

@@ -108,9 +108,13 @@ bswap64(uint64_t x)
 	return __byte_swap_u64_constant(x);
 }
 
-#ifndef CONFIG_MACH_HOST_SIM
-#define	_BYTE_ORDER	_BIG_ENDIAN
+#ifdef CONFIG_MACH_HOST_SIM
+#ifndef _BYTE_ORDER
+#define	_BYTE_ORDER	BYTE_ORDER
 #endif
+#else /* ! CONFIG_MACH_HOST_SIM */
+#define	_BYTE_ORDER	_BIG_ENDIAN
+#endif /* CONFIG_MACH_HOST_SIM */
 
 /*
  * Define the order of 32-bit words in 64-bit words.

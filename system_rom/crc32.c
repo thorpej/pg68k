@@ -17,6 +17,7 @@
 /* @(#) Id */
 
 #include "syslib.h"
+#include "endian.h"
 
 typedef uint32_t u4;
 

@@ -27,6 +27,12 @@
 #ifndef simglue_h_included
 #define	simglue_h_included
 
+void	sim_ata_init(void);
+int	sim_ata_strategy(void *, int, uint64_t, size_t, void *, size_t *);
+int	sim_ata_open(int, void **);
+int	sim_ata_close(void *);
+int	sim_ata_ioctl(void *, unsigned long, void *);
+
 ssize_t	sim_loader_read(int, uintptr_t, size_t);
 void	sim_loader_bcopy(const void *, uintptr_t, size_t);
 void	sim_loader_bzero(uintptr_t, size_t);

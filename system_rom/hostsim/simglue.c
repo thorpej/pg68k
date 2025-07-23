@@ -67,20 +67,48 @@ badaddr_write32(volatile uint32_t *p, uint32_t val)
 	return true;
 }
 
-ssize_t sim_loader_read(int, uintptr_t, size_t);
+void
+sim_ata_init(void)
+{
+}
+
+int
+sim_ata_strategy(void *arg, int flags, uint64_t blk, size_t len, void *buf,
+    size_t *residp)
+{
+	*residp = len;
+	return EIO;
+}
+
+int
+sim_ata_open(int unit, void **argp)
+{
+	return ENXIO;
+}
+
+int
+sim_ata_close(void *arg)
+{
+	return 0;
+}
+
+int
+sim_ata_ioctl(void *arg, unsigned long cmd, void *data)
+{
+	return EINVAL;
+}
+
 ssize_t
 sim_loader_read(int fd, uintptr_t dst, size_t sz)
 {
 	return sz;
 }
 
-void sim_loader_bcopy(const void *, uintptr_t, size_t);
 void
 sim_loader_bcopy(const void *src, uintptr_t dst, size_t sz)
 {
 }
 
-void sim_loader_bzero(uintptr_t, size_t);
 void
 sim_loader_bzero(uintptr_t dst, size_t sz)
 {

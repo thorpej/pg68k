@@ -27,51 +27,59 @@
 #include "systypes.h"
 #include "syslib.h"
 #include "sysfile.h"
+#include "simglue.h"
 
 #include "ata.h"
 
 void
 ata_init(int ctlr)
 {
+	if (ctlr == 0) {
+		sim_ata_init();
+	}
 }
 
 static int
 ata_strategy(void *arg, int flags, daddr_t blk, size_t len, void *buf,
     size_t *residp)
 {
-	*residp = len;
-	return EIO;
+	return sim_ata_strategy(arg, flags, blk, len, buf, residp);
 }
 
 static int
 ata_open(struct open_file *f, ...)
 {
 	va_list ap;
-	int ctlr, unit, part;
+	int ctlr, unit;
 
 	va_start(ap, f);
 	ctlr = va_arg(ap, int);
 	unit = va_arg(ap, int);
-	part = va_arg(ap, int);
 	va_end(ap);
 
-	(void)ctlr;
-	(void)unit;
-	(void)part;
+	if (ctlr != 0) {
+		return ENXIO;
+	}
 
-	return ENXIO;
+	if (unit < 0 || unit > 1) {
+		return ENXIO;
+	}
+
+	return sim_ata_open(unit, &f->f_devdata);
 }
 
 static int
 ata_close(struct open_file *f)
 {
-	return 0;
+	int error = sim_ata_close(f->f_devdata);
+	f->f_devdata = NULL;
+	return error;
 }
 
 static int
 ata_ioctl(struct open_file *f, u_long cmd, void *data)
 {
-	return EINVAL;
+	return sim_ata_ioctl(f->f_devdata, cmd, data);
 }
 
 const struct devsw ata_devsw = {

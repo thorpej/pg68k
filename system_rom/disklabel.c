@@ -80,9 +80,39 @@ partition_list_add_partition(struct partition_list *pl, uint64_t startblk,
 #include "disklabel_gpt.h"
 
 static const struct uuid ent_type_unused = GPT_ENT_TYPE_UNUSED;
+static const struct uuid ent_type_netbsd_swap = GPT_ENT_TYPE_NETBSD_SWAP;
 static const struct uuid ent_type_netbsd_ffs = GPT_ENT_TYPE_NETBSD_FFS;
 static const struct uuid ent_type_ms_basic_dat = GPT_ENT_TYPE_MS_BASIC_DATA;
 static const struct uuid ent_type_linux_dat = GPT_ENT_TYPE_LINUX_DATA;
+static const struct uuid ent_type_linux_swap = GPT_ENT_TYPE_LINUX_SWAP;
+
+static const struct gpt_type_name {
+	const struct uuid *type;
+	const char *name;
+} gpt_type_names[] = {
+	{ .type = &ent_type_netbsd_swap,
+	  .name = "NetBSD swap" },
+	{ .type = &ent_type_netbsd_ffs,
+	  .name = "NetBSD FFS" },
+	{ .type = &ent_type_ms_basic_dat,
+	  .name = "MS Basic Data" },
+	{ .type = &ent_type_linux_dat,
+	  .name = "Linux data" },
+	{ .type = &ent_type_linux_swap,
+	  .name = "Linux swap" },
+};
+
+static const char *
+gpt_type_name(const struct uuid *type, char *buf, size_t buflen)
+{
+	for (int i = 0; i < arraycount(gpt_type_names); i++) {
+		if (memcmp(gpt_type_names[i].type, type, sizeof(*type)) == 0) {
+			return gpt_type_names[i].name;
+		}
+	}
+	uuid_snprintf(buf, buflen, type);
+	return buf;
+}
 
 static int
 gpt_verify_header_crc(struct gpt_hdr *hdr)
@@ -158,13 +188,6 @@ partition_list_scan_gpt(struct open_file *f, struct partition_list *pl)
 		goto out;
 	}
 	gpe_crc = le32toh(hdr->hdr_crc_table);
-
-	/* XXX Clamp entries at 16 for now. */
-	if (entries > 16) {
-		printf("WARNING: clamping number of GPT entries to 16 "
-		       "(was %u)\n", entries);
-		entries = 16;
-	}
 
 	lba_start = le64toh(hdr->hdr_lba_start);
 	lba_end = le64toh(hdr->hdr_lba_end);
@@ -277,10 +300,49 @@ partition_list_choose_gpt(struct partition_list *pl)
 		pl->pl_chosen = p;
 	}
 }
+
+static void
+partition_list_show_gpt(struct partition_list *pl)
+{
+	struct partition *p;
+	char uuidstr[UUID_STR_LEN];
+
+	TAILQ_FOREACH(p, &pl->pl_list, p_link) {
+		printf("%3d: start=%-10llu size=%-10llu type=%s\n",
+		    p->p_partnum, (unsigned long long)p->p_startblk,
+		    (unsigned long long)p->p_nblks,
+		    gpt_type_name(&p->p_gpt_info.gpt_ptype,
+				  uuidstr, sizeof(uuidstr)));
+	}
+}
 #endif /* CONFIG_DISKLABEL_GPT */
 
 #ifdef CONFIG_DISKLABEL_BSD44
 #include "disklabel_bsd44.h"
+
+static const struct bsd44_type_name {
+	uint8_t type;
+	const char *name;
+} bsd44_type_names[] = {
+	{ .type = FS_SWAP,
+	  .name = "swap" },
+	{ .type = FS_BSDFFS,
+	  .name = "4.2BSD" },
+	{ .type = FS_EX2FS,
+	  .name = "Linux Ext2" },
+};
+
+static const char *
+bsd44_type_name(uint8_t type, char *buf, size_t buflen)
+{
+	for (int i = 0; i < arraycount(bsd44_type_names); i++) {
+		if (bsd44_type_names[i].type == type) {
+			return bsd44_type_names[i].name;
+		}
+	}
+	snprintf(buf, buflen, "<%u>", type);
+	return buf;
+}
 
 /*
  * The BSD partition scheme is a bit annoying in that not every
@@ -454,6 +516,20 @@ partition_list_choose_bsd44(struct partition_list *pl)
 		pl->pl_chosen = p;
 	}
 }
+
+static void
+partition_list_show_bsd44(struct partition_list *pl)
+{
+	struct partition *p;
+	char buf[sizeof("<XXX>")];
+
+	TAILQ_FOREACH(p, &pl->pl_list, p_link) {
+		printf("%3d: start=%-10llu size=%-10llu type=%s\n",
+		    p->p_partnum, (unsigned long long)p->p_startblk,
+		    (unsigned long long)p->p_nblks,
+		    bsd44_type_name(p->p_bsd44_type, buf, sizeof(buf)));
+	}
+}
 #endif /* CONFIG_DISKLABEL_BSD44 */
 
 int
@@ -533,6 +609,25 @@ partition_list_choose(struct partition_list *pl, int partnum)
 		}
 	}
 	return ESRCH;
+}
+
+void
+partition_list_show(struct partition_list *pl)
+{
+	switch (pl->pl_scheme) {
+#ifdef CONFIG_DISKLABEL_GPT
+	case PARTITION_SCHEME_GPT:
+		partition_list_show_gpt(pl);
+		break;
+#endif
+#ifdef CONFIG_DISKLABEL_BSD44
+	case PARTITION_SCHEME_BSD44:
+		partition_list_show_bsd44(pl);
+		break;
+#endif
+	default:
+		break;
+	}
 }
 
 const char *

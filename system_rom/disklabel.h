@@ -70,6 +70,7 @@ struct open_file;
 int	partition_list_scan(struct open_file *, struct partition_list *);
 void	partition_list_discard(struct partition_list *);
 int	partition_list_choose(struct partition_list *, int);
+void	partition_list_show(struct partition_list *);
 
 const char *partition_scheme_name(u_int);
 

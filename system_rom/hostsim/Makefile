@@ -7,7 +7,7 @@ MACH_IMGS=	pgromsim
 CFLAGS+=	-g -Wall -Wmissing-prototypes
 
 OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS}
-OBJS+=		simtrap.o
+OBJS+=		simglue.o
 
 pgromsim: $(OBJS)
 	${CC} -o ${.TARGET} ${OBJS}

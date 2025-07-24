@@ -32,6 +32,8 @@
 #include "trap.h"
 #include "ata.h"
 #include "uart.h"
+#include "loadfile.h"
+#include "ls.h"
 
 struct memory_bank {
 	uintptr_t	start;
@@ -228,20 +230,35 @@ main(int argc, char *argv[])
 
 	printf("\n");
 
+#if 0
 	printf(">>> boot ()/vmunix\n");
-	open("()/vmunix", O_RDWR);
+	open("()/vmunix", O_RDONLY);
 
 	printf(">>> boot unk()/vmunix\n");
-	open("unk()/vmunix", O_RDWR);
+	open("unk()/vmunix", O_RDONLY);
 
 	printf(">>> boot ata()/vmunix\n");
-	open("ata()/vmunix", O_RDWR);
+	int fd = open("ata()/vmunix", O_RDONLY);
 
+	printf(">>> boot ata()/vmunix\n");
+	int fd2 = open("ata(0,1)/vmunix", O_RDONLY);
+#endif
+
+	printf(">>> ls ata()/\n");
+	ls("ata()/");
+
+	printf(">>> boot ata()/netbsd\n");
+	u_long marks[MARK_MAX] = { 0 };
+	int fd = loadfile("ata()/netbsd", marks, LOAD_ALL);
+	(void)fd;
+
+#if 0
 	printf(">>> boot ata(0,1,3)/vmunix\n");
-	open("ata(0,1,3)/vmunix", O_RDWR);
+	open("ata(0,1,3)/vmunix", O_RDONLY);
 
 	printf(">>> boot ata(0,1,3,5)/vmunix\n");
-	open("ata(0,1,3,5)/vmunix", O_RDWR);
+	open("ata(0,1,3,5)/vmunix", O_RDONLY);
+#endif
 
 	/* A stub, obviously. */
 	return 0;

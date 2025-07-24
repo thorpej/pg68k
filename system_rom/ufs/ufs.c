@@ -122,6 +122,7 @@ struct file {
 	u_int		f_nishift;	/* for blocks in indirect block */
 	int64_t		f_ind_cache_block;
 	int64_t		f_ind_cache[IND_CACHE_SZ];
+	ino32_t		f_ino;		/* inode number (for stat()) */
 
 	char		*f_buf;		/* buffer for data block */
 	size_t		f_buf_size;	/* size of data block */
@@ -174,13 +175,37 @@ ufs_get_gid(struct file *fp)
 static int64_t
 ufs_get_db(struct file *fp, int64_t blk)
 {
-	return fp->f_ufs2 ? fp->f_di.di2.di_db[blk] : fp->f_di.di1.di_db[blk];
+	int64_t fsblk;
+	/*
+	 * Direct block #s are not swapped when we swap the
+	 * rest of the inode.
+	 */
+	if (fp->f_ufs2) {
+		fsblk = fp->f_swapped ? bswap64(fp->f_di.di2.di_db[blk])
+				      : fp->f_di.di2.di_db[blk];
+	} else {
+		fsblk = fp->f_swapped ? bswap32(fp->f_di.di1.di_db[blk])
+				      : fp->f_di.di1.di_db[blk];
+	}
+	return fsblk;
 }
 
 static int64_t
 ufs_get_ib(struct file *fp, int64_t blk)
 {
-	return fp->f_ufs2 ? fp->f_di.di2.di_ib[blk] : fp->f_di.di1.di_ib[blk];
+	int64_t fsblk;
+	/*
+	 * Indirect block #s are not swapped when we swap the rest
+	 * of the inode.
+	 */
+	if (fp->f_ufs2) {
+		fsblk = fp->f_swapped ? bswap64(fp->f_di.di2.di_ib[blk])
+				      : fp->f_di.di2.di_ib[blk];
+	} else {
+		fsblk = fp->f_swapped ? bswap32(fp->f_di.di1.di_ib[blk])
+				      : fp->f_di.di1.di_ib[blk];
+	}
+	return fsblk;
 }
 
 static char *
@@ -256,7 +281,7 @@ read_inode(ino32_t inumber, struct open_file *f)
 	/*
 	 * Read inode and save it.
 	 */
-	rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
+	rc = dev_strategy(f, F_READ,
 	    inode_sector, fs->fs_bsize, inoblk.buf, &rsize);
 	if (rc)
 		return rc;
@@ -364,7 +389,7 @@ block_map(struct open_file *f, int64_t file_block, int64_t *disk_block_p)
 		 * of a filesystem block.
 		 * However we don't do this very often anyway...
 		 */
-		rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
+		rc = dev_strategy(f, F_READ,
 			FSBTODB(fp->f_fs, ind_block_num), fs->fs_bsize,
 			indblk.buf, &rsize);
 		if (rc)
@@ -421,7 +446,7 @@ buf_read_file(struct open_file *f, char **buf_p, size_t *size_p)
 			memset(fp->f_buf, 0, block_size);
 			fp->f_buf_size = block_size;
 		} else {
-			rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
+			rc = dev_strategy(f, F_READ,
 				FSBTODB(fs, disk_block),
 				block_size, fp->f_buf, &fp->f_buf_size);
 			if (rc)
@@ -508,7 +533,7 @@ ffs_find_superblock(struct open_file *f, struct fs *fs)
 	int rc, i;
 
 	for (i = 0; sblock_try[i] != -1; i++) {
-		rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
+		rc = dev_strategy(f, F_READ,
 		    sblock_try[i] / getsecsize(f), SBLOCKSIZE, fs, &buf_size);
 		if (rc)
 			return rc;
@@ -678,7 +703,7 @@ ufs_open(const char *path, struct open_file *f)
 				if (rc)
 					goto out;
 
-				rc = DEV_STRATEGY(f->f_dev)(f,
+				rc = dev_strategy(f,
 					F_READ, FSBTODB(fs, disk_block),
 					fs->fs_bsize, buf, &buf_size);
 				if (rc)
@@ -708,6 +733,7 @@ ufs_open(const char *path, struct open_file *f)
 	rc = 0;
 
 	fp->f_seekp = 0;		/* reset seek pointer */
+	fp->f_ino = inumber;
 
 out:
 	if (rc)
@@ -806,6 +832,7 @@ ufs_stat(struct open_file *f, struct stat *sb)
 
 	/* only important stuff */
 	memset(sb, 0, sizeof *sb);
+	sb->st_ino = fp->f_ino;
 	sb->st_mode = ufs_get_mode(fp);
 	sb->st_uid = ufs_get_uid(fp);
 	sb->st_gid = ufs_get_gid(fp);

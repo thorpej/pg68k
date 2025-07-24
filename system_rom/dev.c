@@ -300,12 +300,26 @@ dev_close(struct open_file *f)
 }
 
 int
+dev_strategy(struct open_file *f, int flags, daddr_t blkno, size_t sz,
+    void *buf, size_t *actualp)
+{
+	daddr_t poff = 0;
+
+	if (f->f_partitions.pl_chosen != NULL) {
+		poff = f->f_partitions.pl_chosen->p_startblk;
+	}
+
+	return DEV_STRATEGY(f->f_dev)(f, F_READ, blkno + poff, sz,
+	    buf, actualp);
+}
+
+int
 dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
 {
 	size_t actual = 0;
 	int error;
 
-	error = DEV_STRATEGY(f->f_dev)(f, F_READ, blkno, sz, buf, &actual);
+	error = dev_strategy(f, F_READ, blkno, sz, buf, &actual);
 	if (error == 0 && actual != sz) {
 		error = EIO;
 	}
@@ -318,7 +332,7 @@ dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
 	size_t actual = 0;
 	int error;
 
-	error = DEV_STRATEGY(f->f_dev)(f, F_WRITE, blkno, sz,
+	error = dev_strategy(f, F_WRITE, blkno, sz,
 	    UNCONST(buf)/*XXX*/, &actual);
 	if (error == 0 && actual != sz) {
 		error = EIO;

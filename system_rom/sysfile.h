@@ -190,6 +190,8 @@ struct stat {
 #define	IOC_GETSECSIZE	0x0000	/* size_t arg */
 
 int	dev_open(struct open_file *, const char *, const char **);
+int	dev_strategy(struct open_file *, int, daddr_t, size_t, void *,
+	    size_t *);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);
 int	dev_write(struct open_file *, uint64_t, const void *, size_t);
 int	dev_close(struct open_file *);

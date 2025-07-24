@@ -56,7 +56,7 @@ static int
 ata_strategy(struct open_file *f, int flags, daddr_t blk, size_t len,
     void *buf, size_t *actualp)
 {
-	*residp = len;
+	*actualp = 0;
 	return EIO;
 }
 

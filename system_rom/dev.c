@@ -298,11 +298,11 @@ dev_close(struct open_file *f)
 int
 dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
 {
-	size_t resid = sz;
+	size_t actual = 0;
 	int error;
 
-	error = DEV_STRATEGY(f->f_dev)(f, F_READ, blkno, sz, buf, &resid);
-	if (error == 0 && resid != 0) {
+	error = DEV_STRATEGY(f->f_dev)(f, F_READ, blkno, sz, buf, &actual);
+	if (error == 0 && actual != sz) {
 		error = EIO;
 	}
 	return error;
@@ -311,12 +311,12 @@ dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
 int
 dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
 {
-	size_t resid = sz;
+	size_t actual = 0;
 	int error;
 
 	error = DEV_STRATEGY(f->f_dev)(f, F_WRITE, blkno, sz,
-	    UNCONST(buf)/*XXX*/, &resid);
-	if (error == 0 && resid != 0) {
+	    UNCONST(buf)/*XXX*/, &actual);
+	if (error == 0 && actual != sz) {
 		error = EIO;
 	}
 	return error;

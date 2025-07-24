@@ -41,9 +41,9 @@ ata_init(int ctlr)
 
 static int
 ata_strategy(struct open_file *f, int flags, daddr_t blk, size_t len,
-    void *buf, size_t *residp)
+    void *buf, size_t *actualp)
 {
-	return sim_ata_strategy(f->f_devdata, flags, blk, len, buf, residp);
+	return sim_ata_strategy(f->f_devdata, flags, blk, len, buf, actualp);
 }
 
 static int

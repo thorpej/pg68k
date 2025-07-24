@@ -256,7 +256,7 @@ read_inode(ino32_t inumber, struct open_file *f)
 	/*
 	 * Read inode and save it.
 	 */
-	rc = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ,
+	rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
 	    inode_sector, fs->fs_bsize, inoblk.buf, &rsize);
 	if (rc)
 		return rc;
@@ -364,7 +364,7 @@ block_map(struct open_file *f, int64_t file_block, int64_t *disk_block_p)
 		 * of a filesystem block.
 		 * However we don't do this very often anyway...
 		 */
-		rc = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ,
+		rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
 			FSBTODB(fp->f_fs, ind_block_num), fs->fs_bsize,
 			indblk.buf, &rsize);
 		if (rc)
@@ -421,7 +421,7 @@ buf_read_file(struct open_file *f, char **buf_p, size_t *size_p)
 			memset(fp->f_buf, 0, block_size);
 			fp->f_buf_size = block_size;
 		} else {
-			rc = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ,
+			rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
 				FSBTODB(fs, disk_block),
 				block_size, fp->f_buf, &fp->f_buf_size);
 			if (rc)
@@ -508,7 +508,7 @@ ffs_find_superblock(struct open_file *f, struct fs *fs)
 	int rc, i;
 
 	for (i = 0; sblock_try[i] != -1; i++) {
-		rc = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ,
+		rc = DEV_STRATEGY(f->f_dev)(f, F_READ,
 		    sblock_try[i] / getsecsize(f), SBLOCKSIZE, fs, &buf_size);
 		if (rc)
 			return rc;
@@ -678,7 +678,7 @@ ufs_open(const char *path, struct open_file *f)
 				if (rc)
 					goto out;
 
-				rc = DEV_STRATEGY(f->f_dev)(f->f_devdata,
+				rc = DEV_STRATEGY(f->f_dev)(f,
 					F_READ, FSBTODB(fs, disk_block),
 					fs->fs_bsize, buf, &buf_size);
 				if (rc)

@@ -204,21 +204,21 @@ ssize_t
 read(int fd, void *dest, size_t bcount)
 {
 	struct open_file *f = &files[fd];
-	size_t resid;
 
 	if ((unsigned int)fd >= SOPEN_MAX || !(f->f_flags & F_READ)) {
 		errno = EBADF;
 		return -1;
 	}
 	if (f->f_flags & F_RAW) {
+		size_t actual = 0;
 		errno = DEV_STRATEGY(f->f_dev)(f, F_READ,
-			btodb(f->f_offset), bcount, dest, &resid);
+			btodb(f->f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;
-		f->f_offset += resid;
-		return resid;
+		f->f_offset += actual;
+		return (ssize_t)actual;
 	}
-	resid = bcount;
+	size_t resid = bcount;
 	if ((errno = FS_READ(f->f_ops)(f, dest, bcount, &resid)))
 		return -1;
 	return (ssize_t)(bcount - resid);
@@ -228,7 +228,6 @@ ssize_t
 write(int fd, const void *destp, size_t bcount)
 {
 	struct open_file *f = &files[fd];
-	size_t resid;
 	void *dest = UNCONST(destp);
 
 	if ((unsigned int)fd >= SOPEN_MAX || !(f->f_flags & F_WRITE)) {
@@ -236,17 +235,18 @@ write(int fd, const void *destp, size_t bcount)
 		return -1;
 	}
 	if (f->f_flags & F_RAW) {
+		size_t actual = 0;
 		errno = DEV_STRATEGY(f->f_dev)(f, F_WRITE,
-			btodb(f->f_offset), bcount, dest, &resid);
+			btodb(f->f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;
-		f->f_offset += resid;
-		return resid;
+		f->f_offset += actual;
+		return (ssize_t)actual;
 	}
-	resid = bcount;
+	size_t resid = bcount;
 	if ((errno = FS_WRITE(f->f_ops)(f, dest, bcount, &resid)))
 		return -1;
-	return 0;
+	return (ssize_t)(bcount - resid);
 }
 
 off_t

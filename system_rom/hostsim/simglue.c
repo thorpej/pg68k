@@ -109,41 +109,37 @@ sim_ata_init(void)
 
 int
 sim_ata_strategy(void *arg, int flags, uint64_t blk, size_t len, void *buf,
-    size_t *residp)
+    size_t *actualp)
 {
 	struct sim_ata_softc *sc = arg;
 	size_t blkcnt;
+	ssize_t actual;
+
+	*actualp = 0;
 
 	if (len % sc->sc_secsize) {
-		*residp = len;
 		return EINVAL;
 	}
 	blkcnt = len / sc->sc_secsize;
 
 	if (blk >= sc->sc_nblks) {
-		*residp = len;
 		return EIO;
 	}
 
 	if ((blk + blkcnt) > sc->sc_nblks) {
 		blkcnt -= (blk + blkcnt) - sc->sc_nblks;
-		*residp = len - (blkcnt * sc->sc_secsize);
 		len = blkcnt * sc->sc_secsize;
 	}
 
 	if (flags == 1/*XXX FREAD*/) {
-		if (pread(sc->sc_fd, buf, len,
-			  blk * sc->sc_secsize) != (ssize_t)len) {
-			return EIO;
-		}
+		actual = pread(sc->sc_fd, buf, len, blk * sc->sc_secsize);
 	} else {
-		if (pwrite(sc->sc_fd, buf, len,
-			   blk * sc->sc_secsize) != (ssize_t)len) {
-			return EIO;
-		}
+		actual = pwrite(sc->sc_fd, buf, len, blk * sc->sc_secsize);
 	}
-
-	*residp = 0;
+	if (actual < 0) {
+		return EIO;
+	}
+	*actualp = actual;
 	return 0;
 }
 

@@ -770,7 +770,7 @@ ioget(struct open_file *fd, u_int lsec, void *buf, u_int nsec)
 	size_t rsize;
 	int err;
 
-	err = DEV_STRATEGY(fd->f_dev)(fd->f_devdata, F_READ, lsec,
+	err = DEV_STRATEGY(fd->f_dev)(fd, F_READ, lsec,
 	    secbyt(nsec), buf, &rsize);
 	return err;
 }

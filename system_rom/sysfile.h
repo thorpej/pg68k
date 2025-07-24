@@ -88,6 +88,9 @@ struct open_file {
 	int		f_flags;	/* see F_* below */
 	const struct devsw *f_dev;	/* pointer to device operations */
 	void		*f_devdata;	/* device specific data */
+	int		f_devctlr;	/* device controller # */
+	int		f_devunit;	/* device unit # */
+	int		f_devpart;	/* device partition # */
 	const struct fs_ops *f_ops;	/* pointer to file system operations */
 	void		*f_fsdata;	/* file system specific data */
 	off_t		f_offset;	/* current file offset (F_RAW) */
@@ -105,8 +108,9 @@ struct open_file {
 struct devsw {
 	const char *dv_name;
 	int	dv_nargs;
-	int	(*dv_strategy)(void *, int, daddr_t, size_t, void *, size_t *);
-	int	(*dv_open)(struct open_file *, ...);
+	int	(*dv_strategy)(struct open_file *, int, daddr_t, size_t,
+		    void *, size_t *);
+	int	(*dv_open)(struct open_file *);
 	int	(*dv_close)(struct open_file *);
 	int	(*dv_ioctl)(struct open_file *, u_long, void *);
 };
@@ -181,10 +185,13 @@ struct stat {
 #define	S_ARCH1		0200000	/* Archive state 1, ls -l shows 'a' */
 #define	S_ARCH2		0400000	/* Archive state 2, ls -l shows 'A' */
 
+#define	DEV_STRING_SIZE	sizeof("oink(XXX,XXX,XXX)")
+
 int	dev_open(struct open_file *, const char *, const char **);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);
 int	dev_write(struct open_file *, uint64_t, const void *, size_t);
 int	dev_close(struct open_file *);
+const char *dev_string(struct open_file *, char *, size_t);
 size_t	getsecsize(struct open_file *);
 int	getfile(int, struct open_file **);
 int	fnmatch(const char *, const char *);

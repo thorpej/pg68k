@@ -71,20 +71,58 @@ devusage(const struct devsw *dv)
 	printf(")[/path]\n");
 }
 
-static void
-deverr(const struct devsw *dv, int ctlr, int unit, int part, int error)
+const char *
+dev_string(struct open_file *f, char *buf, size_t buflen)
 {
-	printf("%s(", DEV_NAME(dv));
+	const struct devsw *dv = f->f_dev;
+	char *obuf = buf;
+	char *bufend = buf + buflen;
+	int rv;
+
+#define	ADVANCE								\
+	buf += rv;							\
+	buflen -= rv;							\
+	if (buf >= bufend) {						\
+		return obuf;						\
+	}
+
+	rv = snprintf(buf, buflen, "%s(", DEV_NAME(dv));
+	ADVANCE;
 	if (dv->dv_nargs >= 1) {
-		printf("%d", ctlr);
+		if (f->f_devctlr != -1) {
+			rv = snprintf(buf, buflen, "%d", f->f_devctlr);
+			ADVANCE;
+		}
 	}
 	if (dv->dv_nargs >= 2) {
-		printf(",%d", unit);
+		if (f->f_devunit != -1) {
+			rv = snprintf(buf, buflen, ",%d", f->f_devunit);
+		} else {
+			rv = snprintf(buf, buflen, ",");
+		}
+		ADVANCE;
 	}
 	if (dv->dv_nargs >= 3) {
-		printf(",%d", part);
+		if (f->f_devpart != -1) {
+			rv = snprintf(buf, buflen, ",%d", f->f_devpart);
+		} else {
+			rv = snprintf(buf, buflen, ",");
+		}
+		ADVANCE;
 	}
-	printf("): %s\n", strerror(error));
+	snprintf(buf, buflen, ")");
+	return obuf;
+
+#undef ADVANCE
+}
+
+static void
+deverr(struct open_file *f, int error)
+{
+	char devstr[DEV_STRING_SIZE];
+
+	printf("%s: %s\n", dev_string(f, devstr, sizeof(devstr)),
+	    strerror(error));
 }
 
 /*
@@ -122,16 +160,14 @@ deverr(const struct devsw *dv, int ctlr, int unit, int part, int error)
  * file name to the file system.
  */
 static int
-devparse(const char *str, const struct devsw **dvp,
-    int *ctlrp, int *unitp, int *partp, const char **fnamep)
+devparse(const char *str, struct open_file *f, const char **fnamep)
 {
 	const char *cp;
 	int *devargs[] = {
-		ctlrp,
-		unitp,
-		partp,
+		&f->f_devctlr,
+		&f->f_devunit,
+		&f->f_devpart,
 	};
-	const struct devsw *dv;
 	int val, argno, maxargs;
 
 	/* get device name */
@@ -154,16 +190,15 @@ devparse(const char *str, const struct devsw **dvp,
 	}
 
 	/* Get the driver entry. */
-	dv = devlookup(str, cp - str);
-	if (dv == NULL) {
+	f->f_dev = devlookup(str, cp - str);
+	if (f->f_dev == NULL) {
 		/* Don't have specified driver, oops. */
 		printf("Unknown device: ");
 		putstrn(str, cp - str);
 		putchar('\n');
 		return ENXIO;
 	}
-	*dvp = dv;
-	maxargs = dv->dv_nargs;
+	maxargs = f->f_dev->dv_nargs;
 	if (maxargs < 0) {
 		maxargs = 0;
 	} else if (maxargs > 3) {
@@ -189,7 +224,7 @@ devparse(const char *str, const struct devsw **dvp,
 	}
 	if (*cp != ')') {
  bad:
-		devusage(dv);
+		devusage(f->f_dev);
 		return EINVAL;
 	}
 	*fnamep = ++cp;
@@ -199,12 +234,13 @@ devparse(const char *str, const struct devsw **dvp,
 int
 dev_open(struct open_file *f, const char *path, const char **fnamep)
 {
-	int ctlr = -1, unit = -1, part = -1;
 	int error;
-	const struct devsw *dv = NULL;
 	bool need_close = false;
 
-	error = devparse(path, &dv, &ctlr, &unit, &part, fnamep);
+	f->f_devctlr = f->f_devunit = f->f_devpart = -1;
+	f->f_dev = NULL;
+
+	error = devparse(path, f, fnamep);
 	if (error) {
 		return error;
 	}
@@ -214,32 +250,38 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 	 * number gets to say unspecified, hinting that the partition
 	 * code should search for a good candidate.
 	 */
-	if (ctlr == -1) {
-		ctlr = 0;
+	if (f->f_devctlr == -1) {
+		f->f_devctlr = 0;
 	}
-	if (unit == -1) {
-		unit = 0;
+	if (f->f_devunit == -1) {
+		f->f_devunit = 0;
 	}
 
-	f->f_dev = dv;
-	error = DEV_OPEN(dv)(f, ctlr, unit, part);
+	error = DEV_OPEN(f->f_dev)(f);
 	if (error == 0) {
+		char devstr[DEV_STRING_SIZE];
 		need_close = true;
 		error = partition_list_scan(f, &f->f_partitions);
 		if (error == 0) {
 			printf("Found %s partition scheme\n",
 			    partition_scheme_name(f->f_partitions.pl_scheme));
-			error = partition_list_choose(&f->f_partitions, part);
+			error = partition_list_choose(&f->f_partitions,
+			    f->f_devpart);
 			if (error) {
 				partition_list_discard(&f->f_partitions);
 			}
+			f->f_devpart = f->f_partitions.pl_chosen->p_partnum;
+			printf("Partitions on %s:\n", dev_string(f,
+			    devstr, sizeof(devstr)));
+			partition_list_show(&f->f_partitions);
 		}
 	}
 	if (error) {
-		deverr(dv, ctlr, unit, part, error);
+		deverr(f, error);
 		if (need_close) {
-			DEV_CLOSE(dv)(f);
+			DEV_CLOSE(f->f_dev)(f);
 		}
+		f->f_dev = NULL;
 	}
 	return error;
 }
@@ -248,7 +290,9 @@ int
 dev_close(struct open_file *f)
 {
 	partition_list_discard(&f->f_partitions);
-	return DEV_CLOSE(f->f_dev)(f);
+	int rv = DEV_CLOSE(f->f_dev)(f);
+	f->f_dev = NULL;
+	return rv;
 }
 
 int
@@ -257,8 +301,7 @@ dev_read(struct open_file *f, uint64_t blkno, void *buf, size_t sz)
 	size_t resid = sz;
 	int error;
 
-	error = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_READ, blkno,
-	    sz, buf, &resid);
+	error = DEV_STRATEGY(f->f_dev)(f, F_READ, blkno, sz, buf, &resid);
 	if (error == 0 && resid != 0) {
 		error = EIO;
 	}
@@ -271,8 +314,8 @@ dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
 	size_t resid = sz;
 	int error;
 
-	error = DEV_STRATEGY(f->f_dev)(f->f_devdata, F_WRITE, blkno,
-	    sz, UNCONST(buf)/*XXX*/, &resid);
+	error = DEV_STRATEGY(f->f_dev)(f, F_WRITE, blkno, sz,
+	    UNCONST(buf)/*XXX*/, &resid);
 	if (error == 0 && resid != 0) {
 		error = EIO;
 	}

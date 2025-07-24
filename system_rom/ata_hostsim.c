@@ -40,32 +40,24 @@ ata_init(int ctlr)
 }
 
 static int
-ata_strategy(void *arg, int flags, daddr_t blk, size_t len, void *buf,
-    size_t *residp)
+ata_strategy(struct open_file *f, int flags, daddr_t blk, size_t len,
+    void *buf, size_t *residp)
 {
-	return sim_ata_strategy(arg, flags, blk, len, buf, residp);
+	return sim_ata_strategy(f->f_devdata, flags, blk, len, buf, residp);
 }
 
 static int
-ata_open(struct open_file *f, ...)
+ata_open(struct open_file *f)
 {
-	va_list ap;
-	int ctlr, unit;
-
-	va_start(ap, f);
-	ctlr = va_arg(ap, int);
-	unit = va_arg(ap, int);
-	va_end(ap);
-
-	if (ctlr != 0) {
+	if (f->f_devctlr != 0) {
 		return ENXIO;
 	}
 
-	if (unit < 0 || unit > 1) {
+	if (f->f_devunit < 0 || f->f_devunit > 1) {
 		return ENXIO;
 	}
 
-	return sim_ata_open(unit, &f->f_devdata);
+	return sim_ata_open(f->f_devunit, &f->f_devdata);
 }
 
 static int

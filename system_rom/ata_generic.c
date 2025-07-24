@@ -53,25 +53,16 @@ ata_init(int ctlr)
 }
 
 static int
-ata_strategy(void *arg, int flags, daddr_t blk, size_t len, void *buf,
-    size_t *residp)
+ata_strategy(struct open_file *f, int flags, daddr_t blk, size_t len,
+    void *buf, size_t *residp)
 {
 	*residp = len;
 	return EIO;
 }
 
 static int
-ata_open(struct open_file *f, ...)
+ata_open(struct open_file *f)
 {
-	va_list ap;
-	int ctlr, unit, part;
-
-	va_start(ap, f);
-	ctlr = va_arg(ap, int);
-	unit = va_arg(ap, int);
-	part = va_arg(ap, int);
-	va_end(ap);
-
 	return ENXIO;
 }
 

@@ -187,6 +187,8 @@ struct stat {
 
 #define	DEV_STRING_SIZE	sizeof("oink(XXX,XXX,XXX)")
 
+#define	IOC_GETSECSIZE	0x0000	/* size_t arg */
+
 int	dev_open(struct open_file *, const char *, const char **);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);
 int	dev_write(struct open_file *, uint64_t, const void *, size_t);

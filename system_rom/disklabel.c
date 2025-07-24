@@ -557,7 +557,7 @@ partition_list_scan(struct open_file *f, struct partition_list *pl)
 	if (error) {
 		partition_list_discard(pl);
 	}
-	return error;
+	return 0;
 }
 
 void
@@ -572,6 +572,12 @@ partition_list_discard(struct partition_list *pl)
 		free(p);
 	}
 }
+
+static const struct partition full_disk = {
+	.p_startblk	= 0,
+	.p_nblks	= UINT64_MAX,
+	.p_partnum	= -1,
+};
 
 int
 partition_list_choose(struct partition_list *pl, int partnum)
@@ -597,6 +603,9 @@ partition_list_choose(struct partition_list *pl, int partnum)
 		}
 		if ((p = pl->pl_chosen) != NULL) {
 			printf("Choosing partition %u\n", p->p_partnum);
+			return 0;
+		} else if (TAILQ_EMPTY(&pl->pl_list)) {
+			pl->pl_chosen = &full_disk;
 			return 0;
 		}
 		return ESRCH;

@@ -263,8 +263,12 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 		need_close = true;
 		error = partition_list_scan(f, &f->f_partitions);
 		if (error == 0) {
-			printf("Found %s partition scheme\n",
-			    partition_scheme_name(f->f_partitions.pl_scheme));
+			if (f->f_partitions.pl_scheme !=
+			    PARTITION_SCHEME_UNKNOWN) {
+				printf("Found %s partition scheme\n",
+				    partition_scheme_name(
+				    f->f_partitions.pl_scheme));
+			}
 			error = partition_list_choose(&f->f_partitions,
 			    f->f_devpart);
 			if (error) {
@@ -325,5 +329,10 @@ dev_write(struct open_file *f, uint64_t blkno, const void *buf, size_t sz)
 size_t
 getsecsize(struct open_file *f)
 {
-	return DEV_BSIZE;	/* XXX for now */
+	size_t sz;
+
+	if (DEV_IOCTL(f->f_dev)(f, IOC_GETSECSIZE, &sz) != 0) {
+		sz = DEV_BSIZE;
+	}
+	return sz;
 }

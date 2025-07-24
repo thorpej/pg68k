@@ -259,7 +259,6 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 
 	error = DEV_OPEN(f->f_dev)(f);
 	if (error == 0) {
-		char devstr[DEV_STRING_SIZE];
 		need_close = true;
 		error = partition_list_scan(f, &f->f_partitions);
 		if (error == 0) {
@@ -275,9 +274,6 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 				partition_list_discard(&f->f_partitions);
 			}
 			f->f_devpart = f->f_partitions.pl_chosen->p_partnum;
-			printf("Partitions on %s:\n", dev_string(f,
-			    devstr, sizeof(devstr)));
-			partition_list_show(&f->f_partitions);
 		}
 	}
 	if (error) {

@@ -211,7 +211,7 @@ read(int fd, void *dest, size_t bcount)
 	}
 	if (f->f_flags & F_RAW) {
 		size_t actual = 0;
-		errno = DEV_STRATEGY(f->f_dev)(f, F_READ,
+		errno = dev_strategy(f, F_READ,
 			btodb(f->f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;
@@ -236,7 +236,7 @@ write(int fd, const void *destp, size_t bcount)
 	}
 	if (f->f_flags & F_RAW) {
 		size_t actual = 0;
-		errno = DEV_STRATEGY(f->f_dev)(f, F_WRITE,
+		errno = dev_strategy(f, F_WRITE,
 			btodb(f->f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;

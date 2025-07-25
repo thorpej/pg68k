@@ -242,6 +242,13 @@ cli_get_cmdline(void)
 			cli_longjmp();
 			break;
 
+#ifdef CONFIG_MACH_HOST_SIM
+		case 4: /* EOT - ^D */
+			putstrn("^D\n", 3);
+			exit(0);
+			break;
+#endif
+
 		case 7: /* BEL - ^G */
 			cons_putc(ch);	/* beep! */
 			break;

@@ -91,6 +91,7 @@ struct open_file {
 	int		f_devctlr;	/* device controller # */
 	int		f_devunit;	/* device unit # */
 	int		f_devpart;	/* device partition # */
+	char		*f_fname;	/* file name that was opened */
 	const struct fs_ops *f_ops;	/* pointer to file system operations */
 	void		*f_fsdata;	/* file system specific data */
 	off_t		f_offset;	/* current file offset (F_RAW) */

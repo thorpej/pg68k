@@ -103,6 +103,7 @@ fnd:
 	 * Convert open mode (0,1,2) to F_READ, F_WRITE.
 	 */
 	f->f_flags = mode + 1;
+	f->f_fname = NULL;
 	f->f_dev = NULL;
 	f->f_ops = NULL;
 	f->f_offset = 0;
@@ -119,6 +120,11 @@ fnd:
 	if (file == NULL || *file == '\0') {
 		f->f_flags |= F_RAW;
 		return fd;
+	}
+	f->f_fname = strdup(file);
+	if (f->f_fname == NULL) {
+		error = ENOMEM;
+		goto err_closedev;
 	}
 
 	/* pass file name to the different filesystem open routines */
@@ -137,11 +143,12 @@ fnd:
 	}
 	error = besterror;
 
+ err_closedev:
 	if ((f->f_flags & F_NODEV) == 0) {
 		if (DEV_CLOSE(f->f_dev) != NULL)
 			(void)DEV_CLOSE(f->f_dev)(f);
 	}
-err:
+ err:
 	f->f_flags = 0;
 	errno = error;
 	return -1;
@@ -179,6 +186,10 @@ close(int fd)
 		if (f->f_dev != NULL)
 			err2 = dev_close(f);
 	f->f_flags = 0;
+	if (f->f_fname != NULL) {
+		free(f->f_fname);
+		f->f_fname = NULL;
+	}
 	if (err1) {
 		errno = err1;
 		return -1;

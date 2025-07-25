@@ -112,6 +112,8 @@ char *	strchr(const char *, int);
 char *	strrchr(const char *, int);
 int	strcmp(const char *, const char *);
 int	strncmp(const char *, const char *, size_t);
+char *	strcpy(char *, const char *);
+char *	strdup(const char *);
 size_t	strlen(const char *);
 
 void *	calloc(size_t, size_t);

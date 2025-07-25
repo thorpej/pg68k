@@ -19,7 +19,8 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 SYSLIBOBJS=	crc32.o \
 		memcmp.o memcpy.o memmove.o memset.o \
 		subr_prf.o \
-		strchr.o strrchr.o strcmp.o strncmp.o strlen.o \
+		strchr.o strrchr.o strcmp.o strncmp.o strlen.o strcpy.o \
+		    strdup.o \
 		unicode.o uuid.o
 
 ATAOBJS=	ata.o

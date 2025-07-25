@@ -130,6 +130,6 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
 		acc = -acc;
 	if (endptr != NULL)
 		/* LINTED interface specification */
-		*endptr = __UNCONST(any ? s - 1 : nptr);
+		*endptr = UNCONST(any ? s - 1 : nptr);
 	return(acc);
 }

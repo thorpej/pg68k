@@ -199,6 +199,7 @@ static const char *errno_strings[] = {
 [ELOOP]		=	"Too many levels of symbolic links",
 [ENAMETOOLONG]	=	"File name too long",
 [EFTYPE]	=	"Inappropriate file type or format",
+[ERANGE]	=	"Result too large or too small",
 };
 
 char *

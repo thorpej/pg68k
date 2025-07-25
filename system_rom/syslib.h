@@ -89,6 +89,7 @@
 #define	ELOOP		19	/* Too many levels of symbolic links */
 #define	ENAMETOOLONG	20	/* File name too long */
 #define	EFTYPE		21	/* Inappropriate file type or format */
+#define	ERANGE		34	/* Result too large or too small */
 
 extern int errno;
 #endif /* ! CONFIG_MACH_HOST_SIM */
@@ -107,6 +108,8 @@ int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);
 void *	memset(void *, int, size_t);
+void *	memchr(const void *, int, size_t);
+
 
 char *	strchr(const char *, int);
 char *	strrchr(const char *, int);
@@ -121,6 +124,8 @@ void *	calloc(size_t, size_t);
 void *	malloc(size_t);
 void *	realloc(void *, size_t);
 void	free(void *);
+
+unsigned long strtoul(const char *restrict, char **restrict, int);
 
 int	setjmp(jmp_buf);
 void	longjmp(jmp_buf, int);
@@ -139,5 +144,12 @@ int	putchar(int);
 uint32_t crc32(uint32_t, const void *, size_t);
 
 int	ucs2_to_utf8(char *, size_t, uint16_t);
+
+static inline int
+isspace(int c)
+{
+	return c == ' '  || c == '\t' || c == '\n' || c == '\r' ||
+	       c == '\f' || c == '\v';
+}
 
 #endif /* syslib_h_included */

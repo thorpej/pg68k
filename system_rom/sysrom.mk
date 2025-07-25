@@ -12,22 +12,29 @@ ASFLAGS+=	-mcpu=$(MACH_CPU)
 .endif
 
 .PATH: ..
-.PATH: ../compiler_rt
-.PATH: ../dosfs
-.PATH: ../ufs
 
 SYSLIBOBJS=	crc32.o \
-		memcmp.o memcpy.o memmove.o memset.o \
+		memchr.o memcmp.o memcpy.o memmove.o memset.o \
 		subr_prf.o \
 		strchr.o strrchr.o strcmp.o strncmp.o strlen.o strnlen.o \
 		    strcpy.o strdup.o \
+		strtoul.o \
 		unicode.o uuid.o
+
+.PATH: ../libfdt
+FDTCPPFLAGS=	-I../libfdt
+FDTOBJS=	fdt_addresses.o fdt_empty_tree.o fdt_overlay.o fdt_ro.o \
+		fdt_rw.o fdt_strerror.o fdt_sw.o fdt_wip.o fdt.o
 
 ATAOBJS=	ata.o
 
+.PATH: ../ufs
 UFSOBJS=	ufs.o ffs_bswap.o
+
+.PATH: ../dosfs
 DOSFSOBJS=	dosfs.o
 
+.PATH: ../compiler_rt
 COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \
 		udivmoddi4.o
 

@@ -325,6 +325,23 @@ cli_get_argv(void)
 static void	cli_h_help(int, char *[]);
 static void	cli_u_help(const char *);
 
+static void
+cli_u_ls(const char *str)
+{
+	printf("usage: %s path\n", str);
+	printf("example: %s ata()/\n", str);
+}
+
+static void
+cli_h_ls(int argc, char *argv[])
+{
+	if (argc != 2) {
+		cli_u_ls(argv[0]);
+		return;
+	}
+	ls(argv[1]);
+}
+
 static const struct cli_handler {
 	const char	*h_str;
 	const char	*h_desc;
@@ -335,6 +352,11 @@ static const struct cli_handler {
 	  "get help about a command",
 	  cli_h_help,
 	  cli_u_help
+	},
+	{ "ls",
+	  "show listing of a directory",
+	  cli_h_ls,
+	  cli_u_ls,
 	},
 };
 

@@ -234,7 +234,7 @@ start:
 	|
 	move.l	#0,%fp
 	pea	rom_argv0
-	move.l	#1,%sp
+	move.l	#1,-(%sp)
 	jbsr	main		| main(1, &rom_argv0)
 	addq.l	#8,%sp
 

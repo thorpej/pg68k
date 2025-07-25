@@ -358,6 +358,7 @@ cli_u_boot(const char *str)
 static void
 cli_h_boot(int argc, char *argv[])
 {
+	char dstr[DEV_STRING_SIZE];
 	u_long marks[MARK_MAX];
 	int error;
 
@@ -373,12 +374,71 @@ cli_h_boot(int argc, char *argv[])
 		printf("%s: %s\n", argv[1], strerror(errno));
 		return;
 	}
-	printf("Booting %s ...\n", argv[1]);
+	printf("Booting %s%s ...\n",
+	    dev_string(getfile(fd), dstr, sizeof(dstr)),
+	    file_name(fd));
 	error = fdloadfile(fd, marks, LOAD_ALL);
 	if (error) {
 		printf("Failed to load %s: %s\n", argv[1], strerror(error));
 		return;
 	}
+	close(fd);
+}
+
+static void
+cli_u_part(const char *str)
+{
+	printf("usage: %s disk\n", str);
+	printf("example: %s ata(0,0)\n", str);
+}
+
+static void
+cli_h_part(int argc, char *argv[])
+{
+	char dstr[DEV_STRING_SIZE];
+	char *op, *comma, *cp;
+
+	if (argc != 2) {
+		cli_u_part(argv[0]);
+		return;
+	}
+
+	/* Make sure we get "default" partition and no file. */
+	op = strchr(argv[1], '(');
+	if (op == NULL) {
+		cli_u_part(argv[0]);
+		return;
+	}
+
+	comma = strchr(op, ',');
+	if (comma != NULL) {
+		comma = strchr(comma + 1, ',');
+		if (comma != NULL) {
+			/* get rid of the remainder. */
+			*comma++ = ')';
+			*comma++ = '\0';
+			goto got_it;
+		}
+	}
+
+	cp = strrchr(op, ')');
+	if (cp == NULL) {
+		cli_u_part(argv[0]);
+		return;
+	}
+	*++cp = '\0';
+ got_it:
+	/* statement */;
+	int fd = open(argv[1], 0);
+	if (fd < 0) {
+		printf("%s: %s\n", argv[1], strerror(errno));
+		return;
+	}
+	struct open_file *f = getfile(fd);
+	printf("Partitions for %s:\n",
+	    dev_string(f, dstr, sizeof(dstr)));
+	partition_list_show(&f->f_partitions);
+	close(fd);
 }
 
 static const struct cli_handler {
@@ -401,6 +461,11 @@ static const struct cli_handler {
 	  "show listing of a directory",
 	  cli_h_ls,
 	  cli_u_ls,
+	},
+	{ "part",
+	  "show disk partitions",
+	  cli_h_part,
+	  cli_u_part,
 	},
 };
 

@@ -154,18 +154,33 @@ fnd:
 	return -1;
 }
 
-int
-getfile(int fd, struct open_file **fp)
+struct open_file *
+getfile(int fd)
 {
 	struct open_file *f = &files[fd];
 
 	if ((unsigned int)fd >= SOPEN_MAX || f->f_flags == 0) {
 		errno = EBADF;
-		return -1;
+		return NULL;
 	}
 
-	*fp = f;
-	return 0;
+	return f;
+}
+
+const char *
+file_name(int fd)
+{
+	struct open_file *f = &files[fd];
+
+	if ((unsigned int)fd >= SOPEN_MAX || f->f_flags == 0) {
+		errno = EBADF;
+		return NULL;
+	}
+
+	if (f->f_fname == NULL) {
+		return "";
+	}
+	return f->f_fname;
 }
 
 int

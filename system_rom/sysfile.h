@@ -198,8 +198,10 @@ int	dev_write(struct open_file *, uint64_t, const void *, size_t);
 int	dev_close(struct open_file *);
 const char *dev_string(struct open_file *, char *, size_t);
 size_t	getsecsize(struct open_file *);
-int	getfile(int, struct open_file **);
+struct open_file *getfile(int);
 int	fnmatch(const char *, const char *);
+
+const char *file_name(int);
 
 int	open(const char *, int);
 int	close(int);

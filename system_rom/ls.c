@@ -136,7 +136,7 @@ ls(const char *path)
 		}
 	}
 
-	if (getfile(fd, &f) != 0) {
+	if ((f = getfile(fd)) == NULL) {
 		/* getfile() sets errno */
 		goto out;
 	}

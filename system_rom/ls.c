@@ -117,8 +117,9 @@ ls(const char *path)
 			fd = open(p, 0);
 			free(p);
 		} else {
-			fd = open("", 0);
-			fname = path;
+			/* XXX FIXME XXX */
+			fd = -1;
+			errno = ENOTDIR;
 		}
 
 		if (fd < 0) {

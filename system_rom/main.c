@@ -34,6 +34,7 @@
 #include "uart.h"
 #include "loadfile.h"
 #include "ls.h"
+#include "cli.h"
 
 struct memory_bank {
 	uintptr_t	start;
@@ -214,6 +215,212 @@ strerror(int err)
 }
 #endif
 
+static char cli_cmdline[256];
+static size_t cli_cmdline_idx;
+#define	CLI_CMDLINE_LIMIT	(sizeof(cli_cmdline) - 1)
+
+#define	MAX_CL_ARGS	64
+
+static char *cli_argv[MAX_CL_ARGS];
+static int cli_argc;
+
+jmp_buf cli_env;
+static bool cli_env_valid;
+
+static void
+cli_get_cmdline(void)
+{
+	int ch;
+
+	printf(">>> ");
+
+	for (cli_cmdline_idx = 0;;) {
+		ch = cons_getc();
+		switch (ch) {
+		case 3: /* ETX - ^C */
+			putstrn("^C\n", 3);
+			cli_longjmp();
+			break;
+
+		case 7: /* BEL - ^G */
+			cons_putc(ch);	/* beep! */
+			break;
+
+		case '\r':
+			cli_cmdline[cli_cmdline_idx++] = '\0';
+			cons_putc('\n');
+			return;
+
+		case '\b':
+		case 127: /* DEL */
+			if (cli_cmdline_idx != 0) {
+				putstrn("\b \b", 3);
+				cli_cmdline_idx--;
+			}
+			break;
+
+		case 21: /* NAK - ^U */
+			while (cli_cmdline_idx != 0) {
+				putstrn("\b \b", 3);
+				cli_cmdline_idx--;
+			}
+			break;
+
+		case '\t':
+			goto accept;
+
+		default:
+			/* Ignore other control characters. */
+			if (ch < 32) {
+				continue;
+			}
+		accept:
+			if (cli_cmdline_idx < CLI_CMDLINE_LIMIT) {
+				cons_putc(ch);
+				cli_cmdline[cli_cmdline_idx++] = ch;
+			}
+		}
+	}
+}
+
+static inline bool
+cli_whitespace_p(int ch)
+{
+	return (ch == ' ' || ch == '\t');
+}
+
+static char *
+cli_skip_whitespace(char *cp)
+{
+	while (cli_whitespace_p(*cp)) {
+		cp++;
+	}
+	return cp;
+}
+
+static void
+cli_get_argv(void)
+{
+	char *cp = cli_cmdline;
+
+	for (cli_argc = 0;;) {
+		cp = cli_skip_whitespace(cp);
+		if (*cp == '\0') {
+			return;
+		}
+		if (cli_argc == MAX_CL_ARGS) {
+			printf("Argument list too long.\n");
+			cli_longjmp();
+		}
+		cli_argv[cli_argc++] = cp;
+		while (! cli_whitespace_p(*cp) && *cp != '\0') {
+			cp++;
+		}
+		if (cli_whitespace_p(*cp)) {
+			*cp++ = '\0';
+		}
+	}
+}
+
+static void	cli_h_help(int, char *[]);
+static void	cli_u_help(const char *);
+
+static const struct cli_handler {
+	const char	*h_str;
+	const char	*h_desc;
+	void		(*h_func)(int, char *[]);
+	void		(*h_usage)(const char *);
+} cli_handlers[] = {
+	{ "help",
+	  "get help about a command",
+	  cli_h_help,
+	  cli_u_help
+	},
+};
+
+static const struct cli_handler *
+cli_handler_lookup(const char *str)
+{
+	for (int i = 0; i < arraycount(cli_handlers); i++) {
+		if (strcmp(cli_handlers[i].h_str, str) == 0) {
+			return &cli_handlers[i];
+		}
+	}
+	return NULL;
+}
+
+static void
+cli_u_help(const char *str)
+{
+	printf("usage: %s [command]\n", str);
+}
+
+static void
+cli_h_help(int argc, char *argv[])
+{
+	const struct cli_handler *h;
+
+	switch (argc) {
+	case 2:
+		h = cli_handler_lookup(argv[1]);
+		if (h != NULL) {
+			(*h->h_usage)(argv[0]);
+			break;
+		}
+		/* FALLTHROUGH */
+	case 1:
+		for (int i = 0; i < arraycount(cli_handlers); i++) {
+			printf("%-10s %s\n", cli_handlers[i].h_str,
+			    cli_handlers[i].h_desc);
+		}
+		break;
+
+	default:
+		cli_u_help(argv[0]);
+	}
+}
+
+static void
+cli_dispatch(void)
+{
+	if (cli_argc == 0) {
+		return;
+	}
+
+	const struct cli_handler *h = cli_handler_lookup(cli_argv[0]);
+
+	if (h != NULL) {
+		(*h->h_func)(cli_argc, cli_argv);
+		return;
+	}
+	printf("Unknown command: %s\n", cli_argv[0]);
+}
+
+static void
+cli_loop(void)
+{
+	setjmp(cli_env);
+	cli_env_valid = true;
+
+	for (;;) {
+		cli_get_cmdline();
+		cli_get_argv();
+		cli_dispatch();
+	}
+}
+
+void
+cli_longjmp(void)
+{
+	if (cli_env_valid) {
+		longjmp(cli_env, 1);
+	}
+	printf("XXX cli_longjmp XXX\n");
+	for (;;) {
+		/* forever */
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -230,38 +437,7 @@ main(int argc, char *argv[])
 
 	printf("\n");
 
-#if 0
-	printf(">>> boot ()/vmunix\n");
-	open("()/vmunix", O_RDONLY);
-
-	printf(">>> boot unk()/vmunix\n");
-	open("unk()/vmunix", O_RDONLY);
-
-	printf(">>> boot ata()/vmunix\n");
-	int fd = open("ata()/vmunix", O_RDONLY);
-
-	printf(">>> boot ata()/vmunix\n");
-	int fd2 = open("ata(0,1)/vmunix", O_RDONLY);
-#endif
-
-	printf(">>> ls ata()/\n");
-	ls("ata()/");
-
-	printf(">>> boot ata()/netbsd\n");
-	u_long marks[MARK_MAX] = { 0 };
-	int fd = loadfile("ata()/netbsd", marks, LOAD_ALL);
-	(void)fd;
-
-#if 0
-	printf(">>> boot ata(0,1,3)/vmunix\n");
-	open("ata(0,1,3)/vmunix", O_RDONLY);
-
-	printf(">>> boot ata(0,1,3,5)/vmunix\n");
-	open("ata(0,1,3,5)/vmunix", O_RDONLY);
-#endif
-
-	/* A stub, obviously. */
-	return 0;
+	cli_loop();
 }
 
 void

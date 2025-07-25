@@ -138,7 +138,7 @@ sim_uart_putc(int c)
 	while (poll(&stdout_pfd, 1, -1) > 0) {
 		if (stdout_pfd.revents & POLLOUT) {
 			(void) write(stdout_fd, &ch, 1);
-			//usleep(86);	/* time between chars at 115.2k */
+			usleep(86);	/* time between chars at 115.2k */
 			return;
 		}
 	}

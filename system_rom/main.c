@@ -349,6 +349,38 @@ cli_h_ls(int argc, char *argv[])
 	ls(argv[1]);
 }
 
+static void
+cli_u_boot(const char *str)
+{
+	printf("usage: %s file [args]\n", str);
+}
+
+static void
+cli_h_boot(int argc, char *argv[])
+{
+	u_long marks[MARK_MAX];
+	int error;
+
+	if (argc < 2) {
+		cli_u_boot(argv[0]);
+		return;
+	}
+
+	/* XXX stub for now XXX */
+
+	int fd = open(argv[1], 0);
+	if (fd < 0) {
+		printf("%s: %s\n", argv[1], strerror(errno));
+		return;
+	}
+	printf("Booting %s ...\n", argv[1]);
+	error = fdloadfile(fd, marks, LOAD_ALL);
+	if (error) {
+		printf("Failed to load %s: %s\n", argv[1], strerror(error));
+		return;
+	}
+}
+
 static const struct cli_handler {
 	const char	*h_str;
 	const char	*h_desc;
@@ -358,7 +390,12 @@ static const struct cli_handler {
 	{ "help",
 	  "get help about a command",
 	  cli_h_help,
-	  cli_u_help
+	  cli_u_help,
+	},
+	{ "boot",
+	  "boot an executable file",
+	  cli_h_boot,
+	  cli_u_boot,
 	},
 	{ "ls",
 	  "show listing of a directory",

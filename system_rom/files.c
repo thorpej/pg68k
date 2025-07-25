@@ -102,14 +102,14 @@ fnd:
 	 * Try to open the device.
 	 * Convert open mode (0,1,2) to F_READ, F_WRITE.
 	 */
-	f->f_flags = mode + 1;
+	f->f_flags = (mode & O_MODEMASK) + 1;
 	f->f_fname = NULL;
 	f->f_dev = NULL;
 	f->f_ops = NULL;
 	f->f_offset = 0;
 
 	file = NULL;
-	error = dev_open(f, fname, &file);
+	error = dev_open(f, fname, mode, &file);
 	if (error
 	    || (((f->f_flags & F_NODEV) == 0) &&
 		f->f_dev == NULL)
@@ -312,7 +312,7 @@ stat(const char *str, struct stat *sb)
 {
 	int fd, rv;
 
-	fd = open(str, 0);
+	fd = open(str, O_RDONLY);
 	if (fd < 0)
 		return -1;
 	rv = fstat(fd, sb);

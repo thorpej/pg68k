@@ -586,6 +586,11 @@ partition_list_choose(struct partition_list *pl, int partnum)
 
 	pl->pl_chosen = NULL;
 
+	if (partnum == -2) {
+		pl->pl_chosen = &full_disk;
+		return 0;
+	}
+
 	if (partnum == -1) {
 		switch (pl->pl_scheme) {
 #ifdef CONFIG_DISKLABEL_GPT

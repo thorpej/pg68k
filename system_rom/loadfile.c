@@ -82,7 +82,7 @@ loadfile(const char *fname, u_long *marks, int flags)
 	int fd, error;
 
 	/* Open the file. */
-	if ((fd = open(fname, 0)) < 0) {
+	if ((fd = open(fname, O_RDONLY)) < 0) {
 		WARN(("open %s", fname ? fname : "<default>"));
 		return -1;
 	}

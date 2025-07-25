@@ -103,7 +103,7 @@ dev_string(struct open_file *f, char *buf, size_t buflen)
 		ADVANCE;
 	}
 	if (dv->dv_nargs >= 3) {
-		if (f->f_devpart != -1) {
+		if (f->f_devpart >= 0) {
 			rv = snprintf(buf, buflen, ",%d", f->f_devpart);
 		} else {
 			rv = snprintf(buf, buflen, ",");
@@ -232,7 +232,7 @@ devparse(const char *str, struct open_file *f, const char **fnamep)
 }
 
 int
-dev_open(struct open_file *f, const char *path, const char **fnamep)
+dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 {
 	int error;
 	bool need_close = false;
@@ -258,6 +258,13 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 	}
 	if (f->f_devunit == -1) {
 		f->f_devunit = 0;
+	}
+
+	if (flags & O_RAW) {
+		*fnamep = NULL;
+	}
+	if (flags & O_WHOLE) {
+		f->f_devpart = -2;	/* XXX magic number */
 	}
 
 	error = DEV_OPEN(f->f_dev)(f);

@@ -98,7 +98,7 @@ ls(const char *path)
 	char		*p;
 	struct open_file *f;
 
-	if ((fd = open(path, 0)) < 0
+	if ((fd = open(path, O_RDONLY)) < 0
 	    || fstat(fd, &sb) < 0
 	    || (sb.st_mode & S_IFMT) != S_IFDIR) {
 		/* Path supplied isn't a directory, open parent
@@ -114,7 +114,7 @@ ls(const char *path)
 				goto out;
 			memcpy(p, path, size);
 			p[size] = 0;
-			fd = open(p, 0);
+			fd = open(p, O_RDONLY);
 			free(p);
 		} else {
 			/* XXX FIXME XXX */

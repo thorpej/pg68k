@@ -369,7 +369,7 @@ cli_h_boot(int argc, char *argv[])
 
 	/* XXX stub for now XXX */
 
-	int fd = open(argv[1], 0);
+	int fd = open(argv[1], O_RDONLY);
 	if (fd < 0) {
 		printf("%s: %s\n", argv[1], strerror(errno));
 		return;
@@ -396,40 +396,13 @@ static void
 cli_h_part(int argc, char *argv[])
 {
 	char dstr[DEV_STRING_SIZE];
-	char *op, *comma, *cp;
 
 	if (argc != 2) {
 		cli_u_part(argv[0]);
 		return;
 	}
 
-	/* Make sure we get "default" partition and no file. */
-	op = strchr(argv[1], '(');
-	if (op == NULL) {
-		cli_u_part(argv[0]);
-		return;
-	}
-
-	comma = strchr(op, ',');
-	if (comma != NULL) {
-		comma = strchr(comma + 1, ',');
-		if (comma != NULL) {
-			/* get rid of the remainder. */
-			*comma++ = ')';
-			*comma++ = '\0';
-			goto got_it;
-		}
-	}
-
-	cp = strrchr(op, ')');
-	if (cp == NULL) {
-		cli_u_part(argv[0]);
-		return;
-	}
-	*++cp = '\0';
- got_it:
-	/* statement */;
-	int fd = open(argv[1], 0);
+	int fd = open(argv[1], O_RDONLY | O_RAW | O_WHOLE);
 	if (fd < 0) {
 		printf("%s: %s\n", argv[1], strerror(errno));
 		return;

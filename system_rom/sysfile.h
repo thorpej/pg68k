@@ -150,6 +150,9 @@ extern const int nfsys;
 #define	O_RDONLY	0x0000
 #define	O_WRONLY	0x0001
 #define	O_RDWR		0x0002
+#define	O_MODEMASK	0x0003
+#define	O_RAW		0x0004	/* force raw device, not file system */
+#define	O_WHOLE		0x0008	/* force whole disk, not a partition */
 
 /* whence values for lseek(2) */
 #define	SEEK_SET	0	/* set file offset to offset */
@@ -190,7 +193,7 @@ struct stat {
 
 #define	IOC_GETSECSIZE	0x0000	/* size_t arg */
 
-int	dev_open(struct open_file *, const char *, const char **);
+int	dev_open(struct open_file *, const char *, int, const char **);
 int	dev_strategy(struct open_file *, int, daddr_t, size_t, void *,
 	    size_t *);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);

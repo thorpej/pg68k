@@ -241,6 +241,9 @@ dev_open(struct open_file *f, const char *path, const char **fnamep)
 	f->f_dev = NULL;
 
 	error = devparse(path, f, fnamep);
+	if (f->f_dev == NULL) {
+		error = ENXIO;
+	}
 	if (error) {
 		return error;
 	}

@@ -115,6 +115,7 @@ int	strncmp(const char *, const char *, size_t);
 char *	strcpy(char *, const char *);
 char *	strdup(const char *);
 size_t	strlen(const char *);
+size_t	strnlen(const char *, size_t);
 
 void *	calloc(size_t, size_t);
 void *	malloc(size_t);

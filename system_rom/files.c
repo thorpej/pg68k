@@ -79,6 +79,8 @@
 
 static struct open_file files[SOPEN_MAX];
 
+static const char empty_fname[1] = { 0 };
+
 /*
  *	File primitives proper
  */
@@ -117,14 +119,18 @@ fnd:
 		goto err;
 
 	/* see if we opened a raw device; otherwise, 'file' is the file name. */
-	if (file == NULL || *file == '\0') {
+	if (mode & O_RAW) {
 		f->f_flags |= F_RAW;
 		return fd;
 	}
-	f->f_fname = strdup(file);
-	if (f->f_fname == NULL) {
-		error = ENOMEM;
-		goto err_closedev;
+	if (file == NULL || *file == '\0') {
+		f->f_fname = UNCONST(empty_fname);
+	} else {
+		f->f_fname = strdup(file != NULL ? file : "");
+		if (f->f_fname == NULL) {
+			error = ENOMEM;
+			goto err_closedev;
+		}
 	}
 
 	/* pass file name to the different filesystem open routines */
@@ -178,7 +184,7 @@ file_name(int fd)
 	}
 
 	if (f->f_fname == NULL) {
-		return "";
+		return empty_fname;
 	}
 	return f->f_fname;
 }
@@ -201,7 +207,7 @@ close(int fd)
 		if (f->f_dev != NULL)
 			err2 = dev_close(f);
 	f->f_flags = 0;
-	if (f->f_fname != NULL) {
+	if (f->f_fname != NULL && f->f_fname != empty_fname) {
 		free(f->f_fname);
 		f->f_fname = NULL;
 	}

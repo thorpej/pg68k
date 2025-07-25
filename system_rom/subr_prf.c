@@ -188,14 +188,12 @@ putstrn(const char *s, size_t len)
 }
 
 /* Avoid circular dependency with uart_hostsim.c */
-#ifndef CONFIG_MACH_HOST_SIM
 int
 putchar(int c)
 {
 	cons_putc(c);
 	return c;
 }
-#endif /* ! CONFIG_MACH_HOST_SIM */
 
 int
 vsnprintf(char *buf, size_t size, const char *fmt, va_list ap)

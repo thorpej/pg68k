@@ -25,31 +25,34 @@
  */
 
 #include "systypes.h"
+#include "simglue.h"
 
 #include <assert.h>
-#include <stdio.h>
 
 void
 uart_init(int unit, int speed)
 {
 	assert(unit == 0);
+	sim_uart_init();
 }
 
 bool
 uart_pollc(int unit, int *chp)
 {
-	/* XXX */
-	return false;
+	assert(unit == 0);
+	return sim_uart_pollc(chp);
 }
 
 int
 uart_getc(int unit)
 {
-	return getchar();
+	assert(unit == 0);
+	return sim_uart_getc();
 }
 
 void
 uart_putc(int unit, int c)
 {
-	putchar(c);
+	assert(unit == 0);
+	sim_uart_putc(c);
 }

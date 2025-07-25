@@ -27,6 +27,11 @@
 #ifndef simglue_h_included
 #define	simglue_h_included
 
+void	sim_uart_init(void);
+bool	sim_uart_pollc(int *);
+int	sim_uart_getc(void);
+void	sim_uart_putc(int);
+
 void	sim_ata_init(void);
 int	sim_ata_strategy(void *, int, uint64_t, size_t, void *, size_t *);
 int	sim_ata_open(int, void **);

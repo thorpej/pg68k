@@ -32,6 +32,10 @@
 
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <poll.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <termios.h>
 #include <unistd.h>
 
 jmp_buf nofault_env;
@@ -69,6 +73,75 @@ badaddr_write32(volatile uint32_t *p, uint32_t val)
 	}
 
 	return true;
+}
+
+static struct termios saved_termios;
+static struct termios raw_termios;
+static int stdout_fd;
+static struct pollfd stdout_pfd;
+
+static void
+restore_stdout(void)
+{
+	tcsetattr(stdout_fd, TCSAFLUSH, &saved_termios);
+}
+
+void
+sim_uart_init(void)
+{
+	stdout_fd = fileno(stdout);
+
+	stdout_pfd.fd = stdout_fd;
+	stdout_pfd.events = POLLIN | POLLOUT;
+
+	tcgetattr(stdout_fd, &saved_termios);
+
+	atexit(restore_stdout);
+
+	raw_termios = saved_termios;
+	cfmakeraw(&raw_termios);
+
+#if 0	/* Don't want this right now. */
+	raw_termios.c_lflag |= ISIG;
+#endif
+	tcsetattr(stdout_fd, TCSAFLUSH, &raw_termios);
+}
+
+bool
+sim_uart_pollc(int *chp)
+{
+	if (poll(&stdout_pfd, 1, 0) > 0 &&
+	    (stdout_pfd.revents & POLLIN) != 0) {
+		uint8_t ch;
+
+		(void) read(stdout_fd, &ch, 1);
+		*chp = ch;
+		return true;
+	}
+	return false;
+}
+
+int
+sim_uart_getc(void)
+{
+	uint8_t ch;
+
+	(void) read(stdout_fd, &ch, 1);
+	return ch;
+}
+
+void
+sim_uart_putc(int c)
+{
+	uint8_t ch = (uint8_t)c;
+
+	while (poll(&stdout_pfd, 1, -1) > 0) {
+		if (stdout_pfd.revents & POLLOUT) {
+			(void) write(stdout_fd, &ch, 1);
+			//usleep(86);	/* time between chars at 115.2k */
+			return;
+		}
+	}
 }
 
 struct sim_ata_softc {

@@ -11,8 +11,12 @@ char *
 strdup(const char *src)
 {
 	char *dst = malloc(strlen(src) + 1);
+
 	if (dst != NULL) {
-		strcpy(dst, src);
+		for (char *cp = dst; (*cp++ = *src++) != '\0';) {
+			/* loop. */
+		}
 	}
+
 	return dst;
 }

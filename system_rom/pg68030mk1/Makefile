@@ -7,7 +7,8 @@ MACH_CLEANFILES=${MACH_PROG}.list
 .include "../xcomp.mk"
 .include "../sysrom.mk"
 
-OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS}
+OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
+CPPFLAGS+=	${FDTCPPFLAGS}
 
 ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \

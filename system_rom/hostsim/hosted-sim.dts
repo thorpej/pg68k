@@ -1,0 +1,89 @@
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	model = "Playground 68k Hosted ROM simulator";
+	compatible = "pg68k,hosted-sim";
+
+	chosen {
+		bootargs = "";
+		stdout-path = "serial0:115200n8r";
+	};
+
+	aliases {
+		/*
+		 * The firmware will use these names in the
+		 * pg68k,booted-controller property in /chosen.
+		 */
+		ata0 = "/obp/ata@ffe001f0";
+		eth0 = "/obp/ethernet@ffe00300";
+
+		/*
+		 * Possible console devices.
+		 */
+		serial0 = "/obp/serial@ffe003f8";
+		serial1 = "/obp/serial@ffe002f8";
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "pg68k,hosted-sim";
+			device_type = "cpu";
+			reg = <0>;
+			clock-frequency = <1000000>;
+		};
+	};
+
+	clocks {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		uart_clk: osc1_8432M_clk {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <1843200>;
+		};
+	};
+
+	memory@0 {
+		/* Firmware will size this at run-time. */
+		device_type = "memory";
+		reg = <0x0 0x0>;
+	};
+
+	obp {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		serial0: serial@ffe003f8 {
+			compatible = "ns16550a";
+			reg = <0xffe003f8 0x8>;
+			clocks = <&uart_clk>;
+		};
+
+		serial1: serial@ffe002f8 {
+			compatible = "ns16550a";
+			reg = <0xffe002f8 0x8>;
+			clocks = <&uart_clk>;
+		};
+
+		ata0: ata@ffe001f0 {
+			compatible = "ata-generic";
+			reg = <0xffe001f0 0x8>,	/* command */
+			      <0xffe003f6 0x2>;	/* control */
+			ata-generic,use16bit;
+		};
+
+		ethernet0: ethernet@ffe00300 {
+			compatible = "realtek,rtl8019as";
+			reg = <0xffe00300 0x20>;
+		};
+	};
+};

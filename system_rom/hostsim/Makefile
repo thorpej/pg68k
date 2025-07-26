@@ -1,13 +1,15 @@
 MACH_TYPE=	HOST_SIM
 #MACH_PROG=	pgromsim
 MACH_IMGS=	pgromsim
+DEVICE_TREE=	hosted-sim.dts
 
 .include "../sysrom.mk"
 
 CFLAGS+=	-g -Wall -Wmissing-prototypes
 
-OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS}
+OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
 OBJS+=		simglue.o
+CPPFLAGS+=	${FDTCPPFLAGS}
 
-pgromsim: $(OBJS)
+pgromsim: $(OBJS) device-tree.dtb
 	${CC} -o ${.TARGET} ${OBJS}

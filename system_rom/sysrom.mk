@@ -56,5 +56,14 @@ assym.h: genassym.sh genassym.cf
 
 ${M68KOBJS}: assym.h
 
+device-tree.o: device-tree.S
+device-tree.S: ${DEVICE_TREE}
+	dtc -I dts -O asm ${DEVICE_TREE} > ${.TARGET}
+
+device-tree.dtb: ${DEVICE_TREE}
+	dtc -I dts -O dtb -o ${.TARGET} ${DEVICE_TREE}
+
+CLEANFILES+=	device-tree.o device-tree.S device-tree.dtb
+
 clean:
 	-rm -f $(M68KOBJS) $(OBJS) $(MACH_PROG) $(MACH_IMGS) $(CLEANFILES)

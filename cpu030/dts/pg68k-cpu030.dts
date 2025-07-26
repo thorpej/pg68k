@@ -38,6 +38,21 @@
 		netbsd,tt = <0xff008143 0x0>;
 	};
 
+	aliases {
+		/*
+		 * The firmware will use these names in the
+		 * pg68k,booted-controller property in /chosen.
+		 */
+		ata0 = "/obp/ata@ffe001f0";
+		eth0 = "/obp/ethernet@ffe00300";
+
+		/*
+		 * Possible console devices.
+		 */
+		serial0 = "/obp/serial@ffe003f8";
+		serial1 = "/obp/serial@ffe002f8";
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;

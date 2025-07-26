@@ -58,7 +58,8 @@ ${M68KOBJS}: assym.h
 
 device-tree.o: device-tree.S
 device-tree.S: ${DEVICE_TREE}
-	dtc -I dts -O asm ${DEVICE_TREE} > ${.TARGET}
+	echo "\t.section\t.rodata\n\t.balign\t4\n" > ${.TARGET}
+	dtc -I dts -O asm ${DEVICE_TREE} >> ${.TARGET}
 
 device-tree.dtb: ${DEVICE_TREE}
 	dtc -I dts -O dtb -o ${.TARGET} ${DEVICE_TREE}

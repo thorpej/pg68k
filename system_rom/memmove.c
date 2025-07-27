@@ -13,9 +13,13 @@ memmove(void *vdst, const void *vsrc, size_t n)
 	char *dst = vdst;
 	const char *src = vsrc;
 
-	if (dst < src) {
-		dst += n;
+	if (src == dst || n == 0) {
+		return vdst;
+	}
+
+	if (src < dst) {
 		src += n;
+		dst += n;
 		while (n--) {
 			*--dst = *--src;
 		}

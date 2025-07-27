@@ -162,6 +162,7 @@ set_memory_nodes(void)
 	 * "reg" property from any we don't know about.
 	 */
  again:
+	offset = -1;
 	while ((offset = fdt_node_offset_by_prop_value(fdt_store, offset,
 			"device_type", "memory", sizeof("memory"))) >= 0) {
 		reg = fdt_getprop(fdt_store, offset, "reg", &plen);

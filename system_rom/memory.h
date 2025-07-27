@@ -1,7 +1,7 @@
-/*      
+/*
  * Copyright (c) 2025 Jason R. Thorpe.
  * All rights reserved.
- *      
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -24,24 +24,20 @@
  * SUCH DAMAGE.
  */
 
-#ifndef simglue_h_included
-#define	simglue_h_included
+#ifndef memory_h_included
+#define	memory_h_included
 
-void	sim_uart_init(void);
-bool	sim_uart_pollc(int *);
-int	sim_uart_getc(void);
-void	sim_uart_putc(int);
+#include "config.h"
+#include "systypes.h"
 
-void	sim_ata_init(void);
-int	sim_ata_strategy(void *, int, uint64_t, size_t, void *, size_t *);
-int	sim_ata_open(int, void **);
-int	sim_ata_close(void *);
-int	sim_ata_ioctl(void *, unsigned long, void *);
+struct memory_bank {
+	uintptr_t	start;
+	size_t		size;
+	size_t		maxsize;
+	const char *	desc;
+};
 
-ssize_t	sim_loader_read(int, uintptr_t, size_t);
-void	sim_loader_bcopy(const void *, uintptr_t, size_t);
-void	sim_loader_bzero(uintptr_t, size_t);
+extern struct memory_bank memory_banks[];
+extern const int memory_bank_count;
 
-const void *sim_rom_fdt(void);
-void	sim_booted_fdt(const void *, size_t);
-#endif /* simglue_h_included */
+#endif /* memory_h_included */

@@ -32,18 +32,13 @@
 #include "trap.h"
 #include "ata.h"
 #include "uart.h"
-#include "loadfile.h"
+#include "loadfile.h"	/* for load flags passed to exec() */
 #include "ls.h"
 #include "cli.h"
 
-struct memory_bank {
-	uintptr_t	start;
-	size_t		size;
-	size_t		maxsize;
-	const char *	desc;
-};
+#include "memory.h"
 
-static struct memory_bank memory_banks[] = {
+struct memory_bank memory_banks[] = {
 #ifdef RAM0_START
 	{
 		.start   = RAM0_START,
@@ -85,6 +80,7 @@ static struct memory_bank memory_banks[] = {
 	},
 #endif
 };
+const int memory_bank_count = arraycount(memory_banks);
 
 static void
 size_memory_bank(struct memory_bank *mb)
@@ -359,31 +355,12 @@ cli_u_boot(const char *str)
 static void
 cli_h_boot(int argc, char *argv[])
 {
-	char dstr[DEV_STRING_SIZE];
-	u_long marks[MARK_MAX];
-	int error;
-
 	if (argc < 2) {
 		cli_u_boot(argv[0]);
 		return;
 	}
 
-	/* XXX stub for now XXX */
-
-	int fd = open(argv[1], O_RDONLY);
-	if (fd < 0) {
-		printf("%s: %s\n", argv[1], strerror(errno));
-		return;
-	}
-	printf("Booting %s%s ...\n",
-	    dev_string(getfile(fd), dstr, sizeof(dstr)),
-	    file_name(fd));
-	error = fdloadfile(fd, marks, LOAD_ALL);
-	if (error) {
-		printf("Failed to load %s: %s\n", argv[1], strerror(error));
-		return;
-	}
-	close(fd);
+	(void) exec(LOAD_ALL, argc, argv);
 }
 
 static void

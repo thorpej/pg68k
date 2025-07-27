@@ -256,3 +256,40 @@ void
 sim_loader_bzero(uintptr_t dst, size_t sz)
 {
 }
+
+static void *rom_fdt_store;
+
+const void *
+sim_rom_fdt(void)
+{
+	if (rom_fdt_store != NULL) {
+		free(rom_fdt_store);
+		rom_fdt_store = NULL;
+	}
+	int fd = open("device-tree.dtb", O_RDONLY);
+	if (fd >= 0) {
+		struct stat sb;
+		if (fstat(fd, &sb) == 0) {
+			rom_fdt_store = malloc((size_t)sb.st_size);
+			if (rom_fdt_store != NULL) {
+				read(fd, rom_fdt_store, (size_t)sb.st_size);
+			}
+		}
+		close(fd);
+	}
+	return rom_fdt_store;
+}
+
+void
+sim_booted_fdt(const void *buf, size_t buflen)
+{
+	int fd = open("booted-device-tree.dtb", O_RDWR|O_CREAT|O_TRUNC, 0644);
+	if (fd >= 0) {
+		write(fd, buf, buflen);
+		close(fd);
+	}
+	if (rom_fdt_store != NULL) {
+		free(rom_fdt_store);
+		rom_fdt_store = NULL;
+	}
+}

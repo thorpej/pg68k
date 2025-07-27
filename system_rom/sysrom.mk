@@ -41,7 +41,8 @@ COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
 
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o dev.o disklabel.o \
-		files.o fs.o ls.o fnmatch.o loadfile.o loadfile_elf32.o
+		files.o fs.o ls.o fnmatch.o loadfile.o loadfile_elf32.o \
+		exec.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
 

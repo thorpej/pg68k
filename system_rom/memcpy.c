@@ -13,6 +13,10 @@ memcpy(void *vdst, const void *vsrc, size_t n)
 	char *dst = vdst;
 	const char *src = vsrc;
 
+	if (src == dst || n == 0) {
+		return vdst;
+	}
+
 	while (n--) {
 		*dst++ = *src++;
 	}

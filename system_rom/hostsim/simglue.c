@@ -281,7 +281,7 @@ sim_rom_fdt(void)
 }
 
 void
-sim_booted_fdt(const void *buf, size_t buflen)
+sim_boot_fdt(const void *buf, size_t buflen)
 {
 	int fd = open("booted-device-tree.dtb", O_RDWR|O_CREAT|O_TRUNC, 0644);
 	if (fd >= 0) {
@@ -292,4 +292,5 @@ sim_booted_fdt(const void *buf, size_t buflen)
 		free(rom_fdt_store);
 		rom_fdt_store = NULL;
 	}
+	exit(0);
 }

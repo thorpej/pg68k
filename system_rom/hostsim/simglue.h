@@ -43,5 +43,5 @@ void	sim_loader_bcopy(const void *, uintptr_t, size_t);
 void	sim_loader_bzero(uintptr_t, size_t);
 
 const void *sim_rom_fdt(void);
-void	sim_booted_fdt(const void *, size_t);
+void	sim_boot_fdt(const void *, size_t);
 #endif /* simglue_h_included */

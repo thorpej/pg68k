@@ -383,8 +383,17 @@ exec(int load_flags, int argc, char *argv[])
 	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
 
 #ifdef CONFIG_MACH_HOST_SIM
-	sim_booted_fdt(fdt_store, fdt_totalsize(fdt_store));
-#endif
+	sim_boot_fdt(fdt_store, fdt_totalsize(fdt_store));
+#else
+#ifdef CONFIG_DEVICETREE
+	void (*entry)(const void *) = (void *)marks[MARK_ENTRY];
+	(*entry)(fdt_store);
+#else
+	void (*entry)(int argc, char *argv[]) = (void *)marks[MARK_ENTRY];
+	(*entry)(argc, argv);
+#endif /* CONFIG_DEVICETREE */
+#endif /* CONFIG_MACH_HOST_SIM */
 
+	/* NOTREACHED */
 	return 0;
 }

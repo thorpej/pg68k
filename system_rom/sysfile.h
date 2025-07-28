@@ -104,7 +104,6 @@ struct open_file {
 #define	F_READ		0x0001		/* file opened for reading */
 #define	F_WRITE		0x0002		/* file opened for writing */
 #define	F_RAW		0x0004		/* raw device open - no file system */
-#define	F_NODEV		0x0008		/* network open - no device */
 
 struct devsw {
 	const char *dv_name;

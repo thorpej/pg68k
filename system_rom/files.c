@@ -112,11 +112,9 @@ fnd:
 
 	file = NULL;
 	error = dev_open(f, fname, mode, &file);
-	if (error
-	    || (((f->f_flags & F_NODEV) == 0) &&
-		f->f_dev == NULL)
-	    )
+	if (error) {
 		goto err;
+	}
 
 	/* see if we opened a raw device; otherwise, 'file' is the file name. */
 	if (mode & O_RAW) {
@@ -150,9 +148,8 @@ fnd:
 	error = besterror;
 
  err_closedev:
-	if ((f->f_flags & F_NODEV) == 0) {
-		if (DEV_CLOSE(f->f_dev) != NULL)
-			(void)DEV_CLOSE(f->f_dev)(f);
+	if (DEV_CLOSE(f->f_dev) != NULL) {
+		(void)DEV_CLOSE(f->f_dev)(f);
 	}
  err:
 	f->f_flags = 0;
@@ -203,9 +200,8 @@ close(int fd)
 	if (!(f->f_flags & F_RAW))
 		if (f->f_ops != NULL)
 			err1 = FS_CLOSE(f->f_ops)(f);
-	if (!(f->f_flags & F_NODEV))
-		if (f->f_dev != NULL)
-			err2 = dev_close(f);
+	if (f->f_dev != NULL)
+		err2 = dev_close(f);
 	f->f_flags = 0;
 	if (f->f_fname != NULL && f->f_fname != empty_fname) {
 		free(f->f_fname);

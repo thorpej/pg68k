@@ -56,3 +56,12 @@ ata_configure(void)
 #elif defined(CONFIG_ATA_HOST_SIM)
 #include "ata_hostsim.c"
 #endif
+
+const struct devsw ata_devsw = {
+	.dv_name	=	"ata",
+	.dv_nargs	=	3,	/* ctlr,unit,part */
+	.dv_strategy	=	ata_strategy,
+	.dv_open	=	ata_open,
+	.dv_close	=	ata_close,
+	.dv_ioctl	=	ata_ioctl,
+};

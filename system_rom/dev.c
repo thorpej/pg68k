@@ -253,34 +253,36 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 	 * number gets to say unspecified, hinting that the partition
 	 * code should search for a good candidate.
 	 */
-	if (f->f_devctlr == -1) {
+	if (f->f_dev->dv_nargs > 0 && f->f_devctlr == -1) {
 		f->f_devctlr = 0;
 	}
-	if (f->f_devunit == -1) {
+	if (f->f_dev->dv_nargs > 1 && f->f_devunit == -1) {
 		f->f_devunit = 0;
 	}
-
-	if (flags & O_WHOLE) {
-		f->f_devpart = -2;	/* XXX magic number */
+	if (f->f_dev->dv_nargs > 2) {
+		if (flags & O_WHOLE) {
+			f->f_devpart = -2;	/* XXX magic number */
+		}
 	}
 
 	error = DEV_OPEN(f->f_dev)(f);
 	if (error == 0) {
 		need_close = true;
-		error = partition_list_scan(f, &f->f_partitions);
-		if (error == 0) {
-			if (f->f_partitions.pl_scheme !=
-			    PARTITION_SCHEME_UNKNOWN) {
-				printf("Found %s partition scheme\n",
-				    partition_scheme_name(
-				    f->f_partitions.pl_scheme));
+		if (DEV_IS_BLKDEV(f->f_dev)) {
+			struct partition_list *pl = &f->f_blkdev.f_partitions;
+			error = partition_list_scan(f, pl);
+			if (error == 0) {
+				if (pl->pl_scheme != PARTITION_SCHEME_UNKNOWN) {
+					printf("Found %s partition scheme\n",
+					    partition_scheme_name(
+					    pl->pl_scheme));
+				}
+				error = partition_list_choose(pl, f->f_devpart);
+				if (error) {
+					partition_list_discard(pl);
+				}
+				f->f_devpart = pl->pl_chosen->p_partnum;
 			}
-			error = partition_list_choose(&f->f_partitions,
-			    f->f_devpart);
-			if (error) {
-				partition_list_discard(&f->f_partitions);
-			}
-			f->f_devpart = f->f_partitions.pl_chosen->p_partnum;
 		}
 	}
 	if (error) {
@@ -296,7 +298,9 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 int
 dev_close(struct open_file *f)
 {
-	partition_list_discard(&f->f_partitions);
+	if (DEV_IS_BLKDEV(f->f_dev)) {
+		partition_list_discard(&f->f_blkdev.f_partitions);
+	}
 	int rv = DEV_CLOSE(f->f_dev)(f);
 	f->f_dev = NULL;
 	return rv;
@@ -306,14 +310,18 @@ int
 dev_strategy(struct open_file *f, int flags, daddr_t blkno, size_t sz,
     void *buf, size_t *actualp)
 {
-	daddr_t poff = 0;
+	if (DEV_IS_BLKDEV(f->f_dev)) {
+		daddr_t poff = 0;
 
-	if (f->f_partitions.pl_chosen != NULL) {
-		poff = f->f_partitions.pl_chosen->p_startblk;
+		if (f->f_blkdev.f_partitions.pl_chosen != NULL) {
+			poff = f->f_blkdev.f_partitions.pl_chosen->p_startblk;
+		}
+		return DEV_STRATEGY(f->f_dev)(f, F_READ, blkno + poff, sz,
+		    buf, actualp);
+	} else {
+		*actualp = 0;
+		return EIO;
 	}
-
-	return DEV_STRATEGY(f->f_dev)(f, F_READ, blkno + poff, sz,
-	    buf, actualp);
 }
 
 int

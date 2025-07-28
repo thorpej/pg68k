@@ -386,9 +386,15 @@ cli_h_part(int argc, char *argv[])
 		return;
 	}
 	struct open_file *f = getfile(fd);
-	printf("Partitions for %s:\n",
-	    dev_string(f, dstr, sizeof(dstr)));
-	partition_list_show(&f->f_partitions);
+
+	if (DEV_IS_BLKDEV(f->f_dev)) {
+		printf("Partitions for %s:\n",
+		    dev_string(f, dstr, sizeof(dstr)));
+		partition_list_show(&f->f_blkdev.f_partitions);
+	} else {
+		printf("%s is not a block device.\n",
+		    dev_string(f, dstr, sizeof(dstr)));
+	}
 	close(fd);
 }
 

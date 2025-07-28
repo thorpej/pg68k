@@ -84,6 +84,11 @@ struct devsw;
 struct fs_ops;
 struct stat;
 
+struct open_blkdev {
+	struct partition_list	f_partitions;	/* disk partition list */
+	off_t			f_offset;	/* offset for F_RAW */
+};
+
 struct open_file {
 	int		f_flags;	/* see F_* below */
 	const struct devsw *f_dev;	/* pointer to device operations */
@@ -94,8 +99,9 @@ struct open_file {
 	char		*f_fname;	/* file name that was opened */
 	const struct fs_ops *f_ops;	/* pointer to file system operations */
 	void		*f_fsdata;	/* file system specific data */
-	off_t		f_offset;	/* current file offset (F_RAW) */
-	struct partition_list f_partitions; /* disk partition list */
+	union {
+		struct open_blkdev f_blkdev;
+	};
 };
 
 #define	SOPEN_MAX	4		/* # of concurrent open files */
@@ -108,6 +114,7 @@ struct open_file {
 struct devsw {
 	const char *dv_name;
 	int	dv_nargs;
+	int	dv_flags;
 	int	(*dv_strategy)(struct open_file *, int, daddr_t, size_t,
 		    void *, size_t *);
 	int	(*dv_open)(struct open_file *);
@@ -115,8 +122,13 @@ struct devsw {
 	int	(*dv_ioctl)(struct open_file *, u_long, void *);
 };
 
+#define	DEV_F_NETDEV		0x0001	/* is a network device */
+
 extern const struct devsw *devsw[];	/* device array */
 extern const int ndevs;			/* number of elements in devsw[] */
+
+#define	DEV_IS_NETDEV(d)	((d)->dv_flags & DEV_F_NETDEV)
+#define	DEV_IS_BLKDEV(d)	(!DEV_IS_NETDEV(d))
 
 #define	DEV_NAME(d)		((d)->dv_name)
 #define	DEV_STRATEGY(d)		((d)->dv_strategy)

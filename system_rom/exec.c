@@ -56,6 +56,99 @@ rom_fdt(void)
 #endif
 }
 
+static const char prop_booted_ctlr[] = "pg68k,booted-controller";
+static const char prop_booted_unit[] = "pg68k,booted-unit";
+static const char prop_booted_part[] = "pg68k,booted-partition";
+static const char prop_booted_pstart[] = "pg68k,booted-partition-startblk";
+static const char prop_booted_psize[] = "pg68k,booted-partition-nblks";
+#ifdef CONFIG_DISKLABEL_GPT
+static const char prop_booted_gpt_guid[] = "netbsd,gpt-guid";
+#endif
+
+static void
+set_booted_device(int fd)
+{
+	struct open_file *f = getfile(fd);
+	char devstr[16];
+	int chosen, fdterr;
+	const struct partition *p;
+
+	if (f->f_dev == NULL) {
+		return;
+	}
+
+	chosen = fdt_path_offset(fdt_store, "/chosen");
+	if (chosen < 0) {
+		return;
+	}
+
+	/*
+	 * Even though we're adding properties to /chosen, the node
+	 * offset of /chosen should not change.
+	 */
+
+	if (f->f_dev->dv_nargs > 0) {
+		snprintf(devstr, sizeof(devstr), "%s%d",
+		    f->f_dev->dv_name, f->f_devctlr);
+	} else {
+		snprintf(devstr, sizeof(devstr), "%s",
+		    f->f_dev->dv_name);
+	}
+	fdterr = fdt_setprop_string(fdt_store, chosen, prop_booted_ctlr,
+	    devstr);
+	if (fdterr) {
+		printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+		    prop_booted_ctlr, fdt_strerror(fdterr));
+	}
+
+	if (f->f_dev->dv_nargs > 1) {
+		fdterr = fdt_setprop_u32(fdt_store, chosen,
+		    prop_booted_unit, f->f_devunit);
+		if (fdterr) {
+			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+			    prop_booted_unit, fdt_strerror(fdterr));
+		}
+	}
+
+	if (f->f_dev->dv_nargs > 2) {
+		fdterr = fdt_setprop_u32(fdt_store, chosen,
+		    prop_booted_part, f->f_devpart);
+		if (fdterr) {
+			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+			    prop_booted_part, fdt_strerror(fdterr));
+		}
+	}
+
+	if ((p = f->f_partitions.pl_chosen) != NULL) {
+		fdterr = fdt_setprop_u64(fdt_store, chosen,
+		    prop_booted_pstart, p->p_startblk);
+		if (fdterr) {
+			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+			    prop_booted_pstart, fdt_strerror(fdterr));
+		}
+		fdterr = fdt_setprop_u64(fdt_store, chosen,
+		    prop_booted_psize, p->p_nblks);
+		if (fdterr) {
+			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+			    prop_booted_psize, fdt_strerror(fdterr));
+		}
+#ifdef CONFIG_DISKLABEL_GPT
+		if (f->f_partitions.pl_scheme == PARTITION_SCHEME_GPT) {
+			/* Encode into the native GPT byte order. */
+			char buf[sizeof(struct uuid)];
+			uuid_enc_le(buf, &p->p_gpt_info.gpt_ent);
+			fdterr = fdt_setprop(fdt_store, chosen,
+			    prop_booted_gpt_guid, buf, sizeof(buf));
+			if (fdterr) {
+				printf("%s: fdt_setprop(/chosen/%s) - %s\n",
+				    __func__, prop_booted_gpt_guid,
+				    fdt_strerror(fdterr));
+			}
+		}
+#endif /* CONFIG_DISKLABEL_GPT */
+	}
+}
+
 static int
 find_fdt_memory_entry(uint32_t addr, const fdt32_t **regp)
 {
@@ -220,7 +313,6 @@ exec_prep_fdt(int fd, int load_flags, int argc, char *argv[], u_long *marks)
 		}
 		offset = fdt_path_offset(fdt_store, "/chosen");
 		if (offset >= 0) {
-			printf("BOOTARGS='%s' sz=%zu\n", bootargs, size);
 			fdterr = fdt_setprop_string(fdt_store, offset,
 			    "bootargs", bootargs);
 			if (fdterr) {
@@ -231,6 +323,9 @@ exec_prep_fdt(int fd, int load_flags, int argc, char *argv[], u_long *marks)
 		}
 		free(bootargs);
 	}
+
+	/* Set the boot device entries. */
+	set_booted_device(fd);
 
 	/* Set the memory entries. */
 	set_memory_nodes();

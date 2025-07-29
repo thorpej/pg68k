@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 
 jmp_buf nofault_env;
@@ -255,6 +256,17 @@ sim_loader_bcopy(const void *src, uintptr_t dst, size_t sz)
 void
 sim_loader_bzero(uintptr_t dst, size_t sz)
 {
+}
+
+time_t
+sim_clock_getsecs(void)
+{
+	struct timespec ts;
+
+	if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
+		return 0;
+	}
+	return ts.tv_sec;
 }
 
 static void *rom_fdt_store;

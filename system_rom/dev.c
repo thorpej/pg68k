@@ -269,7 +269,7 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 	if (error == 0) {
 		need_close = true;
 		if (DEV_IS_BLKDEV(f->f_dev)) {
-			struct partition_list *pl = &f->f_blkdev.f_partitions;
+			struct partition_list *pl = &f->f_blk.f_partitions;
 			error = partition_list_scan(f, pl);
 			if (error == 0) {
 				if (pl->pl_scheme != PARTITION_SCHEME_UNKNOWN) {
@@ -299,11 +299,29 @@ int
 dev_close(struct open_file *f)
 {
 	if (DEV_IS_BLKDEV(f->f_dev)) {
-		partition_list_discard(&f->f_blkdev.f_partitions);
+		partition_list_discard(&f->f_blk.f_partitions);
 	}
 	int rv = DEV_CLOSE(f->f_dev)(f);
 	f->f_dev = NULL;
 	return rv;
+}
+
+int
+dev_send(struct open_file *f, const struct packet *pkt)
+{
+	if (DEV_IS_NETDEV(f->f_dev)) {
+		return DEV_SEND(f->f_dev)(f, pkt);
+	}
+	return EIO;
+}
+
+int
+dev_recv(struct open_file *f, struct packet *pkt, int tleft)
+{
+	if (DEV_IS_NETDEV(f->f_dev)) {
+		return DEV_RECV(f->f_dev)(f, pkt, tleft);
+	}
+	return EIO;
 }
 
 int
@@ -313,8 +331,8 @@ dev_strategy(struct open_file *f, int flags, daddr_t blkno, size_t sz,
 	if (DEV_IS_BLKDEV(f->f_dev)) {
 		daddr_t poff = 0;
 
-		if (f->f_blkdev.f_partitions.pl_chosen != NULL) {
-			poff = f->f_blkdev.f_partitions.pl_chosen->p_startblk;
+		if (f->f_blk.f_partitions.pl_chosen != NULL) {
+			poff = f->f_blk.f_partitions.pl_chosen->p_startblk;
 		}
 		return DEV_STRATEGY(f->f_dev)(f, F_READ, blkno + poff, sz,
 		    buf, actualp);
@@ -360,4 +378,19 @@ getsecsize(struct open_file *f)
 		sz = DEV_BSIZE;
 	}
 	return sz;
+}
+
+void *
+dev_alloc_pktbuf(struct open_file *f, size_t *buflenp)
+{
+	if (!DEV_IS_NETDEV(f->f_dev)) {
+		return NULL;
+	}
+	/* Round the buffer size to help with alignment later. */
+	size_t buflen = roundup(f->f_net.f_maxpktsize, 8);
+	void *buf = malloc(buflen);
+	if (buf != NULL) {
+		*buflenp = buflen;
+	}
+	return buf;
 }

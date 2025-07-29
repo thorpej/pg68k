@@ -67,6 +67,7 @@
 #include "config.h"
 #include "systypes.h"
 #include "disklabel.h"
+#include "ethernet.h"
 
 #ifdef CONFIG_MACH_HOST_SIM
 #define	open		libsa_open
@@ -89,6 +90,19 @@ struct open_blkdev {
 	off_t			f_offset;	/* offset for F_RAW */
 };
 
+struct open_netdev {
+	/* addresses / ports in network byte order */
+	in_addr_t		f_laddr;	/* local IP address */
+	in_addr_t		f_raddr;	/* remote IP address */
+	in_addr_t		f_netmask;	/* local IP netmask */
+	in_addr_t		f_gateway;	/* local gateway address */
+	in_port_t		f_lport;	/* local port # */
+	in_port_t		f_rport;	/* remote port # */
+						/* local Ethernet address */
+	uint8_t			f_enaddr[ETHER_ADDR_LEN];
+	size_t			f_maxpktsize;	/* max packet size */
+};
+
 struct open_file {
 	int		f_flags;	/* see F_* below */
 	const struct devsw *f_dev;	/* pointer to device operations */
@@ -100,7 +114,8 @@ struct open_file {
 	const struct fs_ops *f_ops;	/* pointer to file system operations */
 	void		*f_fsdata;	/* file system specific data */
 	union {
-		struct open_blkdev f_blkdev;
+		struct open_blkdev f_blk;
+		struct open_netdev f_net;
 	};
 };
 
@@ -111,12 +126,24 @@ struct open_file {
 #define	F_WRITE		0x0002		/* file opened for writing */
 #define	F_RAW		0x0004		/* raw device open - no file system */
 
+struct packet;		/* forward decl */
+
 struct devsw {
 	const char *dv_name;
 	int	dv_nargs;
 	int	dv_flags;
-	int	(*dv_strategy)(struct open_file *, int, daddr_t, size_t,
-		    void *, size_t *);
+	union {
+		struct {
+			int	(*dv_strategy)(struct open_file *, int,
+				    daddr_t, size_t, void *, size_t *);
+		} dv_blk;
+		struct {
+			int	(*dv_send)(struct open_file *,
+				    const struct packet *);
+			int	(*dv_recv)(struct open_file *,
+				    struct packet *, int);
+		} dv_net;
+	};
 	int	(*dv_open)(struct open_file *);
 	int	(*dv_close)(struct open_file *);
 	int	(*dv_ioctl)(struct open_file *, u_long, void *);
@@ -131,7 +158,9 @@ extern const int ndevs;			/* number of elements in devsw[] */
 #define	DEV_IS_BLKDEV(d)	(!DEV_IS_NETDEV(d))
 
 #define	DEV_NAME(d)		((d)->dv_name)
-#define	DEV_STRATEGY(d)		((d)->dv_strategy)
+#define	DEV_SEND(d)		((d)->dv_net.dv_send)
+#define	DEV_RECV(d)		((d)->dv_net.dv_recv)
+#define	DEV_STRATEGY(d)		((d)->dv_blk.dv_strategy)
 #define	DEV_OPEN(d)		((d)->dv_open)
 #define	DEV_CLOSE(d)		((d)->dv_close)
 #define	DEV_IOCTL(d)		((d)->dv_ioctl)
@@ -207,6 +236,8 @@ struct stat {
 int	dev_open(struct open_file *, const char *, int, const char **);
 int	dev_strategy(struct open_file *, int, daddr_t, size_t, void *,
 	    size_t *);
+int	dev_send(struct open_file *, const struct packet *);
+int	dev_recv(struct open_file *, struct packet *, int);
 int	dev_read(struct open_file *, uint64_t, void *, size_t);
 int	dev_write(struct open_file *, uint64_t, const void *, size_t);
 int	dev_close(struct open_file *);
@@ -214,6 +245,9 @@ const char *dev_string(struct open_file *, char *, size_t);
 size_t	getsecsize(struct open_file *);
 struct open_file *getfile(int);
 int	fnmatch(const char *, const char *);
+
+/* For allocating Rx packet buffers. */
+void *	dev_alloc_pktbuf(struct open_file *, size_t *lenp);
 
 const char *file_name(int);
 

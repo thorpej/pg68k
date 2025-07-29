@@ -241,10 +241,10 @@ read(int fd, void *dest, size_t bcount)
 	if (f->f_flags & F_RAW) {
 		size_t actual = 0;
 		errno = dev_strategy(f, F_READ,
-			btodb(f->f_blkdev.f_offset), bcount, dest, &actual);
+			btodb(f->f_blk.f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;
-		f->f_blkdev.f_offset += actual;
+		f->f_blk.f_offset += actual;
 		return (ssize_t)actual;
 	}
 	size_t resid = bcount;
@@ -266,10 +266,10 @@ write(int fd, const void *destp, size_t bcount)
 	if (f->f_flags & F_RAW) {
 		size_t actual = 0;
 		errno = dev_strategy(f, F_WRITE,
-			btodb(f->f_blkdev.f_offset), bcount, dest, &actual);
+			btodb(f->f_blk.f_offset), bcount, dest, &actual);
 		if (errno)
 			return -1;
-		f->f_blkdev.f_offset += actual;
+		f->f_blk.f_offset += actual;
 		return (ssize_t)actual;
 	}
 	size_t resid = bcount;
@@ -294,17 +294,17 @@ lseek(int fd, off_t offset, int where)
 		 */
 		switch (where) {
 		case SEEK_SET:
-			f->f_blkdev.f_offset = offset;
+			f->f_blk.f_offset = offset;
 			break;
 		case SEEK_CUR:
-			f->f_blkdev.f_offset += offset;
+			f->f_blk.f_offset += offset;
 			break;
 		case SEEK_END:
 		default:
 			errno = EINVAL;
 			return -1;
 		}
-		return f->f_blkdev.f_offset;
+		return f->f_blk.f_offset;
 	}
 
 	return FS_SEEK(f->f_ops)(f, offset, where);

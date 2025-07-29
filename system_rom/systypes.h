@@ -30,6 +30,7 @@
 #ifdef CONFIG_MACH_HOST_SIM
 
 #include <sys/types.h>
+#include <netinet/in.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdarg.h>

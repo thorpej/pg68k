@@ -120,7 +120,7 @@ set_booted_device(int fd)
 	}
 
 	if (DEV_IS_BLKDEV(f->f_dev) &&
-	    (p = f->f_blkdev.f_partitions.pl_chosen) != NULL) {
+	    (p = f->f_blk.f_partitions.pl_chosen) != NULL) {
 		fdterr = fdt_setprop_u64(fdt_store, chosen,
 		    prop_booted_pstart, p->p_startblk);
 		if (fdterr) {
@@ -134,8 +134,7 @@ set_booted_device(int fd)
 			    prop_booted_psize, fdt_strerror(fdterr));
 		}
 #ifdef CONFIG_DISKLABEL_GPT
-		if (f->f_blkdev.f_partitions.pl_scheme ==
-		    PARTITION_SCHEME_GPT) {
+		if (f->f_blk.f_partitions.pl_scheme == PARTITION_SCHEME_GPT) {
 			/* Encode into the native GPT byte order. */
 			char buf[sizeof(struct uuid)];
 			uuid_enc_le(buf, &p->p_gpt_info.gpt_ent);

@@ -7,7 +7,7 @@ DEVICE_TREE=	hosted-sim.dts
 
 CFLAGS+=	-g -Wall -Wmissing-prototypes
 
-OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
+OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS} ${NETOBJS}
 OBJS+=		simglue.o
 CPPFLAGS+=	${FDTCPPFLAGS}
 

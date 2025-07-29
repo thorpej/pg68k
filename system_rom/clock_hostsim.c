@@ -42,6 +42,12 @@ clock_quiesce(void)
 	/* Nada. */
 }
 
+void
+clock_delay(int us)
+{
+	return sim_clock_delay(us);
+}
+
 time_t
 clock_getsecs(void)
 {

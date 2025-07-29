@@ -32,6 +32,7 @@
 void	clock_configure(void);
 void	clock_quiesce(void);
 
+void	clock_delay(int);
 time_t	clock_getsecs(void);
 
 #endif /* clock_h_included */

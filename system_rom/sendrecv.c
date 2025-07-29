@@ -43,7 +43,7 @@
 #include "net.h"
 #include "clock.h"
 
-#define	sendrecv_delay()	/* XXX nothing */
+#define	sendrecv_delay()	clock_delay(100000)	/* 100ms */
 
 /*
  * Send a packet and wait for a reply, with exponential backoff.

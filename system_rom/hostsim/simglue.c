@@ -258,6 +258,12 @@ sim_loader_bzero(uintptr_t dst, size_t sz)
 {
 }
 
+void
+sim_clock_delay(int us)
+{
+	(void) usleep(us);
+}
+
 time_t
 sim_clock_getsecs(void)
 {

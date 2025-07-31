@@ -34,7 +34,7 @@ UFSOBJS=	ufs.o ffs_bswap.o
 .PATH: ../dosfs
 DOSFSOBJS=	dosfs.o
 
-NETOBJS=	arp.o ether.o ip.o ip_cksum.o sendrecv.o udp.o
+NETOBJS=	arp.o ether.o ip.o ip_cksum.o rpc.o sendrecv.o udp.o
 
 .PATH: ../compiler_rt
 COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \

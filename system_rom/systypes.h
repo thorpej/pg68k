@@ -123,6 +123,8 @@ struct timespec {
 	long		tv_nsec;
 };
 
+typedef int64_t			time_t;
+
 #define	PATH_MAX		1024
 
 #endif /* CONFIG_MACH_HOST_SIM */

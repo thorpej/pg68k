@@ -167,6 +167,8 @@ int	ip_recv(struct open_file *, struct packet *, int, uint8_t);
 int	ip_cksum(const void *, size_t);
 char *	inet_ntoa(in_addr_t, char *, size_t);
 
+#define	IPPROTO_UDP		17	/* user datagram protocol */
+#define	INADDR_BROADCAST	0xffffffffU
 #define	INET_ADDR_STRLEN	sizeof("255.255.255.255")
 
 #define	SAMENET(a1, a2, m)	(((a1) & (m)) == ((a2) & (m)))

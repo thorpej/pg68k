@@ -89,7 +89,10 @@
 #define	ELOOP		19	/* Too many levels of symbolic links */
 #define	ENAMETOOLONG	20	/* File name too long */
 #define	EFTYPE		21	/* Inappropriate file type or format */
-#define	ERANGE		34	/* Result too large or too small */
+#define	ERANGE		22	/* Result too large or too small */
+#define	ETIMEDOUT	23	/* Operation timed out */
+#define	EHOSTUNREACH	24	/* No route to host */
+#define	EBADRPC		25	/* RPC struct is bad */
 
 extern int errno;
 #endif /* ! CONFIG_MACH_HOST_SIM */

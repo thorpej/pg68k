@@ -196,6 +196,9 @@ static const char *errno_strings[] = {
 [ENAMETOOLONG]	=	"File name too long",
 [EFTYPE]	=	"Inappropriate file type or format",
 [ERANGE]	=	"Result too large or too small",
+[ETIMEDOUT]	=	"Operation timed out",
+[EHOSTUNREACH]	=	"No route to host",
+[EBADRPC]	=	"RPC struct is bad",
 };
 
 char *

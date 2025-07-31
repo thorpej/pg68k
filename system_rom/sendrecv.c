@@ -50,13 +50,18 @@
  */
 int
 sendrecv(struct open_file *f,
-    sendproc_t sproc, void *payload, size_t payloadlen,
-    recvproc_t rproc, void *rbuf, size_t rbuflen, void **rp, size_t *rlenp)
+    sendproc_t sproc, struct packet *txpkt,
+    recvproc_t rproc, struct packet *rxpkt)
 {
 	int error;
 	time_t t, tlast;
 	time_t tmo, tleft;
-	struct packet txpkt, rxpkt;
+
+	/*
+	 * Packet descriptor will mutate as it passes through the
+	 * stack; save the state so it can be restored for retries.
+	 */
+	struct packet txpkt_save = *txpkt, rxpkt_save = *rxpkt;
 
 	tmo = MINTMO;
 	tlast = 0;
@@ -68,8 +73,8 @@ sendrecv(struct open_file *f,
 				errno = ETIMEDOUT;
 				return -1;
 			}
-			packet_init_tx(&txpkt, payload, payloadlen);
-			error = (*sproc)(f, &txpkt);
+			*txpkt = txpkt_save;
+			error = (*sproc)(f, txpkt);
 
 			tleft = tmo;
 			tmo <<= 1;
@@ -96,16 +101,14 @@ sendrecv(struct open_file *f,
 		 * bottom layer may adjust the Rx packet buffer
 		 * because it understands the alignment constraints.
 		 */
-		packet_init_rx(&rxpkt, rbuf, rbuflen);
-		error = (*rproc)(f, &rxpkt, tleft);
+		*rxpkt = rxpkt_save;
+		error = (*rproc)(f, rxpkt, tleft);
 
 		/*
 		 * -1 means "try again".  0 means "success",
 		 * any other return value is an error.
 		 */
-		if (error == 0) {
-			return packet_get_layer(&rxpkt, rp, rlenp);
-		} else if (error != -1) {
+		if (error != -1) {
 			return error;
 		}
 

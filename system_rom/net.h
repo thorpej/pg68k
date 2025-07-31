@@ -48,8 +48,9 @@ struct pktlayer {
 #define	PKT_LAYER_2		0
 #define	PKT_LAYER_3		1
 #define	PKT_LAYER_4		2
-#define	PKT_PAYLOAD		3
-#define	PKT_NLAYERS		4
+#define	PKG_LAYER_4_5		3	/* Oh, RPC, my sweet summer child.. */
+#define	PKT_PAYLOAD		4
+#define	PKT_NLAYERS		5
 
 struct packet {
 	struct pktlayer		pkt_layers[PKT_NLAYERS];
@@ -176,7 +177,7 @@ int	udp_recv(struct open_file *, struct packet *, int);
 typedef	int (*sendproc_t)(struct open_file *, struct packet *);
 typedef	int (*recvproc_t)(struct open_file *, struct packet *, int);
 int	sendrecv(struct open_file *,
-	    sendproc_t, void *, size_t,
-	    recvproc_t, void *, size_t, void **, size_t *);
+	    sendproc_t, struct packet *,
+	    recvproc_t, struct packet *);
 
 #endif /* ! net_h_included */

@@ -232,6 +232,7 @@ arp_whohas(struct open_file *f, in_addr_t addr)
 	size_t rbuflen;
 	char addrstr[INET_ADDR_STRLEN];
 	const uint8_t *ret = NULL;
+	struct packet txpkt, rxpkt;
 
 	/* Try for cached answer first */
 	for (i = 0, al = arp_list; i < arp_num; ++i, ++al) {
@@ -266,9 +267,14 @@ arp_whohas(struct open_file *f, in_addr_t addr)
 	/* Store ip address in cache (incomplete entry). */
 	al->addr = addr;
 
+	packet_init_tx(&txpkt, ah, sizeof(*ah));
+	packet_init_rx(&rxpkt, rbuf, sizeof(rbuf));
 	error = sendrecv(f,
-	    arp_send, ah, sizeof(*ah),
-	    arp_recv, rbuf, sizeof(rbuf), (void **)&ah, &len);
+	    arp_send, &txpkt,
+	    arp_recv, &rxpkt);
+	if (error == 0) {
+		error = packet_get_layer(&rxpkt, (void **)&ah, &len);
+	}
 	if (error) {
 		printf("%s: no response for %s\n", __func__,
 		    inet_ntoa(addr, addrstr, sizeof(addrstr)));

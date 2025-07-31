@@ -228,6 +228,18 @@ start:
 	jbsr	memset		| memset(_edata, 0, d0)
 	add.l	#12,%sp
 
+#ifdef CONFIG_MC68030
+	|
+	| Clear and enable the I-cache.  Not much compelling reason
+	| to enable the D-cache at this point, and it just makes us
+	| run more like a 68020 anyway.
+	|
+	move.l	#IC_BE+IC_CLR+IC_ENABLE,%d0
+	movc	%d0,%cacr
+#else
+#error Need non-68030 cache+MMU code.
+#endif
+
 	|
 	| Terminate the call stack by loading $0000.0000 into
 	| %fp, push's main's arguments, and call it.
@@ -240,6 +252,34 @@ start:
 
 	| main() should never return.  If it does, just loop forever.
 1:	bra	1b
+
+|
+| delay_(unsigned int N)
+|
+| Delay for at least (N/1024) microseconds.
+| This routine depends on the variable delay_divisor,
+| which should be set based on the CPU clock rate or
+| calibrated against a timer source.
+|
+| The delay value is pre-shifted in C code because the
+| delay value is often a constant.
+|
+	.globl	delay_
+delay_:
+	move.l	4(%sp),%d0		| d0 = arg = (us << 10)
+	move.l	delay_divisor,%d1	| d1 = delay_divisor
+	jra	1f
+	|
+	| Align the branch target of the loop to a half-line (8 byte)
+	| boundary to minimize cache effects.  This guarantees both
+	| that there will be no prefetch stalls due to cache line burst
+	| operations and that the loop will run from a single cache
+	| half-line.
+	|
+	.align	8
+1:	sub.l	%d1,%d0
+	jgt	1b
+	rts
 
 |
 | Trap handler stubs.

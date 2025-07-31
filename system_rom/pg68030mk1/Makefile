@@ -8,7 +8,7 @@ DEVICE_TREE=	../../cpu030/dts/pg68k-cpu030.dts
 .include "../xcomp.mk"
 .include "../sysrom.mk"
 
-OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
+OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS} ${NETOBJS}
 OBJS+=		device-tree.o
 CPPFLAGS+=	${FDTCPPFLAGS}
 

@@ -27,12 +27,19 @@
 #ifndef clock_h_included
 #define	clock_h_included
 
+#include "config.h"
 #include "systypes.h"
 
 void	clock_configure(void);
 void	clock_quiesce(void);
 
+#ifdef CONFIG_MACH_HOST_SIM
 void	clock_delay(int);
+#else
+extern void	delay_(unsigned int);	/* see start.S */
+#define	clock_delay(x)	delay_(((unsigned int)(x)) << 10)
+#endif
+
 time_t	clock_getsecs(void);
 
 #endif /* clock_h_included */

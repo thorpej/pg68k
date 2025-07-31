@@ -29,8 +29,21 @@
 
 #include "clock.h"
 
+/*
+ * On the 68020/68030, the value of delay_divisor is roughly
+ * 8192 / cpu-freq-in-MHz.  It's wildly different for 68040/68060
+ * (a lot smaller).  We'll start with this larger-than-necessary
+ * value and come down from there.
+ *
+ * If you have a board slower than a 16MHz 68020, this will probably
+ * need to be tweaked.
+ */
+int	delay_divisor = 8192 / 16;
+
 /* Clock configuration is system-specific. */
 
-#if defined(CONFIG_ATA_HOST_SIM)
+#if defined(CONFIG_MACH_HOST_SIM)
 #include "clock_hostsim.c"
+#elif defined(CONFIG_ISACTL_TIMER)
+#include "clock_isactl_timer.c"
 #endif

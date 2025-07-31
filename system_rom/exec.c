@@ -33,6 +33,7 @@
 #include "libfdt.h"
 
 #include "memory.h"
+#include "clock.h"
 
 #ifdef CONFIG_MACH_HOST_SIM
 #include "simglue.h"
@@ -381,6 +382,7 @@ exec(int load_flags, int argc, char *argv[])
 #endif
 
 	closeall();
+	clock_quiesce();
 	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
 
 #ifdef CONFIG_MACH_HOST_SIM

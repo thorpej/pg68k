@@ -45,6 +45,10 @@ struct pktlayer {
 	size_t	len;
 };
 
+/*
+ * N.B. These are not strict layers.  All that matters is that we
+ * have enough of them.
+ */
 #define	PKT_LAYER_2		0
 #define	PKT_LAYER_3		1
 #define	PKT_LAYER_4		2

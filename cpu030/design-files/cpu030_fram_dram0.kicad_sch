@@ -6796,6 +6796,12 @@
 		(uuid "08218398-8686-477d-a6c0-d01fc44b5fce")
 	)
 	(junction
+		(at 172.72 85.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "08556531-34fc-4535-b378-5bc32cd3bf72")
+	)
+	(junction
 		(at 232.41 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6938,6 +6944,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4013ba56-bb24-4700-bdf0-f91234d7909f")
+	)
+	(junction
+		(at 172.72 59.69)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "422ee6b4-1581-411a-9188-40aab522d0a6")
 	)
 	(junction
 		(at 35.56 19.05)
@@ -7120,12 +7132,6 @@
 		(uuid "9418a939-d6e4-41aa-8788-33fdc58f3e6c")
 	)
 	(junction
-		(at 172.72 59.69)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "94cecf76-9095-4b52-965e-f99b20cb4b09")
-	)
-	(junction
 		(at 92.71 19.05)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7250,12 +7256,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "df635973-6bca-4dcb-bc7c-6735be30f14a")
-	)
-	(junction
-		(at 172.72 85.09)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "e24eb193-902c-46e3-b512-44cabf7afb01")
 	)
 	(junction
 		(at 189.23 160.02)
@@ -14113,7 +14113,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 147.32 16.51 0)
 			(effects
 				(font
@@ -14489,7 +14489,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 147.32 30.48 0)
 			(effects
 				(font
@@ -15211,7 +15211,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 147.32 45.72 0)
 			(effects
 				(font
@@ -17915,7 +17915,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 137.16 76.2 0)
 			(effects
 				(font
@@ -18731,7 +18731,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 147.32 60.96 0)
 			(effects
 				(font
@@ -19239,7 +19239,7 @@
 	)
 	(symbol
 		(lib_id "74xx:74LS05")
-		(at 172.72 72.39 180)
+		(at 172.72 72.39 0)
 		(unit 7)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -19253,16 +19253,16 @@
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 179.07 73.6599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm"
@@ -20412,7 +20412,7 @@
 				)
 			)
 		)
-		(property "Value" "MC74ACT05DG"
+		(property "Value" "74ACT05"
 			(at 147.32 91.44 0)
 			(effects
 				(font

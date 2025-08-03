@@ -13669,6 +13669,28 @@
 			)
 		)
 	)
+	(global_label "~{INT4}"
+		(shape input)
+		(at 264.16 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "12e781b6-133f-450f-b702-0ff626d77962")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 264.16 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "A10"
 		(shape output)
 		(at 50.8 52.07 180)
@@ -16581,6 +16603,28 @@
 			)
 		)
 	)
+	(global_label "~{INT6}"
+		(shape input)
+		(at 269.24 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7c8949cd-d582-4d5f-9a4c-3a927fbcd0c1")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 269.24 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "ETH_INT"
 		(shape input)
 		(at 242.57 219.71 180)
@@ -17355,6 +17399,28 @@
 			)
 		)
 	)
+	(global_label "~{INT2}"
+		(shape input)
+		(at 259.08 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "94540624-b5fc-4ba6-987e-9e07ef39c542")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 259.08 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D24"
 		(shape bidirectional)
 		(at 300.99 199.39 0)
@@ -17395,6 +17461,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{INT1}"
+		(shape input)
+		(at 256.54 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "953a5115-1a53-48ce-a771-417412cb5e72")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 256.54 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -17686,6 +17774,28 @@
 			)
 		)
 	)
+	(global_label "~{INT3}"
+		(shape input)
+		(at 261.62 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9dee052e-f716-45b4-8fd3-f133427316fd")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 261.62 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D27"
 		(shape bidirectional)
 		(at 332.74 34.29 0)
@@ -17704,6 +17814,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{INT5}"
+		(shape input)
+		(at 266.7 270.51 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9f5c1d16-3830-46e5-9458-f13dd059f06b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 266.7 277.6076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -26298,6 +26430,71 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 256.54 260.35 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8b45d3a7-0aab-4776-9a8a-50483f5875c6")
+		(property "Reference" "#PWR0101"
+			(at 256.54 264.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 256.54 255.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 256.54 260.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 256.54 260.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 256.54 260.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "35028661-b8b2-433d-8b39-3b57f7b5cf6b")
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(reference "#PWR0101")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R_Network08")
 		(at 57.15 270.51 0)
 		(unit 1)
@@ -30188,6 +30385,90 @@
 			(project "cpu030"
 				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
 					(reference "#PWR0121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Network06")
+		(at 264.16 265.43 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ea9f985d-b31f-4d1f-964b-6c72146d39fd")
+		(property "Reference" "RN106"
+			(at 247.904 264.414 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3K3"
+			(at 247.904 266.954 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP7"
+			(at 273.685 265.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 264.16 265.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "6 resistor network, star topology, bussed resistors, small symbol"
+			(at 264.16 265.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "540e6fc5-a297-4ce0-b20b-8755c82cb9c7")
+		)
+		(pin "3"
+			(uuid "b83a8091-b361-4fa3-9d15-b13889f34ae6")
+		)
+		(pin "5"
+			(uuid "5bfa71e2-e39a-4d29-804c-59d12f6ce61b")
+		)
+		(pin "1"
+			(uuid "479256c4-f92c-4586-8b43-4411003b3601")
+		)
+		(pin "2"
+			(uuid "163b9d16-7f17-444f-a58d-2d0f5ca8ba3d")
+		)
+		(pin "6"
+			(uuid "876d05db-10ab-4d18-bc67-02cdc72665b6")
+		)
+		(pin "7"
+			(uuid "aa4a9a60-d53e-4e2d-899c-994f2bfd7860")
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(reference "RN106")
 					(unit 1)
 				)
 			)

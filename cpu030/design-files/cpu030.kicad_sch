@@ -10245,6 +10245,12 @@
 		(uuid "23fd9c6a-7af4-4d3b-a6f4-6daccef98f0a")
 	)
 	(junction
+		(at 165.1 180.34)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "250ad1ce-cafd-4155-af4b-8d6351fda41f")
+	)
+	(junction
 		(at 228.6 157.48)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -10845,6 +10851,12 @@
 		(uuid "fa384a69-83a6-4cdc-a668-11e7263e9ebe")
 	)
 	(junction
+		(at 173.99 180.34)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fd2d8019-5bc7-44c1-b297-03accb44fb4a")
+	)
+	(junction
 		(at 132.08 166.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -10997,6 +11009,16 @@
 			(type default)
 		)
 		(uuid "01dbd572-806d-444b-95ba-c43410d1446a")
+	)
+	(wire
+		(pts
+			(xy 182.88 182.88) (xy 182.88 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "02065ab8-9471-4035-a2d5-00266089884a")
 	)
 	(wire
 		(pts
@@ -11170,6 +11192,16 @@
 	)
 	(wire
 		(pts
+			(xy 173.99 180.34) (xy 173.99 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "203d33d2-b2fb-4572-91c5-613e1a3d09b6")
+	)
+	(wire
+		(pts
 			(xy 142.24 118.11) (xy 142.24 119.38)
 		)
 		(stroke
@@ -11337,6 +11369,16 @@
 			(type default)
 		)
 		(uuid "32a23ae7-60e4-45ed-95f7-c834c811a468")
+	)
+	(wire
+		(pts
+			(xy 182.88 180.34) (xy 173.99 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33a18044-e3ed-497b-ae2a-6fac547ded35")
 	)
 	(wire
 		(pts
@@ -11890,6 +11932,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 140.97) (xy 50.8 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d77617d-9cd0-4772-8d2b-0a12627fd609")
+	)
+	(wire
+		(pts
 			(xy 339.09 204.47) (xy 341.63 204.47)
 		)
 		(stroke
@@ -11917,6 +11969,16 @@
 			(type default)
 		)
 		(uuid "83b0374b-308c-47ea-9b85-5cc17d71242d")
+	)
+	(wire
+		(pts
+			(xy 173.99 180.34) (xy 165.1 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "863efe75-fc89-4f4c-8cf0-e722599eb602")
 	)
 	(wire
 		(pts
@@ -12017,6 +12079,16 @@
 			(type default)
 		)
 		(uuid "95216e6d-5eb5-41a1-b4f6-4213f2347b24")
+	)
+	(wire
+		(pts
+			(xy 40.64 134.62) (xy 50.8 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9589641f-6a8c-45d0-aa35-8c6df4bb8965")
 	)
 	(wire
 		(pts
@@ -12818,6 +12890,16 @@
 		)
 		(uuid "011fb843-24e1-466c-b644-2133c2acbaa2")
 	)
+	(label "~{MMUDIS}"
+		(at 48.26 140.97 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "0534843a-f753-45e7-8317-65debce2191b")
+	)
 	(label "SYSCTL_DSACK0"
 		(at 207.01 44.45 180)
 		(effects
@@ -12908,6 +12990,16 @@
 		)
 		(uuid "5bf0c171-af6d-41fa-9a53-127d5c60e46e")
 	)
+	(label "~{MMUDIS}"
+		(at 173.99 187.96 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5c36ea38-88c1-4286-825a-e39ad5064d69")
+	)
 	(label "SYSCTL_STERM"
 		(at 144.78 85.09 0)
 		(effects
@@ -12937,6 +13029,16 @@
 			(justify left bottom)
 		)
 		(uuid "7a215682-66f4-4099-b1f2-a95624fd6f53")
+	)
+	(label "~{HALT}"
+		(at 182.88 187.96 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "826b1523-74d4-496c-989f-3c65bd0588ee")
 	)
 	(label "SYSCTL_TDI"
 		(at 207.01 49.53 180)
@@ -12977,6 +13079,16 @@
 			(justify left bottom)
 		)
 		(uuid "acea959e-3352-44f4-8a0f-e87872d95863")
+	)
+	(label "~{HALT}"
+		(at 40.64 134.62 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b4fb932b-66d9-4c83-aebd-c0aeb8338c14")
 	)
 	(label "SYSCTL_BERR"
 		(at 264.16 38.1 0)
@@ -21470,6 +21582,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Small")
+		(at 182.88 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "16e08d10-baf3-4a1b-a7a9-271f1834ffe4")
+		(property "Reference" "R108"
+			(at 185.42 184.1499 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3K3"
+			(at 185.42 186.6899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 182.88 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 182.88 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 182.88 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "90d52220-a87a-4daa-9bb3-6bc86c8ae8b1")
+		)
+		(pin "1"
+			(uuid "1b62b8f1-f4e7-4070-b1b5-345933e3751d")
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(reference "R108")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "74xx:74LS05")
 		(at 250.19 189.23 0)
 		(unit 2)
@@ -25853,6 +26035,76 @@
 			(project "cpu030"
 				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
 					(reference "#PWR0132")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 173.99 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6e834fb4-552f-4979-a2b0-040e561a0788")
+		(property "Reference" "R107"
+			(at 176.53 184.1499 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3K3"
+			(at 176.53 186.6899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 173.99 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 173.99 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 173.99 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "3aa8dae4-986a-4f16-b69e-564e6788ee9b")
+		)
+		(pin "1"
+			(uuid "07c57bd3-b679-4164-83a4-3ab9dec816ee")
+		)
+		(instances
+			(project "cpu030"
+				(path "/6696b89f-f6cc-4e49-bcfb-68bdb218d2a6"
+					(reference "R107")
 					(unit 1)
 				)
 			)

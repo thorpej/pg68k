@@ -1,0 +1,42 @@
+GAL22V10
+EXPGLUE
+
+/AS   RnW  /DBEN /BG  /BGACK /EXPSEL NC NC NC NC NC GND
+ NC   ADIR  DDIR /DEN  NC     NC     NC NC NC NC NC VCC
+
+;
+; The expansion glue GAL controls:
+; - Data bus buffer enablement
+; - Data bus buffer direction
+; - Address bus (and other control signals) buffer direction
+;
+; For normal "CPU is the bus master" operation:
+; - ADIR is 0 (-> EXP)
+; - DDIR is 1 (-> CPU) for reads, 0 (-> EXP) for writes.  This is
+;   essentially the value of RnW, but it is qualified with /AS.
+; - /DEN is controlled by /DBEN qualified by /EXPSEL
+;
+; For "EXP is the bus master" operation:
+; - ADIR is 1 (-> system board)
+; - DDIR is 0 (-> EXP) for reads, 1 (-> system board) for writes.  This
+;   is the inverse of RnW.
+; - /DEN is 1
+;
+; "EXP is the bus master" is true when either /BG or /BGACK are asserted.
+; The CPU high-Z's /AS, /DS, /DBEN, and the address bus, FCx signals,
+; SIZx signals, and RnW when /BG is asserted, and /BG will negate after
+; the new bus master asserts /BGACK.
+;
+; N.B. ADIR == 1 is a proxy for "EXP is the bus master".
+;
+
+ADIR = BG
+     + BGACK;
+
+DDIR = /BG * /BGACK * AS * RnW
+     +  BG    * /RnW
+     +  BGACK * /RnW;
+
+DEN  = BG
+     + BGACK
+     + DBEN * EXPSEL;

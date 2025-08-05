@@ -1,8 +1,8 @@
 GAL22V10
 EXPGLUE
 
-/AS   RnW  /DBEN /BG  /BGACK /EXPSEL NC NC NC NC NC GND
- NC   ADIR  DDIR /DEN  NC     NC     NC NC NC NC NC VCC
+/AS   RnW  /DBEN /BGACK /EXPSEL NC NC NC NC NC NC GND
+ NC   ADIR  DDIR /DEN    NC     NC NC NC NC NC NC VCC
 
 ;
 ; The expansion glue GAL controls:
@@ -22,21 +22,18 @@ EXPGLUE
 ;   is the inverse of RnW.
 ; - /DEN is 1
 ;
-; "EXP is the bus master" is true when either /BG or /BGACK are asserted.
-; The CPU high-Z's /AS, /DS, /DBEN, and the address bus, FCx signals,
-; SIZx signals, and RnW when /BG is asserted, and /BG will negate after
-; the new bus master asserts /BGACK.
+; "EXP is the bus master" is true when /BGACK is asserted. The CPU high-Z's
+; /AS, /DS, /DBEN, and the address bus, FCx signals, SIZx signals, and RnW
+; as soon as the cycle where it asserted /BG has terminated.  Pull-ups should
+; be used to ensure these signals aren't left floating.
 ;
 ; N.B. ADIR == 1 is a proxy for "EXP is the bus master".
 ;
 
-ADIR = BG
-     + BGACK;
+ADIR = BGACK;
 
-DDIR = /BG * /BGACK * AS * RnW
-     +  BG    * /RnW
+DDIR = /BGACK * AS * RnW
      +  BGACK * /RnW;
 
-DEN  = BG
-     + BGACK
+DEN  = BGACK
      + DBEN * EXPSEL;

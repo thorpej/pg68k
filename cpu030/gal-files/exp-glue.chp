@@ -9,11 +9,11 @@
                           |                 |
                     /DBEN |  3           22 | NC
                           |                 |
-                      /BG |  4           21 | NC
+                   /BGACK |  4           21 | NC
                           |                 |
-                   /BGACK |  5           20 | NC
+                  /EXPSEL |  5           20 | NC
                           |                 |
-                  /EXPSEL |  6           19 | NC
+                       NC |  6           19 | NC
                           |                 |
                        NC |  7           18 | NC
                           |                 |

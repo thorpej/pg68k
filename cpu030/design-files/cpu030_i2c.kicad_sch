@@ -1959,6 +1959,37 @@
 			)
 		)
 	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape diamond)
+		(at 179.07 45.72 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3d6cde3b-31b5-4a54-b67d-0026db525ca8")
+		(property "Netclass" "Power"
+			(at 180.2765 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at -49.53 -7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+	)
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 80.01 152.4 0)

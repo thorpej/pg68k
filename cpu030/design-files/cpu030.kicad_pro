@@ -537,6 +537,9 @@
       "GND": [
         "Power"
       ],
+      "Net-(BT601-+)": [
+        "Power"
+      ],
       "Net-(C711-Pad1)": [
         "Power"
       ],

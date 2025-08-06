@@ -13239,6 +13239,16 @@
 		)
 		(uuid "acea959e-3352-44f4-8a0f-e87872d95863")
 	)
+	(label "~{MMUDIS}"
+		(at 50.8 165.1 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "ad22840c-697d-4bae-aac1-97488aff51d0")
+	)
 	(label "~{HALT}"
 		(at 40.64 134.62 180)
 		(effects

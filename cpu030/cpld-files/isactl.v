@@ -520,12 +520,12 @@ endmodule
 //
 //PIN: DSACK_0		: 1
 //PIN: DSACK_1		: 2
+//PIN: TMRINT		: 50
 //PIN: nDUARTSEL	: 71
-//PIN: nATASEL		: 72
-//PIN: nATAAUXSEL	: 75
-//PIN: nATABEN		: 76
-//PIN: nISA_IORD	: 77
-//PIN: nISA_IOWR	: 78
-//PIN: ISA_AEN		: 79
-//PIN: TMRINT		: 98
+//PIN: nETHSEL		: 75
+//PIN: nISA_IORD	: 80
+//PIN: nISA_IOWR	: 81
+//PIN: nATASEL		: 97
+//PIN: nATAAUXSEL	: 98
+//PIN: nATABEN		: 99
 //PIN: BERR		: 100

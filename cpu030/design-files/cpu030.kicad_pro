@@ -518,13 +518,40 @@
       "-12V": [
         "EXP_Power"
       ],
+      "/Ethernet/ETH_RD+": [
+        "Power"
+      ],
+      "/Ethernet/ETH_RD-": [
+        "Power"
+      ],
+      "/Ethernet/ETH_TD+": [
+        "Power"
+      ],
+      "/Ethernet/ETH_TD-": [
+        "Power"
+      ],
       "/Power Supply/Vsb": [
         "Power"
       ],
       "GND": [
         "Power"
       ],
+      "Net-(C711-Pad1)": [
+        "Power"
+      ],
       "Net-(D101-A)": [
+        "Power"
+      ],
+      "Net-(J701-RCT)": [
+        "Power"
+      ],
+      "Net-(J701-TCT)": [
+        "Power"
+      ],
+      "Net-(U701-TPOUT+)": [
+        "Power"
+      ],
+      "Net-(U701-TPOUT-)": [
         "Power"
       ],
       "Vsb": [

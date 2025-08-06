@@ -10981,10 +10981,6 @@
 		(uuid "b9bab4d5-f684-472e-ae43-3de9d852c31f")
 	)
 	(no_connect
-		(at 102.87 146.05)
-		(uuid "c3c8766c-b6a5-4977-a3a4-79c2a9c0a446")
-	)
-	(no_connect
 		(at 208.28 99.06)
 		(uuid "d21af3d1-d765-474c-ab19-1eb80f36857a")
 	)
@@ -19817,6 +19813,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{CPU_DBEN}"
+		(shape output)
+		(at 102.87 146.05 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e4cdf0ed-6907-4ac2-ab22-63699644fb08")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 115.7128 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)

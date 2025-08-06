@@ -492,9 +492,16 @@
       {
         "name": "EXP_Power",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 0,
+        "priority": 1,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 1.0
+      },
+      {
+        "name": "Power",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0,
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.3
       }
     ],
     "meta": {
@@ -528,6 +535,10 @@
       {
         "netclass": "EXP_Power",
         "pattern": "EXP_Power"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "Power"
       }
     ]
   },

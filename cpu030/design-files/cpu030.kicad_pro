@@ -555,6 +555,9 @@
       "Net-(U701-TPOUT-)": [
         "Power"
       ],
+      "PWR_OK": [
+        "Power"
+      ],
       "Vsb": [
         "Power"
       ]

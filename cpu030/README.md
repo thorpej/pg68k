@@ -187,7 +187,7 @@ and the other handling the lower 16 bits.
 The 68030 supports a zero-wait-state synchronous bus cycle that can be
 used to read and write fast SRAM.  Historically, this was used to implement
 external caches (HP being a notable example where this technique was used
-on the 9000/345, 9000/370, 9000/375, and 9000/400).  The cpu030, however,
+on the 9000/345, 9000/370, 9000/375, and 9000/400).  The Mk I, however,
 does not use it that way, rather it is simply a 4MB region of fast RAM
 that the operating system can use as it sees fit (placing MMU page tables
 here would be a good idea and would provide system-wide performance

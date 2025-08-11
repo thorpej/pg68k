@@ -232,7 +232,7 @@ only 4 states:
   a 1-byte 1-wait-state cycle is required; transition to **B1W1**.
 * **B1W1** - Assert /DSACK0 to indicate a 1-byte port.  Transition to
   **Finish**.
-* **B2W2** - Assert /DSACK1 to indicate a 2-byte port.  Transition to
+* **B2W1** - Assert /DSACK1 to indicate a 2-byte port.  Transition to
   **Finish**.
 * **Finish** - If the CPU has finished the cycle by de-asserting /DS,
   then de-assert /DSACKn and transition to **Idle**.  Otherwise, remain

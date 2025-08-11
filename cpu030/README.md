@@ -181,7 +181,7 @@ in [sysctl.v](cpld-files/sysctl.v).
 ### Fast SRAM interface
 
 The system has 2 CY7C1061GE 10ns SRAM chips.  These are 1Mx16, resulting
-in 4MB, with one chip handler the upper 16 bits of the 32-bit longword
+in 4MB, with one chip handling the upper 16 bits of the 32-bit longword
 and the other handling the lower 16 bits.
 
 The 68030 supports a zero-wait-state synchronous bus cycle that can be

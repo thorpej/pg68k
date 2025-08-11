@@ -81,10 +81,16 @@ module sysctl(
  * - CLK_6_25 (6.25MHz)	DRAM_CLK / 8
  */
 reg [2:0] ClockDivider;
-always @(posedge DRAM_CLK, negedge nRST) begin
-	if (~nRST)
-		ClockDivider <= 3'd0;
-	else
+always @(posedge DRAM_CLK) begin
+//
+// We want the clock to be already free-running and stable when other
+// devices come out of reset, so do not reset the counter.  The power-
+// on-reset is elongated to ensure many cycles of free-running before
+// other devices begin consuming it.
+//
+//	if (~nRST)
+//		ClockDivider <= 3'd0;
+//	else
 		ClockDivider <= ClockDivider + 3'd1;
 end
 assign CPU_CLK = ClockDivider[0];

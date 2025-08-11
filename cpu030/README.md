@@ -56,7 +56,7 @@ little IC has an internal pull-up resistor for /RESET and monitors
 the signal as well as Vcc.  If /RESET is pulled low or if Vcc drops
 below a threshold voltage (such as in a brown-out condition), then
 the DS1813 pulls /RESET low for 150ms.  The DS1813 draws very little
-power, typically 30uA, and its power is supplied by the PWR_OK signal
+current, typically 30uA, and its power is supplied by the PWR_OK signal
 from the ATX power supply.  This ensures that /RESET is asserted until
 the power supply is stable.
 

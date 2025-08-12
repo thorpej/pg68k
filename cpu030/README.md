@@ -335,6 +335,9 @@ be found in [intc-1.gal](gal-files/intc-1.gal).
 
 ## Dynamic RAM
 
+First, I want to acknowledge that I drew quite a bit of inspiration
+from Colin Maykish's mackerel-30 DRAM controller.
+
 The DRAM controller is responsible for converting the linear addressing
 used by the 68030 into the row/column addressing used by 72-pin non-parity
 SIMMs, in addition to periodically performing memory refresh cycles and
@@ -346,6 +349,10 @@ If 2 SIMMs are installed, both must be the same configuration.
 The DRAM controller logic is written in Verilog and synthesized for
 the Atmel ATF1508AS-7 CPLD in a TQFP-100 package using Yosys and the
 Atmel fitter tool.
+
+The DRAM controller is wired up to the 68030's cache burst cycle
+related signals (/CBREQ and /CBACK), but does not participate in
+them at this time.  This is something that may be added later.
 
 Throughout this section, you might find it handy to have a copy
 of [dramctl.v](cpld-files/dramctl.v) handy.

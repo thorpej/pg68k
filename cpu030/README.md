@@ -335,7 +335,155 @@ be found in [intc-1.gal](gal-files/intc-1.gal).
 
 ## Dynamic RAM
 
-XXX
+The DRAM controller is responsible for converting the linear addressing
+used by the 68030 into the row/column addressing used by 72-pin non-parity
+SIMMs, in addition to periodically performing memory refresh cycles and
+interleaving them with CPU accesses.  It is capable of controlling 1 or 2
+60ns 72-pin non-parity SIMMs that use 11 or 12 address bits, so 16MB,
+32MB, 64MB, or 128MB; any other 72-pin SIMM capacity is not supported.
+If 2 SIMMs are installed, both must be the same configuration.
+
+The DRAM controller logic is written in Verilog and synthesized for
+the Atmel ATF1508AS-7 CPLD in a TQFP-100 package using Yosys and the
+Atmel fitter tool.
+
+Throughout this section, you might find it handy to have a copy
+of [dramctl.v](cpld-files/dramctl.v) handy.
+
+DRAM controllers are not particularly complex, logically, but they use
+a lot of I/O pins.  There are 28 incoming address lines from the CPU,
+plus clock, reset, and bus cycle control signals.  On the DRAM side,
+there are 8 Presence Detect pins (4 per SIMM), a "SIMM size" jumper input,
+12 DRAM address lines, 8 RAS lines (4 per SIMM), and 8 CAS lines (4 per
+SIMM).  Use of individual RAS+CAS lines for each SIMM rather than multiplexing
+them allows both SIMMs to be refreshed in parallel.
+
+The DRAM controller uses the "SIMM size" jumper and the Presence Detect pins
+on the SIMMs to compute the SIMM size.  Supported 72-pin SIMMs use either
+11 or 12 address bits and have 1 or 2 "ranks" (sides, basically).  The
+Presence Detect pins are pulled-up to Vcc at the SIMM socket and the SIMM
+selectively connects those pins to GND on the SIMM.  Similarly, the SIMM
+size input on the DRAM controller is pulled up to Vcc and when the jumper is
+installed, the pin is connected to GND.  With that in mind, here are the
+supported SIMM sizes and their Presence Detect values:
+
+| SIMM SZ | PD1 | PD2 | Capacity | Configuration |
+|---------|-----|-----|----------|---------------|
+|    1    |  0  |  1  |   16MB   | 11-bit 1-rank |
+|    1    |  1  |  0  |   32MB   | 11-bit 2-rank |
+|    0    |  0  |  1  |   64MB   | 12-bit 1-rank |
+|    0    |  1  |  0  |  128MB   | 12-bit 2-rank |
+
+The PD3 and PD4 inputs from each SIMM are used to communicate the speed
+of the SIMM.  The Mk I's DRAM controller only supports 60ns DRAM, so both
+PD3 and PD4 must be 1.  See `ValidFirstSIMM`.
+
+In order to simplify the addressing logic, the DRAM controller requires
+that both SIMMs be identical.  See `ValidSecondSIMM`.
+
+For SIMMs SIMMs that use a given number of address bits (either 11 or 12),
+the size is determined by how many rows are present.  Rows are selected in
+pairs, so a SIMM has either 2 or 4 rows.  But the row address calculcation
+is always the same for any SIMM with the same number of address bits.  The
+difference between a 1-rank and 2-rank SIMM is whether or not there is any
+memory present on the second set of row-selects.  The second set of row
+selects is selected when the address exceeds the size of the first rank, so
+it can simply be extracted from an address bit and inverted or not, based
+on which rows we're selecting.  See `RowAddress`, `ColumnAddress`, and
+`nRowSelects`.
+
+Next, the DRAM controller needs to know which SIMM to select.  This is
+based on whether or not the address has exceeded the capacity of the first
+SIMM.  See `SecondSIMM`.
+
+Finally, the DRAM controller needs to know if the requested address fits
+within the memory size.  For this, `FitsSecondSIMM` is used in conjunction
+with `SecondSIMM` in order to compute `ValidAddress`.
+
+As with the fast SRAM interface in the system controller, the DRAM
+controller needs to select specific byte enables during write cycles.
+These byte enables are used to assert the column-select signals during
+the cycle.  The logic is identical to the fast SRAM case; see `ByteEnables`.
+
+Before we cover the DRAM state machine, a quick note about refresh cycles.
+The DRAM is clocked at 50MHz, giving us a 20ns clock period.  Standard
+DRAM rows want to be refreshed within 32ms.  With 12 address bits, that's
+a maximum of 4096 rows, which means a row needs to be refreshed once every
+7.8125us, which is 390 clock cycles.  Because we're interleaving DRAM refresh
+with normal memory read/write cycles, we give ourselves a 16 clock cycle
+margin to work with; see `REFRESH_CYCLE_CNT`.  This is just a free-running
+counter that sets a "refresh requested!" flag whenever the counter reaches
+the limit.  The state machine will process the refresh request and
+acknowledge it.
+
+And now, on to the DRAM state machine.  There are 12 states: **IDLE**,
+**RW1** - **RW5**, **REFRESH1** - **REFRESH4**, **PRECHARGE**, and
+**BERRWAIT**.  Each state represents 20ns, except for **IDLE**, **RW5**,
+and **BERRWAIT**, which can linger for multiple time slices.  Also keep
+in mind that the non-blocking assignments (`<=`) in the Verilog all
+happen simultaneously at the very moment the current time slice ends
+and the next one begins.
+
+We start in the **IDLE** state.  The DRAM controller hangs out here
+waiting for something to do: either a request to perform a refresh
+cycle (from the refresh counter discussed above), or a request to
+perform a memory access.  We'll start with the refresh cycle, because
+the DRAM prioritizes those over memory accesses.
+
+### Refresh cycle
+
+While in **IDLE**, if a refresh cycle is requested, we set the next state to
+**REFRESH1** to initiate a CAS-before-RAS refresh cycle.  In this type
+of refresh cycle, the DRAM itself maintains a row counter so that we
+don't have to.  Any DRAM modern enough to be on a 72-pin SIMM supports
+this.  Note that we don't assert CAS during the transition to **REFRESH1**
+because **IDLE**'s first time slice is part of the precharge time from any
+previous access or refresh cycle.
+
+In **REFRESH1**, we acknowledge the refresh request, assert all 4 CAS lines
+on both SIMMs, and transition to **REFRESH2**.
+
+In **REFRESH2**, we assert all 4 RAS lines on both SIMMs and trasition to
+**REFRESH3**.
+
+In **REFRESH3**, we de-assert CAS and transition to **REFRESH4**.
+
+In **REFRESH4**, we de-assert RAS, mark the fresh cycle as complete, and
+transition to **PRECHARGE**
+
+**PRECHARGE** is a wait state that's needed to reset the column voltage
+to the midpoint; all we do here is transition to **IDLE**.  For 60ns DRAM,
+we need 40ns of precharge time, so we get 20ns in the **PRECHARGE** state,
+and another 20ns in the next **IDLE**.
+
+### Memory access cycle
+
+While in **IDLE** and no refresh cycle has been requested, we check
+if DRAM as been selected by the address decoder.  If so, we next check
+the address; if it's valid, we set the DRAM address lines to the row
+address and transition to **RW1**.  Otherwise, we signal a bus error
+and transition to **BERRWAIT**.
+
+In **RW1**, we assert the appropriate RAS lines, set the DRAM /WR
+signal according to the R/W input, and transition to **RW2**.
+
+In **RW2**, we set the DRAM address lines to the column address
+and transition to **RW3**.
+
+In **RW3**, we set the appropriate set of CAS lines according to the
+byte enables and transition to **RW4**.
+
+In **RW4**, we terminate the bus cycle by asserting /DSACK0 and /DSACK1
+and transition to **RW5**.
+
+In **RW5**, we wait for /AS to be de-asserted, and once that happens,
+we de-assert all of our DRAM control signals, /DSACKn, and transition
+to **PRECHARGE**, which was discussed in the description of the refresh
+cycle.
+
+**BERRWAIT** is where bad memory access cycles go to die.  We wait
+here until /AS is de-asserted, then de-assert /BERR and trandition
+back to **IDLE**.
 
 ## ISA peripherals and system timer
 

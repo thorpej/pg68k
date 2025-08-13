@@ -140,7 +140,7 @@ always @(posedge CPU_CLK, negedge nRST) begin
 			BerrState <= BerrState + 6'd1;
 	end
 end
-assign BERR = (BerrState == 6'd63);
+assign BERR = (BerrState == 6'd63) & ~nAS;
 
 /*
  * Function bits for address space encodings:

@@ -158,7 +158,7 @@ always @(*) begin
 	endcase
 end
 
-assign DATA = (enable_data_out && ~nDS) ? data_out : 8'bzzzzzzzz;
+assign DATA = (enable_data_out) ? data_out : 8'bzzzzzzzz;
 
 localparam IO_STROBE_NONE  = 2'b00;
 localparam IO_STROBE_READ  = 2'b10;

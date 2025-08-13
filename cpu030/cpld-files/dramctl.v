@@ -79,8 +79,8 @@ module dramctl(
 	/* Drives external open-drain inverters. */
 	output reg STERM,
 	output reg CBACK,
-	output reg BERR,
-	output reg [1:0] DSACK
+	output wire BERR,
+	output wire [1:0] DSACK
 );
 
 /*
@@ -107,6 +107,16 @@ always @(posedge CLK, negedge nRST) begin
 		RAMSEL  <= RAMSEL1;
 	end
 end
+
+/*
+ * Qual DSACK and BERR with the synchronized /AS input to ensure they
+ * de-assert as quickly as possible.  See parameter 28 of the 68030
+ * electrical specifications.
+ */
+reg [1:0] dsack;
+assign DSACK = dsack & {AS, AS};
+reg bus_error;
+assign BERR = bus_error & AS;
 
 /*
  * The CPU runs at 1/2 the DRAM clock frequency, which is 50MHz.
@@ -299,10 +309,10 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_nCASA <= 4'b1111;
 		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
-		DSACK <= 2'b00;
+		dsack <= 2'b00;
 		CBACK <= 1'b0;
 		STERM <= 1'b0;
-		BERR <= 1'b0;
+		bus_error <= 1'b0;
 		refresh_ack <= 1'b0;
 	end
 	else begin
@@ -331,7 +341,7 @@ always @(posedge CLK, negedge nRST) begin
 					state <= RW1;
 				end
 				else begin
-					BERR <= 1'b1;
+					bus_error <= 1'b1;
 					state <= BERRWAIT;
 				end
 			end
@@ -383,7 +393,7 @@ always @(posedge CLK, negedge nRST) begin
 
 		RW4: begin
 			/* Terminate the bus cycle. */
-			DSACK <= 2'b11;
+			dsack <= 2'b11;
 			state <= RW5;
 		end
 
@@ -405,7 +415,7 @@ always @(posedge CLK, negedge nRST) begin
 				DRAM_nCASB <= 4'b1111;
 				DRAM_nWR <= 1'b1;
 				DRAM_ADDR <= 12'b0;
-				DSACK <= 2'b00;
+				dsack <= 2'b00;
 				state <= PRECHARGE;
 			end
 		end
@@ -462,7 +472,7 @@ always @(posedge CLK, negedge nRST) begin
 		BERRWAIT: begin
 			/* Stay here until the CPU ends the cycle. */
 			if (~AS) begin
-				BERR <= 1'b0;
+				bus_error <= 1'b0;
 				state <= IDLE;
 			end
 		end

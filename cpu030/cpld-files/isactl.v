@@ -77,9 +77,11 @@ module isactl(
  *	ATA disk  -> 0x1f0, 0x3f6 - 8 bytes, 2 bytes
  *	RTL8019AS -> 0x300 - 32 bytes
  *
- * N.B. the RTL8019AS fully decodes its own address; we do not need to
- * provide a chip select output for it, but we do need to know when it
- * is selected.
+ * N.B. the RTL8019AS fully decodes its own address, so we do not strictly
+ * need to provide a chip select output for it.  However it does rely on
+ * the ISA AEN signal to know *when* to decode its address, and so we
+ * effectively use that as its chip select signal, relying on the fact
+ * that the chip is hard-wired for the address we decode on its behalf.
  */
 wire nPIOMODESEL;
 wire nTMRCSRSEL;

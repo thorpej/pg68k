@@ -128,9 +128,6 @@ assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
 /* Enable ATA bus buffers if either drive register set is selected. */
 assign nATABEN = nATASEL & nATAAUXSEL;
 
-reg bus_error;
-assign BERR = bus_error;
-
 /* This register holds the current PIO mode for the ATA interface. */
 reg [1:0] PIO_mode;
 wire pio_mode0 = (PIO_mode == 2'd0);
@@ -166,12 +163,14 @@ localparam IO_STROBE_WRITE = 2'b01;
 wire [1:0] io_strobe_type = {RnW, ~RnW};
 
 /*
- * Qual with /DS from the CPU so they de-assert immediately.
+ * Qual with /AS or /DS from the CPU so they de-assert immediately.
  */
 reg [1:0] io_strobe;
 reg [1:0] dsack;
+reg bus_error;
 assign {nISA_IORD, nISA_IOWR} = ~(io_strobe & {~nDS, ~nDS});
 assign DSACK = dsack & {~nDS, ~nDS};
+assign BERR = bus_error & ~nAS;
 
 localparam Idle			= 4'd0;
 localparam ATA_t1_r_8		= 4'd1;

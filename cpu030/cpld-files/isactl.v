@@ -125,10 +125,6 @@ end
 assign {nDUARTSEL, nATASEL, nATAAUXSEL, nPIOMODESEL, nETHSEL,
     nTMRCSRSEL, nTMRLSBSEL, nTMRMSBSEL} = DevSelectOutputs;
 
-wire internally_decoded =
-    ~(nDUARTSEL && nATASEL && nATAAUXSEL && nPIOMODESEL && nTMRCSRSEL &&
-      nTMRLSBSEL && nTMRMSBSEL);
-
 /* Enable ATA bus buffers if either drive register set is selected. */
 assign nATABEN = nATASEL & nATAAUXSEL;
 

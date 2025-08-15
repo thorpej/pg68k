@@ -353,6 +353,11 @@ always @(posedge CPU_CLK, negedge nRST) begin
 				state <= ISA_w1;
 			end
 
+			/*
+			 * We have an explcit case for the beginning
+			 * of a write cycle; /DS is not yet asserted,
+			 * so wait for the next pass through.
+			 */
 			{STARTWRITE, SEL_dc}: begin
 				state <= Idle;
 			end
@@ -447,13 +452,13 @@ always @(posedge CPU_CLK, negedge nRST) begin
 		Timer_was_enab <= 1'b0;
 	end
 	else begin
-		Timer_int <= Timer_int && Timer_enab;
 		if (Timer_valmod) begin
 			/*
 			 * If Timer_valmod is true, we know that
 			 * Timer_enab will be false;
 			 */
 			Timer_current <= {Timer_value, 4'b0000};
+			Timer_int <= 1'b0;
 		end
 		else if (Timer_enab) begin
 			if (~Timer_was_enab || Timer_current == 20'd0) begin
@@ -465,6 +470,9 @@ always @(posedge CPU_CLK, negedge nRST) begin
 					Timer_int <= 1'b0;
 				Timer_current <= Timer_current - 1;
 			end
+		end
+		else begin
+			Timer_int <= 1'b0;
 		end
 		Timer_was_enab <= Timer_enab;
 	end

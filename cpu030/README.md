@@ -354,7 +354,7 @@ The DRAM controller is wired up to the 68030's cache burst cycle
 related signals (/CBREQ and /CBACK), but does not participate in
 them at this time.  This is something that may be added later.
 
-Throughout this section, you might find it handy to have a copy
+Throughout this section, you might find it useful to have a copy
 of [dramctl.v](cpld-files/dramctl.v) handy.
 
 DRAM controllers are not particularly complex, logically, but they use
@@ -494,7 +494,154 @@ back to **IDLE**.
 
 ## ISA peripherals and system timer
 
-XXX
+The Mk I includes some on-board peripherals that were originally designed
+to be connected to an ISA bus: the ATA disk interface (which is essentially
+the ISA bus extended over a cable) and the RTL8019AS Ethernet chip.  The
+DUART is also a very ISA-aligned device with it's read- and write-strobe
+inputs and active-high interrupt output.  As such, we need some logic to
+generate the appropriate signals for bus cycles targeting these devices,
+as well as logic to generate the appropriate cycle timings (wait-states,
+specifically).
+
+And so, to that end, the Mk I has ISACTL - an ISA bus cycle controller.
+Overall, ISACTL has 4 functions:
+
+* Decode the 10-bit ISA I/O address input and assert the appropriate
+  chip select (which might be for one of ISACTL's internal registers).
+* Generate the necessary ISA read and write strobe signals.
+* Insert the appropriate number of wait-states for the type and target
+  of a given bus cycle; ATA timings supported are PIO modes 0, 1, and 2.
+* Implement a system timer (because the price of a new 82c54 amounts to
+  highway robbery).
+
+The ISA controller logic is written in Verilog and synthesized for
+the Atmel ATF1508AS-7 CPLD in a TQFP-100 package using Yosys and the
+Atmel fitter tool.
+
+Throughout this section, you might find it useful to have a copy
+of [isactl.v](cpld-files/isactl.v) handy.
+
+### Address decoding
+
+This is a very straight-forward task.  ISA I/O addresses are 10-bit, and
+the following addresses are decoded:
+
+* System timer at 0x040 for 3 bytes.  Even though the ISACTL timer is not
+  compatible with the 82c54, we picked the same address that was used on
+  the IBM PC.
+* 0x1f0 for 8 bytes and 0x3f6 for 2 bytes for the ATA disk interface.
+  These correspond to the two different chip selects on the ATA connector.
+  Note, however, that the second byte of the 0x3f6 region (i.e. the address
+  0x3f7) is used to select the internal PIO mode register of ISACTL.
+* 0x300 for 32 bytes for the RTL8019AS Ethernet chip.  While this chip
+  supports fully decoding the ISA address space, on the Mk I its address
+  lines and configuration inputs are hard-wired for 0x300 in order to
+  reduce the number of signals that had to be routed to the chip.
+* 0x3f8 and 0x2f8 for 8 bytes for the DUART (A8 is ignored by the decoder
+  and is used directly by the DUART chip to select unit 0 [A8==1] or unit
+  1 [A8==0]).
+
+See `DevSelectOutputs`.
+
+Any address not decoded will generate a bus error, not directly,
+but by virtue of nothing responding to the bus cycle and SYSCTL's
+bus error generator timing out.
+
+Four of the possible device selects are for registers internal to
+ISACTL.  Search for the declaration of `data_out` to see
+the block of code that implements the register read mux.
+
+The bus cycle state machine uses some simple combinatorial logic to
+compute ISA I/O strobe type.  See `io_strobe_type` and the use of
+`io_strobe` nearby.
+
+The state machine also needs to know what sort of cycle is being
+performed.  `Cycle` combines several input signals to represent this
+information for consumption when the cycle begins.
+
+### Bus cycle state machine
+
+There are 14 states, **Idle**, **TermWait**, 6 states that handle wait-states,
+and 6 states that manage the ATA PIO mode timings, which also utilize the
+regular ISA wait-state states.
+
+In **Idle**, the cycle type and device select are decoded to compute the
+timings for the cycle.  ATA timings are more complex, as would be generic
+ISA device timings if we supported them, as there are data setup times
+that have to be met before the I/O strobe for the cycle is asserted, in
+addition to the minimum strobe pulse width times.  The ATA PIO mode is
+consulted here (and only here) to determine which path through the state
+machine the cycle will take.  DUART and Ethernet I/O cycles are much
+simpler, as these devices are fast enough to not require any additional
+setup time, and in the case of the DUART, no additional wait-states at all.
+In theory, these devices could be handled with generic ISA bus cycle
+timing, but I perfer that they're processed as quickly as possible.
+
+The ISACTL's internal registers are handled directly in the **Idle** state.
+There is a handshake between the timer block and the bus cycle state
+machine since of course you cannot drive a signal from more than one
+`always` block:
+
+* When the timer's control/status register is read, the `Timer_intack`
+  signal is set to indicate that software runnining on the CPU has
+  acknowledged the timer interrupt.  `Timer_intack` is cleared in the
+  next pass through the **Idle** state.
+* When the timer's control/status register is written, the `Timer_enab`
+  signal is updated from the least-significant data bus bit (`DATA[0]`).
+* When the timer's upper or lower value bytes are written, the `Timer_enab`
+  signal is cleared and the appropriate half of the `Timer_value` register
+  is updated.  The `Timer_valmod` signal is set to indicate that the timer
+  block should re-load the timer counter from `Timer_value`.  `Timer_valmod`
+  is cleared in the next pass through the **Idle** state.
+
+### System timer
+
+ISACTL includes a 16-bit system timer that is effectively clocked at
+1/16th the CPU clock rate (i.e. 1.5625MHz).  I considered using an 82c54
+for the system timer, but decided not to for 2 reasons:
+
+* New 82c54 chips are ridiculously expensive for what they are, especially
+  the chips at high speed grades.
+* The 82c54 isn't a particularly good timer chip to begin with; the most
+  useful mode for acting as a system timer requires the timer value to
+  be reloaded at each interrupt, which can lead to drift over time.
+
+The ISACTL timer has the following properties:
+
+* 16-bit timer value, accessed 8 bits at a time via separate LSB and MSB
+  registers.
+* 8-bit control/status register with an "enable" bit and an "interrupt
+  pending" bit.
+* Any write to either half of the timer value implicitly clears the
+  "enable" bit.
+* When the timer is enabled, it always loads the configured value into
+  the internal countdown register.
+* When the internal countdown register reaches 0, the timer interrupt
+  is asserted and the value is automatically re-loaded from the timer
+  value register.
+* A read of the control/status register returns the current value of
+  the "interrupt pending" bit and then clears it, acknowledging the
+  interrupt.
+
+The timer block can be found by looking for `Timer_current`, which is
+the internal 20-bit countdown register.  When the 16-bit timer value is
+loaded, it is placed in the upper 16 bits of the countdown register and
+the lower 4 bits are set to 0, effectively multiplying timer value by
+16.
+
+`Timer_was_enab` is another internal register used to remember the last
+enabled state each pass through the timer's `always` block:
+
+* If `Timer_valmod` is set, it means that one half of the value
+  register has been written to and the timer has been disabled.
+  The countdown register is re-loaded and the interrupt cleared.
+* Otherwise, if `Timer_enab` is set and either the timer was *not*
+  previously enabled or if the countdown register has reached 0,
+  the countdown register is re-loaded and the interrupt asserted
+  if the timer was previously enabled.  If the coundown register
+  has not yet reached 0, then it is decremented.
+* Otherwise, we ensure that the timer interrupt is cleared as we know
+  that the timer is not enabled.
 
 ## I2C interface
 

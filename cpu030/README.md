@@ -643,6 +643,91 @@ enabled state each pass through the timer's `always` block:
 * Otherwise, we ensure that the timer interrupt is cleared as we know
   that the timer is not enabled.
 
+### 16-bit data transfers and byte-order
+
+Most of the ISA device registers present on the Mk I are 8 bits wide,
+and as such there are no byte-order issues to be concerned with.  There
+are, however, two devices (ATA disk and RTL8019AS Ethernet) that perform
+16-bit data transfers.  At first blush, this might suggest that byte-swapping
+is required when performing I/O to these devices, because ISA devices are
+little-endian and the 68030 is big-endian.  But this is not the case for
+16-bit reads and writes that are all about *copying data from memory to
+the device and vice versa*.  These are what I call "streaming" reads and
+writes, and I will explain here why byte-swapping is not required for
+these 16-bit transfers.
+
+First, take a look at how the ISA peripherals are physically wired up:
+
+* ISA data lines ID7:ID0 are connected to 68030 data lines D31:D24.  For
+  8-bit cycles, this is the normal, natural configuration with 68030
+  dynamic bus sizing.  The CPU internally routes this to the lower 8 bits
+  of the register.
+* ISA data lines ID15:ID8 are connected to 68030 data lines D23:D16.
+* The ISA on-board peripheral space is dynamic-bus-sized as an 8- or
+  16-bit port.
+
+Next, let's look at what happens when a 68030 loads and stores a 16-bit
+value from/to memory and register %d0.  In this example, we're going to
+load the character string "ok" from address $0000.0000.  This means that
+$0000.0000 contains the letter 'o' and $0000.0001 contains the letter 'k'.
+Because the 68030 is a big-endian (most-significant-byte first in memory)
+architecture, we end up with the following in %d0:
+
+| 31-24 | 23-16 | 15-8 | 7-0 |
+|-------|-------|------|-----|
+|   x   |   x   |  'o' | 'k' |
+
+Figure 7-13 ("Internal Operand Representation") in in the 68030 user's
+manual would describe it this way:
+
+|                   | OP0 | OP1 | OP2 | OP3 |
+|-------------------|-----|-----|-----|-----|
+| Long Word Operand | 'o' | 'k' |     |     |
+|      Word Operand |  x  |  x  | 'o' | 'k' |
+|      Byte Operand |  x  |  x  |  x  | 'o' |
+
+Now, looking at Table 7-4 ("Data Bus Requirements for Read Cycles"), focusing
+on word-aligned 8- and 16-bit reads (for word ports):
+
+| SIZE | D31:D24 | D23:D16 |
+|------|---------|---------|
+|  8   |   OP3   |    N    |
+|  16  |   OP2   |   OP3   |
+
+And looking at Table 7-5 ("MC68030 Internal to External Data Bus Multiplexer
+-- Write Cycles"), this is what the 68030 places onto the data bus for a
+write to the same location:
+
+| SIZE | D31:D24 | D23:D16 | D15:D8 | D7:D0 |
+|------|---------|---------|--------|-------|
+|  8   |   OP3   |   OP3   |   OP3  |  OP3  |
+|  16  |   OP2   |   OP3   |   OP2  |  OP3  |
+
+Now, let's consider what a little-endian processor like the i386 would do
+in this situation:
+
+Loading "ok" into %ax, remembering that the lowest address will be the
+least-significant byte in the register:
+
+| D15:D8 | D7:D0 |
+|--------|-------|
+|  'k'   |  'o'  |
+
+Now, also note that an ISA bus peripheral would be naturally wired up
+to an i386 such that ID15:ID0 == D15:D0
+
+So, now you've probably noticed that, for a word-aligned 16-bit
+read or write:
+
+* 68030 %d0[7..0] == OP3 == D23:D16 == ID15:ID8 == i386 D15:D8 == 'k'
+* 68030 %d0[15..8] == OP2 == D31:D24 == ID7:ID0 == i386 D7:D0 == 'o'
+
+Note that this only works for aligned 16-bit reads and writes.  ISACTL
+will raise a bus error for a non-aligned 16-bit cycle.  Happily, the
+ATA data register and the RTL8019AS data register are both properly
+aligned.  This means that no byte swapping is necessary in the hot
+data transfer path!
+
 ## I2C interface
 
 XXX

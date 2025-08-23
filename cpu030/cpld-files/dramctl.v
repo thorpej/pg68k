@@ -189,15 +189,15 @@ wire ValidSecondSIMM = (SIMMPDB == SIMMPDA);
  * Row address computation.
  */
 wire [11:0] RowAddress;
-assign RowAddress = SIMMSZ ? {1'b0, ADDR[12:2]}
-			   :        ADDR[13:2];
+assign RowAddress = SIMMSZ ? {1'b0, ADDR[25:14]}
+			   :        ADDR[23:13];
 
 /*
  * Column address computation.
  */
 wire [11:0] ColumnAddress;
-assign ColumnAddress = SIMMSZ ? {1'b0, ADDR[23:13]}
-			      :        ADDR[25:14];
+assign ColumnAddress = SIMMSZ ? {1'b0, ADDR[12:2]}
+			      :        ADDR[13:2];
 
 /*
  * Row select computation.

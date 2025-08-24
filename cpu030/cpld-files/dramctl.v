@@ -203,20 +203,22 @@ assign ColumnAddress = SIMMSZ ? {1'b0, ADDR[12:2]}
  * Which SIMM computation.  Does the request exceed the limit of the
  * first SIMM?
  */
-reg SecondSIMM;
+reg ExceedsFirstSIMM;
 always @(*) begin
 	case ({SIMMSZ, SIMMPDA[0], SIMMPDA[1]})
-	SZ32:    SecondSIMM = ADDR[25] || ADDR[26] || ADDR[27];
-	SZ64:    SecondSIMM = ADDR[26] || ADDR[27];
-	SZ128:   SecondSIMM = ADDR[27];
-	default: SecondSIMM = ADDR[24] || ADDR[25] || ADDR[26] || ADDR[27];
+	SZ32:    ExceedsFirstSIMM = ADDR[25] || ADDR[26] || ADDR[27];
+	SZ64:    ExceedsFirstSIMM = ADDR[26] || ADDR[27];
+	SZ128:   ExceedsFirstSIMM = ADDR[27];
+	default: ExceedsFirstSIMM =
+		     ADDR[24] || ADDR[25] || ADDR[26] || ADDR[27];
 	endcase
 end
+
+wire UsingSecondSIMM = (ExceedsFirstSIMM && ValidSecondSIMM);
 
 /*
  * Row select computation.
  */
-wire UsingSecondSIMM = (ValidSecondSIMM && SecondSIMM);
 reg [3:0] nRowSelects;
 always @(*) begin
 	case ({UsingSecondSIMM, SIMMSZ})
@@ -250,7 +252,7 @@ end
  * 2- Either the request does not require the second SIMM or fits
  *    within it.
  */
-wire ValidAddress = ValidFirstSIMM && (~SecondSIMM || FitsSecondSIMM);
+wire ValidAddress = ValidFirstSIMM && (~ExceedsFirstSIMM || FitsSecondSIMM);
 
 /*
  * Byte enables, from Table 7-4 in the 68030 User's Manual.
@@ -356,7 +358,7 @@ always @(posedge CLK, negedge nRST) begin
 
 		RW1: begin
 			/* Row address is valid, assert RAS. */
-			if (SecondSIMM)
+			if (ExceedsFirstSIMM)
 				DRAM_nRASB <= nRowSelects;
 			else
 				DRAM_nRASA <= nRowSelects;
@@ -382,7 +384,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * Column address is valid, assert CAS based on
 			 * the byte enables.
 			 */
-			if (SecondSIMM)
+			if (ExceedsFirstSIMM)
 				DRAM_nCASB <= ~ByteEnables;
 			else
 				DRAM_nCASA <= ~ByteEnables;

@@ -401,11 +401,11 @@ on which rows we're selecting.  See `RowAddress`, `ColumnAddress`, and
 
 Next, the DRAM controller needs to know which SIMM to select.  This is
 based on whether or not the address has exceeded the capacity of the first
-SIMM.  See `SecondSIMM`.
+SIMM.  See `ExceedsFirstSIMM`.
 
 Finally, the DRAM controller needs to know if the requested address fits
 within the memory size.  For this, `FitsSecondSIMM` is used in conjunction
-with `SecondSIMM` in order to compute `ValidAddress`.
+with `ExceedsFirstSIMM` in order to compute `ValidAddress`.
 
 As with the fast SRAM interface in the system controller, the DRAM
 controller needs to select specific byte enables during write cycles.

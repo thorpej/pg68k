@@ -200,13 +200,6 @@ assign ColumnAddress = SIMMSZ ? {1'b0, ADDR[12:2]}
 			      :        ADDR[13:2];
 
 /*
- * Row select computation.
- */
-wire [3:0] nRowSelects;
-assign nRowSelects = SIMMSZ ? {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]}
-			    : {~ADDR[26], ADDR[26], ~ADDR[26], ADDR[26]};
-
-/*
  * Which SIMM computation.  Does the request exceed the limit of the
  * first SIMM?
  */
@@ -217,6 +210,20 @@ always @(*) begin
 	SZ64:    SecondSIMM = ADDR[26] || ADDR[27];
 	SZ128:   SecondSIMM = ADDR[27];
 	default: SecondSIMM = ADDR[24] || ADDR[25] || ADDR[26] || ADDR[27];
+	endcase
+end
+
+/*
+ * Row select computation.
+ */
+wire UsingSecondSIMM = (ValidSecondSIMM && SecondSIMM);
+reg [3:0] nRowSelects;
+always @(*) begin
+	case ({UsingSecondSIMM, SIMMSZ})
+	2'b00:	nRowSelects = {~ADDR[26], ADDR[26], ~ADDR[26], ADDR[26]};
+	2'b01:	nRowSelects = {~ADDR[24], ADDR[24], ~ADDR[24], ADDR[24]};
+	2'b10:	nRowSelects = {~ADDR[27], ADDR[27], ~ADDR[27], ADDR[27]};
+	2'b11:	nRowSelects = {~ADDR[25], ADDR[25], ~ADDR[25], ADDR[25]};
 	endcase
 end
 

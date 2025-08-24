@@ -77,8 +77,8 @@ module dramctl(
 	output reg [3:0] DRAM_nCASB,
 
 	/* Drives external open-drain inverters. */
-	output reg STERM,
-	output reg CBACK,
+	output wire STERM,
+	output wire CBACK,
 	output wire BERR,
 	output wire [1:0] DSACK
 );
@@ -109,14 +109,18 @@ always @(posedge CLK, negedge nRST) begin
 end
 
 /*
- * Qual DSACK and BERR with the synchronized /AS input to ensure they
- * de-assert as quickly as possible.  See parameter 28 of the 68030
- * electrical specifications.
+ * Qual DSACK, BERR, CBACK, and STERM on the non-synchrinoized /AS input to
+ * ensure they de-assert as quickly as possible.  See parameter 28 of the
+ * 68030 electrical specifications.
  */
 reg [1:0] dsack;
-assign DSACK = dsack & {AS_s, AS_s};
+assign DSACK = dsack & {~nAS, ~nAS};
+reg cback;
+assign CBACK = cback & ~nAS;
+reg sterm;
+assign STERM = sterm & ~nAS;
 reg bus_error;
-assign BERR = bus_error & AS_s;
+assign BERR = bus_error & ~nAS;
 
 /*
  * The CPU runs at 1/2 the DRAM clock frequency, which is 50MHz.
@@ -319,8 +323,8 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_nCASB <= 4'b1111;
 		DRAM_nWR <= 1'b1;
 		dsack <= 2'b00;
-		CBACK <= 1'b0;
-		STERM <= 1'b0;
+		cback <= 1'b0;
+		sterm <= 1'b0;
 		bus_error <= 1'b0;
 		refresh_ack <= 1'b0;
 	end

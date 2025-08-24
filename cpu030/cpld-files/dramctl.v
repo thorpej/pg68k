@@ -89,22 +89,22 @@ module dramctl(
  * it's not acted upon until our latched /AS signal is stable.
  */
 reg AS1;
-reg AS;
+reg AS_s;
 reg RAMSEL1;
-reg RAMSEL;
+reg RAMSEL_s;
 
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		AS1 <= 1'b0;
-		AS  <= 1'b0;
+		AS_s  <= 1'b0;
 		RAMSEL1 <= 1'b0;
-		RAMSEL  <= 1'b0;
+		RAMSEL_s  <= 1'b0;
 	end
 	else begin
 		AS1 <= ~nAS;
 		RAMSEL1 <= ~nRAMSEL;
-		AS  <= AS1;
-		RAMSEL  <= RAMSEL1;
+		AS_s  <= AS1;
+		RAMSEL_s  <= RAMSEL1;
 	end
 end
 
@@ -114,9 +114,9 @@ end
  * electrical specifications.
  */
 reg [1:0] dsack;
-assign DSACK = dsack & {AS, AS};
+assign DSACK = dsack & {AS_s, AS_s};
 reg bus_error;
-assign BERR = bus_error & AS;
+assign BERR = bus_error & AS_s;
 
 /*
  * The CPU runs at 1/2 the DRAM clock frequency, which is 50MHz.
@@ -337,7 +337,7 @@ always @(posedge CLK, negedge nRST) begin
 				/* Start CAS-before-RAS refresh cycle. */
 				state <= REFRESH1;
 			end
-			else if (RAMSEL && AS) begin
+			else if (RAMSEL_s && AS_s) begin
 				/*
 				 * DRAM selected.  If we have a valid SIMM
 				 * configuration and the request fits within
@@ -417,7 +417,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * would possibly need to extend the precharge
 			 * time.
 			 */
-			if (~AS) begin
+			if (~AS_s) begin
 				DRAM_nRASA <= 4'b1111;
 				DRAM_nRASB <= 4'b1111;
 				DRAM_nCASA <= 4'b1111;
@@ -480,7 +480,7 @@ always @(posedge CLK, negedge nRST) begin
 
 		BERRWAIT: begin
 			/* Stay here until the CPU ends the cycle. */
-			if (~AS) begin
+			if (~AS_s) begin
 				bus_error <= 1'b0;
 				state <= IDLE;
 			end

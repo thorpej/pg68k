@@ -208,8 +208,8 @@ wire ValidSecondSIMM = (SIMMPDB == SIMMPDA);
  * Row address computation.
  */
 wire [11:0] RowAddress;
-assign RowAddress = SIMMSZ ? {1'b0, ADDR[25:14]}
-			   :        ADDR[23:13];
+assign RowAddress = SIMMSZ ? {1'b0, ADDR[23:13]}
+			   :        ADDR[25:14];
 
 /*
  * Column address computation.

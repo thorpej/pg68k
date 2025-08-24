@@ -71,10 +71,10 @@ module dramctl(
 	output reg [11:0] DRAM_ADDR,
 
 	output reg [3:0] DRAM_nRASA,
-	output reg [3:0] DRAM_nCASA,
+	output wire [3:0] DRAM_nCASA,
 
 	output reg [3:0] DRAM_nRASB,
-	output reg [3:0] DRAM_nCASB,
+	output wire [3:0] DRAM_nCASB,
 
 	/* Drives external open-drain inverters. */
 	output wire STERM,
@@ -158,6 +158,21 @@ always @(posedge CLK, negedge nRST) begin
 		end
 	end
 end
+
+/*
+ * We want the DRAM data outputs to go high-Z as quickly as possible once
+ * the cycle is over, so we gate the DRAM_nCAS outputs on the non-
+ * synchronized /AS input to ensure they de-assert as quickly as possible.
+ * However, we also need to enable enable DRAM_nCAS outputs during refresh
+ * cycles, so we also check for that.
+ */
+wire dram_cas_enabled = (refresh_ack || ~nAS);
+wire [3:0] dram_cas_gate = {dram_cas_enabled, dram_cas_enabled,
+				dram_cas_enabled, dram_cas_enabled};
+reg [3:0] dram_casa;
+reg [3:0] dram_casb;
+assign DRAM_nCASA = ~(dram_casa & dram_cas_gate);
+assign DRAM_nCASB = ~(dram_casb & dram_cas_gate);
 
 /*
  * PD bits are arranged according to the table in JEDEC 21-C, pg 4.4.2-3,
@@ -319,8 +334,8 @@ always @(posedge CLK, negedge nRST) begin
 		DRAM_ADDR <= 12'd0;
 		DRAM_nRASA <= 4'b1111;
 		DRAM_nRASB <= 4'b1111;
-		DRAM_nCASA <= 4'b1111;
-		DRAM_nCASB <= 4'b1111;
+		dram_casa <= 4'b0000;
+		dram_casb <= 4'b0000;
 		DRAM_nWR <= 1'b1;
 		dsack <= 2'b00;
 		cback <= 1'b0;
@@ -389,9 +404,9 @@ always @(posedge CLK, negedge nRST) begin
 			 * the byte enables.
 			 */
 			if (ExceedsFirstSIMM)
-				DRAM_nCASB <= ~ByteEnables;
+				dram_casb <= ByteEnables;
 			else
-				DRAM_nCASA <= ~ByteEnables;
+				dram_casa <= ByteEnables;
 
 			/*
 			 * If we wanted to support 70ns or slower
@@ -424,8 +439,8 @@ always @(posedge CLK, negedge nRST) begin
 			if (~AS_s) begin
 				DRAM_nRASA <= 4'b1111;
 				DRAM_nRASB <= 4'b1111;
-				DRAM_nCASA <= 4'b1111;
-				DRAM_nCASB <= 4'b1111;
+				dram_casa <= 4'b0000;
+				dram_casb <= 4'b0000;
 				DRAM_nWR <= 1'b1;
 				DRAM_ADDR <= 12'b0;
 				dsack <= 2'b00;
@@ -438,8 +453,8 @@ always @(posedge CLK, negedge nRST) begin
 			refresh_ack <= 1'b1;
 
 			/* Assert CAS. */
-			DRAM_nCASA <= 4'b0000;
-			DRAM_nCASB <= 4'b0000;
+			dram_casa <= 4'b1111;
+			dram_casb <= 4'b1111;
 
 			state <= REFRESH2;
 		end
@@ -454,8 +469,8 @@ always @(posedge CLK, negedge nRST) begin
 
 		REFRESH3: begin
 			/* De-assert CAS. */
-			DRAM_nCASA <= 4'b1111;
-			DRAM_nCASB <= 4'b1111;
+			dram_casa <= 4'b0000;
+			dram_casb <= 4'b0000;
 
 			state <= REFRESH4;
 		end

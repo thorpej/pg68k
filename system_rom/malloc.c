@@ -127,6 +127,11 @@ init_brk(void *addr)
 static void *
 sbrk(int incr)
 {
+	/* Don't give memory back in this implementation. */
+	if (incr < 0) {
+		incr = 0;
+	}
+
 	uintptr_t newbrk = (uintptr_t)round_page((void *)(curbrk + incr));
 	void *rv;
 

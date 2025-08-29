@@ -4,6 +4,12 @@
 	(generator_version "9.0")
 	(uuid "e03e6fb8-a22c-44ef-b902-2b298be9e051")
 	(paper "A4")
+	(title_block
+		(title "Playground 68030 Mk I")
+		(date "2025-08-29")
+		(rev "A0")
+		(company "(c) 2025 Jason R. Thorpe.  See LICENSE.")
+	)
 	(lib_symbols
 		(symbol "Device:Battery_Cell"
 			(pin_numbers

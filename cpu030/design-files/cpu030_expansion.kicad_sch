@@ -4,6 +4,12 @@
 	(generator_version "9.0")
 	(uuid "523208c9-3e01-4676-bc54-23886d1f1207")
 	(paper "A4")
+	(title_block
+		(title "Playground 68030 Mk I")
+		(date "2025-08-29")
+		(rev "A0")
+		(company "(c) 2025 Jason R. Thorpe.  See LICENSE.")
+	)
 	(lib_symbols
 		(symbol "74xx:74HC245"
 			(pin_names

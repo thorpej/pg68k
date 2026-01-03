@@ -155,16 +155,16 @@
  */
 
 module mmu010(
-	input wire nRST,
-	input wire CLK,
+	input wire nRST,	/* system /RESET signal */
+	input wire CLK,		/* system CLK20 signal (2x CPU) */
 
-	input wire nAS,
-	input wire RnW,
-	input wire nUDS,
-	input wire nLDS,
-	input wire nDTACK,
+	input wire nAS,		/* /AS from CPU */
+	input wire RnW,		/* R/W from CPU */
+	input wire nUDS,	/* /UDS from CPU */
+	input wire nLDS,	/* /LDS from CPU */
+	input wire nDTACK,	/* /DTACK as viewed by CPU */
 
-	input wire [2:0] FC,
+	input wire [2:0] FC,	/* FC2..FC0 from CPU */
 
 	input wire [2:0] ADDR,	/* A3..A1 from CPU */
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
@@ -867,3 +867,81 @@ always @(posedge CLK, negedge nRST) begin
 end
 
 endmodule
+
+// Pin assignment for Yosys workflow.
+//
+//PIN: CHIP "mmu010" ASSIGNED TO AN TQFP100
+//
+//	=== CPU side of the chip ===
+//
+//PIN: MMU_DTACK	: 1
+//PIN: MMU_FAULT	: 2
+//PIN: nAS		: 5
+//PIN: RnW		: 6
+//PIN: nUDS		: 7
+//PIN: nLDS		: 8
+//PIN: nDTACK		: 9
+//PIN: FC_0		: 10
+//PIN: FC_1		: 12
+//PIN: FC_2		: 13
+//PIN: ADDR_0		: 14
+//PIN: ADDR_1		: 16
+//PIN: ADDR_2		: 17
+//PIN: DATA_0		: 19
+//PIN: DATA_1		: 20
+//PIN: DATA_2		: 21
+//PIN: DATA_3		: 22
+//PIN: DATA_4		: 23
+//PIN: DATA_5		: 24
+//PIN: DATA_6		: 25
+//PIN: DATA_7		: 27
+//
+//
+//	=== SRAM / System side of the chip ===
+//
+//	== SegMap stuff ==
+//PIN: nSMSEL		: 39
+//PIN: nSM_WE		: 40
+//PIN: nSM_UB		: 41
+//PIN: nSM_LB		: 42
+//PIN: CTX_0		: 44
+//PIN: CTX_1		: 45
+//PIN: CTX_2		: 46
+//PIN: CTX_3		: 47
+//PIN: CTX_4		: 48
+//PIN: CTX_5		: 49
+//PIN: SME_V		: 50
+//
+//	== PageMap stuff ==
+//PIN: PMACC		: 52
+//PIN: nPMUSEL		: 53
+//PIN: nPMU_WE		: 54
+//PIN: nPMU_UB		: 55
+//PIN: nPMU_LB		: 56
+//PIN: nPMLSEL		: 57
+//PIN: nPML_WE		: 58
+//PIN: nPML_UB		: 60
+//PIN: nPML_LB		: 61
+//PIN: nPM_LE		: 63
+//PIN: PME_0		: 64
+//PIN: PME_1		: 65
+//PIN: PME_2		: 67
+//PIN: PME_3		: 68
+//PIN: PME_4		: 69
+//PIN: PME_5		: 70
+//PIN: PME_6		: 71
+//PIN: PME_7		: 72
+//
+//	== General system outputs ==
+//PIN: MMU_ADDR		: 75
+//PIN: nAS_out		: 76
+//PIN: nUDS_out		: 77
+//PIN: nLDS_out		: 78
+//
+//
+//	=== Top of the chip ===
+//
+//	== General control inputs ==
+//PIN: nRST		: 89
+//PIN: CLK		: 87
+//PIN: MMU_EN		: 88

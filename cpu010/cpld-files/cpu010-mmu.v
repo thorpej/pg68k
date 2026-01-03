@@ -220,33 +220,33 @@ reg UDS_s;
 reg DTACK1;
 reg DTACK_s;
 reg RnW1;
-reg RnW1_s;
+reg RnW_s;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		AS1 <= 1'b0;
-		AS_s  <= 1'b0;
+		AS1  <= 1'b0;
+		AS_s <= 1'b0;
 
-		UDS1 <= 1'b0;
-		UDS_s  <= 1'b0;
+		UDS1  <= 1'b0;
+		UDS_s <= 1'b0;
 
-		DTACK1 <= 1'b0;
-		DTACK_s  <= 1'b0;
+		DTACK1  <= 1'b0;
+		DTACK_s <= 1'b0;
 
-		RnW1 <= 1'b0;
-		RnW_s  <= 1'b0;
+		RnW1  <= 1'b0;
+		RnW_s <= 1'b0;
 	end
 	else begin
-		AS1 <= ~nAS;
-		AS_s  <= AS1;
+		AS1  <= ~nAS;
+		AS_s <= AS1;
 
-		UDS1 <= ~nUDS;
-		UDS_s  <= UDS1;
+		UDS1  <= ~nUDS;
+		UDS_s <= UDS1;
 
-		DTACK1 <= ~nDTACK;
-		DTACK_s  <= DTACK1;
+		DTACK1  <= ~nDTACK;
+		DTACK_s <= DTACK1;
 
-		RnW1 <= RnW;
-		RnW_s  <= RnW1;
+		RnW1  <= RnW;
+		RnW_s <= RnW1;
 	end
 end
 
@@ -323,12 +323,12 @@ localparam MMUADDR_PageMapL	= 3'd5;
 localparam MMUADDR_ErrorReg	= 3'd6;
 localparam MMUADDR_Reserved7	= 3'd7;
 
-wire SegMap0Sel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
-wire SegMapSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
-wire PageMapUSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
-wire PageMapLSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
-wire ContexRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
-wire ErrorRegSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_ErrorReg);
+wire SegMap0Sel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
+wire SegMapSel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
+wire PageMapUSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
+wire PageMapLSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
+wire ContextRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
+wire ErrorRegSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_ErrorReg);
 
 /*
  * From the MMU's perspective, CPU access to any of the MMU's SRAMs
@@ -611,7 +611,7 @@ always @(posedge CLK, negedge nRST) begin
 					 * XXX We don't update PME_REF
 					 * XXX yet.
 					 */
-					TranlationValid <= 1'b1;
+					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
 					state <= TermWaitRMW0;
 				end
@@ -633,7 +633,7 @@ always @(posedge CLK, negedge nRST) begin
 					 * XXX We don't update PME_REF
 					 * XXX and PME_MOD yet.
 					 */
-					TranlationValid <= 1'b1;
+					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
 				end
 				state <= TermWait;
@@ -677,7 +677,7 @@ always @(posedge CLK, negedge nRST) begin
 				 * initial translation tests, so only
 				 * need to go back to Idle state here.
 				 */
-				TranlationValid <= 1'b0;
+				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
 				state <= Idle;
 			end
@@ -704,7 +704,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * permission check.
 			 */
 			if (~AS_s) begin
-				TranlationValid <= 1'b0;
+				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
 				state <= Idle;
 			end
@@ -723,7 +723,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * perform another permission check.
 			 */
 			if (~AS_s) begin
-				TranlationValid <= 1'b0;
+				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
 				state <= Idle;
 			end
@@ -756,7 +756,7 @@ always @(posedge CLK, negedge nRST) begin
 					ErrorReg_consumed <= 1'b0;
 				end
 
-				TranlationValid <= 1'b0;
+				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
 				enable_data_out <= 1'b0;
 				mmu_fault <= 1'b0;
@@ -767,3 +767,5 @@ always @(posedge CLK, negedge nRST) begin
 		endcase
 	end
 end
+
+endmodule

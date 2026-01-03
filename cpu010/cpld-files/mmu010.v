@@ -65,6 +65,43 @@
  *
  * Some random commentary:
  *
+ * The PageMap entry format is similar to that used by the Sun3, but is
+ * for 4K pages and the bits are shuffled around a little:
+ *
+ *  31          28   26         23         20 19 16 15                0
+ * | V | W | K |  (r)  | R | M | s3 s2 s1 s0 | (r) | Page Frame Number |
+ * | a   r   e     e     e   o   (software      e
+ * | l   i   r     s     f   d      defined)    s
+ * | i   t   n     e     e   i                  e
+ * | d   e   e     r     r   f                  r
+ *           l     v     e   i                  v
+ *                 e     n   e                  e
+ *                 d     c   d                  d
+ *                       e
+ *                       d
+ *
+ * VALID, WRITE, KERNEL, REF, and MOD are in the same locations as Sun3.
+ * The Type field has been eliminated in this implementation (it basically
+ * served as an extension of the physical address, and I don't really see
+ * much point in having it).  The Page Frame Number has been shortened to
+ * 16 bits, and with 4K pages that gives us a total of 256MB of physical
+ * address space (28 bits worth), which seems perfectly adequate for a
+ * 68010.
+ *
+ * Why is it arranged this way?  Mainly because it makes updating the
+ * MOD and REF bits easier.  The PageMap is implemented as a pair of
+ * 256K x 16 SRAMs.  The lower SRAM contains all of the information
+ * needed to translate the virtual address to the physical address,
+ * and the upper SRAM contains only metadata (both hardware and software
+ * defined).  When an address translation takes place, the lower SRAM
+ * can remain output-enabled for the entire duration of the bus cycle,
+ * driving the system address bus.  But the upper SRAM is only needed at
+ * the very beginning of the bus cycle, to check validity and protection.
+ * At the end of the bus cycle, the MOD and REF bits that need to be
+ * updated in the PageMap entry reside within the upper bye of that
+ * upper word; that upper SRAM can be output-disabled at any time during
+ * the cycle for updating those bits.
+ *
  * ==> Because this MMU always uses context 0 for kernel accesses, the
  *     inclusion of a K bit seems a little redundant.  However, including
  *     it is practically free, and it would make it easier to adapt this
@@ -85,9 +122,9 @@
  * ==> This design uses a lot of external muxes.  Like, a lot.  Maybe
  *     too many.  Assuming 74ACHT157 quad 2-to-1 muxes:
  *
- *	* 5x for the MMU output address (20 bits: XA31..XA12).  Direct
+ *	* 4x for the MMU output address (20 bits: XA27..XA12).  Direct
  *	  passthrough from the CPU's A23..A12 if the address is untranslated,
- *	  otherwise PA31..PA12 from the PageMap.
+ *	  otherwise PA27..PA12 from the PageMap.
  *
  *	* 5x for the PageMap address inputs (18 bits).  These addresses
  *	  must be driven either by the CPU (A21..A4) or by the SegMap.
@@ -132,11 +169,9 @@ module mmu010(
 
 	/* Important bits from the SegMap and PageMap entries. */
 	input wire SME_V,	/* SegMap entry valid */
-	input wire PME_V,	/* PageMap entry valid */
-	input wire PME_K,	/* PageMap kernel privilege required */
-	input wire PME_W,	/* PageMap writes allowed */
+	input wire [7:0] PME,	/* most significant PageMap entry byte */
 
-	output wire [5:0] CTX,
+	output wire [5:0] CTX,	/* Context to use for SegMap access */
 
 	output wire PMACC,	/* CPU is accessing PageMap (mux control) */
 	output wire MMU_ADDR,	/* MMU drives A31..A12 (mux control) */
@@ -407,6 +442,17 @@ reg [1:0] ErrorReg;
 reg ErrorReg_consumed;
 
 /*
+ * We need to latch the upper byte of the PME when performing a
+ * translation so that we can update the MOD and REF bits upon
+ * a successful bus cycle.  We also define shorthand for the
+ * important bits.
+ */
+reg [7:0] PME_copy;
+wire PME_V = PME[7];		/* valid bit */
+wire PME_W = PME[6];		/* write bit */
+wire PME_K = PME[5];		/* kernel bit */
+
+/*
  * Compute the translation error continuously.  It will be latched into
  * ErrorReg when needed.
  *
@@ -614,6 +660,7 @@ always @(posedge CLK, negedge nRST) begin
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
 					state <= TermWaitRMW0;
+					PME_copy <= PME;
 				end
 			end
 
@@ -635,6 +682,7 @@ always @(posedge CLK, negedge nRST) begin
 					 */
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
+					PME_copy <= PME;
 				end
 				state <= TermWait;
 			end

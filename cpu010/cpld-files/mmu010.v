@@ -143,6 +143,10 @@
  * ==> 10x 74AHCT157 quad 2-to-1 muxes (see random thought above; maybe
  *     this gets replaced by another CPLD to mux the CPU addresses?)
  *
+ * ==> 3x 74ACHT373 octal transparent latch; these are used to ensure
+ *     the PageMap index remains stable during a translated bus cycle
+ *     so the MOD and REF bits can be updated safely.
+ *
  * ==> 6x 74AHCT245 8-bit bus transceivers for CPU data bus interface
  *     to the SegMap and PageMap.
  *
@@ -169,7 +173,7 @@ module mmu010(
 
 	/* Important bits from the SegMap and PageMap entries. */
 	input wire SME_V,	/* SegMap entry valid */
-	input wire [7:0] PME,	/* most significant PageMap entry byte */
+	inout wire [7:0] PME,	/* most significant PageMap entry byte */
 
 	output wire [5:0] CTX,	/* Context to use for SegMap access */
 
@@ -192,6 +196,8 @@ module mmu010(
 	output wire nPML_WE,
 	output wire nPML_UB,
 	output wire nPML_LB,
+
+	output wire nPM_LE,	/* PageMap index latch enable */
 
 	output wire nAS_out,	/* gated outputs for these signals. */
 	output wire nUDS_out,	/* we only assert them if we're not going */
@@ -284,6 +290,31 @@ always @(posedge CLK, negedge nRST) begin
 		RnW_s <= RnW1;
 	end
 end
+
+/*
+ * We need to latch the upper byte of the PME when performing a
+ * translation so that we can update the MOD and REF bits upon
+ * a successful bus cycle.  We also define shorthand for the
+ * important bits.
+ */
+reg [7:0] PME_copy;
+wire PME_V = PME[7];		/* valid bit */
+wire PME_W = PME[6];		/* write bit */
+wire PME_K = PME[5];		/* kernel bit */
+
+/*
+ * The updated PageMap entry always gets the REF bit set, and we set
+ * the MOD bit if RnW is low if it hasn't been set already.
+ */
+wire [7:0] PME_new = {PME_copy[7], PME_copy[6], PME_copy[5], PME_copy[4],
+    PME_copy[3], PME_copy[2], 1'b1 /* REF */, (PME_copy[0] | ~RnW) /* MOD */};
+
+/*
+ * PME_update is asserted in the bus cycle state machine whenever the
+ * PageMap entry needs to have the MOD and REF bits written back.
+ */
+reg PME_update;
+assign PME = PME_update ? PME_new : 8'bzzzzzzzz;
 
 /*
  * Booleans to indicate a User vs Kernel access.
@@ -393,10 +424,22 @@ assign PMACC = (PageMapUSel || PageMapLSel);
 
 /*
  * Combinatorial logic for the PageMap /WE, /UB, and /LB inputs.
+ *
+ * The lower word drives the address bus and thus must have its byte
+ * enables always driven when not being accessed by the CPU.
+ *
+ * The upper word's upper byte contains inputs to the MMU's combinatorial
+ * logic, and thus has to remain driven when not being updated.  The
+ * lower byte, however, contains only reserved and software-defined bits,
+ * so the MMU doesn't need it at all; it only exists for the CPU to read
+ * and write.  So, we keep it's data strobe de-asserted unless the CPU
+ * is accessing it, so there is absolutely no risk of it getting clobbered
+ * when the /WE is asserted when MOD and REF bits are updated in the upper
+ * byte.
  */
-assign nPMU_WE = PageMapUSel ? (RnW  | nAS) : 1'b1;
+assign nPMU_WE = PageMapUSel ? (RnW  | nAS) : ~PME_update;
 assign nPMU_UB = PageMapUSel ? (nUDS | nAS) : 1'b0;
-assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 1'b0;
+assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 1'b1;
 
 assign nPML_WE = PageMapLSel ? (RnW  | nAS) : 1'b1;
 assign nPML_UB = PageMapLSel ? (nUDS | nAS) : 1'b0;
@@ -440,17 +483,6 @@ localparam ERR_PRIV		= 2'd2; /* privilege (kernel page) */
 localparam ERR_PROT		= 2'd3; /* protection (r/o page) */
 reg [1:0] ErrorReg;
 reg ErrorReg_consumed;
-
-/*
- * We need to latch the upper byte of the PME when performing a
- * translation so that we can update the MOD and REF bits upon
- * a successful bus cycle.  We also define shorthand for the
- * important bits.
- */
-reg [7:0] PME_copy;
-wire PME_V = PME[7];		/* valid bit */
-wire PME_W = PME[6];		/* write bit */
-wire PME_K = PME[5];		/* kernel bit */
 
 /*
  * Compute the translation error continuously.  It will be latched into
@@ -535,6 +567,15 @@ assign nUDS_out = nUDS | (Translate && ~AccessValid);
 assign nLDS_out = nLDS | (Translate && ~AccessValid);
 
 /*
+ * We latch the PageMap index while we consider the translation valid
+ * so that the index remains stable while we update the MOD and REF bits.
+ *
+ * The /LE input on the 74'373 is high when transparent, and low when
+ * latched.
+ */
+assign nPM_LE = ~TranslationValid;
+
+/*
  * Logic for reading internal MMU registers.
  */
 reg enable_data_out;
@@ -588,6 +629,9 @@ always @(posedge CLK, negedge nRST) begin
 		TranslationValid <= 1'b0;
 		AccessValid <= 1'b0;
 
+		PME_update <= 1'b0;
+		PME_copy <= 8'b0;
+
 		enable_data_out <= 1'b0;
 		mmu_fault <= 1'b0;
 		dtack <= 1'b0;
@@ -597,8 +641,16 @@ always @(posedge CLK, negedge nRST) begin
 		/*
 		 * NOTE: We assume the CPU clock is 10MHz and that
 		 * the memory subsystem is at 2x CPU clock, so each
-		 * state represents 40ns.
+		 * state represents 50ns.
 		 */
+
+		/*
+		 * Always grab a copy of the relevant PageMap entry.
+		 * That way we can use the values stored there as
+		 * soon as we see a translated bus cycle begin.
+		 */
+		PME_copy <= PME;
+
 		case (state)
 		Idle: begin
 			/* Check for the beginning of a bus cycle. */
@@ -653,14 +705,10 @@ always @(posedge CLK, negedge nRST) begin
 					state <= TermWait;
 				end
 				else begin
-					/*
-					 * XXX We don't update PME_REF
-					 * XXX yet.
-					 */
+					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
 					state <= TermWaitRMW0;
-					PME_copy <= PME;
 				end
 			end
 
@@ -676,13 +724,9 @@ always @(posedge CLK, negedge nRST) begin
 					mmu_fault <= 1'b1;
 				end
 				else begin
-					/*
-					 * XXX We don't update PME_REF
-					 * XXX and PME_MOD yet.
-					 */
+					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
-					PME_copy <= PME;
 				end
 				state <= TermWait;
 			end
@@ -718,6 +762,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * and then perform another permission check for
 			 * the R-M-W cycle.
 			 */
+			PME_update <= 1'b0;
 			if (~AS_s) begin
 				/*
 				 * We know in this case that it's a
@@ -781,10 +826,7 @@ always @(posedge CLK, negedge nRST) begin
 					mmu_fault <= 1'b1;
 				end
 				else begin
-					/*
-					 * XXX We don't update PME_REF
-					 * XXX and PME_MOD yet.
-					 */
+					PME_update <= 1'b1;
 					AccessValid <= 1'b1;
 				end
 				state <= TermWait;
@@ -792,6 +834,14 @@ always @(posedge CLK, negedge nRST) begin
 		end
 
 		TermWait: begin
+			/*
+			 * N.B. it's totally safe to update both PME_update
+			 * and TranslationValid (which latches the PageMap
+			 * indexes) in this same state because we know we'll
+			 * visit this state at least twice per bus cycle
+			 * before observing AS_s de-assert.
+			 */
+			PME_update <= 1'b0;
 			if (~AS_s) begin
 				/*
 				 * If the Error register was consumed,

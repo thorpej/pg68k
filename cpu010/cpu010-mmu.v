@@ -285,7 +285,7 @@ wire Translate = (UserAcc || KernelAcc) && MMU_EN;
  *	xxxx.xxxx xxxx.xxxx xxxx.0110	Context Register (byte)
  *	xxPP.PPPP PPPP.PPPP PPPP.1000	PageMap entry (upper word)
  *      xxPP.PPPP PPPP.PPPP PPPP.1010	PageMap entry (lower word)
- *	  ^^^^^^^^^^^^^^^^^^^|||
+ *        ^^^^^^^^^^^^^^^^^^^|||
  *                 PMEG      |||
  *                           ^^^
  *                    Entry within PMEG

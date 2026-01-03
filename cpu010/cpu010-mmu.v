@@ -108,6 +108,9 @@
  *
  * ==> 6x 74AHCT245 8-bit bus transceivers for CPU data bus interface
  *     to the SegMap and PageMap.
+ *
+ * Notable property of the chosen SRAMs: /WE overrides /OE, so /OE can
+ * always be asserted.
  */
 
 module mmu010(
@@ -141,6 +144,19 @@ module mmu010(
 	output wire nSMSEL,	/* SegMap select by CPU (xcvr control) */
 	output wire nPMUSEL,	/* PageMapU select by CPU (xcvr control) */
 	output wire nPMLSEL,	/* PageMapL select by CPU (xcvr control) */
+
+	/* Bus controls for the SegMap SRAM (IS61C3216AL). */
+	output wire nSM_WE,
+	output wire nSM_UB,
+	output wire nSM_LB,
+
+	/* Bus controls for the PageMap SRAMs (AS7C4098A). */
+	output wire nPMU_WE,
+	output wire nPMU_UB,
+	output wire nPMU_LB,
+	output wire nPML_WE,
+	output wire nPML_UB,
+	output wire nPML_LB,
 
 	output wire nAS_out,	/* gated outputs for these signals. */
 	output wire nUDS_out,	/* we only assert them if we're not going */
@@ -235,14 +251,6 @@ always @(posedge CLK, negedge nRST) begin
 end
 
 /*
- * In the bus cycle state machine below, we sometimes have to act
- * upon /UDS (writes to the Context register) and R/W (detecting
- * a Read-Modify-Write bus cycle.  Because we have to watch for
- * these transitions across clock domains, we need synchronizers
- * for these signals as well.
- */
-
-/*
  * Booleans to indicate a User vs Kernel access.
  *
  * FC2   FC1   FC0
@@ -322,14 +330,46 @@ wire PageMapLSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
 wire ContexRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
 wire ErrorRegSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_ErrorReg);
 
-wire MMUAddrErr   = (FC == FC_CONTROL) && (ADDR == MMUADDR_Reserved7);
+/*
+ * From the MMU's perspective, CPU access to any of the MMU's SRAMs
+ * is the same.  MapSel is to simplify the bus cycle state machine
+ * logic, and the rest is all handled with combinatorial logic below.
+ */
+wire MapSel = (SegMap0Sel || SegMapSel || PageMapUSel || PageMapLSel);
+
+/*
+ * Address inputs to the SegMap always come from ContextReg + upper CPU
+ * Address bits, so there is no mux required.  We just need combinatorial
+ * logic to control the SegMap /WE, /UB, and /LB inputs.
+ */
+assign nSM_WE = (SegMap0Sel || SegMapSel) ? (RnW  | nAS) : 1'b1;
+assign nSM_UB = (SegMap0Sel || SegMapSel) ? (nUDS | nAS) : 0'b0;
+assign nSM_LB = (SegMap0Sel || SegMapSel) ? (nLDS | nAS) : 0'b0;
+
+/* Connect CPU to SegMap data pins if SegMap is selected. */
+assign nSMSEL = ~(SegMap0Sel || SegMapSel) | nAS;
 
 /*
  * If the CPU wants to access the PageMap, then it needs to drive the
  * address inputs to those SRAMs.  This output signal controls those
  * muxes.
  */
-assign PMACC = PageMapSel;
+assign PMACC = (PageMapUSel || PageMapLSel);
+
+/*
+ * Combinatorial logic for the PageMap /WE, /UB, and /LB inputs.
+ */
+assign nPMU_WE = PageMapUSel ? (RnW  | nAS) : 1'b1;
+assign nPMU_UB = PageMapUSel ? (nUDS | nAS) : 0'b0;
+assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 0'b0;
+
+assign nPML_WE = PageMapLSel ? (RnW  | nAS) : 1'b1;
+assign nPML_UB = PageMapLSel ? (nUDS | nAS) : 0'b0;
+assign nPML_LB = PageMapLSel ? (nLDS | nAS) : 0'b0;
+
+/* Connect CPU to PageMap data pins if PageMap is selected. */
+assign nPMUSEL = ~PageMapUSel | nAS;
+assign nPMLSEL = ~PageMapLSel | nAS;
 
 /*
  * If the MMU is translating an address, then it gets to drive the
@@ -340,7 +380,8 @@ assign MMU_ADDR = Translate;
 
 /*
  * Context output to SegMap is hard-wired to 0 for translated kernel
- * accesses.
+ * accesses or when accessing the SegMap via the dedicated kernel SegMap
+ * address range.
  */
 reg [5:0] ContextReg;
 assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
@@ -400,6 +441,11 @@ end
 /*
  * Qual MMU_FAULT and MMU_DTACK on the non-synchronized /AS input to ensure
  * they de-assert as quickly as possbile.
+ *
+ * "AC ELECTRICAL SPECIFICATIONS - READ AND WRITE CYCLES" from the "M68000
+ * Family Reference Manual" lists a minimum 0ns "/AS negated to /DTACK negated"
+ * time (characteristic #28), as well as for "/AS negated to /BERR negated"
+ * time (characteristic #30).
  */
 reg dtack;
 assign MMU_DTACK = dtack & ~nAS;
@@ -467,24 +513,23 @@ assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
  * PageMap SRAMs 
  */
 
-wire Cycle = {AS_s, Translate, RnW, ContexRegSel, ErrorRegSel};
+wire [5:0] Cycle = {AS_s, Translate, RnW, ContextRegSel, ErrorRegSel, MapSel};
 
-localparam CYCLE_NONE		= 5'b0xxxx;
-localparam CYCLE_RD_CONTEXT	= 5'b10110;
-localparam CYCLE_WR_CONTEXT	= 5'b10010;
-localparam CYCLE_RD_ERROR	= 5'b10101;
-/* XXX     CYCLE_RD_SEGMAP			*/
-/* XXX     CYCLE_WR_SEGMAP			*/
-/* XXX     CYCLE_RD_PAGEMAP			*/
-/* XXX     CYCLE_WR_PAGEMAP			*/
-localparam CYCLE_XLATE_READ	= 5'b11100;
-localparam CYCLE_XLATE_WRITE	= 5'b11000;
+localparam CYCLE_NONE		= 6'b0xxxxx;
+localparam CYCLE_RD_CONTEXT	= 6'b101100;
+localparam CYCLE_WR_CONTEXT	= 6'b100100;
+localparam CYCLE_RD_ERROR	= 6'b101010;
+localparam CYCLE_RD_MAP		= 6'b101001;
+localparam CYCLE_WR_MAP		= 6'b100001;
+localparam CYCLE_XLATE_READ	= 6'b111000;
+localparam CYCLE_XLATE_WRITE	= 6'b110000;
 
-localparam Idle		    = 3'd0;
-localparam TermWaitRMW0     = 3'd1;
-localparam TermWaitRMW1     = 3'd2;
-localparam TermWaitRMW2     = 3'd3;
-localparam TermWait         = 3'd4;
+localparam Idle			= 3'd0;
+localparam WriteContext		= 3'd1;
+localparam TermWaitRMW0		= 3'd2;
+localparam TermWaitRMW1		= 3'd3;
+localparam TermWaitRMW2		= 3'd4;
+localparam TermWait		= 3'd5;
 
 reg [2:0] state;
 always @(posedge CLK, negedge nRST) begin
@@ -510,14 +555,7 @@ always @(posedge CLK, negedge nRST) begin
 		 */
 		case (state)
 		Idle: begin
-			if (ErrorReg_consumed) begin
-				ErrorReg <= ERR_NONE;
-				ErrorReg_consumed <= 1'b0;
-			end
-
-			/*
-			 * Check for the beginning of a bus cycle.
-			 */
+			/* Check for the beginning of a bus cycle. */
 			casex (Cycle)
 			CYCLE_NONE: begin
 				state <= Idle;
@@ -530,14 +568,34 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			CYCLE_WR_CONTEXT: begin
-				ContextReg <= DATA[5:0];
-				dtack <= 1'b1;
-				state <= TermWait;
+				/*
+				 * We have to wait for the synchronized
+				 * /UDS signal to be asserted.
+				 */
+				state <= WriteContext;
 			end
 
 			CYCLE_RD_ERROR: begin
 				ErrorReg_consumed <= 1'b1;
 				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			CYCLE_RD_MAP: begin
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			CYCLE_WR_MAP: begin
+				/*
+				 * The data strobes might not have been
+				 * assrted yet, so we might need to insert
+				 * an extra state (or 2) here to wait for
+				 * that to happen, but I don't suspect that
+				 * our asserting /DTACK early is going to
+				 * be a problem.
+				 */
 				dtack <= 1'b1;
 				state <= TermWait;
 			end
@@ -591,6 +649,14 @@ always @(posedge CLK, negedge nRST) begin
 				state <= Idle;
 			end
 			endcase
+		end
+
+		WriteContext: begin
+			if (UDS_s) begin
+				ContextReg <= DATA[5:0];
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
 		end
 
 		TermWaitRMW0: begin
@@ -679,6 +745,17 @@ always @(posedge CLK, negedge nRST) begin
 
 		TermWait: begin
 			if (~AS_s) begin
+				/*
+				 * If the Error register was consumed,
+				 * clear it now, because we might update
+				 * it again at the end of the next Idle
+				 * state.
+				 */
+				if (ErrorReg_consumed) begin
+					ErrorReg <= ERR_NONE;
+					ErrorReg_consumed <= 1'b0;
+				end
+
 				TranlationValid <= 0'b1;
 				AccessValid <= 0'b1;
 				enable_data_out <= 1'b0;

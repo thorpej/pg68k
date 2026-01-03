@@ -25,9 +25,10 @@
  */
 
 /*
- * XXX THIS IS AN INCOMPLETE WORK-IN-PROGRESS XXX
+ * XXX THIS IS A WORK-IN-PROGRESS, but essentially "complete" XXX
  *
- * Memory Management Unit for the Motorola 68010 CPU.
+ * Memory Management Unit for the Motorola 68010 CPU.  This implementation
+ * is targeted at an Atmel/Microchip ATF1508AS-7AX100 7.5ns CPLD.
  *
  * This is very much modeled on the Sun MMU as realized in the Sun3,
  * but with more Contexts and PMEGs, and adapted for the constraints

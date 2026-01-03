@@ -117,7 +117,7 @@ module mmu010(
 	input wire nRST,
 	input wire CLK,
 
-	input wire nAS
+	input wire nAS,
 	input wire RnW,
 	input wire nUDS,
 	input wire nLDS,
@@ -343,8 +343,8 @@ wire MapSel = (SegMap0Sel || SegMapSel || PageMapUSel || PageMapLSel);
  * logic to control the SegMap /WE, /UB, and /LB inputs.
  */
 assign nSM_WE = (SegMap0Sel || SegMapSel) ? (RnW  | nAS) : 1'b1;
-assign nSM_UB = (SegMap0Sel || SegMapSel) ? (nUDS | nAS) : 0'b0;
-assign nSM_LB = (SegMap0Sel || SegMapSel) ? (nLDS | nAS) : 0'b0;
+assign nSM_UB = (SegMap0Sel || SegMapSel) ? (nUDS | nAS) : 1'b0;
+assign nSM_LB = (SegMap0Sel || SegMapSel) ? (nLDS | nAS) : 1'b0;
 
 /* Connect CPU to SegMap data pins if SegMap is selected. */
 assign nSMSEL = ~(SegMap0Sel || SegMapSel) | nAS;
@@ -360,12 +360,12 @@ assign PMACC = (PageMapUSel || PageMapLSel);
  * Combinatorial logic for the PageMap /WE, /UB, and /LB inputs.
  */
 assign nPMU_WE = PageMapUSel ? (RnW  | nAS) : 1'b1;
-assign nPMU_UB = PageMapUSel ? (nUDS | nAS) : 0'b0;
-assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 0'b0;
+assign nPMU_UB = PageMapUSel ? (nUDS | nAS) : 1'b0;
+assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 1'b0;
 
 assign nPML_WE = PageMapLSel ? (RnW  | nAS) : 1'b1;
-assign nPML_UB = PageMapLSel ? (nUDS | nAS) : 0'b0;
-assign nPML_LB = PageMapLSel ? (nLDS | nAS) : 0'b0;
+assign nPML_UB = PageMapLSel ? (nUDS | nAS) : 1'b0;
+assign nPML_LB = PageMapLSel ? (nLDS | nAS) : 1'b0;
 
 /* Connect CPU to PageMap data pins if PageMap is selected. */
 assign nPMUSEL = ~PageMapUSel | nAS;
@@ -495,8 +495,8 @@ reg enable_data_out;
 reg [7:0] data_out;
 always @(*) begin
 	case ({ContextRegSel, ErrorRegSel})
-	2'10:	 data_out = {2'b0, ContextReg};
-	2'01:	 data_out = {6'b0, ErrorReg};
+	2'b10:	 data_out = {2'b0, ContextReg};
+	2'b01:	 data_out = {6'b0, ErrorReg};
 	default: data_out = 8'hFF;
 	endcase
 end
@@ -677,8 +677,8 @@ always @(posedge CLK, negedge nRST) begin
 				 * initial translation tests, so only
 				 * need to go back to Idle state here.
 				 */
-				TranlationValid <= 0'b1;
-				AccessValid <= 0'b1;
+				TranlationValid <= 1'b0;
+				AccessValid <= 1'b0;
 				state <= Idle;
 			end
 			/*
@@ -704,12 +704,12 @@ always @(posedge CLK, negedge nRST) begin
 			 * permission check.
 			 */
 			if (~AS_s) begin
-				TranlationValid <= 0'b1;
-				AccessValid <= 0'b1;
+				TranlationValid <= 1'b0;
+				AccessValid <= 1'b0;
 				state <= Idle;
 			end
 			else if (~DTACK_s) begin
-				AccessValid <= 0'b1;
+				AccessValid <= 1'b0;
 				state <= TermWaitRMW2;
 			end
 		end
@@ -723,8 +723,8 @@ always @(posedge CLK, negedge nRST) begin
 			 * perform another permission check.
 			 */
 			if (~AS_s) begin
-				TranlationValid <= 0'b1;
-				AccessValid <= 0'b1;
+				TranlationValid <= 1'b0;
+				AccessValid <= 1'b0;
 				state <= Idle;
 			end
 			else if (~RnW_s) begin
@@ -756,8 +756,8 @@ always @(posedge CLK, negedge nRST) begin
 					ErrorReg_consumed <= 1'b0;
 				end
 
-				TranlationValid <= 0'b1;
-				AccessValid <= 0'b1;
+				TranlationValid <= 1'b0;
+				AccessValid <= 1'b0;
 				enable_data_out <= 1'b0;
 				mmu_fault <= 1'b0;
 				dtack <= 1'b0;

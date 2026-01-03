@@ -64,7 +64,30 @@
  *     and protection (write access to read-only page) violations, with
  *     privilege violation reporting taking priority.
  *
- * Some random commentary:
+ * Address translation:
+ *
+ * +---------------+--------------------+
+ * | Context [5:0] | Segment [VA 23:15] |
+ * +---------------+--------------------+--> 15-bit SegMap index --+
+ *                                                                 |
+ * +---------------------------------------------------------------+
+ * |
+ * +--> SegMap contains 15-bit PMEG index --+
+ *                                          |
+ * +----------------------------------------+
+ * |
+ * +----------------------------+
+ * |         PageMap index      |
+ * | PMEG -> [17:3] | VA[14:12] |
+ * +----------------------------+--> 18-bit PageMap index --+
+ *                                                          |
+ * +--------------------------------------------------------+
+ * |
+ * +--> PageMap entry (32-bits) (lower 16 bits are PFN) -----+
+ *                                                           |
+ * +---------------------------------------------------------+
+ * |
+ * +--> (PFN << 12) | VA[11:0] -> PROFIT!
  *
  * The PageMap entry format is similar to that used by the Sun3, but is
  * for 4K pages and the bits are shuffled around a little:
@@ -80,6 +103,8 @@
  *                 d     c   d                  d
  *                       e
  *                       d
+ *
+ * Some random commentary:
  *
  * VALID, WRITE, KERNEL, REF, and MOD are in the same locations as Sun3.
  * The Type field has been eliminated in this implementation (it basically

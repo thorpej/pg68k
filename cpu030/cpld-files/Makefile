@@ -1,7 +1,9 @@
-RUN_YOSYS=	../atf15xx_yosys/run_yosys.sh
+RUN_YOSYS=	../../atf15xx_yosys/run_yosys.sh
 
 EDIFS=		dramctl.edif isactl.edif sysctl.edif
-VCDS=		dramctl_tb.vcd isactl_tb.vcd isactl_tmr_tb.vcd \
+VCDS=		dramctl_tb.vcd dramctl_rd4_tb.vcd dramctl_16x1_tb.vcd \
+		dramctl_16x2_tb.vcd \
+		isactl_tb.vcd isactl_tmr_tb.vcd \
 		isactl_pio0_tb.vcd isactl_pio1_tb.vcd isactl_pio2_tb.vcd
 
 .SUFFIXES:
@@ -19,6 +21,18 @@ all: $(EDIFS) $(VCDS)
 dramctl_tb.vcd: dramctl_tb.vvp
 dramctl_tb.vvp: dramctl_tb.v dramctl.v
 	iverilog -tvvp -o $@ dramctl_tb.v dramctl.v
+
+dramctl_rd4_tb.vcd: dramctl_rd4_tb.vvp
+dramctl_rd4_tb.vvp: dramctl_rd4_tb.v dramctl.v
+	iverilog -tvvp -o $@ dramctl_rd4_tb.v dramctl.v
+
+dramctl_16x1_tb.vcd: dramctl_16x1_tb.vvp
+dramctl_16x1_tb.vvp: dramctl_16x1_tb.v dramctl.v
+	iverilog -tvvp -o $@ dramctl_16x1_tb.v dramctl.v
+
+dramctl_16x2_tb.vcd: dramctl_16x2_tb.vvp
+dramctl_16x2_tb.vvp: dramctl_16x2_tb.v dramctl.v
+	iverilog -tvvp -o $@ dramctl_16x2_tb.v dramctl.v
 
 isactl_tb.vcd: isactl_tb.vvp
 isactl_tb.vvp: isactl_tb.v isactl.v

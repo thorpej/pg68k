@@ -204,7 +204,7 @@ module mmu010(
 	output wire [5:0] CTX,	/* Context to use for SegMap access */
 
 	output wire PMACC,	/* CPU is accessing PageMap (mux control) */
-	output wire MMU_ADDR,	/* MMU drives A31..A12 (mux control) */
+	output wire MMU_ADDR,	/* MMU drives A27..A12 (mux control) */
 
 	output wire nSMSEL,	/* SegMap select by CPU (xcvr control) */
 	output wire nPMUSEL,	/* PageMapU select by CPU (xcvr control) */
@@ -926,7 +926,7 @@ endmodule
 //	=== SRAM / System side of the chip ===
 //
 //	== SegMap stuff ==
-//PIN: nSMSEL		: 39
+//PIN: nSMSEL		: 37
 //PIN: nSM_WE		: 40
 //PIN: nSM_UB		: 41
 //PIN: nSM_LB		: 42

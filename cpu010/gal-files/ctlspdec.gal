@@ -1,8 +1,8 @@
 GAL22V10
 CTLSPDEC
 
- FC0 FC1  FC2     A1      A2      A3      A4      A5     A6     A7 /UDS   GND
-/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERSEL /BERSEL NC /DTACK VCC
+ FC0 FC1  FC2     A1      A2      A3      A4      A5     A6     A7 /UDS  GND
+/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERSEL /BERSEL NC DTACK VCC
 
 ;
 ; Board control space is selected when:
@@ -20,6 +20,13 @@ CTLSPDEC
 ;  0  0  1  0 - 2 - System enable register
 ;  0  0  1  1 - 3 - Bus Error register
 ;
+
+;
+; We qual with the data strobes because we're also using this to control
+; the output enable of our /DTACK output.
+;
+CTLSEL = FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * UDS
+       + FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * LDS;
 
 ;
 ; Diagnostic display register selection (write only).
@@ -51,8 +58,12 @@ BERSEL = CTLSEL * /A7 * /A6 *  A5 *  A4 * UDS *  RnW;
 ; no wait states.  We don't want bus errors happening when control
 ; space is accessed.
 ;
-DTACK = CTLSEL * UDS
-      + CTLSEL * LDS;
+; This is an emulated open-drain output; it's hi-Z until we decide
+; we're selected, and then it outputs a 0.  It really is active-low
+; despite the label on the package.
+;
+DTACK.T = GND;
+DTACK.E = CTLSEL;
 
 DESCRIPTION
 

@@ -1,6 +1,6 @@
 RUN_YOSYS=	../../atf15xx_yosys/run_yosys.sh
 
-EDIFS=		mmu010.edif
+EDIFS=		berr010.edif mmu010.edif
 VCDS=
 
 .SUFFIXES:

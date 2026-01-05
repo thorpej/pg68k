@@ -5,8 +5,19 @@
 	(uuid "65f80d66-eea1-4882-b29a-ae1b65892b55")
 	(paper "A4")
 	(lib_symbols)
+	(text "Top-level physical address map:\n00xx xxxx.xxxx xxxx.xxxx xxxx.xxxx - RAM\n01xx xxxx.xxxx xxxx.xxxx xxxx.xxxx - ROM\n10xx xxxx.xxxx xxxx.xxxx xxxx.xxxx - I/O\n11xx xxxx.xxxx xxxx.xxxx xxxx.xxxx - expansion\n\nControl space (FC==4):\nxxxx.xxxx xxxx.xxxx xxxx.000x - see Control Space sheet\nxxxx.xxxx xxxx.xxxx xxxx.xx1x - reserved for MMU\nxxxx.xxxx xxxx.xxxx xxxx.x1xx - reserved for MMU\nxxxx.xxxx xxxx.xxxx xxxx.1xxx - reserved for MMU"
+		(exclude_from_sim no)
+		(at 18.034 29.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1e302b54-9229-4950-a780-d183e50c8a8e")
+	)
 	(sheet
-		(at 18.288 19.558)
+		(at 17.018 45.466)
 		(size 52.07 27.686)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -22,7 +33,7 @@
 		)
 		(uuid "40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5")
 		(property "Sheetname" "CPU"
-			(at 18.288 18.8464 0)
+			(at 17.018 44.7544 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -31,7 +42,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu010-cpu.kicad_sch"
-			(at 18.288 47.8286 0)
+			(at 17.018 73.7366 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48,7 +59,49 @@
 		)
 	)
 	(sheet
-		(at 74.93 19.812)
+		(at 126.746 45.466)
+		(size 48.514 28.194)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "aa59550e-c3ee-42a2-a30a-1e1e73ea7292")
+		(property "Sheetname" "Control Space"
+			(at 126.746 44.7544 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu010-control.kicad_sch"
+			(at 126.746 74.2446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 73.66 45.72)
 		(size 47.244 27.432)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -64,7 +117,7 @@
 		)
 		(uuid "e7c79296-e8d0-42ed-9f74-5037e4c321a1")
 		(property "Sheetname" "MMU"
-			(at 74.93 19.1004 0)
+			(at 73.66 45.0084 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -73,7 +126,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu010-mmu.kicad_sch"
-			(at 74.93 47.8286 0)
+			(at 73.66 73.7366 0)
 			(effects
 				(font
 					(size 1.27 1.27)

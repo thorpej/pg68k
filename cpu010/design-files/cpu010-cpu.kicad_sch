@@ -3297,6 +3297,28 @@
 			)
 		)
 	)
+	(global_label "~{CPU_BERR}"
+		(shape input)
+		(at 29.21 118.11 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a199ae11-e0de-476e-8715-8e65c30513c5")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 16.4277 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "VA20"
 		(shape output)
 		(at 62.23 74.93 0)
@@ -3711,6 +3733,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "~{RESET}"
+		(shape input)
+		(at 29.21 125.73 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f6f26a92-cf7b-48eb-b895-664c3bc31482")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 20.4797 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)

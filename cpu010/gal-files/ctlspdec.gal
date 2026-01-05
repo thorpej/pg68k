@@ -1,8 +1,8 @@
 GAL22V10
 CTLSPDEC
 
- FC0 FC1  FC2     A1      A2      A3      A4      A5     A6     A7 /UDS  GND
-/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERSEL /BERSEL NC DTACK VCC
+ FC0 FC1  FC2     A1      A2      A3      A4      A5    A6    A7    /UDS   GND
+/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERRD /ERWR /BERSEL DTACK VCC
 
 ;
 ; Board control space is selected when:
@@ -43,7 +43,8 @@ CSLSEL = CTLSEL * /A7 * /A6 * /A5 *  A4 * LDS *  RnW;
 ;
 ; System enable register selection (read/write).
 ;
-ERSEL = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS;
+ERRD = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS *  RnW;
+ERWR = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS * /RnW;
 
 ;
 ; Bus Error register (read-only).

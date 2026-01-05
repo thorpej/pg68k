@@ -7,11 +7,11 @@
                           |                 |
                       FC1 |  2           23 | DTACK
                           |                 |
-                      FC2 |  3           22 | NC
+                      FC2 |  3           22 | /BERSEL
                           |                 |
-                       A1 |  4           21 | /BERSEL
+                       A1 |  4           21 | /ERWR
                           |                 |
-                       A2 |  5           20 | /ERSEL
+                       A2 |  5           20 | /ERRD
                           |                 |
                        A3 |  6           19 | /CSLSEL
                           |                 |

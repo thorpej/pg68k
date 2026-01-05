@@ -17,7 +17,7 @@
 		(uuid "1e302b54-9229-4950-a780-d183e50c8a8e")
 	)
 	(sheet
-		(at 17.018 45.466)
+		(at 17.272 77.47)
 		(size 52.07 27.686)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -33,7 +33,7 @@
 		)
 		(uuid "40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5")
 		(property "Sheetname" "CPU"
-			(at 17.018 44.7544 0)
+			(at 17.272 76.7584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -42,7 +42,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu010-cpu.kicad_sch"
-			(at 17.018 73.7366 0)
+			(at 17.272 105.7406 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -59,7 +59,7 @@
 		)
 	)
 	(sheet
-		(at 126.746 45.466)
+		(at 127 77.47)
 		(size 48.514 28.194)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -75,7 +75,7 @@
 		)
 		(uuid "aa59550e-c3ee-42a2-a30a-1e1e73ea7292")
 		(property "Sheetname" "Control Space"
-			(at 126.746 44.7544 0)
+			(at 127 76.7584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -84,7 +84,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu010-control.kicad_sch"
-			(at 126.746 74.2446 0)
+			(at 127 106.2486 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -101,7 +101,7 @@
 		)
 	)
 	(sheet
-		(at 73.66 45.72)
+		(at 73.914 77.724)
 		(size 47.244 27.432)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -117,7 +117,7 @@
 		)
 		(uuid "e7c79296-e8d0-42ed-9f74-5037e4c321a1")
 		(property "Sheetname" "MMU"
-			(at 73.66 45.0084 0)
+			(at 73.914 77.0124 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -126,7 +126,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu010-mmu.kicad_sch"
-			(at 73.66 73.7366 0)
+			(at 73.914 105.7406 0)
 			(effects
 				(font
 					(size 1.27 1.27)

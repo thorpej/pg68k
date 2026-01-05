@@ -229,7 +229,7 @@ module mmu010(
 	output wire nUDS_out,	/* we only assert them if we're not going */
 	output wire nLDS_out,	/* to abort the cycle for a xlation error */
 
-	output wire MMU_FAULT,
+	output wire [2:0] MMU_ERROR,
 	output wire MMU_DTACK	/* drives open-drain inverter */
 );
 
@@ -412,15 +412,12 @@ localparam MMUADDR_SegMap	= 3'd2;
 localparam MMUADDR_ContextReg	= 3'd3;
 localparam MMUADDR_PageMapU	= 3'd4;
 localparam MMUADDR_PageMapL	= 3'd5;
-localparam MMUADDR_ErrorReg	= 3'd6;
-localparam MMUADDR_Reserved7	= 3'd7;
 
 wire SegMap0Sel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
 wire SegMapSel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
 wire PageMapUSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
 wire PageMapLSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
 wire ContextRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
-wire ErrorRegSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_ErrorReg);
 
 /*
  * From the MMU's perspective, CPU access to any of the MMU's SRAMs
@@ -491,26 +488,6 @@ reg [5:0] ContextReg;
 assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
 
 /*
- * Error register contains the result of the most recent MMU error.
- * These are enumerated values:
- *
- *	(highest priority)
- *	NONE		no error
- *	INVALID		invalid translation
- *	PRIV		privilege error (user access to kernel page)
- *	PROT		protection error (write access to read-only page)
- *	(lowest priority)
- *
- * Reading it resets it to zero.
- */
-localparam ERR_NONE		= 2'd0; /* no error */
-localparam ERR_INVALID		= 2'd1; /* invalid mapping */
-localparam ERR_PRIV		= 2'd2; /* privilege (kernel page) */
-localparam ERR_PROT		= 2'd3; /* protection (r/o page) */
-reg [1:0] ErrorReg;
-reg ErrorReg_consumed;
-
-/*
  * Compute the translation error continuously.  It will be latched into
  * ErrorReg when needed.
  *
@@ -520,31 +497,27 @@ reg ErrorReg_consumed;
  * being performed.
  *
  * Protection check is OK is it's a read operation -OR- if PME_W is set.
+ *
+ * When it's latched into ErrorReg, it's reflected out the MMU_ERROR
+ * output pins.  If that ends up != 0, then the system Bus Error register
+ * will latch these bits and signal /BERR to the CPU.  The bits are:
+ *
+ *	001	Invalid translation
+ *	x10	Protection error
+ *	1x0	Privelege error
  */
 wire TransOK = (SME_V && PME_V);
 wire PrivOK  = (~PME_K || KernelAcc);
 wire ProtOK  = (RnW || PME_W);
 
-reg [2:0] TranslationError;
-always @(*) begin
-	casex ({TransOK,PrivOK,ProtOK})
-	/* If invalid translation, INVALID error. */
-	3'b0xx:		TranslationError = ERR_INVALID;
-
-	/* If privilege check not OK, PRIV error. */
-	3'b10x:		TranslationError = ERR_PRIV;
-
-	/* If protection check not OK, PROT error. */
-	3'b110:		TranslationError = ERR_PROT;
-
-	/* If everything is OK, then no error \o/ */
-	3'b111:		TranslationError = ERR_NONE;
-	endcase
-end
+wire [2:0] TranslationError =
+    {(~PrivOK & TransOK), (~ProtOK & TransOK), ~TransOK};
+reg [2:0] ErrorReg;
+assign MMU_ERROR = ErrorReg;
 
 /*
- * Qual MMU_FAULT and MMU_DTACK on the non-synchronized /AS input to ensure
- * they de-assert as quickly as possbile.
+ * Qual MMU_DTACK on the non-synchronized /AS input to ensure it de-asserts
+ * as quickly as possbile.
  *
  * "AC ELECTRICAL SPECIFICATIONS - READ AND WRITE CYCLES" from the "M68000
  * Family Reference Manual" lists a minimum 0ns "/AS negated to /DTACK negated"
@@ -553,8 +526,6 @@ end
  */
 reg dtack;
 assign MMU_DTACK = dtack & ~nAS;
-reg mmu_fault;
-assign MMU_FAULT = mmu_fault & ~nAS;
 
 /*
  * Gate the /AS signal that goes to the system on address translation success.
@@ -607,9 +578,8 @@ assign nPM_LE = ~TranslationValid;
 reg enable_data_out;
 reg [7:0] data_out;
 always @(*) begin
-	case ({ContextRegSel, ErrorRegSel})
-	2'b10:	 data_out = {2'b0, ContextReg};
-	2'b01:	 data_out = {6'b0, ErrorReg};
+	case ({ContextRegSel})
+	1'b1:	 data_out = {2'b0, ContextReg};
 	default: data_out = 8'hFF;
 	endcase
 end
@@ -626,16 +596,16 @@ assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
  * PageMap SRAMs 
  */
 
-wire [5:0] Cycle = {AS_s, Translate, RnW, ContextRegSel, ErrorRegSel, MapSel};
+wire [4:0] Cycle = {AS_s, Translate, RnW, ContextRegSel, MapSel};
 
-localparam CYCLE_NONE		= 6'b0xxxxx;
-localparam CYCLE_RD_CONTEXT	= 6'b101100;
-localparam CYCLE_WR_CONTEXT	= 6'b100100;
-localparam CYCLE_RD_ERROR	= 6'b101010;
-localparam CYCLE_RD_MAP		= 6'b101001;
-localparam CYCLE_WR_MAP		= 6'b100001;
-localparam CYCLE_XLATE_READ	= 6'b111000;
-localparam CYCLE_XLATE_WRITE	= 6'b110000;
+localparam CYCLE_NONE		= 6'b0xxxx;
+localparam CYCLE_RD_CONTEXT	= 6'b10110;
+localparam CYCLE_WR_CONTEXT	= 6'b10010;
+localparam CYCLE_RD_ERROR	= 6'b10100;
+localparam CYCLE_RD_MAP		= 6'b10101;
+localparam CYCLE_WR_MAP		= 6'b10001;
+localparam CYCLE_XLATE_READ	= 6'b11100;
+localparam CYCLE_XLATE_WRITE	= 6'b11000;
 
 localparam Idle			= 3'd0;
 localparam WriteContext		= 3'd1;
@@ -647,8 +617,7 @@ localparam TermWait		= 3'd5;
 reg [2:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		ErrorReg <= ERR_NONE;
-		ErrorReg_consumed <= 1'b0;
+		ErrorReg <= 0;
 
 		ContextReg <= 6'd0;
 
@@ -659,7 +628,6 @@ always @(posedge CLK, negedge nRST) begin
 		PME_copy <= 8'b0;
 
 		enable_data_out <= 1'b0;
-		mmu_fault <= 1'b0;
 		dtack <= 1'b0;
 		state <= Idle;
 	end
@@ -699,13 +667,6 @@ always @(posedge CLK, negedge nRST) begin
 				state <= WriteContext;
 			end
 
-			CYCLE_RD_ERROR: begin
-				ErrorReg_consumed <= 1'b1;
-				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
 			CYCLE_RD_MAP: begin
 				dtack <= 1'b1;
 				state <= TermWait;
@@ -714,7 +675,7 @@ always @(posedge CLK, negedge nRST) begin
 			CYCLE_WR_MAP: begin
 				/*
 				 * The data strobes might not have been
-				 * assrted yet, so we might need to insert
+				 * asserted yet, so we might need to insert
 				 * an extra state (or 2) here to wait for
 				 * that to happen, but I don't suspect that
 				 * our asserting /DTACK early is going to
@@ -727,7 +688,6 @@ always @(posedge CLK, negedge nRST) begin
 			CYCLE_XLATE_READ: begin
 				if (TranslationError) begin
 					ErrorReg <= TranslationError;
-					mmu_fault <= 1'b1;
 					state <= TermWait;
 				end
 				else begin
@@ -747,7 +707,6 @@ always @(posedge CLK, negedge nRST) begin
 				 */
 				if (TranslationError) begin
 					ErrorReg <= TranslationError;
-					mmu_fault <= 1'b1;
 				end
 				else begin
 					PME_update <= 1'b1;
@@ -849,7 +808,6 @@ always @(posedge CLK, negedge nRST) begin
 			else if (~RnW_s) begin
 				if (TranslationError) begin
 					ErrorReg <= TranslationError;
-					mmu_fault <= 1'b1;
 				end
 				else begin
 					PME_update <= 1'b1;
@@ -870,20 +828,17 @@ always @(posedge CLK, negedge nRST) begin
 			PME_update <= 1'b0;
 			if (~AS_s) begin
 				/*
-				 * If the Error register was consumed,
-				 * clear it now, because we might update
-				 * it again at the end of the next Idle
-				 * state.
+				 * The system Bus Error register will have
+				 * latched this error before signalling
+				 * /BERR to the system, so when we see AS_s
+				 * de-assert, we can safely clear the latched
+				 * error.
 				 */
-				if (ErrorReg_consumed) begin
-					ErrorReg <= ERR_NONE;
-					ErrorReg_consumed <= 1'b0;
-				end
+				ErrorReg <= 0;
 
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
 				enable_data_out <= 1'b0;
-				mmu_fault <= 1'b0;
 				dtack <= 1'b0;
 				state <= Idle;
 			end

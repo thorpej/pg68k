@@ -3962,7 +3962,18 @@
 		)
 		(uuid "22ad6a55-aaac-4626-b897-182eedc23c24")
 	)
-	(text "Diagnostic 2-digit display"
+	(text "System Enable Register"
+		(exclude_from_sim no)
+		(at 98.806 158.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2a8bb351-9d81-45d0-9783-9c81c502ccf1")
+	)
+	(text "Diagnostic Display Register"
 		(exclude_from_sim no)
 		(at 157.734 18.542 0)
 		(effects
@@ -3972,6 +3983,17 @@
 			(justify left)
 		)
 		(uuid "5d495282-6f24-4653-893b-879c77b4cd2e")
+	)
+	(text "Configuration Register"
+		(exclude_from_sim no)
+		(at 259.08 124.968 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "808d3018-3580-47ad-978b-df15bb603c8d")
 	)
 	(junction
 		(at 265.43 88.9)

@@ -3,7 +3,7 @@ GALASM=		galette
 
 GALASM_FLAGS=	-f -p
 
-JEDECS=		ctlspdec.jed topdec.jed
+JEDECS=		ctlspdec.jed obmem.jed topdec.jed
 
 .SUFFIXES:
 .SUFFIXES: .gal .jed

@@ -1387,6 +1387,48 @@
 		)
 	)
 	(sheet
+		(at 180.848 77.47)
+		(size 48.006 28.448)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7792efab-b43b-475d-b2b8-8a6079701be8")
+		(property "Sheetname" "On-board memory"
+			(at 180.848 76.7584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu010-obmem.kicad_sch"
+			(at 180.848 106.5026 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 127 77.47)
 		(size 48.514 28.194)
 		(exclude_from_sim no)

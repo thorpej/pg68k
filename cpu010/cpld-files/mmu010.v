@@ -498,20 +498,26 @@ assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
  *
  * Protection check is OK is it's a read operation -OR- if PME_W is set.
  *
- * When it's latched into ErrorReg, it's reflected out the MMU_ERROR
+ * When it's latched into ErrorReg, it's reflected out the MMU_ERROR[2..0]
  * output pins.  If that ends up != 0, then the system Bus Error register
  * will latch these bits and signal /BERR to the CPU.  The bits are:
  *
  *	001	Invalid translation
- *	x10	Protection error
- *	1x0	Privelege error
+ *	010	Protection error
+ *	100	Privelege error
+ *
+ * N.B. the MMU guarantees that PROT and PRIV will not be set if INV is
+ * set, and PROT will not be set if PRIV is set.
  */
 wire TransOK = (SME_V && PME_V);
 wire PrivOK  = (~PME_K || KernelAcc);
 wire ProtOK  = (RnW || PME_W);
 
 wire [2:0] TranslationError =
-    {(~PrivOK & TransOK), (~ProtOK & TransOK), ~TransOK};
+    {(~PrivOK & TransOK), (~ProtOK & TransOK & PrivOK), ~TransOK};
+
+localparam ERR_NONE	= 3'd0;
+
 reg [2:0] ErrorReg;
 assign MMU_ERROR = ErrorReg;
 
@@ -617,7 +623,7 @@ localparam TermWait		= 3'd5;
 reg [2:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		ErrorReg <= 0;
+		ErrorReg <= ERR_NONE;
 
 		ContextReg <= 6'd0;
 
@@ -834,7 +840,7 @@ always @(posedge CLK, negedge nRST) begin
 				 * de-assert, we can safely clear the latched
 				 * error.
 				 */
-				ErrorReg <= 0;
+				ErrorReg <= ERR_NONE;
 
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
@@ -856,7 +862,6 @@ endmodule
 //	=== CPU side of the chip ===
 //
 //PIN: MMU_DTACK	: 1
-//PIN: MMU_FAULT	: 2
 //PIN: nAS		: 5
 //PIN: RnW		: 6
 //PIN: nUDS		: 7
@@ -876,6 +881,9 @@ endmodule
 //PIN: DATA_5		: 24
 //PIN: DATA_6		: 25
 //PIN: DATA_7		: 27
+//PIN: MMU_ERROR_0	: 28
+//PIN: MMU_ERROR_1	: 29
+//PIN: MMU_ERROR_2	: 30
 //
 //
 //	=== SRAM / System side of the chip ===

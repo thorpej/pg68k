@@ -2459,7 +2459,7 @@
 	(footprint "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
 		(layer "F.Cu")
 		(uuid "1db632db-99c7-4855-913d-65d17bfecac0")
-		(at 55.88 203.2 180)
+		(at 54.356 203.2 180)
 		(descr "CP, Radial series, Radial, pin pitch=2.50mm, diameter=6.3mm, height=7mm, Electrolytic Capacitor")
 		(tags "CP Radial series Radial pin pitch 2.50mm diameter 6.3mm height 7mm Electrolytic Capacitor")
 		(property "Reference" "C201"
@@ -10858,6 +10858,209 @@
 			)
 		)
 	)
+	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
+		(layer "F.Cu")
+		(uuid "5421beb7-5b97-4c60-b3f9-d995a7da9eec")
+		(at 73.66 203.2 180)
+		(descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
+		(tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
+		(property "Reference" "R205"
+			(at 3.81 -2.37 0)
+			(layer "F.SilkS")
+			(uuid "7f8d3cb8-a1f0-474f-86cc-9c9516ce0255")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "3K3"
+			(at 3.81 2.37 0)
+			(layer "F.SilkS")
+			(uuid "018ef2c3-40e0-487a-b148-f45dce8ae3d4")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "4398045d-3e74-4169-b5de-2ef9a620b4b7")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e357574f-1d35-4570-8aee-7733b918496a")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property ki_fp_filters "R_*")
+		(path "/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5/a9f440b4-00e7-4579-a073-6d3fa754cd58")
+		(sheetname "/CPU/")
+		(sheetfile "cpu010-cpu.kicad_sch")
+		(attr through_hole)
+		(fp_line
+			(start 7.08 1.37)
+			(end 7.08 1.04)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "057cb0c9-17ed-4471-bd74-85af8d2c4f05")
+		)
+		(fp_line
+			(start 7.08 -1.37)
+			(end 7.08 -1.04)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "d3298653-d969-49b0-a11b-110a6d9cef0c")
+		)
+		(fp_line
+			(start 0.54 1.37)
+			(end 7.08 1.37)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "545b1d72-2529-4b5a-bf54-1f101620390f")
+		)
+		(fp_line
+			(start 0.54 1.04)
+			(end 0.54 1.37)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "ddddecae-f860-46b9-805b-7b630e372f85")
+		)
+		(fp_line
+			(start 0.54 -1.04)
+			(end 0.54 -1.37)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "1a014755-3f1d-459c-bb4a-24c58694a825")
+		)
+		(fp_line
+			(start 0.54 -1.37)
+			(end 7.08 -1.37)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "e9cc84b9-893a-415a-9564-0ceec78ae8a7")
+		)
+		(fp_rect
+			(start -1.05 -1.5)
+			(end 8.67 1.5)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.CrtYd")
+			(uuid "459635d4-af15-4343-b757-d2bac85e5527")
+		)
+		(fp_line
+			(start 7.62 0)
+			(end 6.96 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "6df50fcd-3299-40a6-956f-6551e0714d55")
+		)
+		(fp_line
+			(start 0 0)
+			(end 0.66 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "1ed3f0bc-0eb9-4537-a356-7844b554f905")
+		)
+		(fp_rect
+			(start 0.66 -1.25)
+			(end 6.96 1.25)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "34ebef7a-e77b-4711-9fa5-98c34aacc33c")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 3.81 0 0)
+			(layer "F.Fab")
+			(uuid "8691321e-0915-4427-8795-8fbba26f220a")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" thru_hole circle
+			(at 0 0 180)
+			(size 1.6 1.6)
+			(drill 0.8)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net 243 "~{RESET}")
+			(pintype "passive")
+			(uuid "349746e5-effa-471c-a297-ec82f6be48c7")
+		)
+		(pad "2" thru_hole circle
+			(at 7.62 0 180)
+			(size 1.6 1.6)
+			(drill 0.8)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net 18 "+5V")
+			(pintype "passive")
+			(uuid "3cb86b92-a5d8-4e73-bb70-881a05e1b4c1")
+		)
+		(embedded_fonts no)
+		(model "${KICAD9_3DMODEL_DIR}/Resistor_THT.3dshapes/R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
 	(footprint "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
 		(layer "F.Cu")
 		(uuid "5486d04d-ed06-4f0a-8276-d34f40a550c2")
@@ -13399,7 +13602,7 @@
 	(footprint "Package_TO_SOT_THT:TO-92_Inline"
 		(layer "F.Cu")
 		(uuid "6b164131-75e9-4564-b175-252381403b76")
-		(at 60.96 203.2)
+		(at 59.436 203.2)
 		(descr "TO-92 leads in-line, narrow, oval pads, drill 0.75mm (see NXP sot054_po.pdf)")
 		(tags "to-92 sc-43 sc-43a sot54 PA33 transistor")
 		(property "Reference" "U204"
@@ -35100,8 +35303,8 @@
 			(justify bottom)
 		)
 	)
-	(gr_text "Board Control Space Decoding"
-		(at 73.66 205.74 0)
+	(gr_text "Board Control\nSpace Decoding"
+		(at 85.09 207.01 0)
 		(layer "F.SilkS")
 		(uuid "bc7964ec-43c2-4174-b30e-6171cbaddff4")
 		(effects
@@ -35110,7 +35313,7 @@
 				(thickness 0.1)
 				(italic yes)
 			)
-			(justify left bottom)
+			(justify bottom)
 		)
 	)
 	(gr_text "(Upper word)"

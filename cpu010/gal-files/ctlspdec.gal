@@ -54,17 +54,9 @@ BERSEL = CTLSEL * /A7 * /A6 *  A5 *  A4 * UDS *  RnW;
 ;
 ; Generate the /DTACK output.
 ;
-; We assert /DTACK so long as control space is selected and we see
-; either data strobe.  All of board control space is fast enough for
-; no wait states.  We don't want bus errors happening when control
-; space is accessed.
+; We drive an open-drain inverter.
 ;
-; This is an emulated open-drain output; it's hi-Z until we decide
-; we're selected, and then it outputs a 0.  It really is active-low
-; despite the label on the package.
-;
-DTACK.T = GND;
-DTACK.E = CTLSEL;
+DTACK = CTLSEL;
 
 DESCRIPTION
 

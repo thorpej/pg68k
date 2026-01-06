@@ -8639,7 +8639,7 @@
 			)
 		)
 	)
-	(global_label "~{DTACK}"
+	(global_label "CTLSP_DTACK"
 		(shape output)
 		(at 68.58 71.12 0)
 		(fields_autoplaced yes)
@@ -8651,7 +8651,7 @@
 		)
 		(uuid "ccb06c9b-4cea-4612-90d7-3a761986a4e9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 77.4314 71.12 0)
+			(at 84.1442 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)

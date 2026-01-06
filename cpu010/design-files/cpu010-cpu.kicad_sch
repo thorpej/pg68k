@@ -2213,6 +2213,146 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:C_Small"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.254 1.778 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C_Small"
+				(at 0.254 -2.032 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Unpolarized capacitor, small symbol"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "capacitor cap"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_Small_0_1"
+				(polyline
+					(pts
+						(xy -1.524 0.508) (xy 1.524 0.508)
+					)
+					(stroke
+						(width 0.3048)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.524 -0.508) (xy 1.524 -0.508)
+					)
+					(stroke
+						(width 0.3302)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_Small_1_1"
+				(pin passive line
+					(at 0 2.54 270)
+					(length 2.032)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 2.032)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R_Small"
 			(pin_numbers
 				(hide yes)
@@ -3394,6 +3534,18 @@
 		(uuid "7d3a521d-5b85-42fb-b73e-94cceaaf3f01")
 	)
 	(junction
+		(at 118.11 187.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8265fad9-efcc-44c6-b7fb-a3fa2f522d75")
+	)
+	(junction
+		(at 105.41 182.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "857fb4d0-a33c-45f7-9672-b78aaee23ae4")
+	)
+	(junction
 		(at 45.72 170.18)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3406,10 +3558,22 @@
 		(uuid "8a2c5468-6b42-4296-add8-8ed06cabd231")
 	)
 	(junction
+		(at 105.41 187.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9993ec12-b290-4c08-9f77-c07032ed2ee3")
+	)
+	(junction
 		(at 26.67 85.09)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a93f5bcf-0020-42f6-b369-fa52200aa32d")
+	)
+	(junction
+		(at 118.11 182.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c0b40986-b1a8-4e60-99bd-7a427dcd3583")
 	)
 	(junction
 		(at 127 166.37)
@@ -3418,10 +3582,22 @@
 		(uuid "c5f98868-b340-458e-b2fd-225a25743e0d")
 	)
 	(junction
+		(at 92.71 182.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e71a3f9a-4601-4778-98e9-60a69ba84424")
+	)
+	(junction
 		(at 24.13 167.64)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ebb5ecd9-8c71-41d6-b4ec-b7850a69044e")
+	)
+	(junction
+		(at 92.71 187.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f6c2c512-9ffb-4354-b845-766f6f8f9992")
 	)
 	(no_connect
 		(at 48.26 99.06)
@@ -3466,6 +3642,16 @@
 			(type default)
 		)
 		(uuid "05a33d86-0ba9-43c0-808a-8d15dc3f5adb")
+	)
+	(wire
+		(pts
+			(xy 105.41 187.96) (xy 118.11 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "061d9b3a-7811-4fe6-b680-beaf116a46dc")
 	)
 	(wire
 		(pts
@@ -3546,6 +3732,16 @@
 			(type default)
 		)
 		(uuid "22ab1d7e-fcbc-448b-ad34-390e9d14dc99")
+	)
+	(wire
+		(pts
+			(xy 118.11 182.88) (xy 130.81 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "26dbc381-bc58-4b15-a89a-b3e907c5aa64")
 	)
 	(wire
 		(pts
@@ -3676,6 +3872,16 @@
 			(type default)
 		)
 		(uuid "5b43b99f-94e9-4d06-ade9-1eebefbe4c04")
+	)
+	(wire
+		(pts
+			(xy 118.11 187.96) (xy 130.81 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dca0eea-1aae-4895-b628-b7df58c002f2")
 	)
 	(wire
 		(pts
@@ -3859,6 +4065,16 @@
 	)
 	(wire
 		(pts
+			(xy 105.41 182.88) (xy 118.11 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "914f9066-a98c-4293-a02c-8f68c483e48d")
+	)
+	(wire
+		(pts
 			(xy 114.3 101.6) (xy 116.84 101.6)
 		)
 		(stroke
@@ -3986,6 +4202,16 @@
 			(type default)
 		)
 		(uuid "a99a3e84-5415-444a-968c-dabd2d4f8258")
+	)
+	(wire
+		(pts
+			(xy 92.71 187.96) (xy 105.41 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "adeb638c-dd32-4a7d-8dc3-c9f12b79f590")
 	)
 	(wire
 		(pts
@@ -4246,6 +4472,16 @@
 			(type default)
 		)
 		(uuid "f6255316-fc86-4c54-b48a-0c3cf823c94d")
+	)
+	(wire
+		(pts
+			(xy 92.71 182.88) (xy 105.41 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fa6c78c5-62a8-4f7b-9fb0-2acc9ae7c8bd")
 	)
 	(wire
 		(pts
@@ -5668,6 +5904,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 92.71 182.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "056c3c42-7987-4092-b0ca-cc37b4d97c00")
+		(property "Reference" "#PWR0216"
+			(at 92.71 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 92.71 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 92.71 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 92.71 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 92.71 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fb106552-cb65-479f-9cce-a984da8bbf2f")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "#PWR0216")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 99.06 129.54 0)
 		(unit 1)
@@ -6146,6 +6448,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C_Small")
+		(at 105.41 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0e9835b3-addb-4b59-8f06-f733b1ff2e1d")
+		(property "Reference" "C203"
+			(at 107.95 184.1562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "0.1µF"
+			(at 107.95 186.6962 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
+			(at 105.41 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 105.41 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 105.41 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Kyocera SR125E104MARAP2"
+			(at 105.41 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "980a3e96-a598-4fc5-85af-0b4d8ddcd66e")
+		)
+		(pin "2"
+			(uuid "593c7aa1-ca62-426e-b686-a41238293785")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "C203")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "74xx:74LS05")
 		(at 40.64 71.12 0)
 		(unit 3)
@@ -6245,6 +6626,85 @@
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "U203")
 					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 118.11 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2961f316-a5c9-4718-91a1-28129e766fec")
+		(property "Reference" "C204"
+			(at 120.65 184.1562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "0.1µF"
+			(at 120.65 186.6962 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
+			(at 118.11 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 118.11 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 118.11 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Kyocera SR125E104MARAP2"
+			(at 118.11 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "46bd95a2-676c-491b-b3a8-3d5ece003037")
+		)
+		(pin "2"
+			(uuid "b743b42b-f9d7-4117-afad-65bf62cb353a")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "C204")
+					(unit 1)
 				)
 			)
 		)
@@ -7721,6 +8181,151 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C_Small")
+		(at 130.81 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9fd7a0a5-2023-42a2-bfa7-61119db8ad2e")
+		(property "Reference" "C205"
+			(at 133.35 184.1562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "0.1µF"
+			(at 133.35 186.6962 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
+			(at 130.81 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 130.81 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 130.81 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Kyocera SR125E104MARAP2"
+			(at 130.81 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d2751aeb-e97a-4316-8348-fc043e5c8317")
+		)
+		(pin "2"
+			(uuid "f79ddc9b-ec60-4fcd-8e5a-0aa46d5c536e")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "C205")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 92.71 187.96 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a14b06ac-5cce-4f27-9c83-8e42e9b05907")
+		(property "Reference" "#PWR0217"
+			(at 92.71 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 92.71 193.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 92.71 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 92.71 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 92.71 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3a8ab1cd-ec00-4977-8b44-55180ea3f5f4")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "#PWR0217")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "74xx:74LS05")
 		(at 22.86 133.35 0)
 		(unit 7)
@@ -8136,6 +8741,85 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "#PWR0211")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 92.71 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e41c8d52-cf85-4009-a855-4ed884babce1")
+		(property "Reference" "C202"
+			(at 95.25 184.1562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "0.1µF"
+			(at 95.25 186.6962 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
+			(at 92.71 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 92.71 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 92.71 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Kyocera SR125E104MARAP2"
+			(at 92.71 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a1781148-6c64-44e2-b951-1745c2dc928b")
+		)
+		(pin "2"
+			(uuid "6f98dc98-3fbd-4d6b-be90-c35dd260459b")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "C202")
 					(unit 1)
 				)
 			)

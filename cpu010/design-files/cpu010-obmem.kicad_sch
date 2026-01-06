@@ -1861,7 +1861,7 @@
 					)
 				)
 				(pin no_connect line
-					(at 11.43 -48.26 180)
+					(at 11.43 -38.1 180)
 					(length 2.54)
 					(name "NC"
 						(effects
@@ -1879,7 +1879,7 @@
 					)
 				)
 				(pin no_connect line
-					(at 11.43 -50.8 180)
+					(at 11.43 -40.64 180)
 					(length 2.54)
 					(name "NC"
 						(effects
@@ -1897,7 +1897,43 @@
 					)
 				)
 				(pin no_connect line
-					(at 11.43 -53.34 180)
+					(at 11.43 -43.18 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "15"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 11.43 -45.72 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "16"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 11.43 -48.26 180)
 					(length 2.54)
 					(name "NC"
 						(effects
@@ -1915,7 +1951,7 @@
 					)
 				)
 				(pin no_connect line
-					(at 11.43 -55.88 180)
+					(at 11.43 -50.8 180)
 					(length 2.54)
 					(name "NC"
 						(effects
@@ -1925,6 +1961,42 @@
 						)
 					)
 					(number "30"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 11.43 -53.34 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "37"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 11.43 -55.88 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "38"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2174,7 +2246,7 @@
 	)
 	(text "Lower byte"
 		(exclude_from_sim no)
-		(at 60.96 149.86 0)
+		(at 60.96 147.32 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2184,7 +2256,7 @@
 	)
 	(text "Upper byte"
 		(exclude_from_sim no)
-		(at 60.452 62.484 0)
+		(at 60.452 59.69 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6903,6 +6975,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "CY62158H-45ZSXI"
+			(at 44.45 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "d27733e1-35b9-44c7-84de-afef5eda55f2")
 		)
@@ -7022,6 +7103,18 @@
 		)
 		(pin "35"
 			(uuid "f3aaf6d4-3a1f-44e1-aff0-3bf3a74842ec")
+		)
+		(pin "15"
+			(uuid "bbcf3780-d3f7-4dc4-b493-162e1a56305b")
+		)
+		(pin "16"
+			(uuid "2c7c72ff-34d3-4919-8bf1-d56857ba0089")
+		)
+		(pin "37"
+			(uuid "61104965-9b24-4ac6-9edf-a6d22ae0bfda")
+		)
+		(pin "38"
+			(uuid "e42b9e62-4fda-479c-ad38-a6a554866db2")
 		)
 		(instances
 			(project "cpu010"
@@ -7577,6 +7670,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "CY62158H-45ZSXI"
+			(at 44.45 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "a613434b-64b4-4bbb-a0c4-3ce260c8b4ae")
 		)
@@ -7696,6 +7798,18 @@
 		)
 		(pin "35"
 			(uuid "9d0d6db4-7c08-4e32-9dd0-e07c77c909d2")
+		)
+		(pin "15"
+			(uuid "30816603-35f7-4dda-8f4c-ad7ea142706d")
+		)
+		(pin "16"
+			(uuid "b914825f-0349-464c-80c0-00d6773c150c")
+		)
+		(pin "37"
+			(uuid "87820acd-ccd2-451e-9ebe-ce837347295d")
+		)
+		(pin "38"
+			(uuid "5a8c6e8e-8cff-40aa-afca-6c28fb7b8d4f")
 		)
 		(instances
 			(project ""
@@ -7827,6 +7941,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "CY62158H-45ZSXI"
+			(at 91.44 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "be7f8cb9-4405-40f5-9413-fe195e874e97")
 		)
@@ -7946,6 +8069,18 @@
 		)
 		(pin "35"
 			(uuid "4af304a8-b6c3-45c7-b544-26cd344d92cf")
+		)
+		(pin "37"
+			(uuid "96e73dd0-3c0e-4f0c-9391-9ff91f3a5c7a")
+		)
+		(pin "15"
+			(uuid "94c4d928-d5e2-479b-a333-f038bd77ff3b")
+		)
+		(pin "38"
+			(uuid "15ffd121-d110-4f13-8ba7-ab5b0cab4487")
+		)
+		(pin "16"
+			(uuid "72d6f7b6-e658-4c61-9aa3-fae90d31a20e")
 		)
 		(instances
 			(project "cpu010"
@@ -8633,6 +8768,15 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "CY62158H-45ZSXI"
+			(at 91.44 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "8029ccc0-11ba-4b82-aa77-8efcdb839f17")
 		)
@@ -8752,6 +8896,18 @@
 		)
 		(pin "35"
 			(uuid "87a75a8b-3853-4467-a135-6993d3df9046")
+		)
+		(pin "15"
+			(uuid "ea2c149d-a696-47ec-b729-79e0367ab52d")
+		)
+		(pin "16"
+			(uuid "4a2a55ca-7587-4ce0-847b-ecf6ecbd943d")
+		)
+		(pin "37"
+			(uuid "8f03433f-dd43-49e3-aa87-2353ff2dc9ec")
+		)
+		(pin "38"
+			(uuid "430f9d54-c570-4aa9-ad91-9b85acef6a06")
 		)
 		(instances
 			(project "cpu010"

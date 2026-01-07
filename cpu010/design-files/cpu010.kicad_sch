@@ -1367,7 +1367,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "0.1µF"
+		(property "Value" "100nF"
 			(at 144.78 26.6762 0)
 			(effects
 				(font
@@ -1376,7 +1376,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 142.24 25.4 0)
 			(effects
 				(font
@@ -1395,15 +1395,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
-			(at 142.24 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Part" "Kyocera SR125E104MARAP2"
 			(at 142.24 25.4 0)
 			(effects
 				(font

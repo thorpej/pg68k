@@ -26,7 +26,7 @@
 
 /*
  * Bus Error controller for the cpu010.  This is targeted at an
- * ATF1504AS-7 (7.5ns) in a PLCC44 package.
+ * ATF1504AS-10 (10ns) in a PLCC44 package.
  *
  * This handles bus errors from multiple sources:
  *

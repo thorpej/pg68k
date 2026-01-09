@@ -8520,16 +8520,16 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 97.79 170.18 180)
+		(at 97.79 170.18 0)
+		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a9f440b4-00e7-4579-a073-6d3fa754cd58")
 		(property "Reference" "R205"
-			(at 100.33 168.9099 0)
+			(at 100.33 171.4501 0)
 			(effects
 				(font
 					(size 1.016 1.016)
@@ -8538,7 +8538,7 @@
 			)
 		)
 		(property "Value" "3K3"
-			(at 100.33 171.4499 0)
+			(at 100.33 168.9101 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9220,16 +9220,16 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 102.87 149.86 180)
+		(at 102.87 149.86 0)
+		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "fab0f3d5-8b8d-4135-9446-06c9acffcfb1")
 		(property "Reference" "R204"
-			(at 105.41 148.5899 0)
+			(at 105.41 151.1301 0)
 			(effects
 				(font
 					(size 1.016 1.016)
@@ -9238,7 +9238,7 @@
 			)
 		)
 		(property "Value" "3K3"
-			(at 105.41 151.1299 0)
+			(at 105.41 148.5901 0)
 			(effects
 				(font
 					(size 1.27 1.27)

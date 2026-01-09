@@ -18698,15 +18698,15 @@
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 354.33 242.57 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "43f9d1e5-c8bc-428c-a3f4-c1c1bb046bda")
 		(property "Reference" "C331"
-			(at 356.87 241.3062 0)
+			(at 356.87 243.8338 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18715,7 +18715,7 @@
 			)
 		)
 		(property "Value" "220nF"
-			(at 356.87 243.8462 0)
+			(at 356.87 241.2938 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -25122,15 +25122,15 @@
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 341.63 242.57 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "d15e183f-4c09-40c2-b5ba-cd53c0fc6960")
 		(property "Reference" "C330"
-			(at 344.17 241.3062 0)
+			(at 344.17 243.8338 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -25139,7 +25139,7 @@
 			)
 		)
 		(property "Value" "220nF"
-			(at 344.17 243.8462 0)
+			(at 344.17 241.2938 0)
 			(effects
 				(font
 					(size 1.27 1.27)

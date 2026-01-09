@@ -3564,10 +3564,10 @@
 		(uuid "9993ec12-b290-4c08-9f77-c07032ed2ee3")
 	)
 	(junction
-		(at 26.67 85.09)
+		(at 48.26 29.21)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "a93f5bcf-0020-42f6-b369-fa52200aa32d")
+		(uuid "ba58017b-9890-46ef-a9a0-caee79564a35")
 	)
 	(junction
 		(at 118.11 182.88)
@@ -3580,6 +3580,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c5f98868-b340-458e-b2fd-225a25743e0d")
+	)
+	(junction
+		(at 48.26 71.12)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c89c3826-2184-4190-bf03-3065bc86af8f")
 	)
 	(junction
 		(at 97.79 173.99)
@@ -3614,10 +3620,6 @@
 		(uuid "30b25c2f-812d-45d7-b296-a1db1a6b2089")
 	)
 	(no_connect
-		(at 48.26 85.09)
-		(uuid "46669c01-fbcc-4ca6-80c0-cf4b71d1c183")
-	)
-	(no_connect
 		(at 48.26 113.03)
 		(uuid "8c636272-823b-4ddc-9fa5-b79efc43d0d3")
 	)
@@ -3628,6 +3630,16 @@
 	(no_connect
 		(at 71.12 162.56)
 		(uuid "d87c4951-7322-46c1-9711-2162c8dfe4e3")
+	)
+	(wire
+		(pts
+			(xy 48.26 71.12) (xy 48.26 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "038c716f-8523-479b-b726-142adc5829f2")
 	)
 	(wire
 		(pts
@@ -3821,7 +3833,7 @@
 	)
 	(wire
 		(pts
-			(xy 21.59 85.09) (xy 26.67 85.09)
+			(xy 21.59 99.06) (xy 26.67 99.06)
 		)
 		(stroke
 			(width 0)
@@ -4211,16 +4223,6 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 85.09) (xy 27.94 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a98d684e-5039-414e-9e9d-f9ca2013c626")
-	)
-	(wire
-		(pts
 			(xy 114.3 88.9) (xy 116.84 88.9)
 		)
 		(stroke
@@ -4341,16 +4343,6 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 85.09) (xy 26.67 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cd579e66-7712-4c50-8761-8781e51ea686")
-	)
-	(wire
-		(pts
 			(xy 45.72 170.18) (xy 45.72 172.72)
 		)
 		(stroke
@@ -4428,6 +4420,16 @@
 			(type default)
 		)
 		(uuid "dc1b8857-60f2-4d7f-aa4f-f046276bab64")
+	)
+	(wire
+		(pts
+			(xy 48.26 27.94) (xy 48.26 29.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de45d737-4e1f-4175-924a-774a7efdfd92")
 	)
 	(wire
 		(pts
@@ -5583,6 +5585,28 @@
 			)
 		)
 	)
+	(global_label "IOCTL_DTACK"
+		(shape input)
+		(at 33.02 85.09 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e4ec900d-6aeb-4cfe-9aa8-4e6817b98bb0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 18 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D2"
 		(shape bidirectional)
 		(at 116.84 91.44 0)
@@ -6330,7 +6354,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 21.59 85.09 0)
+		(at 21.59 99.06 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6339,7 +6363,7 @@
 		(fields_autoplaced yes)
 		(uuid "0cdad8d4-6213-4151-9eb8-b4df01d9e042")
 		(property "Reference" "#PWR0212"
-			(at 21.59 91.44 0)
+			(at 21.59 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6348,7 +6372,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 21.59 90.17 0)
+			(at 21.59 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6356,7 +6380,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 21.59 85.09 0)
+			(at 21.59 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6365,7 +6389,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 21.59 85.09 0)
+			(at 21.59 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6374,7 +6398,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 21.59 85.09 0)
+			(at 21.59 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6712,74 +6736,6 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "C204")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R_Small")
-		(at 30.48 85.09 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2c04b43b-f172-46da-bbb1-65ea307cff43")
-		(property "Reference" "R201"
-			(at 30.48 80.01 90)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-			)
-		)
-		(property "Value" "0R"
-			(at 30.48 82.55 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
-			(at 30.48 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 30.48 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor, small symbol"
-			(at 30.48 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "2fdd0c25-77f2-45ea-9379-abe0110bc87b")
-		)
-		(pin "2"
-			(uuid "afad41c8-0e46-431d-abbf-eacd55093623")
-		)
-		(instances
-			(project ""
-				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
-					(reference "R201")
 					(unit 1)
 				)
 			)
@@ -8012,6 +7968,72 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
+		(at 48.26 22.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8dcd8363-65f0-4777-a1a0-7f7325b45266")
+		(property "Reference" "#PWR0219"
+			(at 48.26 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 48.26 17.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 48.26 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 48.26 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 48.26 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7aa093c3-6fa3-4f37-b5bf-fc512f74b744")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "#PWR0219")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
 		(at 102.87 146.05 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8524,7 +8546,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 97.79 170.18 0)
 			(effects
 				(font
@@ -8744,6 +8766,76 @@
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "C201")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 48.26 25.4 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "da12f973-2f8c-4f1d-8c55-028db74f99f5")
+		(property "Reference" "R201"
+			(at 50.8 24.1299 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3K3"
+			(at 50.8 26.6699 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 48.26 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 48.26 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 48.26 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0caec083-f3d3-4cb1-83f7-cf534478d0cf")
+		)
+		(pin "2"
+			(uuid "ddad1bd3-7667-4a74-91f2-e985efda6bdb")
+		)
+		(instances
+			(project ""
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "R201")
 					(unit 1)
 				)
 			)
@@ -9154,7 +9246,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 102.87 149.86 0)
 			(effects
 				(font

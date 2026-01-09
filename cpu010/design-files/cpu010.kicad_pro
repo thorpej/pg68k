@@ -664,6 +664,10 @@
     [
       "7792efab-b43b-475d-b2b8-8a6079701be8",
       "On-board memory"
+    ],
+    [
+      "fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657",
+      "On-board IO"
     ]
   ],
   "text_variables": {}

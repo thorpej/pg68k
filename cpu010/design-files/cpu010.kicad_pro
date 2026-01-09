@@ -507,6 +507,9 @@
       "+5V": [
         "Power"
       ],
+      "Net-(BT601-+)": [
+        "Power"
+      ],
       "Net-(D202-A)": [
         "Power"
       ]

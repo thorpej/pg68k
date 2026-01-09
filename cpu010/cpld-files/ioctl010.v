@@ -77,7 +77,10 @@ module ioctl010(
 	input wire nLDS,	/* /LDS from MMU */
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
-	input wire [27:1] ADDR,	/* A27..A1 from MMU */
+	input wire [11:1] ADDR,	/* A11..A1 from MMU */
+
+	input wire [1:0] ADDRSP, /* A27..A26 from MMU */
+	input wire [3:0] CPUTYP, /* VA19-VA16 from CPU */
 
 	/* active-low IRQ inputs */
 	input wire nIRQ7,	/* NMI: debug button, etc. */
@@ -178,32 +181,34 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *   I/O space!
  *      ||                          always zero
  *      ||                               |
- *      ||  ...plus these                |
- *      vvvvvvvvvvvvvvvvvvv              v
- *      1000 0000.0000 0000.0000 0000.0000
+ *      ||                               |
+ *      vv                               v
+ *      10xx xxxx.xxxx xxxx.0000 0000.0000
+ *                          ^^^^
+ *                       device index
  *
  *             connect to DUART CHSEL input (0=UART B)
  *                             v
- *      1000 0000.0000 0000.0000 0000.xxx0 - UART B ("com0") - 8 bytes
- *      1000 0000.0000 0000.0001 0000.xxx0 - UART A ("com1") - 8 bytes
+ *      10xx xxxx.xxxx xxxx.0000 0000.xxx0 - UART B ("com0") - 8 bytes
+ *      10xx xxxx.xxxx xxxx.0001 0000.xxx0 - UART A ("com1") - 8 bytes
  *
  *           $8000000 - com0
  *           $8000100 - com1
  *
- *      1000 0000.0000 0000.0010 0000.0000 - Timer CSR (1 byte)
- *      1000 0000.0000 0000.0010 0000.0010 - Timer LSB (1 byte)
- *      1000 0000.0000 0000.0010 0000.0100 - Timer MSB (1 byte)
+ *      10xx xxxx.xxxx xxxx.0010 0000.0000 - Timer CSR (1 byte)
+ *      10xx xxxx.xxxx xxxx.0010 0000.0010 - Timer LSB (1 byte)
+ *      10xx xxxx.xxxx xxxx.0010 0000.0100 - Timer MSB (1 byte)
  *
  *           $8000200 - Timer CSR
  *           $8000202 - Timer LSB
  *           $8000204 - Timer MSB
  *
- *      1000 0000.0000 0000.0011 0000.00x0 - PCF8584 (2 bytes)
+ *      10xx xxxx.xxxx xxxx.0011 0000.00x0 - PCF8584 (2 bytes)
  *
  *           $8000300 - I2C controller
  *
- *      1000 0000.0000 0000.0100 0000.xxx0 - ATA disk interface (8 bytes)
- *      1000 0000.0000 0000.0100 0001.00x0 - ATA disk aux regs (2 bytes)
+ *      10xx xxxx.xxxx xxxx.0100 0000.xxx0 - ATA disk interface (8 bytes)
+ *      10xx xxxx.xxxx xxxx.0100 0001.00x0 - ATA disk aux regs (2 bytes)
  *
  *           $8000400 - ATA interface
  *           $8000410 - ATA aux regs
@@ -232,23 +237,21 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *
  * Normal access (User,Super Prog,Data) -> FC1 ^ FC0 == 1
  */
-wire SpaceIO   = (FC[1] ^ FC[0]) && ADDR[27:12] == 16'b1000000000000000;
-wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDR[27:26] == 2'b11;
+wire SpaceIO   = (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
+wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
 wire SpaceCtrl = FC == 3'd4 && ADDR[3:1] == 3'b000;
 wire SpaceCPU  = FC == 3'd7;
 
-localparam DEV_UART0		= 13'b1000000000xxx;
-localparam DEV_UART1		= 13'b1000010000xxx;
-localparam DEV_TMR_CSR		= 13'b1000100000000;
-localparam DEV_TMR_LSB		= 13'b1000100000001;
-localparam DEV_TMR_MSB		= 13'b1000100000010;
-localparam DEV_I2C		= 13'b100011000000x;
-localparam DEV_ATA		= 13'b1001000000xxx;
-localparam DEV_ATA_AUX		= 13'b100100000100x;
-localparam DEV_INTR_ENAB	= 13'b0100000100000;
-localparam DEV_INTR_SET		= 13'b0100000101000;
-localparam DEV_INTR_CLR		= 13'b0100000110000;
-localparam DEV_IOCTL_REV	= 13'b0100000111000;
+localparam DEVIDX_UART0		= 4'd0;
+localparam DEVIDX_UART1		= 4'd1;
+localparam DEVIDX_TMR		= 4'd2;
+localparam DEVIDX_I2C		= 4'd3;
+localparam DEVIDX_ATA		= 4'd4;
+
+localparam CTLIDX_INTEN		= 4'd4;
+localparam CTLIDX_INTSET	= 4'd5;
+localparam CTLIDX_INTCLR	= 4'd6;
+localparam CTLIDX_IOCTLREV	= 4'd7;
 
 localparam SEL_dc		= 11'bxxxxxxxxxxx;
 localparam SEL_NONE		= 11'b11111111111;
@@ -272,20 +275,22 @@ localparam IOCTL_REV		= 8'd0;
 
 reg [10:0] DevSelects;
 always @(*) begin
-	casex ({SpaceIO, SpaceCtrl, ADDR[11:1]})
-	DEV_UART0:		DevSelects = SEL_DUART;
-	DEV_UART1:		DevSelects = SEL_DUART;
-	DEV_TMR_CSR:		DevSelects = SEL_TMR_CSR;
-	DEV_TMR_LSB:		DevSelects = SEL_TMR_LSB;
-	DEV_TMR_MSB:		DevSelects = SEL_TMR_MSB;
-	DEV_I2C:		DevSelects = SEL_I2C;
-	DEV_ATA:		DevSelects = SEL_ATA;
-	DEV_ATA_AUX:		DevSelects = SEL_ATA_AUX;
-	DEV_INTR_ENAB:		DevSelects = SEL_INTR_ENAB;
-	DEV_INTR_SET:		DevSelects = SEL_INTR_SET;
-	DEV_INTR_CLR:		DevSelects = SEL_INTR_CLR;
-	DEV_IOCTL_REV:		DevSelects = SEL_IOCTL_REV;
-	default:		DevSelects = SEL_NONE;
+	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[4:7], ADDR[3:1]})
+	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
+	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd1}:   DevSelects = SEL_TMR_LSB;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd2}:   DevSelects = SEL_TMR_MSB;
+	{2'b10, DEVIDX_I2C,   4'd0, 3'bxxx}: DevSelects = SEL_I2C;
+	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
+	{2'b10, DEVIDX_ATA,   4'd1, 3'b00x}: DevSelects = SEL_ATA_AUX;
+
+	{2'b01, 4'd0, CTLIDX_INTEN, 3'd0}:   DevSelects = SEL_INTR_ENAB;
+	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
+	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;
+	{2'b01, 4'd0, CTLIDX_IOCTLREV, 3'd0}:DevSelects = SEL_IOCTL_REV;
+
+	default:                             DevSelects = SEL_NONE;
 	endcase
 end
 assign nDUARTSEL  = DevSelects[10];
@@ -295,8 +300,8 @@ assign nATAAUXSEL = DevSelects[4];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
 
-wire BPACK = SpaceCPU && (ADDR[19:16] == 4'b0000);
-wire IACK  = SpaceCPU && (ADDR[19:16] == 4'b1111);
+wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
+wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
 
 /* Logic for reading the internal registers. */
 reg enable_data_out;
@@ -623,22 +628,12 @@ endmodule
 //PIN: ADDR_9		: 37
 //PIN: ADDR_10		: 40
 //PIN: ADDR_11		: 41
-//PIN: ADDR_12		: 42
-//PIN: ADDR_13		: 44
-//PIN: ADDR_14		: 45
-//PIN: ADDR_15		: 46
-//PIN: ADDR_16		: 47
-//PIN: ADDR_17		: 48
-//PIN: ADDR_18		: 49
-//PIN: ADDR_19		: 50
-//PIN: ADDR_20		: 52
-//PIN: ADDR_21		: 53
-//PIN: ADDR_22		: 54
-//PIN: ADDR_23		: 55
-//PIN: ADDR_24		: 56
-//PIN: ADDR_25		: 57
-//PIN: ADDR_26		: 58
-//PIN: ADDR_27		: 60
+//PIN: ADDRSP_0		: 42
+//PIN: ADDRSP_1		: 44
+//PIN: CPUTYP_0		: 45
+//PIN: CPUTYP_1		: 46
+//PIN: CPUTYP_2		: 47
+//PIN: CPUTYP_3		: 48
 //
 //	=== Devices side of the chip ===
 //

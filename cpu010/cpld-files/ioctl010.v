@@ -60,6 +60,11 @@
  * as wired on the board) over UARTB ("com0", the console) because I
  * would assume it's being used for bulk data transfer (SLIP, perhaps?),
  * but I would want to put some more thought into it.
+ *
+ * Including a PCF8584 seems a little indulgent.  I could just provide
+ * the facilities to bit-bang I2C here in the IOCTL.  Maybe I'll do that
+ * in a future IOCTL revision.  Keeping I2C around is important for the
+ * DS3231MZ real-time clock chip.
  */
 
 module ioctl010(
@@ -94,13 +99,21 @@ module ioctl010(
 	output wire nI2CSEL,
 	output wire nATASEL,
 	output wire nATAAUXSEL,
+	output wire nATABEN,	/* enable ATA bus transceivers */
 
 	output wire nIORD,	/* I/O /RD strobe */
 	output wire nIOWR,	/* I/O /WR strobe */
 
+	output wire IORST,	/* active-high /RESET for I/O devices */
+
+	output wire nEXPSEL,	/* expansion space selected */
+
 	output wire nAVEC,	/* /AVEC connected directly to CPU */
 	output wire DTACK	/* drives open-drain inverter */
 );
+
+/* Inverted /RESET output for devices that have active-high reset inputs. */
+assign IORST = ~nRST;
 
 /* Internal combined /xDS value. */
 wire nDS = nUDS & nLDS;
@@ -220,6 +233,7 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  * Normal access (User,Super Prog,Data) -> FC1 ^ FC0 == 1
  */
 wire SpaceIO   = (FC[1] ^ FC[0]) && ADDR[27:12] == 16'b1000000000000000;
+wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDR[27:26] == 2'b11;
 wire SpaceCtrl = FC == 3'd4 && ADDR[3:1] == 3'b000;
 wire SpaceCPU  = FC == 3'd7;
 
@@ -234,7 +248,7 @@ localparam DEV_ATA_AUX		= 13'b100100000100x;
 localparam DEV_INTR_ENAB	= 13'b0100000100000;
 localparam DEV_INTR_SET		= 13'b0100000101000;
 localparam DEV_INTR_CLR		= 13'b0100000110000;
-localparam DEV_INTR_REV		= 13'b0100000111000;
+localparam DEV_IOCTL_REV	= 13'b0100000111000;
 
 localparam SEL_dc		= 11'bxxxxxxxxxxx;
 localparam SEL_NONE		= 11'b11111111111;
@@ -248,13 +262,13 @@ localparam SEL_ATA_AUX		= 11'b11111101111;	/* CH3Fx */
 localparam SEL_INTR_ENAB	= 11'b11111110111;
 localparam SEL_INTR_SET		= 11'b11111111011;
 localparam SEL_INTR_CLR		= 11'b11111111101;
-localparam SEL_INTR_REV		= 11'b11111111110;
+localparam SEL_IOCTL_REV	= 11'b11111111110;
 
 /*
  * Let's have a revision # so SW can tell if we add vectored interrupt
  * support later.
  */
-localparam INTR_CONTROL_REV	= 8'd0;
+localparam IOCTL_REV		= 8'd0;
 
 reg [10:0] DevSelects;
 always @(*) begin
@@ -270,7 +284,7 @@ always @(*) begin
 	DEV_INTR_ENAB:		DevSelects = SEL_INTR_ENAB;
 	DEV_INTR_SET:		DevSelects = SEL_INTR_SET;
 	DEV_INTR_CLR:		DevSelects = SEL_INTR_CLR;
-	DEV_INTR_REV:		DevSelects = SEL_INTR_REV;
+	DEV_IOCTL_REV:		DevSelects = SEL_IOCTL_REV;
 	default:		DevSelects = SEL_NONE;
 	endcase
 end
@@ -278,6 +292,8 @@ assign nDUARTSEL  = DevSelects[10];
 assign nI2CSEL    = DevSelects[6];
 assign nATASEL    = DevSelects[5];
 assign nATAAUXSEL = DevSelects[4];
+assign nATABEN    = nATASEL && nATAAUXSEL;
+assign nEXPSEL    = ~SpaceEXP;
 
 wire BPACK = SpaceCPU && (ADDR[19:16] == 4'b0000);
 wire IACK  = SpaceCPU && (ADDR[19:16] == 4'b1111);
@@ -293,7 +309,7 @@ always @(*) begin
 	SEL_INTR_ENAB:	data_out = {7'b0, Intr_enab};
 	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
 	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
-	SEL_INTR_REV:	data_out = INTR_CONTROL_REV;
+	SEL_IOCTL_REV:	data_out = IOCTL_REV;
 	default:	data_out = 8'hFF;
 	endcase
 end
@@ -487,13 +503,13 @@ always @(posedge CLK, negedge nRST) begin
 				state <= TermWait;
 			end
 
-			{CYCLE_IOREAD, SEL_INTR_REV}: begin
+			{CYCLE_IOREAD, SEL_IOCTL_REV}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= TermWait;
 			end
 
-			{CYCLE_IOWRITE, SEL_INTR_REV}: begin
+			{CYCLE_IOWRITE, SEL_IOCTL_REV}: begin
 				dtack <= 1'b1;
 				state <= TermWait;
 			end
@@ -571,6 +587,7 @@ endmodule
 //	=== CPU side of the chip ===
 //
 //PIN: DTACK		: 1
+//PIN: IORST		: 2
 //PIN: nAS		: 5
 //PIN: RnW		: 6
 //PIN: nUDS		: 7
@@ -625,7 +642,9 @@ endmodule
 //
 //	=== Devices side of the chip ===
 //
-//PIN: nI2CSEL		: 78
+//PIN: nEXPSEL		: 76
+//PIN: nI2CSEL		: 77
+//PIN: nATABEN		: 78
 //PIN: nATASEL		: 79
 //PIN: nATAAUXSEL	: 80
 //PIN: ATA_INT		: 81

@@ -7791,6 +7791,12 @@
 		(uuid "2fe01d48-46fc-4efe-b2cc-8c1643224c88")
 	)
 	(junction
+		(at 110.49 274.32)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3652f1f5-1630-4f51-9866-7882f93b9edd")
+	)
+	(junction
 		(at 365.76 200.66)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7837,6 +7843,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "664ee44c-41b7-4bc0-ad6a-beb7fb9c9263")
+	)
+	(junction
+		(at 110.49 269.24)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7f011a7b-84ec-4597-a8f7-74823b19007a")
 	)
 	(junction
 		(at 34.29 274.32)
@@ -8143,6 +8155,16 @@
 			(type default)
 		)
 		(uuid "27b4472f-c71f-4ba5-a60e-ddca0596b3fe")
+	)
+	(wire
+		(pts
+			(xy 110.49 269.24) (xy 123.19 269.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2d4244e8-6455-460b-ab6c-ceeac8783aa1")
 	)
 	(wire
 		(pts
@@ -8613,6 +8635,16 @@
 			(type default)
 		)
 		(uuid "cef79727-c0e8-4fe6-8723-b911af2dc8a2")
+	)
+	(wire
+		(pts
+			(xy 110.49 274.32) (xy 123.19 274.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d26ece7d-d8ca-429c-af01-d82322a6066e")
 	)
 	(wire
 		(pts
@@ -10931,6 +10963,76 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "#PWR0604")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 123.19 271.78 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "072e0471-26a6-4421-a1e8-c1749df6950e")
+		(property "Reference" "C608"
+			(at 125.73 270.5162 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 125.73 273.0562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 123.19 271.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 123.19 271.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 123.19 271.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e6803632-4157-4826-b7a9-7b83a616fe90")
+		)
+		(pin "2"
+			(uuid "29b52c0c-af36-4e8d-b1ec-cc911da6185f")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "C608")
 					(unit 1)
 				)
 			)

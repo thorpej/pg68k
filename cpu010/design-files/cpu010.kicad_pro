@@ -507,6 +507,9 @@
       "+5V": [
         "Power"
       ],
+      "GND": [
+        "Power"
+      ],
       "Net-(BT601-+)": [
         "Power"
       ],

@@ -503,7 +503,14 @@
       "version": 4
     },
     "net_colors": null,
-    "netclass_assignments": null,
+    "netclass_assignments": {
+      "+5V": [
+        "Power"
+      ],
+      "Net-(D202-A)": [
+        "Power"
+      ]
+    },
     "netclass_patterns": []
   },
   "pcbnew": {

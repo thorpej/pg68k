@@ -504,7 +504,16 @@
     },
     "net_colors": null,
     "netclass_assignments": {
+      "+12V": [
+        "Power"
+      ],
       "+5V": [
+        "Power"
+      ],
+      "+5Vsb": [
+        "Power"
+      ],
+      "-12V": [
         "Power"
       ],
       "GND": [
@@ -706,6 +715,10 @@
     [
       "fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657",
       "On-board IO"
+    ],
+    [
+      "c0bf51c4-3132-4869-a5c4-549e907a4e46",
+      "Expansion"
     ]
   ],
   "text_variables": {}

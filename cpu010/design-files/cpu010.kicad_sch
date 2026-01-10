@@ -1331,6 +1331,48 @@
 		)
 	)
 	(sheet
+		(at 127 114.554)
+		(size 48.514 27.686)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c")
+		(property "Sheetname" "Power Supply"
+			(at 127 113.8424 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu010-psu.kicad_sch"
+			(at 127 142.8246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 180.848 77.47)
 		(size 48.006 28.448)
 		(exclude_from_sim no)

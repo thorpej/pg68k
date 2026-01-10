@@ -524,6 +524,9 @@
       ],
       "Net-(D202-A)": [
         "Power"
+      ],
+      "PWR_OK": [
+        "Power"
       ]
     },
     "netclass_patterns": []
@@ -719,6 +722,10 @@
     [
       "c0bf51c4-3132-4869-a5c4-549e907a4e46",
       "Expansion"
+    ],
+    [
+      "4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c",
+      "Power Supply"
     ]
   ],
   "text_variables": {}

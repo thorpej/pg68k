@@ -487,7 +487,7 @@
         "wire_width": 6
       },
       {
-        "clearance": 0.2,
+        "clearance": 0.1,
         "microvia_diameter": 0.35,
         "microvia_drill": 0.2,
         "name": "Power",

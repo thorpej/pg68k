@@ -3,11 +3,11 @@
                                 GAL22V10
 
                           -------\___/-------
-                      FC0 |  1           24 | VCC
+                  /EXPSEL |  1           24 | VCC
                           |                 |
-                      FC1 |  2           23 | /VMESEL
+                       NC |  2           23 | /VMESEL
                           |                 |
-                      FC2 |  3           22 | AM0
+                       NC |  3           22 | AM0
                           |                 |
                       A22 |  4           21 | AM1
                           |                 |
@@ -17,13 +17,13 @@
                           |                 |
                       A25 |  7           18 | AM4
                           |                 |
-                  /EXPSEL |  8           17 | AM5
+                      FC0 |  8           17 | AM5
                           |                 |
-               /EXPRAMSEL |  9           16 | NC
+                      FC1 |  9           16 | NC
                           |                 |
-                       NC | 10           15 | NC
+                      FC2 | 10           15 | NC
                           |                 |
-                       NC | 11           14 | NC
+               /EXPRAMSEL | 11           14 | NC
                           |                 |
                       GND | 12           13 | NC
                           -------------------

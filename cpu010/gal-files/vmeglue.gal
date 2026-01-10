@@ -1,0 +1,73 @@
+GAL22V10
+VMEGLUE
+
+FC0 FC1 FC2 A22 A23 A24 A25 /EXPSEL /EXPRAMSEL NC   NC     GND
+NC  NC  NC  NC  AM5 AM4 AM3  AM2     AM1       AM0 /VMESEL VCC
+
+;
+; VME glue logic for the cpu010.
+;
+; We generate Address Modifier values for the VME bus based on
+; what space we're selecting:
+;
+;	Expansion I/O space:
+;	$39	un-privileged data access
+;	$3A	un-privileged program access
+;	$3D	privileged data access
+;	$3E	privileged program access
+;	This is:
+;	1    1    1    FC2  FC1  FC0
+;	This allows traditional VME I/O boards to respond to programmed
+;	I/O bus cycles.
+;
+;	Expansion RAM space:
+;	$10-$1f (user-defined AMs)
+;	This is:
+;	0    1    A25  A24  A23  A22
+;	This gives us up to 16 8MB expansion RAM banks, and these bus
+;	cycles should be ignored by garden-variety VME I/O boards.
+;	Of course, RAM boards can be bigger than 8MB if they want,
+;	they just need to match on the AM bits specified here.
+;
+; We also generate a /VMESEL output that is asserted when either
+; /EXPSEL or /EXPRAMSEL are asserted.  This enables the bus transceivers
+; for the data bus, as well as un-gates the /AS, /UDS, and /LDS signals
+; (implemented using an external quad-OR chip).
+
+
+; AM5 should be 1 when /EXPSEL is asserted, and 0 all other times.
+AM5 = EXPSEL;
+
+; AM4 should be 1 when either /EXPSEL or /EXPRAMSEL are asserted.
+AM4 = EXPSEL
+    + EXPRAMSEL;
+
+; AM3 should be 1 when /EXPSEL is aserted and the value of A25
+; when /EXPRAMSEL is asserted.
+AM3 = EXPSEL
+    + EXPRAMSEL * A25;
+
+; AM2 should be the value of FC2 when /EXPSEL is asserted and the
+; value of A24 when /EXPRAMSEL is asserted.
+AM2 = EXPSEL * FC2
+    + EXPRAMSEL * A24;
+
+; AM1 should be the value of FC1 when /EXPSEL is asserted and the
+; value of A23 when /EXPRAMSEL is asserted.
+AM1 = EXPSEL * FC1
+    + EXPRAMSEL * A23;
+
+; AM0 should be the value of FC0 when /EXPSEL is asserted and the
+; value of A22 wen /EXPRAMSEL is asserted.
+AM0 = EXPSEL * FC0
+    + EXPRAMSEL * A22;
+
+; Assert /VMESEL when either /EXPSEL or /EXPRAMSEL are asserted.
+; This is used to enable the data bus transeivers and OR'd externally
+; with /AS, /UDS, and /LDS to gate them when VME is not selected.
+VMESEL = EXPSEL
+       + EXPRAMSEL;
+
+DESCRIPTION
+
+VME glue logic for the cpu010.

@@ -9127,7 +9127,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 199.39 146.05 180)
 		(fields_autoplaced yes)
@@ -9139,7 +9139,7 @@
 		)
 		(uuid "9e84945d-ff8e-4a57-993c-ec80d652023f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 190.4177 146.05 0)
+			(at 187.9986 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)

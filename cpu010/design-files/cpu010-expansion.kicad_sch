@@ -9478,7 +9478,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 66.04 55.88 180)
 		(fields_autoplaced yes)
@@ -9490,7 +9490,7 @@
 		)
 		(uuid "068c265a-bbd0-4edd-92a5-ab05add0a7f4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 57.0677 55.88 0)
+			(at 54.6486 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11326,7 +11326,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 146.05 55.88 180)
 		(fields_autoplaced yes)
@@ -11338,7 +11338,7 @@
 		)
 		(uuid "a18cffc4-6f12-4a5a-8777-41a7c34b034f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 137.0777 55.88 0)
+			(at 134.6586 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12052,7 +12052,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 222.25 55.88 180)
 		(fields_autoplaced yes)
@@ -12064,7 +12064,7 @@
 		)
 		(uuid "ddd724f1-9d1c-4d2f-afb0-fd4196660e44")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 213.2777 55.88 0)
+			(at 210.8586 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)

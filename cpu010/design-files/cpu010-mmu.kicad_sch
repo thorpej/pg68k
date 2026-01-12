@@ -5862,10 +5862,6 @@
 		(uuid "27b8c5aa-3a23-4e4b-bbcb-72fcbe1e9ec2")
 	)
 	(no_connect
-		(at 99.06 41.91)
-		(uuid "2e801a00-0015-4faa-bb79-af0f5d412bd5")
-	)
-	(no_connect
 		(at 99.06 46.99)
 		(uuid "30f17a12-aeb7-4031-841a-1eef4fb815f2")
 	)
@@ -5940,10 +5936,6 @@
 	(no_connect
 		(at 288.29 140.97)
 		(uuid "d5234f7d-538c-4698-93fd-90887379eb95")
-	)
-	(no_connect
-		(at 99.06 44.45)
-		(uuid "dd61ade2-2bc3-43f9-a548-544e043dcc5e")
 	)
 	(no_connect
 		(at 99.06 57.15)
@@ -6214,6 +6206,16 @@
 			(type default)
 		)
 		(uuid "136fa664-2a5e-477f-82a6-e63957c19aa6")
+	)
+	(wire
+		(pts
+			(xy 99.06 41.91) (xy 101.6 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "13efcf55-c4e1-49d6-953d-cc92446bd102")
 	)
 	(wire
 		(pts
@@ -8444,6 +8446,16 @@
 			(type default)
 		)
 		(uuid "b8e77733-337b-483d-aa78-0bbffac47f0f")
+	)
+	(wire
+		(pts
+			(xy 99.06 44.45) (xy 101.6 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b99a49b1-9c7a-4d37-a955-c91e8d90e981")
 	)
 	(wire
 		(pts
@@ -12259,7 +12271,7 @@
 			)
 		)
 	)
-	(global_label "CLK20"
+	(global_label "CLK40"
 		(shape input)
 		(at 39.37 41.91 180)
 		(fields_autoplaced yes)
@@ -12431,6 +12443,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "I2C_CLK"
+		(shape output)
+		(at 101.6 44.45 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "24427f78-ded7-4d7b-ad4b-fc8bb1ff7492")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 112.2052 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -14846,6 +14880,28 @@
 		(uuid "c19997c1-2741-499c-bbf8-434398173660")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 207.236 201.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CPU_CLK"
+		(shape output)
+		(at 101.6 41.91 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c25637fe-094a-46cf-b6d4-5bb76e95db49")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 112.9914 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)

@@ -10854,7 +10854,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "I2C_CLK"
 		(shape input)
 		(at 52.07 241.3 180)
 		(fields_autoplaced yes)
@@ -10866,7 +10866,7 @@
 		)
 		(uuid "29f16672-92df-45fa-9b1f-bfd123a0f6e5")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 43.0977 241.3 0)
+			(at 41.4648 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12350,7 +12350,7 @@
 			)
 		)
 	)
-	(global_label "CLK10"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 48.26 49.53 180)
 		(fields_autoplaced yes)
@@ -12362,7 +12362,7 @@
 		)
 		(uuid "ce22ee16-a936-4cf1-811c-1fe96b9407a3")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 39.2877 49.53 0)
+			(at 36.8686 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)

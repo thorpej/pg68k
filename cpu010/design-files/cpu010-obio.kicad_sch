@@ -8460,6 +8460,16 @@
 	)
 	(wire
 		(pts
+			(xy 107.95 120.65) (xy 104.14 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a6b1288-c9f4-46e0-ad32-619bd960ba9c")
+	)
+	(wire
+		(pts
 			(xy 234.95 83.82) (xy 248.92 83.82)
 		)
 		(stroke
@@ -8507,6 +8517,16 @@
 			(type default)
 		)
 		(uuid "53541a89-449b-48c9-a00c-d113241333c0")
+	)
+	(wire
+		(pts
+			(xy 35.56 85.09) (xy 48.26 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "535e230e-0132-4752-871d-038d5b5ffa33")
 	)
 	(wire
 		(pts
@@ -9120,6 +9140,16 @@
 	)
 	(wire
 		(pts
+			(xy 104.14 95.25) (xy 111.76 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e4416643-5d84-4a4b-ac43-bb944e678918")
+	)
+	(wire
+		(pts
 			(xy 81.28 33.02) (xy 83.82 33.02)
 		)
 		(stroke
@@ -9157,6 +9187,16 @@
 			(type default)
 		)
 		(uuid "eefdd360-a038-43c2-a73b-7fed73a071b7")
+	)
+	(wire
+		(pts
+			(xy 35.56 59.69) (xy 48.26 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ef582b53-780b-41c1-a3f8-9198231dc804")
 	)
 	(wire
 		(pts
@@ -10836,6 +10876,28 @@
 			)
 		)
 	)
+	(global_label "IOCTL_TDI"
+		(shape input)
+		(at 35.56 59.69 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "2e23e8f8-06ab-4326-b196-5dd9fa3919e0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 23.5638 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "R{slash}~{W}"
 		(shape input)
 		(at 175.26 175.26 180)
@@ -11144,6 +11206,28 @@
 			)
 		)
 	)
+	(global_label "TMS"
+		(shape input)
+		(at 107.95 120.65 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "47655e66-cb5b-4692-8b00-e41bea346132")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 114.5637 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D6"
 		(shape bidirectional)
 		(at 157.48 167.64 0)
@@ -11298,6 +11382,28 @@
 			)
 		)
 	)
+	(global_label "TMS"
+		(shape input)
+		(at 35.56 85.09 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "69bdc4b3-8b45-4080-ab80-ad13a8e62fca")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 28.9463 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "VA11"
 		(shape input)
 		(at 48.26 138.43 180)
@@ -11443,6 +11549,28 @@
 		(uuid "76668887-60bb-43a0-a661-9967b21bb950")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 164.056 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "MEMCTL_TDI"
+		(shape output)
+		(at 111.76 95.25 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7731ba18-804a-4add-916b-ef58da423c12")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 125.8727 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)

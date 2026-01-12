@@ -230,7 +230,6 @@ module mmu010(
 	output wire nLDS_out,	/* to abort the cycle for a xlation error */
 
 	output wire CPU_CLK,	/* 10MHz CPU clock output */
-	output wire I2C_CLK,	/* 3MHz I2C clock output */
 
 	output wire [2:0] MMU_ERROR,
 	output wire MMU_DTACK	/* drives open-drain inverter */
@@ -242,38 +241,23 @@ module mmu010(
  * outputs:
  *
  * CPU_CLK (10MHz)	CLK40 / 4
- * I2C_CLK (3.08MHz)	CLK40 / 13
- *
- * I2C_CLK is nominally 3MHz (see the PCF8584 data sheet), but 3.08MHz
- * should be close enough.  The MMU might seem like a weird place to
- * generate the I2C clock, and you're right, but it's convenient because
- * we already have the higher-resolution 40MHz signal handy.
  *
  * Because CPU_CLK is an even power-of-two and we want it to remain
  * running even when the CPU is driving a reset, its counter gets to
  * come up uninitialized.  The power-on-reset is elongated to ensure
  * many cycles of free-running before other devices begin consuming it.
  *
- * The I2C_CLK, on the other hand, does get reset during a reset cycle.
+ * CPU_CLK (and the rest of the MMU) is clocked on the falling edge of
+ * the 40MHz oscillator.
  */
-reg[1:0] ClockDiv4;
-always @(posedge CLK40) begin
-	ClockDiv4 <= ClockDiv4 + 2'd1;
+reg[1:0] ClockDiv;
+initial begin
+	ClockDiv = 0;
 end
-assign CPU_CLK = (ClockDiv4 == 2'b11);
-
-reg[3:0] ClockDiv13;
-always @(posedge CLK40, negedge nRST) begin
-	if (~nRST)
-		ClockDiv13 <= 4'd0;
-	else begin
-		if (ClockDiv13 == 4'd12)
-			ClockDiv13 <= 4'd0;
-		else
-			ClockDiv13 <= ClockDiv13 + 4'd1;
-	end
+always @(negedge CLK40) begin
+	ClockDiv <= ClockDiv + 2'd1;
 end
-assign I2C_CLK = (ClockDiv13 == 4'd12);
+assign CPU_CLK = ClockDiv[1];
 
 /*
  * We have to synchronize /AS because we're dealing with two clock
@@ -978,5 +962,4 @@ endmodule
 //PIN: MMU_EN		: 88
 //
 //	== Clock outputs ==
-//PIN: I2C_CLK		: 99
 //PIN: CPU_CLK		: 100

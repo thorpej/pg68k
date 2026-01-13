@@ -44,8 +44,8 @@
  *
  * - Interrupt controller (located in Control space)
  *	-> Auto-vector only
- *	-> Interrupts are disabled at reset, single global interrupt
- *	   enable (also masks NMI!)
+ *	-> Interrupts are disabled at reset (in the System Enble Register),
+ *	   single global interrupt enable (also masks NMI!)
  *	-> Open-drain wired-OR hardware interrupts for IPL3-IPL7.
  *	-> Software controlled interrupts at IPL1-IPL2 via two separate
  *	   SET and CLR registers.
@@ -64,7 +64,8 @@
  * Including a PCF8584 seems a little indulgent.  I could just provide
  * the facilities to bit-bang I2C here in the IOCTL.  Maybe I'll do that
  * in a future IOCTL revision.  Keeping I2C around is important for the
- * DS3231MZ real-time clock chip.
+ * DS3231MZ real-time clock chip (and maybe for expansion card discovery
+ * via SEEPROM?).
  */
 
 module ioctl010(
@@ -75,6 +76,8 @@ module ioctl010(
 	input wire nAS,		/* /AS from MMU */
 	input wire nUDS,	/* /UDS from MMU */
 	input wire nLDS,	/* /LDS from MMU */
+
+	input wire INT_EN,	/* Interrupt Enable input */
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
 	input wire [11:1] ADDR,	/* A11..A1 from MMU */
@@ -130,7 +133,6 @@ reg avec;
 assign nAVEC = ~avec & ~nDS;
 
 /* Interrupt enable and Software interrupt (IRQ1, IRQ2) registers */
-reg Intr_enab;
 reg [1:0] Intr_swint;
 
 /* System "hardclock" timer state. */
@@ -152,7 +154,7 @@ wire IRQ6 = ~nIRQ6 | Timer_int;
 /* Encode the IPL, IRQ7 highest priority, IRQ1 lowest. */
 reg [2:0] encoded_ipl;
 always @(*) begin
-	casex ({Intr_enab,~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
+	casex ({INT_EN,~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
 	8'b11xxxxxx:	encoded_ipl = 3'd7;
 	8'b101xxxxx:	encoded_ipl = 3'd6;
 	8'b1001xxxx:	encoded_ipl = 3'd5;
@@ -215,10 +217,8 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *
  * Control space addresses:
  *
- *           xxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Enable (1 byte)
- *           xxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Set (1 byte)
- *           xxxx.xxxx xxxx.xxxx 0110.0000 - Interrupt Clear (1 byte)
- *           xxxx.xxxx xxxx.xxxx 0111.0000 - Interrupt controller version
+ *           xxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Set (1 byte)
+ *           xxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Clear (1 byte)
  *
  * CPU space addresses:
  *
@@ -248,32 +248,22 @@ localparam DEVIDX_TMR		= 4'd2;
 localparam DEVIDX_I2C		= 4'd3;
 localparam DEVIDX_ATA		= 4'd4;
 
-localparam CTLIDX_INTEN		= 4'd4;
-localparam CTLIDX_INTSET	= 4'd5;
-localparam CTLIDX_INTCLR	= 4'd6;
-localparam CTLIDX_IOCTLREV	= 4'd7;
+localparam CTLIDX_INTSET	= 4'd4;
+localparam CTLIDX_INTCLR	= 4'd5;
 
-localparam SEL_dc		= 11'bxxxxxxxxxxx;
-localparam SEL_NONE		= 11'b11111111111;
-localparam SEL_DUART		= 11'b01111111111;
-localparam SEL_TMR_CSR		= 11'b10111111111;
-localparam SEL_TMR_LSB		= 11'b11011111111;
-localparam SEL_TMR_MSB		= 11'b11101111111;
-localparam SEL_I2C		= 11'b11110111111;
-localparam SEL_ATA		= 11'b11111011111;	/* CH1Fx */
-localparam SEL_ATA_AUX		= 11'b11111101111;	/* CH3Fx */
-localparam SEL_INTR_ENAB	= 11'b11111110111;
-localparam SEL_INTR_SET		= 11'b11111111011;
-localparam SEL_INTR_CLR		= 11'b11111111101;
-localparam SEL_IOCTL_REV	= 11'b11111111110;
+localparam SEL_dc		= 9'bxxxxxxxxx;
+localparam SEL_NONE		= 9'b111111111;
+localparam SEL_DUART		= 9'b011111111;
+localparam SEL_TMR_CSR		= 9'b101111111;
+localparam SEL_TMR_LSB		= 9'b110111111;
+localparam SEL_TMR_MSB		= 9'b111011111;
+localparam SEL_I2C		= 9'b111101111;
+localparam SEL_ATA		= 9'b111110111;	/* CH1Fx */
+localparam SEL_ATA_AUX		= 9'b111111011;	/* CH3Fx */
+localparam SEL_INTR_SET		= 9'b111111101;
+localparam SEL_INTR_CLR		= 9'b111111110;
 
-/*
- * Let's have a revision # so SW can tell if we add vectored interrupt
- * support later.
- */
-localparam IOCTL_REV		= 8'd0;
-
-reg [10:0] DevSelects;
+reg [8:0] DevSelects;
 always @(*) begin
 	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[4:7], ADDR[3:1]})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
@@ -285,18 +275,16 @@ always @(*) begin
 	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
 	{2'b10, DEVIDX_ATA,   4'd1, 3'b00x}: DevSelects = SEL_ATA_AUX;
 
-	{2'b01, 4'd0, CTLIDX_INTEN, 3'd0}:   DevSelects = SEL_INTR_ENAB;
 	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
 	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;
-	{2'b01, 4'd0, CTLIDX_IOCTLREV, 3'd0}:DevSelects = SEL_IOCTL_REV;
 
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[10];
-assign nI2CSEL    = DevSelects[6];
-assign nATASEL    = DevSelects[5];
-assign nATAAUXSEL = DevSelects[4];
+assign nDUARTSEL  = DevSelects[8];
+assign nI2CSEL    = DevSelects[4];
+assign nATASEL    = DevSelects[3];
+assign nATAAUXSEL = DevSelects[2];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
 
@@ -311,10 +299,8 @@ always @(*) begin
 	SEL_TMR_CSR:	data_out = {6'b0, Timer_int, Timer_enab};
 	SEL_TMR_LSB:	data_out = Timer_value[7:0];
 	SEL_TMR_MSB:	data_out = Timer_value[15:8];
-	SEL_INTR_ENAB:	data_out = {7'b0, Intr_enab};
 	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
 	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
-	SEL_IOCTL_REV:	data_out = IOCTL_REV;
 	default:	data_out = 8'hFF;
 	endcase
 end
@@ -343,7 +329,6 @@ always @(posedge CLK, negedge nRST) begin
 		avec <= 1'b0;
 		state <= Idle;
 
-		Intr_enab <= 1'b0;
 		Intr_swint <= 2'b0;
 
 		Timer_value <= 16'd0;
@@ -470,18 +455,6 @@ always @(posedge CLK, negedge nRST) begin
 				state <= TermWait;
 			end
 
-			{CYCLE_IOREAD, SEL_INTR_ENAB}: begin
-				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
-			{CYCLE_IOWRITE, SEL_INTR_ENAB}: begin
-				Intr_enab <= DATA[0];
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
 			{CYCLE_IOREAD, SEL_INTR_SET}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
@@ -504,17 +477,6 @@ always @(posedge CLK, negedge nRST) begin
 			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
 				Intr_swint <=
 				    Intr_swint & ~DATA[1:0];
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
-			{CYCLE_IOREAD, SEL_IOCTL_REV}: begin
-				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
-			{CYCLE_IOWRITE, SEL_IOCTL_REV}: begin
 				dtack <= 1'b1;
 				state <= TermWait;
 			end
@@ -634,6 +596,7 @@ endmodule
 //PIN: CPUTYP_1		: 46
 //PIN: CPUTYP_2		: 47
 //PIN: CPUTYP_3		: 48
+//PIN: INT_EN		: 49
 //
 //	=== Devices side of the chip ===
 //

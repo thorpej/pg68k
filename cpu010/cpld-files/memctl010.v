@@ -122,7 +122,8 @@ assign nL_RD = nLDS | ~RnW;
 assign nL_WR = nLDS |  RnW;
 
 /* We don't ACK expansion RAM; we don't know how fast it is. */
-assign DTACK = (Selects[5:1] != 5'd0);
+assign DTACK = (Selects[5:1] != 5'd0) &&
+    (~nU_RD | ~nU_WR | ~nL_RD | ~nL_WR);
 
 endmodule
 

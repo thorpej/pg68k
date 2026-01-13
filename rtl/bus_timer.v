@@ -39,7 +39,7 @@
 module bus_timer(
 	input wire clk,
 	input wire n_reset,
-	input wire count,
+	input wire enable,
 
 	output wire bus_timeout
 );
@@ -57,7 +57,7 @@ always @(posedge clk, negedge n_reset) begin
 	if (~n_reset) begin
 		bus_timer <= BUS_TIMER_INITIAL;
 	end
-	else if (~count) begin
+	else if (~enable) begin
 		bus_timer <= BUS_TIMER_INITIAL;
 	end
 	else if (bus_timer != BUS_TIMER_TIMEOUT) begin

@@ -1,0 +1,27 @@
+{
+  head: {
+    text: "cpu010 MMU - RAM write cycle - valid translation"
+  },
+  foot: {
+    text: " "
+  },
+  signal: [
+    {name: "CLK40",     wave: "n....................."},
+    {name: "CPU_CLK",   wave: "l.h.l.h.l.h.l.h.l.h.l."},
+    {name: "CPU State", wave: "2.2.2.2.2.2.2.2.2.2.2.", data: "S7 S0 S1 S2 S3 S4 S5 S6 S7 S0 S1"},
+    {name: "CPU R/W",   wave: "x.0...............x...", node: "......................"},
+    {name: "CPU FC",    wave: "x.4...............x...", node: "......................"},
+    {name: "CPU VA",    wave: "x.z.5.............z.x.", node: "....a................."},
+    {name: "CPU AS/",   wave: "1.....0.........1.....", node: "......b.........i....."},
+    {name: "CPU DS/",   wave: "1.........0.....1.....", node: "..........c.....j....."},
+    {name: "DTACK/",    wave: "1.........0.....1.....", node: "..........h..........."},
+    {name: "MMU AS/",   wave: "1......0........1.....", node: ".......d........k....."},
+    {name: "MMU DS/",   wave: "1.........0.....1.....", node: "..........e.....l....."},
+    {name: "RAMSEL/",   wave: "1......0........1.....", node: ".......f........m....."},
+    {name: "MEM WR/",   wave: "1.........0.....1.....", node: "..........g.....n....."},
+  ],
+  edge: [
+    "a~b", "b~d", "c~e", "d~f", "e~g", "g~h", "h~i", "i~k", "j~l", "k~m", "l~n"
+  ],
+  config: {hscale: 1}
+}

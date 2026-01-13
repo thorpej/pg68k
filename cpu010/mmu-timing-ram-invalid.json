@@ -1,0 +1,26 @@
+{
+  head: {
+    text: "cpu010 MMU - RAM cycle - fault (invalid/prot/priv)"
+  },
+  foot: {
+    text: " "
+  },
+  signal: [
+    {name: "CLK40",     wave: "n....................."},
+    {name: "CPU_CLK",   wave: "l.h.l.h.l.h.l.h.l.h.l."},
+    {name: "CPU State", wave: "2.2.2.2.2.2.2.2.2.2.2.", data: "S7 S0 S1 S2 S3 S4 S5 S6 S7 S0 S1"},
+    {name: "CPU R/W",   wave: "x.1...............x...", node: "......................"},
+    {name: "CPU FC",    wave: "x.4...............x...", node: "......................"},
+    {name: "CPU VA",    wave: "x.z.5.............z.x.", node: "....a................."},
+    {name: "CPU AS/",   wave: "1.....0.........1.....", node: "......b.........e....."},
+    {name: "CPU DS/",   wave: "1.....0.........1.....", node: "......................"},
+    {name: "BERR/",     wave: "1.........0.....1.....", node: "..........d..........."},
+    {name: "MMU AS/",   wave: "1.....................", node: "......................"},
+    {name: "MMU DS/",   wave: "1.....................", node: "......................"},
+    {name: "MMUERR",    wave: "0......2.........0....", node: ".......c.............."},
+  ],
+  edge: [
+    "a~b", "b~c", "c~d", "d~e"
+  ],
+  config: {hscale: 1}
+}

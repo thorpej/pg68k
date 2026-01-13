@@ -647,7 +647,7 @@ localparam TermWaitRMW2		= 3'd4;
 localparam TermWait		= 3'd5;
 
 reg [2:0] state;
-always @(posedge CLK40, negedge nRST) begin
+always @(negedge CLK40) begin
 	if (~nRST) begin
 		ErrorReg <= ERR_NONE;
 
@@ -664,12 +664,6 @@ always @(posedge CLK40, negedge nRST) begin
 		state <= Idle;
 	end
 	else begin
-		/*
-		 * NOTE: We assume the CPU clock is 10MHz and that
-		 * the memory subsystem is at 2x CPU clock, so each
-		 * state represents 50ns.
-		 */
-
 		/*
 		 * Always grab a copy of the relevant PageMap entry.
 		 * That way we can use the values stored there as

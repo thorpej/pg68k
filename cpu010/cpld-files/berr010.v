@@ -32,7 +32,9 @@
  *
  * ==> The MMU.
  *
- * ==> Whatever else we might want to explcitly add?
+ * ==> The VME expansion bus.
+ *
+ * ==> Whatever else we might want to explicitly add?
  *
  * ==> ...and we provide bus cycle timeout logic in the event that no
  *     one is around to complete a cycle.
@@ -58,17 +60,63 @@ module berr010(
 	output wire DTACK_out	/* drives open-drain inverter */
 );
 
-localparam MMUERR_NONE	= 3'd0;
+/*****************************************************************************/
 
-reg [2:0] BusError_MMU;
-reg BusError_Timeout;
-reg BusError_VME;
+/*
+ * Bus timer module for 68000 busses.
+ *
+ * This is pretty simple: It's a counter that counts CPU clock cycles
+ * so long as it's instructed to do so (typically when /AS is asserted,
+ * although the consumer of this module is allowed to pick any criteria
+ * it desires).
+ *
+ * XXX Unfortunately, the Yosys workflow I'm using here requires me to
+ * XXX directly include all functionality into a single module, so the
+ * XXX code is replicated here (see rtl/bus_timer.v).
+ */
 
-localparam BERRSTATE_IDLE	= 6'd0;
-localparam BERRSTATE_COUNT	= 6'd1;
-localparam BERRSTATE_TIMEOUT	= 6'd63;
+wire bus_timeout;
+wire bus_timer_enable = ~nAS;
 
-reg [5:0] BerrState;
+localparam BUS_TIMER_INITIAL	=	6'd0;
+localparam BUS_TIMER_TICK	=	6'd1;
+localparam BUS_TIMER_TIMEOUT	=	6'd63;
+
+reg [5:0] bus_timer;
+initial begin
+	bus_timer = BUS_TIMER_INITIAL;
+end
+
+always @(posedge CLK, negedge nRST) begin
+	if (~nRST) begin
+		bus_timer <= BUS_TIMER_INITIAL;
+	end
+	else if (~bus_timer_enable) begin
+		bus_timer <= BUS_TIMER_INITIAL;
+	end
+	else if (bus_timer != BUS_TIMER_TIMEOUT) begin
+		bus_timer <= bus_timer + BUS_TIMER_TICK;
+	end
+end
+
+assign bus_timeout = (bus_timer == BUS_TIMER_TIMEOUT);
+
+/*****************************************************************************/
+
+/*
+ * The lower 4 bits of the Bus Error register are reserved for
+ * errors from the MMU (of which 3 are currently defined).
+ */
+localparam MMUERR_NONE		= 3'b000;
+localparam BERR_NONE		= 6'b000000;
+localparam BERR_MMUERR_UPPER	= 3'b000;
+localparam BERR_TIMEOUT		= 6'b010000;
+localparam BERR_VME		= 6'b100000;
+
+reg [5:0] bus_error_reg;
+initial begin
+	bus_error_reg = BERR_NONE;
+end
 
 /*
  * BUS CYCLE STATE MACHINE
@@ -81,28 +129,21 @@ localparam CYCLE_RD_BERR	= 3'b010;
 localparam CYCLE_WR_BERR	= 3'b000;
 
 localparam Idle			= 3'd0;
-localparam Normal		= 3'd1;
+localparam NormalTermWait	= 3'd1;
 localparam RdBerTermWait	= 3'd2; /* N.B. only two state values ... */
 localparam WrBerTermWait	= 3'd3; /* ...with bit #1 set. */
-localparam NormalTermWait	= 3'd4;
-localparam BerrTermWait		= 3'd5;
+localparam BerrTermWait		= 3'd4;
 
 reg [2:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		BusError_MMU <= MMUERR_NONE;
-		BusError_Timeout <= 1'b0;
-		BusError_VME <= 1'b0;
-		BerrState <= 6'd0;
+		bus_error_reg <= BERR_NONE;
 
 		state <= Idle;
 	end
 	else begin
 		case (state)
 		Idle: begin
-			/* Bus cycle clock counter resets here. */
-			BerrState <= BERRSTATE_IDLE;
-
 			/* Check for the beginning of a bus cycle. */
 			casex (Cycle)
 			CYCLE_NONE: begin
@@ -110,7 +151,7 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			CYCLE_NORMAL: begin
-				state <= Normal;
+				state <= NormalTermWait;
 			end
 
 			CYCLE_RD_BERR: begin
@@ -128,17 +169,9 @@ always @(posedge CLK, negedge nRST) begin
 			endcase
 		end
 
-		Normal: begin
-			BerrState <= BERRSTATE_COUNT;
-			state <= NormalTermWait;
-		end
-
 		RdBerTermWait: begin
 			if (nAS) begin
-				BusError_MMU <= MMUERR_NONE;
-				BusError_Timeout <= 1'b0;
-				BusError_VME <= 1'b0;
-
+				bus_error_reg = BERR_NONE;
 				state <= Idle;
 			end
 		end
@@ -153,20 +186,17 @@ always @(posedge CLK, negedge nRST) begin
 			if (nAS) begin
 				state <= Idle;
 			end
-			else if (BerrState == BERRSTATE_TIMEOUT) begin
-				BusError_Timeout <= 1'b1;
-				state <= BerrTermWait;
-			end
 			else if (MMUERR != MMUERR_NONE) begin
-				BusError_MMU <= MMUERR;
+				bus_error_reg <= {BERR_MMUERR_UPPER, MMUERR};
 				state <= BerrTermWait;
 			end
 			else if (~nVMEBERR) begin
-				BusError_VME <= 1'b1;
+				bus_error_reg <= BERR_VME;
 				state <= BerrTermWait;
 			end
-			else if (BerrState != BERRSTATE_IDLE) begin
-				BerrState <= BerrState + BERRSTATE_COUNT;
+			else if (bus_timeout) begin
+				bus_error_reg <= BERR_TIMEOUT;
+				state <= BerrTermWait;
 			end
 		end
 
@@ -187,8 +217,7 @@ assign DTACK_out = state[1] & ~nAS;
 
 /* Output the Bus Error register if the state machine says so. */
 assign DATA = ((state == RdBerTermWait) && ~nAS)
-    ? {2'd0, BusError_VME, BusError_Timeout, 1'b0, BusError_MMU}
-    : 8'bzzzzzzzz;
+    ? {2'd0, bus_error_reg} : 8'bzzzzzzzz;
 
 endmodule
 

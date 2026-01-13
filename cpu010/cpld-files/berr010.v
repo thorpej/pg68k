@@ -43,21 +43,21 @@
  */
 
 module berr010(
-	input wire nRST,	/* system /RESET signal */
-	input wire CLK,		/* system CLK10 signal */
+	input wire n_reset,	/* system /RESET signal */
+	input wire cpu_clk,	/* system CLK10 signal */
 
-	input wire nAS,		/* /AS from CPU */
-	input wire RnW,		/* R/W from CPU */
+	input wire n_as,	/* /AS from CPU */
+	input wire rnw,		/* R/W from CPU */
 
-	input wire nBERRSEL,	/* Bus Error register selected */
+	input wire n_berrsel,	/* Bus Error register selected */
 
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
 	input wire [2:0] MMUERR, /* error from MMU */
-	input wire nVMEBERR,	/* /BERR output from VME */
+	input wire n_vmeberr,	/* /BERR output from VME */
 
-	output wire nBERR_out,	/* directly connected to CPU */
-	output wire DTACK_out	/* drives open-drain inverter */
+	output wire n_berr_out,	/* directly connected to CPU */
+	output wire dtack_out	/* drives open-drain inverter */
 );
 
 /*****************************************************************************/
@@ -76,7 +76,7 @@ module berr010(
  */
 
 wire bus_timeout;
-wire bus_timer_enable = ~nAS;
+wire bus_timer_enable = ~n_as;
 
 localparam BUS_TIMER_INITIAL	=	6'd0;
 localparam BUS_TIMER_TICK	=	6'd1;
@@ -87,8 +87,8 @@ initial begin
 	bus_timer = BUS_TIMER_INITIAL;
 end
 
-always @(posedge CLK, negedge nRST) begin
-	if (~nRST) begin
+always @(posedge cpu_clk, negedge n_reset) begin
+	if (~n_reset) begin
 		bus_timer <= BUS_TIMER_INITIAL;
 	end
 	else if (~bus_timer_enable) begin
@@ -118,105 +118,106 @@ initial begin
 	bus_error_reg = BERR_NONE;
 end
 
-/*
- * BUS CYCLE STATE MACHINE
- */
-wire [2:0] Cycle = {nAS, RnW, nBERRSEL};
+/************************* BUS CYCLE STATE MACHINE ***************************/
+
+wire [2:0] Cycle = {n_as, rnw, n_berrsel};
 
 localparam CYCLE_NONE		= 3'b1xx;
 localparam CYCLE_NORMAL		= 3'b0x1;
 localparam CYCLE_RD_BERR	= 3'b010;
 localparam CYCLE_WR_BERR	= 3'b000;
 
-localparam Idle			= 3'd0;
-localparam NormalTermWait	= 3'd1;
-localparam RdBerTermWait	= 3'd2; /* N.B. only two state values ... */
-localparam WrBerTermWait	= 3'd3; /* ...with bit #1 set. */
-localparam BerrTermWait		= 3'd4;
+localparam S_IDLE		= 3'd0;
+localparam S_NORMAL_TERMWAIT	= 3'd1;
+localparam S_RDBERR_TERMWAIT	= 3'd2; /* N.B. only two state values ... */
+localparam S_WRBERR_TERMWAIT	= 3'd3; /* ...with bit #1 set. */
+localparam S_BUSERROR		= 3'd4;
 
 reg [2:0] state;
-always @(posedge CLK, negedge nRST) begin
-	if (~nRST) begin
+always @(posedge cpu_clk, negedge n_reset) begin
+	if (~n_reset) begin
 		bus_error_reg <= BERR_NONE;
 
-		state <= Idle;
+		state <= S_IDLE;
 	end
 	else begin
 		case (state)
-		Idle: begin
+		S_IDLE: begin
 			/* Check for the beginning of a bus cycle. */
 			casex (Cycle)
 			CYCLE_NONE: begin
-				state <= Idle;
+				state <= S_IDLE;
 			end
 
 			CYCLE_NORMAL: begin
-				state <= NormalTermWait;
+				state <= S_NORMAL_TERMWAIT;
 			end
 
 			CYCLE_RD_BERR: begin
-				state <= RdBerTermWait;
+				state <= S_RDBERR_TERMWAIT;
 			end
 
 			CYCLE_WR_BERR: begin
 				/* Ignored, but no /BERR here! */
-				state <= WrBerTermWait;
+				state <= S_WRBERR_TERMWAIT;
 			end
 
 			default: begin
-				state <= Idle;
+				state <= S_IDLE;
 			end
 			endcase
 		end
 
-		RdBerTermWait: begin
-			if (nAS) begin
+		S_RDBERR_TERMWAIT: begin
+			if (n_as) begin
 				bus_error_reg = BERR_NONE;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 		end
 
-		WrBerTermWait: begin
-			if (nAS) begin
-				state <= Idle;
+		S_WRBERR_TERMWAIT: begin
+			if (n_as) begin
+				state <= S_IDLE;
 			end
 		end
 
-		NormalTermWait: begin
-			if (nAS) begin
-				state <= Idle;
+		S_NORMAL_TERMWAIT: begin
+			if (n_as) begin
+				state <= S_IDLE;
 			end
 			else if (MMUERR != MMUERR_NONE) begin
 				bus_error_reg <= {BERR_MMUERR_UPPER, MMUERR};
-				state <= BerrTermWait;
+				state <= S_BUSERROR;
 			end
-			else if (~nVMEBERR) begin
+			else if (~n_vmeberr) begin
 				bus_error_reg <= BERR_VME;
-				state <= BerrTermWait;
+				state <= S_BUSERROR;
 			end
 			else if (bus_timeout) begin
 				bus_error_reg <= BERR_TIMEOUT;
-				state <= BerrTermWait;
+				state <= S_BUSERROR;
 			end
 		end
 
-		BerrTermWait: begin
-			if (nAS) begin
-				state <= Idle;
+		S_BUSERROR: begin
+			if (n_as) begin
+				state <= S_IDLE;
 			end
 		end
 		endcase
 	end
 end
 
+/*****************************************************************************/
+
 /* Signal /BERR to the CPU if the state machine says so. */
-assign nBERR_out = ~(state == BerrTermWait) | nAS;
+assign n_berr_out = ~(state == S_BUSERROR) | n_as;
 
 /* Signal DTACK if the state machine says so. */
-assign DTACK_out = state[1] & ~nAS;
+assign dtack_out = state[1] & ~n_as;
 
 /* Output the Bus Error register if the state machine says so. */
-assign DATA = ((state == RdBerTermWait) && ~nAS)
+assign DATA = ((state == S_RDBERR_TERMWAIT) && ~n_as)
     ? {2'd0, bus_error_reg} : 8'bzzzzzzzz;
 
 endmodule
@@ -225,11 +226,11 @@ endmodule
 //
 //PIN: CHIP "berr010" ASSIGNED TO AN PLCC44
 //
-//PIN: nRST		: 1
-//PIN: nAS		: 2
-//PIN: BERR_out		: 4
-//PIN: DTACK_out	: 5
-//PIN: RnW		: 6
+//PIN: n_reset		: 1
+//PIN: n_as		: 2
+//PIN: n_berr_out	: 4
+//PIN: dtack_out	: 5
+//PIN: rnw		: 6
 //PIN: DATA_0		: 8
 //PIN: DATA_1		: 9
 //PIN: DATA_2		: 11
@@ -241,6 +242,6 @@ endmodule
 //PIN: MMUERR_0		: 19
 //PIN: MMUERR_1		: 20
 //PIN: MMUERR_2		: 21
-//PIN: nVMEBERR		: 24
-//PIN: CLK		: 43
-//PIN: nBERRSEL		: 44
+//PIN: n_vmeberr	: 24
+//PIN: cpu_clk		: 43
+//PIN: n_berrsel	: 44

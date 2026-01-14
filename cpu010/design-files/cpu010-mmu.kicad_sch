@@ -13623,7 +13623,7 @@
 			)
 		)
 	)
-	(global_label "~{VMEBERR}"
+	(global_label "~{EXP_BERR}"
 		(shape input)
 		(at 102.87 62.23 0)
 		(fields_autoplaced yes)
@@ -13635,7 +13635,7 @@
 		)
 		(uuid "7517271a-6e6d-461c-9464-13f8fcf4d2d7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.5032 62.23 0)
+			(at 115.4103 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)

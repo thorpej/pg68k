@@ -825,7 +825,7 @@
 		)
 		(uuid "1e302b54-9229-4950-a780-d183e50c8a8e")
 	)
-	(text "JTAG Chain: MMU (1508) -> IOCTL (1508) -> MEMCTL (1504) -> BERR (1504)"
+	(text "JTAG Chain: MMU (1508) -> IOCTL (1508) -> MEMCTL (1504)"
 		(exclude_from_sim no)
 		(at 113.792 55.372 0)
 		(effects

@@ -7971,10 +7971,6 @@
 		(uuid "13f7aa67-ad7b-4f01-bd6c-5051931a57c4")
 	)
 	(no_connect
-		(at 104.14 148.59)
-		(uuid "16dd3b6f-2a82-4a5c-915f-5b8be0f5929d")
-	)
-	(no_connect
 		(at 135.89 125.73)
 		(uuid "17cff73c-7830-4120-9b03-7a7fe59e0a75")
 	)
@@ -9237,6 +9233,16 @@
 			(type default)
 		)
 		(uuid "fa1a69d7-0803-42f8-a7fb-3a343308c68d")
+	)
+	(wire
+		(pts
+			(xy 107.95 148.59) (xy 104.14 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fbbf5b53-0d63-4553-91a3-cf817292b6e1")
 	)
 	(label "~{UARTA_CTS}"
 		(at 254 58.42 180)
@@ -10854,7 +10860,7 @@
 			)
 		)
 	)
-	(global_label "I2C_CLK"
+	(global_label "CPU_CLK"
 		(shape input)
 		(at 52.07 241.3 180)
 		(fields_autoplaced yes)
@@ -10866,7 +10872,7 @@
 		)
 		(uuid "29f16672-92df-45fa-9b1f-bfd123a0f6e5")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 41.4648 241.3 0)
+			(at 40.6786 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12544,6 +12550,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "INT_EN"
+		(shape input)
+		(at 107.95 148.59 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e618e7b6-cf9f-42d0-9acb-549eb3dada55")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 117.2852 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)

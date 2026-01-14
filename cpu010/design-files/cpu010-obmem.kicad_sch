@@ -7086,6 +7086,28 @@
 			)
 		)
 	)
+	(global_label "TDO"
+		(shape output)
+		(at 355.6 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "5fb06b5f-9855-4ee6-bd2a-9c0e478ac418")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 362.1533 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "D9"
 		(shape bidirectional)
 		(at 246.38 31.75 0)
@@ -9942,28 +9964,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "BERR_TDI"
-		(shape output)
-		(at 355.6 86.36 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "c16064ca-2ddc-4e30-8382-e6552fad3426")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 367.3542 86.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)

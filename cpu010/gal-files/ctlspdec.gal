@@ -1,8 +1,8 @@
 GAL22V10
 CTLSPDEC
 
- FC0 FC1  FC2     A1      A2      A3      A4      A5    A6    A7    /UDS   GND
-/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERRD /ERWR /BERSEL DTACK VCC
+ FC0 FC1  FC2     A1      A2      A3      A4      A5    A6   A7 /UDS   GND
+/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERRD /ERWR NC  DTACK VCC
 
 ;
 ; Board control space is selected when:
@@ -18,7 +18,6 @@ CTLSPDEC
 ;  0  0  0  0 - 0 - Diagnostic display register(s)
 ;  0  0  0  1 - 1 - Configuration switches
 ;  0  0  1  0 - 2 - System enable register
-;  0  0  1  1 - 3 - Bus Error register
 ;
 
 ;
@@ -45,11 +44,6 @@ CSLSEL = CTLSEL * /A7 * /A6 * /A5 *  A4 * LDS *  RnW;
 ;
 ERRD = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS *  RnW;
 ERWR = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS * /RnW;
-
-;
-; Bus Error register (read-only).
-;
-BERSEL = CTLSEL * /A7 * /A6 *  A5 *  A4 * UDS *  RnW;
 
 ;
 ; Generate the /DTACK output.

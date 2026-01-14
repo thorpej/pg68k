@@ -7,7 +7,7 @@
                           |                 |
                       FC1 |  2           23 | DTACK
                           |                 |
-                      FC2 |  3           22 | /BERSEL
+                      FC2 |  3           22 | NC
                           |                 |
                        A1 |  4           21 | /ERWR
                           |                 |

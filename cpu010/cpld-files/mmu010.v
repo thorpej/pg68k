@@ -196,6 +196,7 @@ module mmu010(
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
 	input wire MMU_EN,	/* MMU enabled */
+	input wire n_vme_berr,	/* /BERR output from VME */
 
 	/* Important bits from the SegMap and PageMap entries. */
 	input wire SME_V,	/* SegMap entry valid */
@@ -231,7 +232,8 @@ module mmu010(
 
 	output wire CPU_CLK,	/* 10MHz CPU clock output */
 
-	output wire [2:0] MMU_ERROR,
+	output wire n_berr_out,	/* /BERR output to CPU */
+
 	output wire MMU_DTACK	/* drives open-drain inverter */
 );
 
@@ -343,6 +345,31 @@ always @(posedge CLK40, negedge nRST) begin
 	end
 end
 
+/*****************************************************************************/
+
+/*
+ * Bus Error Register
+ *
+ * 00.0001	MMU Invalid translation
+ * 00.0010	MMU Protection error
+ * 00.0100	MMU Privelege error
+ * 00.1000	(MMU reserved)
+ * 01.0000	Bus cycle timed out
+ * 10.0000	Bus error reported by VMEbus
+ */
+
+localparam BERR_NONE		= 6'b000000;
+localparam BERR_MMUERR_UPPER	= 3'b000;
+localparam BERR_TIMEOUT		= 6'b010000;
+localparam BERR_VME		= 6'b100000;
+
+reg [5:0] bus_error_reg;
+initial begin
+	bus_error_reg = BERR_NONE;
+end
+
+/*****************************************************************************/
+
 /*
  * We need to latch the upper byte of the PME when performing a
  * translation so that we can update the MOD and REF bits upon
@@ -407,7 +434,7 @@ wire Translate = (UserAcc || KernelAcc) && MMU_EN;
  *                 PMEG      |||
  *                           ^^^
  *                    Entry within PMEG
- *	xxxx.xxxx xxxx.xxxx xxxx.1100	Error Register (byte)
+ *	xxxx.xxxx xxxx.xxxx xxxx.1100	Bus Error Register (byte)
  *	xxxx.xxxx xxxx.xxxx xxxx.1110	(unused; reserved)
  *
  * The index for SegMap access is placed where it is because those are the
@@ -417,7 +444,7 @@ wire Translate = (UserAcc || KernelAcc) && MMU_EN;
  *
  * Access rules:
  *
- * ==> Context and Error registers are 8-bit on even addresses
+ * ==> Context and Bus Error registers are 8-bit on even addresses
  *     (/UDS is the governing data strobe).
  *
  * ==> SegMap entries are 16-bit and must be accessed as words
@@ -438,12 +465,14 @@ localparam MMUADDR_SegMap	= 3'd2;
 localparam MMUADDR_ContextReg	= 3'd3;
 localparam MMUADDR_PageMapU	= 3'd4;
 localparam MMUADDR_PageMapL	= 3'd5;
+localparam MMUADDR_BusErrorReg	= 3'd6;
 
-wire SegMap0Sel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
-wire SegMapSel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
-wire PageMapUSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
-wire PageMapLSel   = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
-wire ContextRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
+wire SegMap0Sel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
+wire SegMapSel      = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
+wire PageMapUSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
+wire PageMapLSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
+wire ContextRegSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
+wire BusErrorRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_BusErrorReg);
 
 /*
  * From the MMU's perspective, CPU access to any of the MMU's SRAMs
@@ -515,7 +544,7 @@ assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
 
 /*
  * Compute the translation error continuously.  It will be latched into
- * ErrorReg when needed.
+ * bus_error_reg when needed.
  *
  * Translation is valid when both SME_V and PME_V are set.
  *
@@ -524,13 +553,17 @@ assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
  *
  * Protection check is OK is it's a read operation -OR- if PME_W is set.
  *
- * When it's latched into ErrorReg, it's reflected out the MMU_ERROR[2..0]
- * output pins.  If that ends up != 0, then the system Bus Error register
- * will latch these bits and signal /BERR to the CPU.  The bits are:
+ * When a translation error is detected in the bus cycle state machine
+ * (right at the beginning of the cycle, before the data strobe outputs
+ * are un-gated), it's latched into the Bus Error Register and the state
+ * machine signals a bus error to the CPU.  The bits are:
  *
  *	001	Invalid translation
  *	010	Protection error
  *	100	Privelege error
+ *
+ * An additional bit is reserved in the Bus Error Register for future
+ * use (maybe adding an EXEC protection failure?)
  *
  * N.B. the MMU guarantees that PROT and PRIV will not be set if INV is
  * set, and PROT will not be set if PRIV is set.
@@ -542,11 +575,6 @@ wire ProtOK  = (RnW || PME_W);
 wire [2:0] TranslationError =
     {(~PrivOK & TransOK), (~ProtOK & TransOK & PrivOK), ~TransOK};
 
-localparam ERR_NONE	= 3'd0;
-
-reg [2:0] ErrorReg;
-assign MMU_ERROR = ErrorReg;
-
 /*
  * Qual MMU_DTACK on the non-synchronized /AS input to ensure it de-asserts
  * as quickly as possbile.
@@ -555,9 +583,12 @@ assign MMU_ERROR = ErrorReg;
  * Family Reference Manual" lists a minimum 0ns "/AS negated to /DTACK negated"
  * time (characteristic #28), as well as for "/AS negated to /BERR negated"
  * time (characteristic #30).
+ *
+ * Also qual with the combined /xDS signal so that we can assert our
+ * internal dtack early.
  */
 reg dtack;
-assign MMU_DTACK = dtack & ~nAS;
+assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
 
 /*
  * Gate the /AS signal that goes to the system on address translation success.
@@ -610,17 +641,59 @@ assign nPM_LE = ~TranslationValid;
 reg enable_data_out;
 reg [7:0] data_out;
 always @(*) begin
-	case ({ContextRegSel})
-	1'b1:	 data_out = {2'b0, ContextReg};
+	case ({ContextRegSel,BusErrorRegSel})
+	2'b10:	 data_out = {2'b00, ContextReg};
+	2'b01:	 data_out = {2'b00, bus_error_reg};
 	default: data_out = 8'hFF;
 	endcase
 end
 assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
 
+/*****************************************************************************/
+
 /*
- * BUS CYCLE STATE MACHINE
+ * Bus timer module for 68000 busses.
  *
- * Here we take care of reading (Context, Error) and writing (Context)
+ * This is pretty simple: It's a counter that counts CPU clock cycles
+ * so long as it's instructed to do so (typically when /AS is asserted,
+ * although the consumer of this module is allowed to pick any criteria
+ * it desires).
+ *
+ * XXX Unfortunately, the Yosys workflow I'm using here requires me to
+ * XXX directly include all functionality into a single module, so the
+ * XXX code is replicated here (see rtl/bus_timer.v).
+ */
+
+wire bus_timeout;
+wire bus_timer_enable = ~nAS;
+
+localparam BUS_TIMER_INITIAL	=	6'd0;
+localparam BUS_TIMER_TICK	=	6'd1;
+localparam BUS_TIMER_TIMEOUT	=	6'd63;
+
+reg [5:0] bus_timer;
+initial begin
+	bus_timer = BUS_TIMER_INITIAL;
+end
+
+always @(posedge CPU_CLK, negedge nRST) begin
+	if (~nRST) begin
+		bus_timer <= BUS_TIMER_INITIAL;
+	end
+	else if (~bus_timer_enable) begin
+		bus_timer <= BUS_TIMER_INITIAL;
+	end
+	else if (bus_timer != BUS_TIMER_TIMEOUT) begin
+		bus_timer <= bus_timer + BUS_TIMER_TICK;
+	end
+end
+
+wire bus_timeout = (bus_timer == BUS_TIMER_TIMEOUT);
+
+/************************* BUS CYCLE STATE MACHINE ***************************/
+
+/*
+ * Here we take care of reading (Context, Bus Error) and writing (Context)
  * internal MMU registers as well as performing address translations.
  *
  * It's worth noting that address translations largely happen on their
@@ -628,28 +701,85 @@ assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
  * PageMap SRAMs 
  */
 
-wire [4:0] Cycle = {AS_s, Translate, RnW, ContextRegSel, MapSel};
+wire bus_error_detected = (bus_timeout | ~n_vme_berr);
 
-localparam CYCLE_NONE		= 6'b0xxxx;
-localparam CYCLE_RD_CONTEXT	= 6'b10110;
-localparam CYCLE_WR_CONTEXT	= 6'b10010;
-localparam CYCLE_RD_ERROR	= 6'b10100;
-localparam CYCLE_RD_MAP		= 6'b10101;
-localparam CYCLE_WR_MAP		= 6'b10001;
-localparam CYCLE_XLATE_READ	= 6'b11100;
-localparam CYCLE_XLATE_WRITE	= 6'b11000;
+wire [5:0] Cycle =
+    {AS_s, Translate, RnW, ContextRegSel, BusErrorRegSel, MapSel};
 
-localparam Idle			= 3'd0;
-localparam WriteContext		= 3'd1;
-localparam TermWaitRMW0		= 3'd2;
-localparam TermWaitRMW1		= 3'd3;
-localparam TermWaitRMW2		= 3'd4;
-localparam TermWait		= 3'd5;
+localparam CYCLE_NONE		= 6'b0xxxxx;
+localparam CYCLE_RD_CONTEXT	= 6'b101100;
+localparam CYCLE_WR_CONTEXT	= 6'b100100;
+localparam CYCLE_RD_ERROR	= 6'b101010;
+localparam CYCLE_WR_ERROR	= 6'b100010;
+localparam CYCLE_RD_MAP		= 6'b101001;
+localparam CYCLE_WR_MAP		= 6'b100001;
+localparam CYCLE_RD_XLATE	= 6'b111000;
+localparam CYCLE_WR_XLATE	= 6'b110000;
 
-reg [2:0] state;
+/*
+ * State transitions:
+ * S_IDLE
+ *	S_WR_CONTEXT
+ *	S_MMU_REG_TERM_WAIT
+ *	S_ERROR_REG_TERM_WAIT
+ *	S_RD_XLATE_TERM_WAIT0
+ *	S_XLATE_TERM_WAIT
+ *	S_MMU_ERROR
+ *
+ * S_WR_CONTEXT
+ *	S_MMU_REG_TERM_WAIT
+ *
+ * S_MMU_REG_TERM_WAIT
+ *	S_IDLE
+ *
+ * S_ERROR_REG_TERM_WAIT
+ *	S_IDLE
+ *
+ * S_RD_XLATE_TERM_WAIT0
+ *	S_IDLE
+ *	S_RD_XLATE_TERM_WAIT1
+ *	S_BUS_ERROR_DETECTED
+ *
+ * S_RD_XLATE_TERM_WAIT1
+ *	S_IDLE
+ *	S_RD_XLATE_TERM_WAIT2
+ *	S_BUS_ERROR_DETECTED
+ *
+ * S_RD_XLATE_TERM_WAIT2
+ *	S_IDLE
+ *	S_XLATE_TERM_WAIT
+ *	S_MMU_ERROR
+ *	S_BUS_ERROR_DETECTED
+ *
+ * S_XLATE_TERM_WAIT
+ *	S_IDLE
+ *	S_BUS_ERROR_DETECTED
+ *
+ * S_MMU_ERROR
+ *	S_BUS_ERROR
+ *
+ * S_BUS_ERROR_DETECTED
+ *	S_BUS_ERROR
+ *
+ * S_BUS_ERROR
+ *	S_IDLE
+ */
+localparam S_IDLE			= 4'd0;
+localparam S_WR_CONTEXT			= 4'd1;
+localparam S_MMU_REG_TERM_WAIT		= 4'd2;
+localparam S_ERROR_REG_TERM_WAIT	= 4'd3;
+localparam S_RD_XLATE_TERM_WAIT0	= 4'd4;
+localparam S_RD_XLATE_TERM_WAIT1	= 4'd5;
+localparam S_RD_XLATE_TERM_WAIT2	= 4'd6;
+localparam S_XLATE_TERM_WAIT		= 4'd7;
+localparam S_MMU_ERROR			= 4'd8;
+localparam S_BUS_ERROR_DETECTED		= 4'd9;
+localparam S_BUS_ERROR			= 4'd10;
+
+reg [3:0] state;
 always @(negedge CLK40) begin
 	if (~nRST) begin
-		ErrorReg <= ERR_NONE;
+		bus_error_reg <= BERR_NONE;
 
 		ContextReg <= 6'd0;
 
@@ -661,7 +791,7 @@ always @(negedge CLK40) begin
 
 		enable_data_out <= 1'b0;
 		dtack <= 1'b0;
-		state <= Idle;
+		state <= S_IDLE;
 	end
 	else begin
 		/*
@@ -672,17 +802,17 @@ always @(negedge CLK40) begin
 		PME_copy <= PME;
 
 		case (state)
-		Idle: begin
+		S_IDLE: begin
 			/* Check for the beginning of a bus cycle. */
 			casex (Cycle)
 			CYCLE_NONE: begin
-				state <= Idle;
+				state <= S_IDLE;
 			end
 
 			CYCLE_RD_CONTEXT: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_MMU_REG_TERM_WAIT;
 			end
 
 			CYCLE_WR_CONTEXT: begin
@@ -690,41 +820,44 @@ always @(negedge CLK40) begin
 				 * We have to wait for the synchronized
 				 * /UDS signal to be asserted.
 				 */
-				state <= WriteContext;
+				state <= S_WR_CONTEXT;
+			end
+
+			CYCLE_RD_ERROR: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= S_ERROR_REG_TERM_WAIT;
+			end
+
+			CYCLE_WR_ERROR: begin
+				/* We just ignore these writes. */
+				dtack <= 1'b1;
+				state <= S_MMU_REG_TERM_WAIT;
 			end
 
 			CYCLE_RD_MAP: begin
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_MMU_REG_TERM_WAIT;
 			end
 
 			CYCLE_WR_MAP: begin
-				/*
-				 * The data strobes might not have been
-				 * asserted yet, so we might need to insert
-				 * an extra state (or 2) here to wait for
-				 * that to happen, but I don't suspect that
-				 * our asserting /DTACK early is going to
-				 * be a problem.
-				 */
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_MMU_REG_TERM_WAIT;
 			end
 
-			CYCLE_XLATE_READ: begin
+			CYCLE_RD_XLATE: begin
 				if (TranslationError) begin
-					ErrorReg <= TranslationError;
-					state <= TermWait;
+					state <= S_MMU_ERROR;
 				end
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
-					state <= TermWaitRMW0;
+					state <= S_RD_XLATE_TERM_WAIT0;
 				end
 			end
 
-			CYCLE_XLATE_WRITE: begin
+			CYCLE_WR_XLATE: begin
 				/*
 				 * A translated write cycle is basically
 				 * the same as a translated read cycle,
@@ -732,37 +865,64 @@ always @(negedge CLK40) begin
 				 * for R-M-W.
 				 */
 				if (TranslationError) begin
-					ErrorReg <= TranslationError;
+					state <= S_MMU_ERROR;
 				end
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
 					AccessValid <= 1'b1;
+					state <= S_XLATE_TERM_WAIT;
 				end
-				state <= TermWait;
 			end
 
 			default: begin
 				/*
-				 * Do nothing for the default case of
+				 * Mostly do nothing for the default case of
 				 * "unrecognized bus cycle".  The system's
 				 * bus cycle timeout logic will kick in
 				 * and signal the appropriate bus error.
+				 *
+				 * This will generally be one of 3 things:
+				 * - Interrupt Acknowledge cycle
+				 * - Some other Control Space access that's
+				 *   outside of the MMU.
+				 * - Normal bus cycle with MMU disabled.
 				 */
-				state <= Idle;
+				if (bus_error_detected) begin
+					state <= S_BUS_ERROR_DETECTED;
+				end
+				else begin
+					state <= S_IDLE;
+				end
 			end
 			endcase
 		end
 
-		WriteContext: begin
+		S_WR_CONTEXT: begin
 			if (UDS_s) begin
 				ContextReg <= DATA[5:0];
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_MMU_REG_TERM_WAIT;
 			end
 		end
 
-		TermWaitRMW0: begin
+		S_MMU_REG_TERM_WAIT: begin
+			if (~AS_s) begin
+				dtack <= 1'b0;
+				state <= S_IDLE;
+			end
+		end
+
+		S_ERROR_REG_TERM_WAIT: begin
+			/* Bus Error Register is reset after reading. */
+			if (~AS_s) begin
+				bus_error_reg <= BERR_NONE;
+				dtack <= 1'b0;
+				state <= S_IDLE;
+			end
+		end
+
+		S_RD_XLATE_TERM_WAIT0: begin
 			/*
 			 * We watch for two different scenarios here.
 			 * If we see /AS de-asserted first, then it's
@@ -774,16 +934,13 @@ always @(negedge CLK40) begin
 			 * the R-M-W cycle.
 			 */
 			PME_update <= 1'b0;
-			if (~AS_s) begin
-				/*
-				 * We know in this case that it's a
-				 * translated read that passed the
-				 * initial translation tests, so only
-				 * need to go back to Idle state here.
-				 */
+			if (bus_error_detected) begin
+				state <= S_BUS_ERROR_DETECTED;
+			end
+			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 			/*
 			 * Wait for /DTACK to be asserted by the target.
@@ -793,11 +950,11 @@ always @(negedge CLK40) begin
 			 * next pass throug this state.
 			 */
 			else if (DTACK_s) begin
-				state <= TermWaitRMW1;
+				state <= S_RD_XLATE_TERM_WAIT1;
 			end
 		end
 
-		TermWaitRMW1: begin
+		S_RD_XLATE_TERM_WAIT1: begin
 			/*
 			 * We've observed /DTACK being asserted by the
 			 * target, now we need to wait for /DTACK to
@@ -807,18 +964,21 @@ always @(negedge CLK40) begin
 			 * by the CPU) in case we have to perform another
 			 * permission check.
 			 */
-			if (~AS_s) begin
+			if (bus_error_detected) begin
+				state <= S_BUS_ERROR_DETECTED;
+			end
+			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 			else if (~DTACK_s) begin
 				AccessValid <= 1'b0;
-				state <= TermWaitRMW2;
+				state <= S_RD_XLATE_TERM_WAIT2;
 			end
 		end
 
-		TermWaitRMW2: begin
+		S_RD_XLATE_TERM_WAIT2: begin
 			/*
 			 * Now we wait to see if this is really an
 			 * R-M-W cycle.  If it is, /AS will remain
@@ -826,24 +986,27 @@ always @(negedge CLK40) begin
 			 * obvserve that happening, then we need to
 			 * perform another permission check.
 			 */
-			if (~AS_s) begin
+			if (bus_error_detected) begin
+				state <= S_BUS_ERROR_DETECTED;
+			end
+			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 			else if (~RnW_s) begin
 				if (TranslationError) begin
-					ErrorReg <= TranslationError;
+					state <= S_MMU_ERROR;
 				end
 				else begin
 					PME_update <= 1'b1;
 					AccessValid <= 1'b1;
+					state <= S_XLATE_TERM_WAIT;
 				end
-				state <= TermWait;
 			end
 		end
 
-		TermWait: begin
+		S_XLATE_TERM_WAIT: begin
 			/*
 			 * N.B. it's totally safe to update both PME_update
 			 * and TranslationValid (which latches the PageMap
@@ -853,25 +1016,40 @@ always @(negedge CLK40) begin
 			 */
 			PME_update <= 1'b0;
 			if (~AS_s) begin
-				/*
-				 * The system Bus Error register will have
-				 * latched this error before signalling
-				 * /BERR to the system, so when we see AS_s
-				 * de-assert, we can safely clear the latched
-				 * error.
-				 */
-				ErrorReg <= ERR_NONE;
-
 				TranslationValid <= 1'b0;
 				AccessValid <= 1'b0;
-				enable_data_out <= 1'b0;
-				dtack <= 1'b0;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 		end
+
+		S_MMU_ERROR: begin
+			bus_error_reg <= {BERR_MMUERR_UPPER,
+			    TranslationError};
+			state <= S_BUS_ERROR;
+		end
+
+		S_BUS_ERROR_DETECTED: begin
+			if (~n_vme_berr) begin
+				bus_error_reg <= BERR_VME;
+			end
+			else begin
+				bus_error_reg <= BERR_TIMEOUT;
+			end
+			state <= S_BUS_ERROR;
+		end
+
+		S_BUS_ERROR: begin
+			if (~AS_s) begin
+				state <= S_IDLE;
+			end
+		end
+
 		endcase
 	end
 end
+
+/* Signal /BERR to the CPU if the state machine says so. */
+assign n_berr_out = ~(state == S_BUS_ERROR) | ~nAS;
 
 endmodule
 

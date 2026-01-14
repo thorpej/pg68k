@@ -1079,9 +1079,7 @@ endmodule
 //PIN: DATA_5		: 24
 //PIN: DATA_6		: 25
 //PIN: DATA_7		: 27
-//PIN: MMU_ERROR_0	: 28
-//PIN: MMU_ERROR_1	: 29
-//PIN: MMU_ERROR_2	: 30
+//PIN: n_berr_out	: 28
 //
 //
 //	=== SRAM / System side of the chip ===
@@ -1129,6 +1127,7 @@ endmodule
 //	=== Top of the chip ===
 //
 //	== General control inputs ==
+//PIN: n_vme_berr	: 85
 //PIN: nRST		: 89
 //PIN: CLK40		: 87
 //PIN: MMU_EN		: 88

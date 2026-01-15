@@ -9206,7 +9206,7 @@
 		(uuid "021c469d-4eec-481d-9eeb-59582422f51c")
 	)
 	(label "PME_PFN10"
-		(at 285.75 97.79 180)
+		(at 288.29 97.79 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9236,7 +9236,7 @@
 		(uuid "04138a72-2291-4a59-aaf0-889e6748a5e6")
 	)
 	(label "PME_PFN11"
-		(at 285.75 105.41 180)
+		(at 288.29 105.41 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10215,7 +10215,7 @@
 		)
 		(uuid "627218d3-a0c1-4d67-8c56-399046aad9b2")
 	)
-	(label "L_PMIDX1"
+	(label "L_PMIDX11"
 		(at 271.78 49.53 180)
 		(effects
 			(font

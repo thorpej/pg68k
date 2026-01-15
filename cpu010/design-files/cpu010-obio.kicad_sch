@@ -11212,7 +11212,7 @@
 			)
 		)
 	)
-	(global_label "TMS"
+	(global_label "TCK"
 		(shape input)
 		(at 107.95 120.65 0)
 		(fields_autoplaced yes)
@@ -11224,7 +11224,7 @@
 		)
 		(uuid "47655e66-cb5b-4692-8b00-e41bea346132")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.5637 120.65 0)
+			(at 114.4428 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)

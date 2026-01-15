@@ -4550,7 +4550,7 @@
 		)
 		(uuid "05bdcf4a-a7f9-4af1-9519-7c2c69ad4c3c")
 	)
-	(label "~{OBMEM_RAM1SEL}"
+	(label "~{OBMEM_RAM0SEL}"
 		(at 80.01 173.99 180)
 		(effects
 			(font
@@ -4610,7 +4610,7 @@
 		)
 		(uuid "2eda872a-84c9-47e0-910f-931e4b4c7965")
 	)
-	(label "~{OBMEM_RAM1SEL}"
+	(label "~{OBMEM_RAM0SEL}"
 		(at 80.01 86.36 180)
 		(effects
 			(font
@@ -4650,7 +4650,7 @@
 		)
 		(uuid "51947e1a-840f-4587-b2a2-0f424bac45df")
 	)
-	(label "~{OBMEM_RAM3SEL}"
+	(label "~{OBMEM_RAM2SEL}"
 		(at 171.45 86.36 180)
 		(effects
 			(font
@@ -4660,7 +4660,7 @@
 		)
 		(uuid "519ad0b1-69fd-4c2c-98e3-93cd958cef71")
 	)
-	(label "~{OBMEM_RAM0SEL}"
+	(label "~{OBMEM_RAM1SEL}"
 		(at 33.02 86.36 180)
 		(effects
 			(font
@@ -4700,7 +4700,7 @@
 		)
 		(uuid "642364b8-b6dc-48f5-af53-8946e136952e")
 	)
-	(label "~{OBMEM_RAM2SEL}"
+	(label "~{OBMEM_RAM3SEL}"
 		(at 124.46 86.36 180)
 		(effects
 			(font
@@ -4770,7 +4770,7 @@
 		)
 		(uuid "8f57fadf-b5d2-4b27-b8a3-e971c56460a2")
 	)
-	(label "~{OBMEM_RAM3SEL}"
+	(label "~{OBMEM_RAM2SEL}"
 		(at 171.45 173.99 180)
 		(effects
 			(font
@@ -4860,7 +4860,7 @@
 		)
 		(uuid "befbb57b-fba5-48eb-8f4a-650fb1e84ef5")
 	)
-	(label "~{OBMEM_RAM2SEL}"
+	(label "~{OBMEM_RAM3SEL}"
 		(at 124.46 173.99 180)
 		(effects
 			(font
@@ -4890,7 +4890,7 @@
 		)
 		(uuid "e9649841-8f43-4c68-9801-b281b4aa90b1")
 	)
-	(label "~{OBMEM_RAM0SEL}"
+	(label "~{OBMEM_RAM1SEL}"
 		(at 33.02 173.99 180)
 		(effects
 			(font
@@ -11720,7 +11720,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "17e32a42-3bfb-41f2-a868-ad301d65f7cf")
-		(property "Reference" "U503"
+		(property "Reference" "U505"
 			(at 47.8633 109.22 0)
 			(effects
 				(font
@@ -11918,7 +11918,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U503")
+					(reference "U505")
 					(unit 1)
 				)
 			)
@@ -12070,7 +12070,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "21a19326-8882-4e03-b186-697840241eae")
-		(property "Reference" "U511"
+		(property "Reference" "U509"
 			(at 186.2933 109.22 0)
 			(effects
 				(font
@@ -12268,7 +12268,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U511")
+					(reference "U509")
 					(unit 1)
 				)
 			)
@@ -13590,7 +13590,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5456894c-7bac-4bd5-9209-b2fe418631f3")
-		(property "Reference" "U502"
+		(property "Reference" "U504"
 			(at 47.8633 21.59 0)
 			(effects
 				(font
@@ -13788,7 +13788,7 @@
 		(instances
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U502")
+					(reference "U504")
 					(unit 1)
 				)
 			)
@@ -13804,7 +13804,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "62c2a2e1-3021-4920-985c-93f48c2a9cee")
-		(property "Reference" "U509"
+		(property "Reference" "U511"
 			(at 139.3033 109.22 0)
 			(effects
 				(font
@@ -14002,7 +14002,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U509")
+					(reference "U511")
 					(unit 1)
 				)
 			)
@@ -14216,7 +14216,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "67587469-8128-4a6a-adb0-d7bf3e711852")
-		(property "Reference" "U510"
+		(property "Reference" "U508"
 			(at 186.2933 21.59 0)
 			(effects
 				(font
@@ -14414,7 +14414,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U510")
+					(reference "U508")
 					(unit 1)
 				)
 			)
@@ -14430,7 +14430,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "68788d9e-5b70-424f-887e-023f9b79110f")
-		(property "Reference" "U504"
+		(property "Reference" "U502"
 			(at 94.8533 21.59 0)
 			(effects
 				(font
@@ -14628,7 +14628,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U504")
+					(reference "U502")
 					(unit 1)
 				)
 			)
@@ -15623,7 +15623,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8b6f3520-25a1-42cf-aafb-5a22ca9940a2")
-		(property "Reference" "U505"
+		(property "Reference" "U503"
 			(at 94.8533 109.22 0)
 			(effects
 				(font
@@ -15821,7 +15821,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U505")
+					(reference "U503")
 					(unit 1)
 				)
 			)
@@ -15903,7 +15903,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9480f326-2036-41e8-a4ba-587109632b6d")
-		(property "Reference" "U508"
+		(property "Reference" "U510"
 			(at 139.3033 21.59 0)
 			(effects
 				(font
@@ -16101,7 +16101,7 @@
 		(instances
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/7792efab-b43b-475d-b2b8-8a6079701be8"
-					(reference "U508")
+					(reference "U510")
 					(unit 1)
 				)
 			)

@@ -8768,6 +8768,16 @@
 	)
 	(wire
 		(pts
+			(xy 218.44 101.6) (xy 233.68 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "847f937a-4d31-4303-be13-7167aad41692")
+	)
+	(wire
+		(pts
 			(xy 34.29 148.59) (xy 48.26 148.59)
 		)
 		(stroke
@@ -8805,6 +8815,16 @@
 			(type default)
 		)
 		(uuid "92436bdd-9bb3-4ba8-a330-a81c012a22a5")
+	)
+	(wire
+		(pts
+			(xy 218.44 68.58) (xy 233.68 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9256a3d3-f71a-4b1b-8586-683df8689204")
 	)
 	(wire
 		(pts
@@ -9517,7 +9537,7 @@
 		(uuid "228e2f59-ee5f-42da-82d0-7edd43b47b93")
 	)
 	(label "UARTA_INT"
-		(at 218.44 68.58 0)
+		(at 233.68 68.58 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9737,7 +9757,7 @@
 		(uuid "525067f6-010a-487d-a1b5-bc38168b7b6f")
 	)
 	(label "UARTB_INT"
-		(at 218.44 101.6 0)
+		(at 233.68 101.6 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -13206,6 +13226,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 233.68 106.68 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0d25b398-4b56-4f40-9d04-6de0dc032a8f")
+		(property "Reference" "#PWR0640"
+			(at 233.68 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 233.68 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 233.68 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 233.68 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "37d92431-88a6-4ae6-baf6-1595f6a33944")
+		)
+		(instances
+			(project ""
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "#PWR0640")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 46.99 271.78 0)
 		(mirror x)
@@ -14413,6 +14499,76 @@
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "#PWR0603")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 233.68 71.12 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "387ebd54-6fd0-4c97-ac15-001c4362b129")
+		(property "Reference" "R607"
+			(at 236.22 72.3901 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "47K"
+			(at 236.22 69.8501 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 233.68 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 233.68 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 233.68 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "81857153-fc45-4972-90ac-0908a66c05ed")
+		)
+		(pin "2"
+			(uuid "4692fc6e-b37b-4e66-bef3-f3de562c163e")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "R607")
 					(unit 1)
 				)
 			)
@@ -17658,6 +17814,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Small")
+		(at 233.68 104.14 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e08e6f1c-657c-4be2-a876-3739e8a6e040")
+		(property "Reference" "R606"
+			(at 236.22 105.4101 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "47K"
+			(at 236.22 102.8701 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 233.68 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 233.68 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 233.68 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f6219a27-6ffc-4903-ad53-c5e2a199f619")
+		)
+		(pin "2"
+			(uuid "214cb25b-77bb-45e7-893c-3f16d35154e4")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "R606")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+5V")
 		(at 144.78 144.78 0)
 		(unit 1)
@@ -17784,6 +18010,72 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "#PWR0623")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 233.68 73.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "eba71a47-9ca8-43d9-86f1-8897bbc625b9")
+		(property "Reference" "#PWR0641"
+			(at 233.68 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 233.68 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 233.68 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 233.68 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "30c0c292-27b1-4e5e-ac13-966a899f9df8")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "#PWR0641")
 					(unit 1)
 				)
 			)

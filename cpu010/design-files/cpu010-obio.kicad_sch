@@ -8408,6 +8408,16 @@
 	)
 	(wire
 		(pts
+			(xy 105.41 49.53) (xy 104.14 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3e68a0e9-59bb-4cde-b918-e766c1f8fbdb")
+	)
+	(wire
+		(pts
 			(xy 77.47 161.29) (xy 80.01 161.29)
 		)
 		(stroke
@@ -8668,7 +8678,7 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 52.07) (xy 111.76 52.07)
+			(xy 104.14 52.07) (xy 116.84 52.07)
 		)
 		(stroke
 			(width 0)
@@ -9607,7 +9617,7 @@
 		(uuid "32f2c0f6-c1fe-4a12-b897-1cb91f4c5c56")
 	)
 	(label "~{IO_WR}"
-		(at 111.76 52.07 0)
+		(at 116.84 52.07 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12826,9 +12836,9 @@
 			)
 		)
 	)
-	(global_label "~{AVEC}"
+	(global_label "~{VPA}"
 		(shape output)
-		(at 104.14 49.53 0)
+		(at 105.41 49.53 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12838,7 +12848,7 @@
 		)
 		(uuid "f747f089-52ca-4859-85f8-42e0e3d49958")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 111.7214 49.53 0)
+			(at 111.8424 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)

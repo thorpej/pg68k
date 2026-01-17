@@ -13114,7 +13114,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "3K3"
+		(property "Value" "1K"
 			(at 95.25 207.0099 0)
 			(effects
 				(font
@@ -16918,7 +16918,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "3K3"
+		(property "Value" "1K"
 			(at 109.22 207.0099 0)
 			(effects
 				(font

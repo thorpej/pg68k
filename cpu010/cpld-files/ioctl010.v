@@ -95,6 +95,7 @@ module ioctl010(
 	input wire UARTA_INT,	/* UART A interrupt */
 	input wire UARTB_INT,	/* UART B interrupt */
 	input wire ATA_INT,	/* ATA disk interface interrupt */
+	input wire nI2C_INT,	/* I2C controller interrupt */
 
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
@@ -142,8 +143,8 @@ reg Timer_intack;
 reg Timer_enab;
 reg Timer_int;
 
-/* ATA disk interface interrupts at IRQ3. */
-wire IRQ3 = ~nIRQ3 | ATA_INT;
+/* ATA disk interface and I2C controller interrupt at IRQ3. */
+wire IRQ3 = ~nIRQ3 | ATA_INT | ~nI2C_INT;
 
 /* UARTs interrupt at IRQ5. */
 wire IRQ5 = ~nIRQ5 | UARTA_INT | UARTB_INT;
@@ -600,7 +601,8 @@ endmodule
 //
 //	=== Devices side of the chip ===
 //
-//PIN: nEXPSEL		: 76
+//PIN: nEXPSEL		: 75
+//PIN: nI2CINT		: 76
 //PIN: nI2CSEL		: 77
 //PIN: nATABEN		: 78
 //PIN: nATASEL		: 79

@@ -7857,6 +7857,12 @@
 		(uuid "8866ab59-e0c1-4b6a-a364-9dc1e3e1917a")
 	)
 	(junction
+		(at 106.68 236.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8c7ff4ea-3ba4-4682-b0a9-ce376cb4cbea")
+	)
+	(junction
 		(at 78.74 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8111,10 +8117,6 @@
 		(uuid "f1d40378-b40b-4f41-a173-ba11b7fdce50")
 	)
 	(no_connect
-		(at 104.14 92.71)
-		(uuid "f4b00257-2560-4ba5-bee9-9637d4e4b158")
-	)
-	(no_connect
 		(at 135.89 128.27)
 		(uuid "f6061b42-4592-46e1-8ec6-9f983f4a4074")
 	)
@@ -8253,6 +8255,16 @@
 			(type default)
 		)
 		(uuid "1aeec62b-225f-487b-ba05-402d97546232")
+	)
+	(wire
+		(pts
+			(xy 106.68 236.22) (xy 109.22 236.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1d964505-6816-4500-a3e1-32ba5e794334")
 	)
 	(wire
 		(pts
@@ -8603,6 +8615,16 @@
 			(type default)
 		)
 		(uuid "6a48a5d8-e061-4bb8-87fb-1ac598e8ccb7")
+	)
+	(wire
+		(pts
+			(xy 104.14 92.71) (xy 105.41 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6abd8603-2505-4333-9e4d-2b695a386067")
 	)
 	(wire
 		(pts
@@ -9116,6 +9138,16 @@
 	)
 	(wire
 		(pts
+			(xy 106.68 233.68) (xy 106.68 236.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d9205b77-dfe3-4be3-a886-297167685e8b")
+	)
+	(wire
+		(pts
 			(xy 260.35 157.48) (xy 260.35 170.18)
 		)
 		(stroke
@@ -9216,7 +9248,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 236.22) (xy 92.71 236.22)
+			(xy 90.17 236.22) (xy 106.68 236.22)
 		)
 		(stroke
 			(width 0)
@@ -9243,6 +9275,16 @@
 			(type default)
 		)
 		(uuid "fbbf5b53-0d63-4553-91a3-cf817292b6e1")
+	)
+	(label "~{I2C_INT}"
+		(at 105.41 90.17 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "016d58a0-cec5-4fad-8ec5-a571ab615b20")
 	)
 	(label "~{UARTA_CTS}"
 		(at 254 58.42 180)
@@ -9783,6 +9825,16 @@
 			(justify right bottom)
 		)
 		(uuid "612b7676-3b09-4633-9e1f-64d14f620a30")
+	)
+	(label "~{I2C_INT}"
+		(at 109.22 236.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "61e073f2-aab3-4632-8fbd-3c8e223cbb57")
 	)
 	(label "ATA_D9"
 		(at 285.75 124.46 0)
@@ -11280,7 +11332,7 @@
 	)
 	(global_label "~{EXPSEL}"
 		(shape output)
-		(at 105.41 90.17 0)
+		(at 105.41 92.71 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11290,7 +11342,7 @@
 		)
 		(uuid "4a402777-3e7d-41cc-ad3e-6aaac66209e1")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.4103 90.17 0)
+			(at 115.4103 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11626,28 +11678,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "~{IRQ3}"
-		(shape output)
-		(at 92.71 236.22 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "81865709-5f89-477a-8f0e-74d1476ced07")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 100.11 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
@@ -13230,6 +13260,72 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "C602")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 106.68 228.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "11df727f-afb1-4256-8e91-be8979a03cd1")
+		(property "Reference" "#PWR0639"
+			(at 106.68 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 106.68 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 106.68 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 106.68 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 106.68 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a854b4ed-1add-4535-8b85-f7c73388db6b")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "#PWR0639")
 					(unit 1)
 				)
 			)
@@ -15413,6 +15509,75 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "J607")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 106.68 231.14 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7d7fb3ec-3354-488a-9866-ab0a65636fcc")
+		(property "Reference" "R605"
+			(at 109.22 229.8699 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1K"
+			(at 109.22 232.4099 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 106.68 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 106.68 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 106.68 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "994ecee4-d416-4909-afe2-571dfe34ae6f")
+		)
+		(pin "2"
+			(uuid "10f2b58f-2852-4c18-8f61-3ce91351851e")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "R605")
 					(unit 1)
 				)
 			)

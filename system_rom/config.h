@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2025, 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,57 @@
 #define	CONFIG_ROM_VERSION_MINOR	1
 
 /*
+ * Configuration for the Playground 68010 Mk I (Phaethon 1).
+ */
+#ifdef CONFIG_MACH_PG68010_MK_I
+/* On-board RAM starts at $0000.0000 and we map it VA==PA. */
+#define	RAM0_START	0x00000000	/* start of on-board RAM */
+#define	RAM0_SIZE	0x00800000	/* fixed size of on-board RAM */
+#define	RAM0_DESC	"On-board RAM"
+/* XXX Add expansion RAM */
+
+/*
+ * ROM physically starts at $04000000 and is linked at $00F0.0000.
+ * and the hardware incompletely decodes it, so it mirrors every
+ * 1MB.
+ */
+#define	ROM_PHYS	0x04000000	/* phys start of ROM */
+#define	ROM_VIRT	0x00f00000	/* virt start of ROM */
+#define	ROM_SIZE	0x00100000
+
+/*
+ * OBIO space is beyond the addressing capabilities of the CPU, so
+ * the MMU has be be enabled to access it.  All of OBIO space is just
+ * 1 4K page, so we map it at the page below where the ROM is linked.
+ */
+#define	OBIO_PHYS	0x08000000	/* phys start of OBIO space */
+#define	OBIO_VIRT	0x00eff000	/* virt start of OBIO space */
+#define	OBIO_SIZE	0x00001000
+
+#define	UART0_ADDR	(OBIO_VIRT+0x0000)
+#define	UART1_ADDR	(OBIO_VIRT+0x0100)
+#define	TIMER_ADDR	(OBIO_VIRT+0x0200)
+#define	I2C_ADDR	(OBIO_VIRT+0x0300)
+#if 0
+#define	ATA_ADDR	(OBIO_VIRT+0x0400)
+#define	ATA_AUX_ADDR	(OBIO_VIRT+0x0410)
+#endif
+
+#define	FC_CONTROL	4		/* control space is FC==4 */
+
+#define	CONFIG_MACHINE_STRING	"Phaethon 1"
+#define	CONFIG_RIISP		(RAM0_START+(RAM0_SIZE-0x00100000))
+#define	CONFIG_MC68010
+#define	CONFIG_DEV_REGSHIFT	1
+#define	CONFIG_UART_16550
+#define	CONFIG_UART_FREQ	1843200
+#define	CONFIG_UART_SPEED	9600
+#define	CONFIG_CONSOLE_UART	0
+#define	CONFIG_PGTIMER
+#define	CONFIG_PGTIMER_FREQ	(10000000 / 16)
+#endif /* CONFIG_MACH_PG68010_MK_I */
+
+/*
  * Configuration for the Playground 68030 Mk I.
  */
 #ifdef CONFIG_MACH_PG68030_MK_I
@@ -60,9 +111,9 @@
 #define	CONFIG_UART_16550
 #define	CONFIG_UART_FREQ	1843200
 #define	CONFIG_UART_SPEED	115200
-#define	CONFIG_ISACTL_TIMER
-#define	CONFIG_ISACTL_TIMER_FREQ (25000000 / 16)
 #define	CONFIG_CONSOLE_UART	0
+#define	CONFIG_PGTIMER
+#define	CONFIG_PGTIMER_FREQ	(25000000 / 16)
 #define	CONFIG_ATA_GENERIC
 #define	CONFIG_ETH_RTL8019AS
 #define	CONFIG_I2C_PCF8584

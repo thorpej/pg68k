@@ -30,8 +30,6 @@
 
 #include "loadfile.h"
 
-#include "libfdt.h"
-
 #include "memory.h"
 #include "clock.h"
 
@@ -40,6 +38,8 @@
 #endif
 
 #ifdef CONFIG_DEVICETREE
+#include "libfdt.h"
+
 /*
  * Allocate a static 4KB buffer for the device tree that's passed to
  * the booted kernel.

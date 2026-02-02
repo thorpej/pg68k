@@ -46,7 +46,7 @@ static volatile uint64_t clock_ticks;
 static uint32_t
 pgtimer_us_to_ticks(unsigned int interval_us)
 {
-	const uint32_t tick_ns = 1000000000 / CONFIG_ISACTL_TIMER_FREQ;
+	const uint32_t tick_ns = 1000000000 / CONFIG_PGTIMER_FREQ;
 	const uint64_t interval_ns = interval_us * 1000;
 	uint64_t ticks = interval_ns / tick_ns;
 

@@ -38,6 +38,11 @@
 #include "cache.h"
 #include "psl.h"
 
+#ifdef CONFIG_MC68010
+#include "control.h"
+#include "mmu_config.h"
+#endif /* CONFIG_MC68010 */
+
 	.text
 
 |
@@ -131,7 +136,7 @@ vectab:
 #else
 	.long	trap_badtrap	| 56: unassigned, reserved
 #endif
-#ifdef CONFIG_MC68000
+#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
 	.long	trap_badtrap	| 57: unassigned, reserved
 	.long	trap_badtrap	| 58: unassigned, reserved
 #else
@@ -184,26 +189,141 @@ start:
 	| In case we ended up here via nefarious means, go ahead and
 	| re-load the stack pointer from the vector table.
 	lea	vectab,%a0
-	move.l	(%a0),%sp
+	movea.l	(%a0),%sp
+
+#ifdef CONFIG_MC68010
+	| Set source and destination FCs for MOVES.
+	moveq	#FC_CONTROL,%d0
+	movec	%d0,%sfc
+	movec	%d0,%dfc
+
+	|
+	| We're not sure how we got here; it could have been a system
+	| reset, or it could have been the operating system requesting
+	| a reboot.  In the latter case, the MMU would be turned on,
+	| so we need to turn basically everything off.  But we need to
+	| preserve the "please reboot" bit.
+	|
+	| N.B. this also disables all interrupts, including the NMI,
+	| which is good, actually, because we can't use the stack yet!
+	|
+	movea.l	#CTLREG_SYSEN,%a5	| %a5 = System Enable register
+	moves.b	(%a5),%d5		| %d5 <- System Enable register
+	and.l	#SYSEN_REBOOT,%d5	| clear everything except REBOOT
+	moves.b	%d5,(%a5)		| %d5 -> System Enable register
+
+	|
+	| RAM is inaccessible until the MMU is enabled, so we need to
+	| bootstrap the MMU.
+	|
+	| We've allocated sufficient PMEGs to map everything linearly.
+	|
+
+	| Zero out all of the Segment Map space for context 0.
+	moveq	#0,%d0
+	move.l	#MMU_CTLSEL_SEGMAP0,%d1
+	movea.l	%d1,%a0
+	add.l	#(PGMMU_SEG_SIZE * PGMMU_NUM_SEGS),%d1
+1:	moves.l	%d0,(%a0)
+	adda.l	#PGMMU_SEG_SIZE,%a0	| advance SME address
+	cmpa.l	%d1,%a0
+	bne	1b
+
+	| Zero out all of the Page Map space.
+	move.l	#MMU_CTLSEL_PAGEMAP,%d1
+	movea.l	%d1,%a0
+	add.l	#(PGMMU_NUM_PMES << 4),%d1
+1:	moves.l	%d0,(%a0)
+	adda.l	#(1 << 4),%a0		| advance PME address
+	cmpa.l	%d1,%a0
+	bne	1b
+
+#define	FILL_PMES(v, p, s)						 \
+	movea.l	%d2,%a0							;\
+	adda.l	#(((v) >> PAGE_SHIFT) << 4),%a0				;\
+	move.l	%d2,%d1							;\
+	add.l	#((((v)+(s)) >> PAGE_SHIFT) << 4),%d1			;\
+									 \
+	move.l	#(PME_V+PME_W+PME_K+((p) >> PAGE_SHIFT)),%d0		;\
+									 \
+1:	moves.l	%d0,(%a0)						;\
+	adda.l	#(1 << 4),%a0						;\
+	addq.l	#1,%d0							;\
+	cmpa.l	%d1,%a0							;\
+	bne	1b
+
+	| %d2 = base of the ROM's Page Map region
+	move.l	#((ROM_PME_BASE << 4)+MMU_CTLSEL_PAGEMAP),%d2
+
+	| Map all of the on-board system RAM VA==PA.
+	FILL_PMES(RAM0_START, RAM0_START, RAM0_SIZE)
+
+	| Map the ROM into the correct location.
+	FILL_PMES(ROM_VIRT, ROM_PHYS, ROM_SIZE)
+
+	| Map the on-board I/O.
+	FILL_PMES(OBIO_VIRT, OBIO_PHYS, OBIO_SIZE);
+
+#undef FILL_PMES
+
+	|
+	| Now that all of the Page Map entries are valid, we can
+	| set the Segment Map entries to point to them.
+	|
+	move.l	#MMU_CTLSEL_SEGMAP0,%d2
+
+#define	FILL_SMES(v, s)							 \
+	movea.l	%d2,%a0							;\
+	adda.l	#((v) & ~PGMMU_SEG_OFFSET),%a0				;\
+	move.l	%d2,%d1							;\
+	add.l	#(((v)+(s)) & ~PGMMU_SEG_OFFSET),%d1			;\
+									 \
+	move.l	#(SME_V+(ROM_PMEG_BASE+((v) / PGMMU_SEG_SIZE))),%d0	;\
+									 \
+1:	moves.l	%d0,(%a0)						;\
+	adda.l	#PGMMU_SEG_SIZE,%a0					;\
+	addq.l	#1,%d0							;\
+	cmpa.l	%d1,%a0							;\
+	bne	1b
+
+	| RAM Segment Map entries.
+	FILL_SMES(RAM0_START, RAM0_SIZE)
+
+	| ROM Segment Map entries.
+	FILL_SMES(ROM_VIRT, ROM_SIZE)
+
+	| On-board I/O Segment Map entries.
+	FILL_SMES(OBIO_VIRT, OBIO_SIZE)
+
+#undef FILL_SMES
+
+	|
+	| The tables in the MMU are all configured for the firmware
+	| environment now.  %d5 still has the System Enable register
+	| value we preserved above, and %a5 still has the address,
+	| so add in the MMU bit and enable the MMU!
+	|
+	or.b	#SYSEN_MMU,%d5
+	moves.b	%d5,(%a5)
+
+#endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000
 	| Relocate the vector table to the ROM address.
-	movc	%a0,%vbr
+	lea	vectab,%a0
+	movec	%a0,%vbr
+#endif /* ! CONFIG_MC68000 */
 
-	|
-	| Before we go any further, make sure the MMU is turned off
-	| and the caches are cleared.
-	|
 #ifdef CONFIG_MC68030
+	|
+	| Make sure the MMU is turned off and the caches are cleared.
+	|
 	move.l	#CACHE_OFF,%d0
 	movc	%d0,%cacr
 	clr.l	-(%sp)
 	pmove	(%sp),%tc
 	addq.l	#4,%sp
-#else
-#error Need non-68030 cache+MMU code.
-#endif
-#endif /* ! CONFIG_MC68000 */
+#endif /* CONFIG_MC68030 */
 
 	|
 	| Copy the .data segment from ROM to the run-time location
@@ -236,15 +356,13 @@ start:
 	|
 	move.l	#IC_BE+IC_CLR+IC_ENABLE,%d0
 	movc	%d0,%cacr
-#else
-#error Need non-68030 cache+MMU code.
-#endif
+#endif /* CONFIG_MC68030 */
 
 	|
 	| Terminate the call stack by loading $0000.0000 into
 	| %fp, push's main's arguments, and call it.
 	|
-	move.l	#0,%fp
+	movea.l	#0,%fp
 	pea	rom_argv0
 	move.l	#1,-(%sp)
 	jbsr	main		| main(1, &rom_argv0)

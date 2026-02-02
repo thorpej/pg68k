@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,26 +24,25 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
+#ifndef mmu_config_h_included
+#define	mmu_config_h_included
 
-#include "clock.h"
+#include "config.h"
+
+#ifdef CONFIG_MC68010
+
+#include "cpu010_mmu.h"
 
 /*
- * On the 68020/68030, the value of delay_divisor is roughly
- * 8192 / cpu-freq-in-MHz.  It's wildly different for 68040/68060
- * (a lot smaller).  We'll start with this larger-than-necessary
- * value and come down from there.
- *
- * If you have a board slower than a 16MHz 68020, this will probably
- * need to be tweaked.
+ * We just slurp up the last 512 PMEGs (4096 PMEs) to use for the
+ * firmware mappings.  We won't use them all, but the kernel can
+ * use any unused PMEGs in that range if it likes (and can leverage
+ * some of our PMEGs as well).
  */
-int	delay_divisor = 8192 / 16;
+#define	ROM_PMEG_BASE	(PGMMU_NUM_PMEGS - PGMMU_NUM_SEGS)
+#define	ROM_PME_BASE	(ROM_PMEG_BASE * PGMMU_PMES_PER_PMEG)
+#define	ROM_PME_SIZE	(0x01000000 / PAGE_SIZE)
 
-/* Clock configuration is system-specific. */
+#endif /* CONFIG_MC68010 */
 
-#if defined(CONFIG_MACH_HOST_SIM)
-#include "clock_hostsim.c"
-#elif defined(CONFIG_PGTIMER)
-#include "clock_pgtimer.c"
-#endif
+#endif /* mmu_config_h_included */

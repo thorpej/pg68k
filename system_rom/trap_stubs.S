@@ -187,6 +187,10 @@ trap_fmterr:
 
 	.globl	trap_fpfault
 trap_fpfault:
+|
+| For non-68030, these just fall through into trap_badtrap.
+|
+#ifdef CONFIG_MC68030
 	clr.l	-(%sp)			| stack adjust count
 	move.l	%usp,%a0		| and save
 	move.l	%a0,FR_SP(%sp)		|   the user stack pointer
@@ -202,6 +206,7 @@ trap_fpfault:
 	frestore (%a0)			| restore state
 	move.l	#T_FPERR,-(%sp)		| push type arg
 	jra	faultstkadj		| call trap and deal with stack cleanup
+#endif /* CONFIG_MC68030 */
 
 |
 | Other exceptions only cause four and six word stack frames and require

@@ -37,8 +37,11 @@ DOSFSOBJS=	dosfs.o
 NETOBJS=	arp.o ether.o ip.o ip_cksum.o rpc.o sendrecv.o udp.o
 
 .PATH: ../compiler_rt
-COMPRTOBJS=	int_util.o ashldi3.o ashrdi3.o divdi3.o udivdi3.o umoddi3.o \
-		udivmoddi4.o
+COMPRTOBJS=	int_util.o \
+		ashldi3.o ashrdi3.o \
+		clzsi2.o ctzsi2.o \
+		divdi3.o udivdi3.o umoddi3.o udivmoddi4.o \
+		divsi3.o mulsi3.o modsi3.o udivsi3.o umodsi3.o
 
 M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
 

@@ -1,0 +1,65 @@
+OUTPUT_FORMAT("elf32-m68k", "elf32-m68k",
+	      "elf32-m68k")
+OUTPUT_ARCH(m68k)
+ENTRY(start)
+MEMORY
+{
+  /* The .text segment is linked at and run directly from ROM.  The
+     .data segment is also stored there, but is copied at run-time
+     to the RAM area and is linked there.  */
+
+  rom  : o = 0x00f00000, l = 1M
+  ram  : o = 0x00000000, l = 8M
+}
+SECTIONS
+{
+  ROM = 0x00f00000;
+
+  /DISCARD/ : { *(.eh_frame .eh_frame.*) }
+  
+  /* Read-only sections, merged into text segment: */
+  __text_store = ROM;
+  .text           :
+  AT (ROM)
+  {
+    PROVIDE_HIDDEN (__eprol = .);
+    *(.text)
+    *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+    *(.text.exit .text.exit.*)
+    *(.text.startup .text.startup.*)
+    *(.text.hot .text.hot.*)
+    *(SORT(.text.sorted.*))
+    *(.text .stub .text.*)
+    /* .gnu.warning sections are handled specially by elf.em.  */
+    *(.gnu.warning)
+    *(.rodata .rodata.*)
+    *(.rodata1)
+    . = ALIGN(32 / 4);
+  } > rom =0
+  PROVIDE (__etext = .);
+  PROVIDE (_etext = .);
+  PROVIDE (etext = .);
+  __data_store = ROM + SIZEOF(.text);
+  .data           :
+  AT (LOADADDR(.text) + SIZEOF(.text))
+  {
+    __data_start = . ;
+    *(.data .data.* .data1)
+  } > ram
+  _edata = .; PROVIDE (edata = .);
+  . = ALIGN(32 / 4);
+  __bss_start = .;
+  .bss            :
+  {
+   *(.bss .bss.*)
+   *(COMMON)
+   /* Align here to ensure that the .bss section occupies space up to
+      _end.  Align after .bss to ensure correct alignment even if the
+      .bss section disappears because there are no input sections.
+      FIXME: Why do we need it? When there is no .bss section, we do not
+      pad the .data section.  */
+   . = ALIGN(. != 0 ? 32 / 4 : 1);
+  } > ram
+  . = ALIGN(32 / 4);
+  _end = .; PROVIDE (end = .);
+}

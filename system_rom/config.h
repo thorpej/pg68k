@@ -70,6 +70,7 @@
 #define	FC_CONTROL	4		/* control space is FC==4 */
 
 #define	CONFIG_MACHINE_STRING	"Phaethon 1"
+#define	CONFIG_CPU_DESC_STRING	"10MHz MC68010"
 #define	CONFIG_RIISP		(RAM0_START+(RAM0_SIZE-0x00100000))
 #define	CONFIG_MC68010
 #define	CONFIG_DEV_REGSHIFT	1

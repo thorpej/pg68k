@@ -128,17 +128,22 @@ size_memory(void)
 	for (i = 0; i < arraycount(memory_banks); i++) {
 		mb = &memory_banks[i];
 		if (mb->size != 0) {
-			/* fixed size region; skip */
-			continue;
-		}
-		if (mb->maxsize == 0) {
+			/*
+			 * This is a fixed-size region.  In this case,
+			 * if maxsize == 0, we silently skip reporting.
+			 */
+			if (mb->maxsize == 0) {
+				continue;
+			}
+		} else if (mb->maxsize == 0) {
 			/* not supported on this machine; skip */
 			continue;
-		}
-		size_memory_bank(mb);
-		if (mb->size == 0) {
-			/* no memory in this bank; skip */
-			continue;
+		} else {
+			size_memory_bank(mb);
+			if (mb->size == 0) {
+				/* no memory in this bank; skip */
+				continue;
+			}
 		}
 
 		psize = mb->size / 1024;
@@ -519,7 +524,11 @@ main(int argc, char *argv[])
 	cons_init();
 
 	/* Hello, world! */
-	printf("%s\n", CONFIG_MACHINE_STRING);
+	printf("%s", CONFIG_MACHINE_STRING);
+#ifdef CONFIG_CPU_DESC_STRING
+	printf(" - %s", CONFIG_CPU_DESC_STRING);
+#endif
+	printf("\n");
 	printf("Firmware version %d.%d\n\n", CONFIG_ROM_VERSION_MAJOR,
 	    CONFIG_ROM_VERSION_MINOR);
 

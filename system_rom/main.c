@@ -406,6 +406,27 @@ cli_h_part(int argc, char *argv[])
 	close(fd);
 }
 
+#if defined(CONFIG_REBOOT_VECTAB)
+static void
+cli_u_reboot(const char *str)
+{
+	printf("usage: %s", str);
+}
+
+static void
+cli_h_reboot(int argc, char *argv[])
+{
+	/*
+	 * This implementation reboots the system by jumping to the
+	 * reset vector.  The start-up code deals with all the rest.
+	 */
+	extern unsigned long vectab[];
+	void (*reset_vec)(void) = (void *)vectab[1];
+	(*reset_vec)();
+}
+#define	CONFIG_REBOOT_COMMAND
+#endif /* CONFIG_REBOOT_VECTAB */
+
 static const struct cli_handler {
 	const char	*h_str;
 	const char	*h_desc;
@@ -432,6 +453,13 @@ static const struct cli_handler {
 	  cli_h_part,
 	  cli_u_part,
 	},
+#ifdef CONFIG_REBOOT_COMMAND
+	{ "reboot",
+	  "reboot the system",
+	  cli_h_reboot,
+	  cli_u_reboot,
+	},
+#endif /* CONFIG_REBOOT_COMMAND */
 };
 
 static const struct cli_handler *

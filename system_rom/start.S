@@ -238,13 +238,13 @@ start:
 	cmpa.l	%d1,%a0
 	bne	1b
 
-#define	FILL_PMES(v, p, s)						 \
+#define	FILL_PMES(v, p, s, w)						 \
 	movea.l	%d2,%a0							;\
 	adda.l	#(((v) >> PAGE_SHIFT) << 4),%a0				;\
 	move.l	%d2,%d1							;\
 	add.l	#((((v)+(s)) >> PAGE_SHIFT) << 4),%d1			;\
 									 \
-	move.l	#(PME_V+PME_W+PME_K+((p) >> PAGE_SHIFT)),%d0		;\
+	move.l	#(PME_V+(w)+PME_K+((p) >> PAGE_SHIFT)),%d0		;\
 									 \
 1:	moves.l	%d0,(%a0)						;\
 	adda.l	#(1 << 4),%a0						;\
@@ -256,13 +256,13 @@ start:
 	move.l	#((ROM_PME_BASE << 4)+MMU_CTLSEL_PAGEMAP),%d2
 
 	| Map all of the on-board system RAM VA==PA.
-	FILL_PMES(RAM0_START, RAM0_START, RAM0_SIZE)
+	FILL_PMES(RAM0_START, RAM0_START, RAM0_SIZE, PME_W)
 
 	| Map the ROM into the correct location.
-	FILL_PMES(ROM_VIRT, ROM_PHYS, ROM_SIZE)
+	FILL_PMES(ROM_VIRT, ROM_PHYS, ROM_SIZE, 0)
 
 	| Map the on-board I/O.
-	FILL_PMES(OBIO_VIRT, OBIO_PHYS, OBIO_SIZE);
+	FILL_PMES(OBIO_VIRT, OBIO_PHYS, OBIO_SIZE, PME_W);
 
 #undef FILL_PMES
 

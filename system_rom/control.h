@@ -127,4 +127,109 @@
 #define	SYSEN_INT	0x02		/* enable interrupts */
 #define	SYSEN_REBOOT	0x80		/* system should reboot */
 
+static inline int
+getdfc(void)
+{
+	int rv;
+
+	__asm volatile("movc %%dfc,%0" : "=d" (rv));
+
+	return rv;
+}
+
+static inline void
+setdfc(int val)
+{
+	__asm volatile("movc %0,%%dfc" :: "d" (val));
+}
+
+static inline int
+getsfc(void)
+{
+	int rv;
+
+	__asm volatile("movc %%sfc,%0" : "=d" (rv));
+
+	return rv;
+}
+
+static inline void
+setsfc(int val)
+{
+	__asm volatile("movc %0,%%sfc" :: "d" (val));
+}
+
+#if defined(FC_CONTROL)	/* defined in config.h if the system has it */
+
+static uint8_t
+control_inb(unsigned long addr)
+{
+	int sfc = getsfc();
+	uint8_t rv;
+
+	setsfc(FC_CONTROL);
+	__asm __volatile("moves.b (%1),%0" : "=d" (rv) : "a" (addr));
+	setsfc(sfc);
+
+	return rv;
+}
+
+static void
+control_outb(unsigned long addr, uint8_t val)
+{
+	int dfc = getdfc();
+
+	setdfc(FC_CONTROL);
+	__asm __volatile("moves.b %0,(%1)" :: "d" (val), "a" (addr) : "memory");
+	setdfc(dfc);
+}
+
+static uint16_t
+control_inw(unsigned long addr)
+{
+	int sfc = getsfc();
+	uint16_t rv;
+
+	setsfc(FC_CONTROL);
+	__asm __volatile("moves.w (%1),%0" : "=d" (rv) : "a" (addr));
+	setsfc(sfc);
+
+	return rv;
+}
+
+static void
+control_outw(unsigned long addr, uint16_t val)
+{
+	int dfc = getdfc();
+
+	setdfc(FC_CONTROL);
+	__asm __volatile("moves.w %0,(%1)" :: "d" (val), "a" (addr) : "memory");
+	setdfc(dfc);
+}
+
+static uint32_t
+control_inl(unsigned long addr)
+{
+	int sfc = getsfc();
+	uint32_t rv;
+
+	setsfc(FC_CONTROL);
+	__asm __volatile("moves.l (%1),%0" : "=d" (rv) : "a" (addr));
+	setsfc(sfc);
+
+	return rv;
+}
+
+static void
+control_outl(unsigned long addr, uint32_t val)
+{
+	int dfc = getdfc();
+
+	setdfc(FC_CONTROL);
+	__asm __volatile("moves.l %0,(%1)" :: "d" (val), "a" (addr) : "memory");
+	setdfc(dfc);
+}
+
+#endif /* FC_CONTROL */
+
 #endif /* _PHAETHON1_CONTROL_H_ */

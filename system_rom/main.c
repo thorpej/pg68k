@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2025, 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,48 @@
 #include "cli.h"
 
 #include "memory.h"
+
+#ifdef CONFIG_MC68010
+#include "control.h"
+#include "cpu010_mmu.h"
+
+static uint8_t
+mmu_getcontext(void)
+{
+	return control_inb(MMUREG_CONTEXT);
+}
+
+static uint8_t
+mmu_setcontext(uint8_t val)
+{
+	control_outb(MMUREG_CONTEXT, val);
+}
+
+static uint16_t
+mmu_sme_get(unsigned long segva)
+{
+	return control_inw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)));
+}
+
+static void
+mmu_sme_set(unsigned long segva, uint16_t val)
+{
+	control_outw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)), val);
+}
+
+static uint32_t
+mmu_pme_get(unsigned long pme_index)
+{
+	return control_inl(MMUREG_PAGEMAP_ENTRY(pme_index));
+}
+
+static uint32_t
+mmu_pme_set(unsigned long pme_index, uint32_t val)
+{
+	control_outl(MMUREG_PAGEMAP_ENTRY(pme_index), val);
+}
+#define	CONFIG_MMU_COMMAND
+#endif /* CONFIG_MC68010 */
 
 struct memory_bank memory_banks[] = {
 #ifdef RAM0_START
@@ -410,7 +452,7 @@ cli_h_part(int argc, char *argv[])
 static void
 cli_u_reboot(const char *str)
 {
-	printf("usage: %s", str);
+	printf("usage: %s\n", str);
 }
 
 static void
@@ -427,12 +469,220 @@ cli_h_reboot(int argc, char *argv[])
 #define	CONFIG_REBOOT_COMMAND
 #endif /* CONFIG_REBOOT_VECTAB */
 
+#ifdef CONFIG_MMU_COMMAND
+static void
+cli_u_mmu(const char *str)
+{
+	printf("usage: %s show context\n", str);
+	printf("       %s set context <0...%d>\n", str, PGMMU_NUM_CONTEXTS - 1);
+	printf("       %s show sme <va>\n", str);
+	printf("       %s show pmeg <0...%d>\n", str, PGMMU_NUM_PMEGS - 1);
+}
+
+static bool
+parse_va(const char *str, unsigned long *va_out)
+{
+	int base = 0;
+	unsigned long va;
+	char *endptr;
+
+	if (str[0] == '$') {
+		str++;
+		base = 16;
+	}
+
+	va = strtoul(str, &endptr, base);
+	if (*endptr != '\0') {
+		return false;
+	}
+#ifdef CONFIG_MC68010
+	if (va > 0x00ffffff) {
+		return false;
+	}
+#endif /* CONFIG_MC68010 */
+	*va_out = va;
+	return true;
+}
+
+static bool
+parse_pmeg(const char *str, unsigned int *pmeg_out)
+{
+	int base = 0;
+	unsigned long pmeg;
+	char *endptr;
+
+	pmeg = strtoul(str, &endptr, base);
+	if (*endptr != '\0') {
+		return false;
+	}
+	if (pmeg >= PGMMU_NUM_PMEGS) {
+		return false;
+	}
+	*pmeg_out = (unsigned int)pmeg;
+	return true;
+}
+
+static bool
+parse_context(const char *str, uint8_t *context_out)
+{
+	int base = 0;
+	unsigned long context;
+	char *endptr;
+
+	context = strtoul(str, &endptr, base);
+	if (*endptr != '\0') {
+		return false;
+	}
+	if (context >= PGMMU_NUM_CONTEXTS) {
+		return false;
+	}
+	*context_out = (uint8_t)context;
+	return true;
+}
+
+static const char *
+indent_string(unsigned int level)
+{
+	static const char zee_tabs[] = "\t\t\t\t\t\t\t";
+	return &zee_tabs[sizeof(zee_tabs) - (level + 1)];
+}
+
+static void
+print_sme(unsigned int indent_level, unsigned long va, uint16_t sme)
+{
+	printf("%sSME<0x%08lx>: ", indent_string(indent_level), va);
+	if (sme & SME_V) {
+		printf("PMEG %d (0x%04x)\n",
+		    sme & SME_PMEG, sme & SME_PMEG);
+	} else {
+		printf("invalid (0x%04x)\n", sme);
+	}
+}
+
+static void
+print_pme(unsigned int indent_level, unsigned int pme_index, uint32_t pme)
+{
+	printf("%sPME<%d>: ", indent_string(indent_level), pme_index);
+	if (pme & PME_V) {
+		printf("%s %s %s %s %s %s %s %s 0x%04x (phys=0x%08x)\n",
+		    (pme & PME_W)   ? "w"   : " ",
+		    (pme & PME_K)   ? "k"   : " ",
+		    (pme & PME_REF) ? "r"   : " ",
+		    (pme & PME_MOD) ? "m"   : " ",
+		    (pme & PME_SW3) ? "sw3" : "   ",
+		    (pme & PME_SW2) ? "sw2" : "   ",
+		    (pme & PME_SW1) ? "sw1" : "   ",
+		    (pme & PME_SW0) ? "sw0" : "   ",
+		    (pme & PME_PFN),
+		    (pme & PME_PFN) << PAGE_SHIFT);
+	} else {
+		printf("invalid (0x%08x)\n", pme);
+	}
+}
+
+static void
+print_pmeg(unsigned int indent_level, unsigned int pmeg)
+{
+	unsigned int first_pme = pmeg * PGMMU_PMES_PER_PMEG;
+	unsigned int limit_pme = first_pme + PGMMU_PMES_PER_PMEG;
+	unsigned int pme_index;
+
+	printf("%sPMEG %d (0x%04x):\n", indent_string(indent_level),
+	    pmeg, pmeg);
+	for (pme_index = first_pme; pme_index < limit_pme; pme_index++) {
+		print_pme(indent_level + 1, pme_index % PGMMU_PMES_PER_PMEG,
+		    mmu_pme_get(pme_index));
+	}
+}
+
+static void
+cli_h_mmu(int argc, char *argv[])
+{
+	unsigned long va;
+	unsigned int pmeg;
+	uint8_t context;
+
+	if (argc < 2) {
+		goto usage;
+	}
+
+	if (strcmp(argv[1], "show") == 0) {
+		if (argc < 3) {
+			goto usage;
+		}
+		
+		if (strcmp(argv[2], "context") == 0) {
+			printf("Context: %d\n", mmu_getcontext());
+			return;
+		}
+
+		if (strcmp(argv[2], "sme") == 0) {
+			if (argc < 4) {
+				goto usage;
+			}
+			if (! parse_va(argv[3], &va)) {
+				printf("Bad virtual address: %s\n",
+				    argv[3]);
+				return;
+			}
+			va &= ~PGMMU_SEG_OFFSET;
+			print_sme(0, va, mmu_sme_get(va));
+			return;
+		}
+
+		if (strcmp(argv[2], "pmeg") == 0) {
+			if (argc < 4) {
+				goto usage;
+			}
+			if (! parse_pmeg(argv[3], &pmeg)) {
+				printf("Bad PMEG: %s\n",
+				    argv[3]);
+				return;
+			}
+			print_pmeg(0, pmeg);
+			return;
+		}
+
+		goto usage;
+	}
+
+	if (strcmp(argv[1], "set") == 0) {
+		if (argc < 4) {
+			goto usage;
+		}
+
+		if (strcmp(argv[2], "context") == 0) {
+			if (! parse_context(argv[3], &context)) {
+				printf("Bad Context: %s\n",
+				    argv[3]);
+				return;
+			}
+			mmu_setcontext(context);
+			printf("Context: %d\n", mmu_getcontext());
+			return;
+		}
+
+		goto usage;
+	}
+
+	/* FALLTHROUGH */
+
+ usage:
+	cli_u_mmu(argv[0]);
+}
+#endif /* CONFIG_MMU_COMMAND */
+
 static const struct cli_handler {
 	const char	*h_str;
 	const char	*h_desc;
 	void		(*h_func)(int, char *[]);
 	void		(*h_usage)(const char *);
 } cli_handlers[] = {
+	{ "?",
+	  NULL,
+	  cli_h_help,
+	  cli_u_help,
+	},
 	{ "help",
 	  "get help about a command",
 	  cli_h_help,
@@ -460,6 +710,13 @@ static const struct cli_handler {
 	  cli_u_reboot,
 	},
 #endif /* CONFIG_REBOOT_COMMAND */
+#ifdef CONFIG_MMU_COMMAND
+	{ "mmu",
+	  "interact with the MMU",
+	  cli_h_mmu,
+	  cli_u_mmu,
+	},
+#endif /* CONFIG_MMU_COMMAND */
 };
 
 static const struct cli_handler *
@@ -488,12 +745,15 @@ cli_h_help(int argc, char *argv[])
 	case 2:
 		h = cli_handler_lookup(argv[1]);
 		if (h != NULL) {
-			(*h->h_usage)(argv[0]);
+			(*h->h_usage)(argv[1]);
 			break;
 		}
 		/* FALLTHROUGH */
 	case 1:
 		for (int i = 0; i < arraycount(cli_handlers); i++) {
+			if (cli_handlers[i].h_desc == NULL) {
+				continue;
+			}
 			printf("%-10s %s\n", cli_handlers[i].h_str,
 			    cli_handlers[i].h_desc);
 		}

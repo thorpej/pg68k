@@ -181,8 +181,11 @@
 #define	MMUREG_SEGMAP0_ENTRY(seg) (((seg) << 15) | MMU_CTLSEL_SEGMAP0)
 #define	MMUREG_SEGMAP_ENTRY(seg)  (((seg) << 15) | MMU_CTLSEL_SEGMAP)
 #define	MMUREG_CONTEXT		  (MMU_CTLSEL_CONTEXT)
-#define	MMUREG_PAGEMAP_ENTRY(pmeg, e) \
-		(((pmeg) << 7) | ((e) << 4) | MMU_CTLSEL_PAGEMAP)
+#define	MMUREG_PMEG_ENTRY(pmeg, e) \
+		(((pmeg) << 7) | (((e) % PGMMU_PMES_PER_PMEG) << 4) \
+			       | MMU_CTLSEL_PAGEMAP)
+#define	MMUREG_PAGEMAP_ENTRY(e) \
+		(((e) << 4) | MMU_CTLSEL_PAGEMAP)
 #define	MMUREG_BUSERROR		(MMU_CTLSEL_BUSERROR)
 
 /*

@@ -127,6 +127,8 @@
 #define	SYSEN_INT	0x02		/* enable interrupts */
 #define	SYSEN_REBOOT	0x80		/* system should reboot */
 
+#ifndef __ASSEMBLER__
+
 static inline int
 getdfc(void)
 {
@@ -231,5 +233,7 @@ control_outl(unsigned long addr, uint32_t val)
 }
 
 #endif /* FC_CONTROL */
+
+#endif /* __ASSEMBLER__ */
 
 #endif /* _PHAETHON1_CONTROL_H_ */

@@ -35,10 +35,10 @@
  * (a lot smaller).  We'll start with this larger-than-necessary
  * value and come down from there.
  *
- * If you have a board slower than a 16MHz 68020, this will probably
+ * If you have a board slower than a 10MHz 68010, this will probably
  * need to be tweaked.
  */
-int	delay_divisor = 8192 / 16;
+int	delay_divisor = 8192 / 10;
 
 /* Clock configuration is system-specific. */
 

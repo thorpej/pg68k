@@ -84,8 +84,16 @@ vectab:
 	.long	trap_illinst	| 10: Line 1010 Emulator
 	.long	trap_fpfline	| 11: Line 1111 Emulator
 	.long	trap_badtrap	| 12: unassigned, reserved
-	.long	trap_cpv	| 13: Coprocessor Protocol Violation
+#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
+	.long	trap_badtrap	| 13: unassigned, reserved
+#else
+	.long	trap_badtrap	| 13: Coprocessor Protocol Violation
+#endif
+#if defined(CONFIG_MC68000)
+	.long	trap_badtrap	| 14: unassigned, reserved
+#else
 	.long	trap_fmterr	| 14: Format Error
+#endif
 	.long	trap_badtrap	| 15: Uninitialized Interrupt
 	.long	trap_badtrap	| 16: unassigned, reserved
 	.long	trap_badtrap	| 17: unassigned, reserved
@@ -95,7 +103,7 @@ vectab:
 	.long	trap_badtrap	| 21: unassigned, reserved
 	.long	trap_badtrap	| 22: unassigned, reserved
 	.long	trap_badtrap	| 23: unassigned, reserved
-	.long	trap_intrav0	| 24: Spurious Interrrupt
+	.long	trap_intrav	| 24: Spurious Interrrupt
 	.long	trap_intrav	| 25: Level 1 Interrupt Autovector
 	.long	trap_intrav	| 26: Level 2 Interrupt Autovector
 	.long	trap_intrav	| 27: Level 3 Interrupt Autovector
@@ -119,6 +127,9 @@ vectab:
 	.long	trap_illinst	| 45: Trap #13 instruction
 	.long	trap_illinst	| 46: Trap #14 instruction
 	.long	trap_illinst	| 47: Trap #15 instruction
+#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
+	BADTRAP16		| 48-63: unassigned, reserved
+#else /* ! (CONFIG_MC68000 || CONFIG_MC68010) */
 	.long	trap_fpfault	| 48: FPCP Branch or Set on Unordered
 	.long	trap_fpfault	| 49: FPCP Inexact Result
 	.long	trap_fpfault	| 50: FPCP Divide by Zero
@@ -136,13 +147,8 @@ vectab:
 #else
 	.long	trap_badtrap	| 56: unassigned, reserved
 #endif
-#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
-	.long	trap_badtrap	| 57: unassigned, reserved
-	.long	trap_badtrap	| 58: unassigned, reserved
-#else
 	.long	trap_badtrap	| 57: PMMU Illegal Operation
 	.long	trap_badtrap	| 58: PMMU Access Level Violation
-#endif
 	.long	trap_badtrap	| 59: unassigned, reserved
 #ifdef CONFIG_MC68060
 	.long	trap_illinst	| 60: Unimplemented Effective Address
@@ -153,6 +159,7 @@ vectab:
 #endif
 	.long	trap_badtrap	| 62: unassigned, reserved
 	.long	trap_badtrap	| 63: unassigned, reserved
+#endif /* CONFIG_MC68000 || CONFIG_MC68010 */
 	BADTRAP16		| 64-79: user vectors
 	BADTRAP16		| 80-95: user vectors
 	BADTRAP16		| 96-111: user vectors
@@ -408,9 +415,11 @@ trap_addrerr:
 
 trap_fpfline:
 
-trap_intrav0:
-
 trap_intrav:
+	movem.l	#0xC0C0,-(%sp)		| d0, d1, a0, a1
+	jbsr	intr_autovec
+	movem.l	(%sp)+,#0x0303
+	rte
 
 trap_nmi:
 

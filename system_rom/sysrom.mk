@@ -44,7 +44,8 @@ COMPRTOBJS=	int_util.o \
 		divdi3.o muldi3.o udivdi3.o umoddi3.o udivmoddi4.o \
 		divsi3.o mulsi3.o modsi3.o udivsi3.o umodsi3.o
 
-M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o ${COMPRTOBJS}
+M68KOBJS=	start.o setjmp.o trap_stubs.o trap.o malloc.o \
+		intr.o ${COMPRTOBJS}
 
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o clock.o dev.o \
 		disklabel.o files.o fs.o ls.o fnmatch.o loadfile.o \

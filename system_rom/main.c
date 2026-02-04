@@ -31,6 +31,7 @@
 #include "console.h"
 #include "trap.h"
 #include "clock.h"
+#include "intr.h"
 #include "ata.h"
 #include "uart.h"
 #include "loadfile.h"	/* for load flags passed to exec() */
@@ -210,6 +211,7 @@ configure(void)
 	printf("\n");
 
 	printf("Device configuration:\n");
+	intr_init();
 	clock_configure();
 #ifdef UART0_ADDR
 	uart_configure();
@@ -217,6 +219,13 @@ configure(void)
 #ifdef ATA_ADDR
 	ata_configure();
 #endif
+}
+
+void
+quiesce(void)
+{
+	clock_quiesce();
+	intr_fini();
 }
 
 #ifndef CONFIG_MACH_HOST_SIM

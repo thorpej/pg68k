@@ -145,6 +145,7 @@ int	putstrn(const char *, size_t);
 int	putchar(int);
 
 int	exec(int, int, char *[]);
+void	quiesce(void);
 
 uint32_t crc32(uint32_t, const void *, size_t);
 

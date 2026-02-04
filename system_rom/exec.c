@@ -382,7 +382,7 @@ exec(int load_flags, int argc, char *argv[])
 #endif
 
 	closeall();
-	clock_quiesce();
+	quiesce();
 	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
 
 #ifdef CONFIG_MACH_HOST_SIM

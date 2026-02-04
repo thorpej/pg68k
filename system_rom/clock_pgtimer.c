@@ -28,6 +28,7 @@
 #include "syslib.h"
 
 #include "clock.h"
+#include "intr.h"
 
 #include "pio.h"
 #include "psl.h"
@@ -115,8 +116,18 @@ pgtimer_delaycal(void)
 static void
 pgtimer_intr(void *arg)
 {
+	REG_READ(TIMER_CSR);
 	clock_ticks++;
 }
+
+#ifndef CONFIG_PGTIMER_IPL
+#define	CONFIG_PGTIMER_IPL	6
+#endif
+
+static struct intr_handle pgtimer_intr_handle = {
+	.ih_func = pgtimer_intr,
+	.ih_ipl = CONFIG_PGTIMER_IPL,
+};
 
 #ifndef CONFIG_HZ
 #define	CONFIG_HZ	100
@@ -128,14 +139,14 @@ clock_configure(void)
 {
 	int s;
 
-	printf("timer0 at 0x%08lx\n", (u_long)TIMER_ADDR);
-
 	/* Calibrate the delay divisor. */
 	pgtimer_delaycal();
-	printf("  delay divisor: %u\n", delay_divisor);
+
+	printf("timer0 at 0x%08lx (delay divisor: %u)\n", (u_long)TIMER_ADDR,
+	    delay_divisor);
 
 	/* Register the timer interrupt. */
-	// intr_establish(6, 0, pgtimer_intr);	XXX
+	intr_establish(&pgtimer_intr_handle);
 
 	/* Start the timer. */
 	s = splhigh();
@@ -176,5 +187,5 @@ clock_getsecs(void)
 	tickread = clock_ticks;
 	splx(s);
 
-	return (time_t)(clock_ticks / hz);
+	return (time_t)(tickread / hz);
 }

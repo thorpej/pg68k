@@ -30,6 +30,7 @@
 
 #include "console.h"
 #include "trap.h"
+#include "clock.h"
 #include "ata.h"
 #include "uart.h"
 #include "loadfile.h"	/* for load flags passed to exec() */
@@ -209,6 +210,7 @@ configure(void)
 	printf("\n");
 
 	printf("Device configuration:\n");
+	clock_configure();
 #ifdef UART0_ADDR
 	uart_configure();
 #endif
@@ -446,6 +448,20 @@ cli_h_part(int argc, char *argv[])
 		    dev_string(f, dstr, sizeof(dstr)));
 	}
 	close(fd);
+}
+
+static void
+cli_u_uptime(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_uptime(int argc, char *argv[])
+{
+	time_t secs = clock_getsecs();
+
+	printf("%lld seconds\n", (long long)secs);
 }
 
 #if defined(CONFIG_REBOOT_VECTAB)
@@ -702,6 +718,11 @@ static const struct cli_handler {
 	  "show disk partitions",
 	  cli_h_part,
 	  cli_u_part,
+	},
+	{ "uptime",
+	  "get number of seconds since reboot",
+	  cli_h_uptime,
+	  cli_u_uptime,
 	},
 #ifdef CONFIG_REBOOT_COMMAND
 	{ "reboot",

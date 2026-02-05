@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2025, 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,17 @@
 
 #include "config.h"
 #include "syslib.h"
+#include "cli.h"
 
 #include "trap.h"
 
+#ifdef CONFIG_MC68010
+#include "control.h"
+#include "cpu010_mmu.h"
+#endif
+
 jmp_buf nofault_env;
 bool nofault;
-
-struct fpframe fpctx;	/* XXX needs work for '060 */
 
 bool
 badaddr_read32(volatile uint32_t *p, uint32_t *valp)
@@ -60,12 +64,49 @@ badaddr_write32(volatile uint32_t *p, uint32_t val)
 	return false;
 }
 
+#ifdef CONFIG_MC68010
 void
-trap(struct frame *fp, int type, unsigned int code, uintptr_t v)
+cpu010_mmu_page_fault(struct trap_frame *tf, uint8_t berr)
 {
+	struct trap_frame_ext8 *ext = trap_frame_ext(tf);
+	int fc;
+	const char *errstr;
+
+	if (berr & BERR_PRIV) {
+		errstr = "PRIVILEGE";
+	} else if (berr & BERR_PROT) {
+		errstr = "PROTECTION";
+	} else {
+		errstr = "INVALID";
+	}
+
+	if (tf->tf_format != 8) {
+		printf("!!! PAGE FAULT UNEXPECTED FRAME FORMAT %d\n",
+		    tf->tf_format);
+		cli_longjmp();
+	}
+
+	fc = __SHIFTOUT(ext->tf_ssw, SSW_FC);
+
+	printf("!!! PAGE FAULT PC=0x%08x ADDR=0x%08x FC=%d - %s ERROR\n",
+	    tf->tf_pc, ext->tf_faultaddr, fc, errstr);
+	cli_longjmp();
 }
+#endif /* CONFIG_MC68010 */
 
 void
-straytrap(uintptr_t pc, unsigned short vec)
+trap_handler_buserr(struct trap_frame tf)
 {
+#ifdef CONFIG_MC68010
+	uint8_t berr = control_inb(MMUREG_BUSERROR);
+
+	/* Check for a page fault. */
+	if (berr & (BERR_INVALID | BERR_PROT | BERR_PRIV)) {
+		cpu010_mmu_page_fault(&tf, berr);
+		return;
+	}
+#endif /* CONFIG_MC68010 */
+
+	printf("Yup, got a Bus Error trap!\n");
+	cli_longjmp();
 }

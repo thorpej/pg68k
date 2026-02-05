@@ -43,186 +43,51 @@
 #define	trap_h_included
 
 #include "config.h"
+#include "systypes.h"
 
 #if !defined(CONFIG_MACH_HOST_SIM) && !defined(__ASSEMBLER__)
 
-struct frame {
-	struct trapframe {
-		int	tf_regs[16];
-		short	tf_pad;
-		short	tf_stackadj;
-		u_short	tf_sr;
-		u_int	tf_pc __packed;
-		u_short /* BITFIELDTYPE */ tf_format:4,
-			/* BITFIELDTYPE */ tf_vector:12;
-	} F_t;
-	union F_u {
-		struct fmt2 {
-			u_int	f_iaddr;
-		} F_fmt2;
-
-		struct fmt3 {
-			u_int	f_ea;
-		} F_fmt3;
-
-		struct fmt4 {
-			u_int	f_fa;
-			u_int	f_fslw;
-			/* for 060FP type 4 FP disabled frames: */
-#define			f_fea	f_fa
-#define			f_pcfi	f_fslw
-		} F_fmt4;
-
-		struct fmt7 {
-			u_int	f_ea;
-			u_short	f_ssw;
-			u_short	f_wb3s, f_wb2s, f_wb1s;
-			u_int	f_fa;
-			u_int	f_wb3a, f_wb3d;
-			u_int	f_wb2a, f_wb2d;
-			u_int	f_wb1a, f_wb1d;
-#define				f_pd0 f_wb1d
-			u_int	f_pd1, f_pd2, f_pd3;
-		} F_fmt7;
-
-		struct fmt8 {
-			u_short	f_ssw;
-			u_int	f_accaddr;
-			u_short	f_ir0;
-			u_short	f_dob;
-			u_short	f_ir1;
-			u_short	f_dib;
-			u_short	f_ir2;
-			u_short	f_irc;
-			u_short	f_maskpc;
-			u_short	f_iregs[15];
-		} __attribute__((packed)) F_fmt8;
-
-		struct fmt9 {
-			u_int	f_iaddr;
-			u_short	f_iregs[4];
-		} F_fmt9;
-
-		struct fmtA {
-			u_short	f_ir0;
-			u_short	f_ssw;
-			u_short	f_ipsc;
-			u_short	f_ipsb;
-			u_int	f_dcfa;
-			u_short	f_ir1, f_ir2;
-			u_int	f_dob;
-			u_short	f_ir3, f_ir4;
-		} F_fmtA;
-
-		struct fmtB {
-			u_short	f_ir0;
-			u_short	f_ssw;
-			u_short	f_ipsc;
-			u_short	f_ipsb;
-			u_int	f_dcfa;
-			u_short	f_ir1, f_ir2;
-			u_int	f_dob;
-			u_short	f_ir3, f_ir4;
-			u_short	f_ir5, f_ir6;
-			u_int	f_sba;
-			u_short	f_ir7, f_ir8;
-			u_int	f_dib;
-			u_short	f_iregs[22];
-		} F_fmtB;
-	} F_u;
-};
-
-#define	f_regs		F_t.tf_regs
-#define	f_stackadj	F_t.tf_stackadj
-#define	f_sr		F_t.tf_sr
-#define	f_pc		F_t.tf_pc
-#define	f_format	F_t.tf_format
-#define	f_vector	F_t.tf_vector
-#define	f_fmt2		F_u.F_fmt2
-#define	f_fmt3		F_u.F_fmt3
-#define	f_fmt4		F_u.F_fmt4
-#define	f_fmt7		F_u.F_fmt7
-#define	f_fmt8		F_u.F_fmt8
-#define	f_fmt9		F_u.F_fmt9
-#define	f_fmtA		F_u.F_fmtA
-#define	f_fmtB		F_u.F_fmtB
-
-struct fpframe {
-	union FPF_u1 {
-		u_int	FPF_null;
-		struct {
-			u_char	FPF_version;
-			u_char	FPF_fsize;
-			u_short	FPF_res1;
-		} FPF_nonnull;
-	} FPF_u1;
-	union FPF_u2 {
-		struct fpidle {
-			u_short	fpf_ccr;
-			u_short	fpf_res2;
-			u_int	fpf_iregs1[8];
-			u_int	fpf_xops[3];
-			u_int	fpf_opreg;
-			u_int	fpf_biu;
-		} FPF_idle;
-
-		struct fpbusy {
-			u_int	fpf_iregs[53];
-		} FPF_busy;
-
-		struct fpunimp {
-			u_int	fpf_state[10];
-		} FPF_unimp;
-	} FPF_u2;
-	u_int	fpf_regs[8*3];
-	u_int	fpf_fpcr;
-	u_int	fpf_fpsr;
-	u_int	fpf_fpiar;
-};
-
-#define fpf_null	FPF_u1.FPF_null
-#define fpf_version	FPF_u1.FPF_nonnull.FPF_version
-#define fpf_fsize	FPF_u1.FPF_nonnull.FPF_fsize
-#define fpf_res1	FPF_u1.FPF_nonnull.FPF_res1
-#define fpf_idle	FPF_u2.FPF_idle
-#define fpf_busy	FPF_u2.FPF_busy
-#define fpf_unimp	FPF_u2.FPF_unimp
+struct trap_frame {
+	u_int	tf_regs[16];
+	/* hardware frame */
+	u_short	tf_sr;
+	u_int	tf_pc;
+	u_short	/* BITFIELDTYPE */ tf_format:4,
+		/* BITFIELDTYPE */ tf_vector:12;
+} __attribute__((__packed__));
 
 /*
- * This is incompatible with the earlier one; especially, an earlier frame
- * must not be FRESTOREd on a 060 or vv, because a frame error exception is
- * not guaranteed.
+ * What follows the trap_frame depends on tf_format.
+ *
+ * 0	-->	Nothing! (4 total words)
+ * 8	-->	Bus error / Address error frame (29 total words)
  */
-struct fpframe060 {
-	u_short	fpf6_excp_exp;
-	u_char	fpf6_frmfmt;
 
-	u_char	fpf6_v;
-
-	u_long	fpf6_upper, fpf6_lower;
+struct trap_frame_ext8 {
+	u_short	tf_ssw;		/* special status word */
+	u_int	tf_faultaddr;	/* fault address */
+	u_short	tf__rsvd0;
+	u_short	tf_dob;		/* data output buffer */
+	u_short	tf__rsvd1;
+	u_short	tf_dib;		/* data input buffer */
+	u_short	tf__rsvd2;
+	u_short	tf_iib;		/* instruction input buffer */
+	u_short	tf_ii[16];	/* internal information */
 };
 
-#endif /* ! CONFIG_MACH_HOST_SIM && ! __ASSEMBLER__ */
+#define	SSW_FC		__BITS(0,2)	/* function code for faulting access */
+#define	SSW_RW		__BIT(8)	/* 1=read, 0=write */
+#define	SSW_BY		__BIT(9)	/* 1=byte, 0=word */
+#define	SSW_HB		__BIT(10)	/* 1=high byte, 0=low byte (BY=1) */
+#define	SSW_RM		__BIT(11)	/* read/mod/write cycle */
+#define	SSW_DF		__BIT(12)	/* data fetch to DIB */
+#define	SSW_IF		__BIT(13)	/* insn fetch to IIB */
+#define	SSW_RR		__BIT(15)	/* 0=proc rerun, 1=sw rerun */
 
-/* Trap types */
-#define	T_BUSERR	0
-#define	T_ADDRERR	1
-#define	T_ILLINST	2
-#define	T_ZERODIV	3
-#define	T_CHKINST	4
-#define	T_TRAPVINST	5
-#define	T_PRIVINST	6
-#define	T_TRACE		7
-#define	T_MMUFLT	8
-#define	T_SSIR		9
-#define	T_FMTERR	10
-#define	T_FPERR		11
-#define	T_COPERR	12
-#define	T_ASTFLT	13
-#define	T_TRAP15	15
-#define	T_BREAKPOINT	T_TRAP15
-#define	T_FPEMULI	16
-#define	T_FPEMULD	17
+#define	trap_frame_ext(tf)						\
+	((void *)(((char *)tf) + sizeof(*(tf))))
+
+#endif /* ! CONFIG_MACH_HOST_SIM && ! __ASSEMBLER__ */
 
 #ifndef __ASSEMBLER__
 extern bool	nofault;
@@ -232,8 +97,7 @@ bool	badaddr_read32(volatile uint32_t *, uint32_t *);
 bool	badaddr_write32(volatile uint32_t *, uint32_t);
 
 #ifndef CONFIG_MACH_HOST_SIM
-void	trap(struct frame *, int, unsigned int, uintptr_t);
-void	straytrap(uintptr_t, unsigned short);
+void	trap_handler_buserr(struct trap_frame);
 #endif /* ! CONFIG_MACH_HOST_SIM */
 #endif /* ! __ASSEMBLER__ */
 

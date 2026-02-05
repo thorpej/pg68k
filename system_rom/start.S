@@ -77,12 +77,12 @@ vectab:
 	.long	trap_addrerr	|  3: Address Error
 	.long	trap_illinst	|  4: Illegal Instruction
 	.long	trap_zerodiv	|  5: Zero Divide
-	.long	trap_chk	|  6: CHK, CHK2 instruction
-	.long	trap_trapv	|  7: cpTRAPcc, TRAPcc, TRAPV
-	.long	trap_priv	|  8: Privilege Violation
-	.long	trap_trace	|  9: Trace
+	.long	trap_badtrap	|  6: CHK, CHK2 instruction
+	.long	trap_badtrap	|  7: cpTRAPcc, TRAPcc, TRAPV
+	.long	trap_badtrap	|  8: Privilege Violation
+	.long	trap_badtrap	|  9: Trace
 	.long	trap_illinst	| 10: Line 1010 Emulator
-	.long	trap_fpfline	| 11: Line 1111 Emulator
+	.long	trap_illinst	| 11: Line 1111 Emulator
 	.long	trap_badtrap	| 12: unassigned, reserved
 #if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
 	.long	trap_badtrap	| 13: unassigned, reserved
@@ -92,7 +92,7 @@ vectab:
 #if defined(CONFIG_MC68000)
 	.long	trap_badtrap	| 14: unassigned, reserved
 #else
-	.long	trap_fmterr	| 14: Format Error
+	.long	trap_badtrap	| 14: Format Error
 #endif
 	.long	trap_badtrap	| 15: Uninitialized Interrupt
 	.long	trap_badtrap	| 16: unassigned, reserved
@@ -409,11 +409,24 @@ delay_:
 |
 | Trap handler stubs.
 |
+trap_badtrap:
+
 trap_buserr:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_buserr,%a0
+	jra	trap_common
 
 trap_addrerr:
 
-trap_fpfline:
+trap_illinst:
+
+trap_zerodiv:
+
+trap_common:
+	jbsr	(%a0)			| go handle the trap
+	movem.l	(%sp)+,#0x7FFF		| restore all regs but %sp
+	addq.l	#4,%sp			| toss supervisor %sp
+	rte				| ...and done.
 
 trap_intrav:
 	movem.l	#0xC0C0,-(%sp)		| d0, d1, a0, a1
@@ -422,6 +435,3 @@ trap_intrav:
 	rte
 
 trap_nmi:
-
-trap_fpfault:
-

@@ -499,6 +499,19 @@ cli_h_version(int argc, char *argv[])
 	version();
 }
 
+static void
+cli_u_mem(const char *str)
+{
+	printf("usage: mem <addr>\n");
+}
+
+static void
+cli_h_mem(int argc, char *argv[])
+{
+	/* XXX test only */
+	printf("oink! 0x%02x\n", *(char *)(10 * 1024 * 1024));
+}
+
 #ifdef CONFIG_MMU_COMMAND
 static void
 cli_u_mmu(const char *str)
@@ -748,6 +761,11 @@ static const struct cli_handler {
 	  cli_h_version,
 	  cli_u_version,
 	},
+	{ "mem",
+	  "examine / modify memory",
+	  cli_h_mem,
+	  cli_u_mem,
+	},
 #ifdef CONFIG_MMU_COMMAND
 	{ "mmu",
 	  "interact with the MMU",
@@ -838,9 +856,7 @@ cli_longjmp(void)
 		longjmp(cli_env, 1);
 	}
 	printf("XXX cli_longjmp XXX\n");
-	for (;;) {
-		/* forever */
-	}
+	reboot();
 }
 
 static void

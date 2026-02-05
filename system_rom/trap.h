@@ -93,7 +93,10 @@ struct trap_frame_ext8 {
 extern bool	nofault;
 extern jmp_buf	nofault_env;
 
+bool	badaddr_read8(volatile uint8_t *, uint8_t *);
+bool	badaddr_read16(volatile uint16_t *, uint16_t *);
 bool	badaddr_read32(volatile uint32_t *, uint32_t *);
+
 bool	badaddr_write32(volatile uint32_t *, uint32_t);
 
 #ifndef CONFIG_MACH_HOST_SIM

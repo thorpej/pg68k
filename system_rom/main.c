@@ -273,6 +273,31 @@ strerror(int err)
 }
 #endif
 
+static bool
+parse_va(const char *str, uintptr_t *va_out)
+{
+	int base = 0;
+	u_long va;
+	char *endptr;
+
+	if (str[0] == '$') {
+		str++;
+		base = 16;
+	}
+
+	va = strtoul(str, &endptr, base);
+	if (*endptr != '\0') {
+		return false;
+	}
+#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
+	if (va > 0x00ffffff) {
+		return false;
+	}
+#endif /* CONFIG_MC68000 || CONFIG_MC68010 */
+	*va_out = va;
+	return true;
+}
+
 static char cli_cmdline[256];
 static size_t cli_cmdline_idx;
 #define	CLI_CMDLINE_LIMIT	(sizeof(cli_cmdline) - 1)
@@ -286,11 +311,11 @@ jmp_buf cli_env;
 static bool cli_env_valid;
 
 static void
-cli_get_cmdline(void)
+cli_get_cmdline(const char *prompt)
 {
 	int ch;
 
-	printf(">>> ");
+	printf("%s", prompt);
 
 	for (cli_cmdline_idx = 0;;) {
 		ch = cons_getc();
@@ -515,21 +540,88 @@ cli_h_mem(int argc, char *argv[])
 static void
 cli_u_probe(const char *str)
 {
-	printf("usage: probe <addr>\n");
+	printf("usage: probe [b | w | l] <addr>\n");
+	printf("       b -> byte access\n");
+	printf("       w -> word access\n");
+	printf("       l -> long word access\n");
+	printf("       (default: word access)\n");
 }
 
 static void
 cli_h_probe(int argc, char *argv[])
 {
-	/* XXX test only */
-	uint32_t val;
-	uint32_t *addr = (void *)(OBIO_VIRT + 0x0f00);
+	uintptr_t addr;
+	union {
+		uint8_t u8;
+		uint16_t u16;
+		uint32_t u32;
+	} val;
+	const char *addr_arg;
+	int size;
+	bool rv;
 
-	if (badaddr_read32(addr, &val)) {
-		printf("Nothing at 0x%08lx\n", (u_long)addr);
+	switch (argc) {
+	case 2:
+		addr_arg = argv[1];
+		size = 2;
+		break;
+
+	case 3:
+		addr_arg = argv[2];
+		if (strcmp(argv[1], "b") == 0) {
+			size = 1;
+		} else if (strcmp(argv[1], "w") == 0) {
+			size = 2;
+		} else if (strcmp(argv[1], "l") == 0) {
+			size = 4;
+		} else {
+			cli_u_probe(argv[0]);
+			return;
+		}
+
+	default:
+		cli_u_probe(argv[0]);
+	}
+
+	if (! parse_va(addr_arg, &addr)) {
+		printf("Bad address: %s\n", addr_arg);
 		return;
 	}
-	printf("0x%08lx: 0x%08x\n", (u_long)addr, val);
+
+	switch (size) {
+	case 1:
+		rv = badaddr_read8((uint8_t *)addr, &val.u8);
+		break;
+
+	case 4:
+		rv = badaddr_read32((uint32_t *)addr, &val.u32);
+		break;
+
+	case 2:
+	default:
+		rv = badaddr_read16((uint16_t *)addr, &val.u16);
+		break;
+	}
+
+	if (! rv) {
+		printf("Nothing at 0x%08x\n", addr);
+		return;
+	}
+
+	switch (size) {
+	case 1:
+		printf("0x%08x: 0x%02\n", addr, val.u8);
+		break;
+
+	case 4:
+		printf("0x%08x: 0x%02\n", addr, val.u32);
+		break;
+
+	case 2:
+	default:
+		printf("0x%08x: 0x%04\n", addr, val.u16);
+		break;
+	}
 }
 
 #ifdef CONFIG_MMU_COMMAND
@@ -540,31 +632,6 @@ cli_u_mmu(const char *str)
 	printf("       %s set context <0...%d>\n", str, PGMMU_NUM_CONTEXTS - 1);
 	printf("       %s show sme <va>\n", str);
 	printf("       %s show pmeg <0...%d>\n", str, PGMMU_NUM_PMEGS - 1);
-}
-
-static bool
-parse_va(const char *str, unsigned long *va_out)
-{
-	int base = 0;
-	unsigned long va;
-	char *endptr;
-
-	if (str[0] == '$') {
-		str++;
-		base = 16;
-	}
-
-	va = strtoul(str, &endptr, base);
-	if (*endptr != '\0') {
-		return false;
-	}
-#ifdef CONFIG_MC68010
-	if (va > 0x00ffffff) {
-		return false;
-	}
-#endif /* CONFIG_MC68010 */
-	*va_out = va;
-	return true;
 }
 
 static bool
@@ -661,8 +728,8 @@ print_pmeg(unsigned int indent_level, unsigned int pmeg)
 static void
 cli_h_mmu(int argc, char *argv[])
 {
-	unsigned long va;
-	unsigned int pmeg;
+	uintptr_t va;
+	u_int pmeg;
 	uint8_t context;
 
 	if (argc < 2) {
@@ -684,7 +751,7 @@ cli_h_mmu(int argc, char *argv[])
 				goto usage;
 			}
 			if (! parse_va(argv[3], &va)) {
-				printf("Bad virtual address: %s\n",
+				printf("Bad segment address: %s\n",
 				    argv[3]);
 				return;
 			}
@@ -868,7 +935,7 @@ cli_loop(void)
 	cli_env_valid = true;
 
 	for (;;) {
-		cli_get_cmdline();
+		cli_get_cmdline(">>> ");
 		cli_get_argv();
 		cli_dispatch();
 	}

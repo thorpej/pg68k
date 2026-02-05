@@ -39,6 +39,32 @@ jmp_buf nofault_env;
 bool nofault;
 
 bool
+badaddr_read8(volatile uint8_t *p, uint8_t *valp)
+{
+	nofault = true;
+	if (setjmp(nofault_env)) {
+		/* nofault already cleared */
+		return true;
+	}
+	*valp = *p;
+	nofault = false;
+	return false;
+}
+
+bool
+badaddr_read16(volatile uint16_t *p, uint16_t *valp)
+{
+	nofault = true;
+	if (setjmp(nofault_env)) {
+		/* nofault already cleared */
+		return true;
+	}
+	*valp = *p;
+	nofault = false;
+	return false;
+}
+
+bool
 badaddr_read32(volatile uint32_t *p, uint32_t *valp)
 {
 	nofault = true;

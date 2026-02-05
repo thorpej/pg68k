@@ -34,9 +34,3 @@
 include "config.h"
 include "systypes.h"
 include "trap.h"
-
-# exception frame offset/sizes
-define	FR_SP			offsetof(struct frame, f_regs[15])
-define	FR_HW			offsetof(struct frame, f_sr)
-define	FR_ADJ			offsetof(struct frame, f_stackadj)
-define	FR_SIZE			sizeof(struct trapframe)

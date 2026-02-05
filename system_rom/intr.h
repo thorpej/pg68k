@@ -32,11 +32,11 @@
 
 struct intr_frame {
 	/* regs saved on the stack by the interrupt stub */
-	unsigned int if_regs[4];	/* d0,d1,a0,a1 */
+	u_int		if_regs[4];	/* d0,d1,a0,a1 */
 	/* hardware frame */
-	unsigned short if_sr;		/* SR at time of interrupt */
-	unsigned long if_pc;		/* PC at time of interrupt */
-	unsigned short if_vo;		/* vector offset (4-word HW frame) */
+	u_short		if_sr;		/* SR at time of interrupt */
+	u_int		if_pc;		/* PC at time of interrupt */
+	u_short		if_vo;		/* vector offset (4-word HW frame) */
 } __attribute__((__packed__));
 
 struct intr_handle {

@@ -80,7 +80,7 @@ intr_init(void)
 	for (ipl = 0; ipl < NIPL; ipl++) {
 		LIST_INIT(&intr_handle_lists[ipl]);
 	}
-	intr_establish(&spurious_intr_handle);
+	LIST_INSERT_HEAD(&intr_handle_lists[0], &spurious_intr_handle, ih_link);
 	intr_enable();
 }
 

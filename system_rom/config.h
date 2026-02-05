@@ -160,6 +160,10 @@
 #error No machine configured!
 #endif
 
+#ifndef CONFIG_PAGESIZE
+#define	CONFIG_PAGESIZE		4096
+#endif
+
 #ifndef CONFIG_DEV_REGSHIFT
 #define	CONFIG_DEV_REGSHIFT	0
 #endif

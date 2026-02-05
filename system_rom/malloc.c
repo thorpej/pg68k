@@ -104,7 +104,7 @@ static uintptr_t curbrk;
 static inline size_t
 getpagesize(void)
 {
-	return 4096;
+	return CONFIG_PAGESIZE;
 }
 
 static inline void *

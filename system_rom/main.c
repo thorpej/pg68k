@@ -729,7 +729,7 @@ static const struct cli_handler {
 	  cli_u_part,
 	},
 	{ "uptime",
-	  "get number of seconds since reboot",
+	  "get number of seconds since boot",
 	  cli_h_uptime,
 	  cli_u_uptime,
 	},

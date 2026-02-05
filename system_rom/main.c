@@ -512,6 +512,26 @@ cli_h_mem(int argc, char *argv[])
 	printf("oink! 0x%02x\n", *(char *)(10 * 1024 * 1024));
 }
 
+static void
+cli_u_probe(const char *str)
+{
+	printf("usage: probe <addr>\n");
+}
+
+static void
+cli_h_probe(int argc, char *argv[])
+{
+	/* XXX test only */
+	uint32_t val;
+	uint32_t *addr = (void *)(OBIO_VIRT + 0x0f00);
+
+	if (badaddr_read32(addr, &val)) {
+		printf("Nothing at 0x%08lx\n", (u_long)addr);
+		return;
+	}
+	printf("0x%08lx: 0x%08x\n", (u_long)addr, val);
+}
+
 #ifdef CONFIG_MMU_COMMAND
 static void
 cli_u_mmu(const char *str)
@@ -765,6 +785,11 @@ static const struct cli_handler {
 	  "examine / modify memory",
 	  cli_h_mem,
 	  cli_u_mem,
+	},
+	{ "probe",
+	  "probe a memory location",
+	  cli_h_probe,
+	  cli_u_probe,
 	},
 #ifdef CONFIG_MMU_COMMAND
 	{ "mmu",

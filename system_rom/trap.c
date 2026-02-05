@@ -107,6 +107,10 @@ trap_handler_buserr(struct trap_frame tf)
 	}
 #endif /* CONFIG_MC68010 */
 
+	if (nofault) {
+		longjmp(nofault_env, 1);
+	}
+
 	printf("Yup, got a Bus Error trap!\n");
 	cli_longjmp();
 }

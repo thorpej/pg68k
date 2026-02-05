@@ -470,10 +470,9 @@ cli_h_uptime(int argc, char *argv[])
 {
 	time_t secs = clock_getsecs();
 
-	printf("%lld seconds\n", (long long)secs);
+	printf("uptime: %lld second%s\n", (long long)secs, plural((int)secs));
 }
 
-#if defined(CONFIG_REBOOT_VECTAB)
 static void
 cli_u_reboot(const char *str)
 {
@@ -483,16 +482,22 @@ cli_u_reboot(const char *str)
 static void
 cli_h_reboot(int argc, char *argv[])
 {
-	/*
-	 * This implementation reboots the system by jumping to the
-	 * reset vector.  The start-up code deals with all the rest.
-	 */
-	extern unsigned long vectab[];
-	void (*reset_vec)(void) = (void *)vectab[1];
-	(*reset_vec)();
+	reboot();
 }
-#define	CONFIG_REBOOT_COMMAND
-#endif /* CONFIG_REBOOT_VECTAB */
+
+static void version(void);
+
+static void
+cli_u_version(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_version(int argc, char *argv[])
+{
+	version();
+}
 
 #ifdef CONFIG_MMU_COMMAND
 static void
@@ -733,13 +738,16 @@ static const struct cli_handler {
 	  cli_h_uptime,
 	  cli_u_uptime,
 	},
-#ifdef CONFIG_REBOOT_COMMAND
 	{ "reboot",
 	  "reboot the system",
 	  cli_h_reboot,
 	  cli_u_reboot,
 	},
-#endif /* CONFIG_REBOOT_COMMAND */
+	{ "version",
+	  "print the system and firmware versions",
+	  cli_h_version,
+	  cli_u_version,
+	},
 #ifdef CONFIG_MMU_COMMAND
 	{ "mmu",
 	  "interact with the MMU",
@@ -835,12 +843,9 @@ cli_longjmp(void)
 	}
 }
 
-int
-main(int argc, char *argv[])
+static void
+version(void)
 {
-	/* First step - initialize console so we can see messages. */
-	cons_init();
-
 	/* Hello, world! */
 	printf("%s", CONFIG_MACHINE_STRING);
 #ifdef CONFIG_CPU_DESC_STRING
@@ -849,6 +854,16 @@ main(int argc, char *argv[])
 	printf("\n");
 	printf("Firmware version %d.%d\n\n", CONFIG_ROM_VERSION_MAJOR,
 	    CONFIG_ROM_VERSION_MINOR);
+}
+
+int
+main(int argc, char *argv[])
+{
+	/* First step - initialize console so we can see messages. */
+	cons_init();
+
+	/* Hello, world! */
+	version();
 
 	/* Configure / probe the hardware. */
 	configure();
@@ -856,6 +871,23 @@ main(int argc, char *argv[])
 	printf("\n");
 
 	cli_loop();
+}
+
+void
+reboot(void)
+{
+#if defined(CONFIG_REBOOT_VECTAB)
+	/*
+	 * This implementation reboots the system by jumping to the
+	 * reset vector.  The start-up code deals with all the rest.
+	 */
+	extern unsigned long vectab[];
+	void (*reset_vec)(void) = (void *)vectab[1];
+	quiesce();
+	(*reset_vec)();
+#else
+	printf("HOW CAN I HAZ REBOOT?!?\n");
+#endif
 }
 
 void

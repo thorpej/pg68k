@@ -6,10 +6,16 @@ MEMORY
 {
   /* The .text segment is linked at and run directly from ROM.  The
      .data segment is also stored there, but is copied at run-time
-     to the RAM area and is linked there.  */
+     to the RAM area and is linked there.
+
+     N.B. the system RAM on the Phaethon 1 is 8MB @ $0000.0000, but
+     we place our .data and .bss starting at $00700000 (7MB), with
+     the heap growing up after that, and our stack at the same location
+     growing down.  This gives us the best chance of staying out of
+     the way of the operating system kernel.  */
 
   rom  : o = 0x00f00000, l = 1M
-  ram  : o = 0x00000000, l = 8M
+  ram  : o = 0x00700000, l = 1M
 }
 SECTIONS
 {

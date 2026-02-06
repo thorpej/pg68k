@@ -274,10 +274,10 @@ strerror(int err)
 #endif
 
 static bool
-parse_va(const char *str, uintptr_t *va_out)
+parse_value(const char *str, unsigned long max_val, u_long *val_out)
 {
 	int base = 0;
-	u_long va;
+	u_long val;
 	char *endptr;
 
 	if (str[0] == '$') {
@@ -285,17 +285,34 @@ parse_va(const char *str, uintptr_t *va_out)
 		base = 16;
 	}
 
-	va = strtoul(str, &endptr, base);
+	val = strtoul(str, &endptr, base);
 	if (*endptr != '\0') {
 		return false;
 	}
-#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
-	if (va > 0x00ffffff) {
+	if (val > max_val) {
 		return false;
 	}
-#endif /* CONFIG_MC68000 || CONFIG_MC68010 */
-	*va_out = va;
+	*val_out = val;
 	return true;
+}
+
+#if defined(CONFIG_MC68000) || defined(CONFIG_MC68010)
+#define	MAX_VA	0x00ffffffU
+#else
+#define	MAX_VA	0xffffffffU
+#endif
+
+static bool
+parse_va(const char *str, uintptr_t *va_out)
+{
+	u_long val;
+	int rv;
+
+	rv = parse_value(str, MAX_VA, &val);
+	if (rv) {
+		*va_out = val;
+	}
+	return rv;
 }
 
 static char cli_cmdline[256];
@@ -527,24 +544,160 @@ cli_h_version(int argc, char *argv[])
 static void
 cli_u_mem(const char *str)
 {
-	printf("usage: mem <addr>\n");
+	printf("usage: mem [b | w | l] <addr>\n"
+	       "       b -> byte access\n"
+	       "       w -> word access\n"
+	       "       l -> long word access\n"
+	       "       (default: word access)\n"
+	       "\n"
+"The 'mem' command is modal.  'x' or ^C will exit 'mem' mode.\n"
+"'b', 'w', or 'l' will change the access size.  Entering a value\n"
+"will write that value to the current address, and then re-read the\n"
+"value to display it.  '+' or a bare <return> will advance the cursor\n"
+"to the next cell of the current size.  '-' will move the cursor to\n"
+"the previous cell of the current size.\n");
 }
 
 static void
 cli_h_mem(int argc, char *argv[])
 {
-	/* XXX test only */
-	printf("oink! 0x%02x\n", *(char *)(10 * 1024 * 1024));
+	uintptr_t addr;
+	union {
+		uint8_t u8;
+		uint16_t u16;
+		uint32_t u32;
+	} val;
+	u_long newval;
+	u_long maxval;
+	char *cp;
+	int size;
+	bool rv;
+
+	switch (argc) {
+	case 2:
+		cp = argv[1];
+		size = 2;
+		break;
+
+	case 3:
+		cp = argv[2];
+		if (strcmp(argv[1], "b") == 0) {
+			size = 1;
+		} else if (strcmp(argv[1], "w") == 0) {
+			size = 2;
+		} else if (strcmp(argv[1], "l") == 0) {
+			size = 4;
+		} else {
+			cli_u_mem(argv[0]);
+			return;
+		}
+		break;
+
+	default:
+		cli_u_mem(argv[0]);
+		return;
+	}
+
+	if (! parse_va(cp, &addr)) {
+		printf("Bad address: %s\n", cp);
+		return;
+	}
+
+	/* modal command loop */
+	for (;;) {
+		addr &= MAX_VA;
+		switch (size) {
+		case 1:
+			maxval = 0xff;
+			val.u8 = *(uint8_t *)addr;
+			printf("<0x%08x>[0x%02x]", addr, val.u8);
+			break;
+
+		case 4:
+			maxval = 0xffffffff;
+			val.u32 = *(uint32_t *)addr;
+			printf("<0x%08x>[0x%08x]", addr, val.u32);
+			break;
+
+		case 2:
+		default:
+			maxval = 0xffff;
+			val.u16 = *(uint16_t *)addr;
+			printf("<0x%08x>[0x%04x]", addr, val.u16);
+			break;
+		}
+
+		cli_get_cmdline(": ");
+		cli_get_argv();
+
+		if (cli_argc == 0) {
+			addr += size;
+			continue;
+		}
+
+		if (cli_argc != 1) {
+			printf("usage: + | - | b | w | l | x | <value>\n");
+			continue;
+		}
+
+		cp = cli_argv[0];
+
+		if (strcmp(cp, "+") == 0) {
+			addr += size;
+			continue;
+		}
+		if (strcmp(cp, "-") == 0) {
+			addr -= size;
+			continue;
+		}
+		if (strcmp(cp, "b") == 0) {
+			size = 1;
+			continue;
+		}
+		if (strcmp(cp, "w") == 0) {
+			size = 2;
+			addr &= ~(size - 1);
+			continue;
+		}
+		if (strcmp(cp, "l") == 0) {
+			size = 4;
+			addr &= ~(size - 1);
+			continue;
+		}
+		if (strcmp(cp, "x") == 0) {
+			return;
+		}
+
+		if (! parse_value(cp, maxval, &newval)) {
+			printf("Bad value: %s\n", cp);
+			continue;
+		}
+
+		switch (size) {
+		case 1:
+			*(uint8_t *)addr = (uint8_t)newval;
+			break;
+
+		case 4:
+			*(uint32_t *)addr = (uint32_t)newval;
+			break;
+
+		case 2:
+		default:
+			*(uint16_t *)addr = (uint16_t)newval;
+			break;
+		}
+	}
 }
 
 static void
 cli_u_probe(const char *str)
 {
-	printf("usage: probe [b | w | l] <addr>\n");
-	printf("       b -> byte access\n");
-	printf("       w -> word access\n");
-	printf("       l -> long word access\n");
-	printf("       (default: word access)\n");
+	printf("usage: probe [b | w | l] <addr>\n"
+	       "       b -> byte access\n"
+	       "       w -> word access\n"
+	       "       l -> long word access\n"
+	       "       (default: word access)\n");
 }
 
 static void

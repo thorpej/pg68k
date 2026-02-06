@@ -73,7 +73,7 @@ struct trap_frame_ext8 {
 	u_short	tf__rsvd2;
 	u_short	tf_iib;		/* instruction input buffer */
 	u_short	tf_ii[16];	/* internal information */
-};
+} __attribute__((__packed__));
 
 #define	SSW_FC		__BITS(0,2)	/* function code for faulting access */
 #define	SSW_RW		__BIT(8)	/* 1=read, 0=write */
@@ -84,8 +84,8 @@ struct trap_frame_ext8 {
 #define	SSW_IF		__BIT(13)	/* insn fetch to IIB */
 #define	SSW_RR		__BIT(15)	/* 0=proc rerun, 1=sw rerun */
 
-#define	trap_frame_ext(tf)						\
-	((void *)(((char *)tf) + sizeof(*(tf))))
+#define	trap_frame_ext(t)						\
+	((void *)(((uintptr_t)(t)) + sizeof(struct trap_frame)))
 
 #endif /* ! CONFIG_MACH_HOST_SIM && ! __ASSEMBLER__ */
 

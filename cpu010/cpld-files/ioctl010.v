@@ -211,10 +211,10 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *           $8000300 - I2C controller
  *
  *      10xx xxxx.xxxx xxxx.0100 0000.xxx0 - ATA disk interface (8 bytes)
- *      10xx xxxx.xxxx xxxx.0100 0001.00x0 - ATA disk aux regs (2 bytes)
+ *      10xx xxxx.xxxx xxxx.0100 0001.xxx0 - ATA disk aux regs (8 bytes)
  *
- *           $8000400 - ATA interface
- *           $8000410 - ATA aux regs
+ *           $8000400 - ATA interface (CS1FX-)
+ *           $8000410 - ATA aux regs  (CS3FX-)
  *
  * Control space addresses:
  *
@@ -274,7 +274,7 @@ always @(*) begin
 	{2'b10, DEVIDX_TMR,   4'd0, 3'd2}:   DevSelects = SEL_TMR_MSB;
 	{2'b10, DEVIDX_I2C,   4'd0, 3'bxxx}: DevSelects = SEL_I2C;
 	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
-	{2'b10, DEVIDX_ATA,   4'd1, 3'b00x}: DevSelects = SEL_ATA_AUX;
+	{2'b10, DEVIDX_ATA,   4'd1, 3'bxxx}: DevSelects = SEL_ATA_AUX;
 
 	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
 	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;

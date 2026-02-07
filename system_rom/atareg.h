@@ -41,10 +41,13 @@
  * WD1003 / ATA Disk Controller register definitions.
  */
 
-/* offsets of registers in the 'regular' register region */
+/*
+ * offsets of registers in the command block
+ * (CS1FX- asserted)
+ */
 #define	wd_data			0	/* data register (R/W - 16 bits) */
 #define	wd_error		1	/* error register (R) */
-#define	wd_precomp		1	/* write precompensation (W) */
+#define	wd_features		1	/* features (W) */
 #define	wd_seccnt		2	/* sector count (R/W) */
 #define	wd_ireason		2	/* interrupt reason (R/W) (for atapi) */
 #define	wd_sector		3	/* first sector number (R/W) */
@@ -52,23 +55,43 @@
 #define	wd_cyl_hi		5	/* cylinder address, high byte (R/W) */
 #define	wd_sdh			6	/* sector size/drive/head (R/W) */
 #define	wd_command		7	/* command register (W)	*/
+#define	wd_status		7	/* status (R) */
+
+/* when in LBA mode: */
 #define	wd_lba_lo		3	/* lba address, low byte (RW) */
 #define	wd_lba_mi		4	/* lba address, middle byte (RW) */
 #define	wd_lba_hi		5	/* lba address, high byte (RW) */
+/* wd_sdh contains upper 4 bits */
 
-/* "shadow" registers; these may or may not overlap regular registers */
-#define	wd_status		8	/* immediate status (R) */
-#define	wd_features		9	/* features (W) */
+#define	ATA_MAX_LBA		0x0fffffff
 
-/* offsets of registers in the auxiliary register region */
+/*
+ * offsets of registers in the control block
+ * (CS3FX- asserted)
+ *
+ * Traditionally, these are defined as offsets from the part of the
+ * control block that's actually used.
+ *
+ * Table from the ATA-1 spec is:
+ *
+ *	CS3FX-   DA2   DA1   DA0
+ *	  N       x     x     x		high-Z
+ *	  A       0     x     x		high-Z
+ *	  A       1     0     x		high-Z
+ * -->	  A       1     1     0		alt status / device control
+ * -->	  A       1     1     1		drive address
+ *
+ * N.B. THAT THE DA1 AND DA2 ADDRESS LINES MUST BE HIGH TO ACCESS THESE
+ * REGISTERS.
+ */
+#define	wd_ctrl_block_bias	6
 #define	wd_aux_altsts		0	/* alternate fixed disk status (R) */
-#define	wd_aux_ctlr		0	/* fixed disk controller control (W) */
-#define  WDCTL_HOB		 0x80	/* read high order byte */
-#define  WDCTL_4BIT		 0x08	/* use four head bits (wd1003) */
-#define  WDCTL_RST		 0x04	/* reset the controller */
-#define  WDCTL_IDS		 0x02	/* disable controller interrupts */
-#if 0 /* NOT MAPPED; fd uses this register on PCs */
-#define	wd_digin		1	/* disk controller input (R) */
-#endif
+	/* see ATA_STATUS_* above */
+
+#define	wd_aux_control		1	/* device control (W) */
+#define	wd_aux_drvaddr		1	/* drive address (R) */
+
+#define	WDCTL_RST		0x04	/* reset the controller */
+#define	WDCTL_IDS		0x02	/* disable controller interrupts */
 
 #endif /* _DEV_IC_WDCREG_H_ */

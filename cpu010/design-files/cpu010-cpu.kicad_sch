@@ -3123,12 +3123,6 @@
 		(uuid "2ff7d0e9-ceed-4be3-aeac-d28093cdc19e")
 	)
 	(junction
-		(at 102.87 146.05)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3a8d5d91-ea7c-4094-9636-e4078d7dd0f8")
-	)
-	(junction
 		(at 149.86 166.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3181,6 +3175,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ba58017b-9890-46ef-a9a0-caee79564a35")
+	)
+	(junction
+		(at 102.87 146.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bbc8229f-479a-4c6b-8a41-fd19a6e2d9c5")
 	)
 	(junction
 		(at 107.95 182.88)
@@ -4009,6 +4009,16 @@
 			(type default)
 		)
 		(uuid "c9ccfa64-8e85-49b0-b6e7-eb1f07b3ab7a")
+	)
+	(wire
+		(pts
+			(xy 102.87 144.78) (xy 102.87 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc31d522-03f5-4e6f-9b56-2649593b6e97")
 	)
 	(wire
 		(pts
@@ -5450,6 +5460,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PWR_OK"
+		(shape input)
+		(at 102.87 144.78 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f2a44a81-e773-43fe-9449-21ccd0307f3b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 102.87 134.2353 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -7395,72 +7427,6 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "#PWR0219")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 102.87 146.05 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "925032e1-1559-40ce-93a7-9ed893d6342c")
-		(property "Reference" "#PWR0215"
-			(at 102.87 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 102.87 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 102.87 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "617afa3a-3714-483c-8f34-979603d0f7a3")
-		)
-		(instances
-			(project ""
-				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
-					(reference "#PWR0215")
 					(unit 1)
 				)
 			)

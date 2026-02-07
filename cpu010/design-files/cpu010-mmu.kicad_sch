@@ -16833,7 +16833,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT157"
+		(property "Value" "74AHCT157"
 			(at 210.4233 73.66 0)
 			(effects
 				(font
@@ -17213,7 +17213,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT157"
+		(property "Value" "74AHCT157"
 			(at 304.4033 73.66 0)
 			(effects
 				(font
@@ -19228,7 +19228,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT245"
+		(property "Value" "74AHCT245"
 			(at 277.7333 125.73 0)
 			(effects
 				(font
@@ -20524,7 +20524,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT157"
+		(property "Value" "74AHCT157"
 			(at 256.1433 73.66 0)
 			(effects
 				(font
@@ -26098,7 +26098,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT157"
+		(property "Value" "74AHCT157"
 			(at 352.6633 73.66 0)
 			(effects
 				(font
@@ -26210,7 +26210,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74ACT245"
+		(property "Value" "74AHCT245"
 			(at 229.4733 125.73 0)
 			(effects
 				(font

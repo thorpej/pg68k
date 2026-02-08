@@ -731,6 +731,7 @@ cli_h_probe(int argc, char *argv[])
 			cli_u_probe(argv[0]);
 			return;
 		}
+		break;
 
 	default:
 		cli_u_probe(argv[0]);
@@ -756,23 +757,23 @@ cli_h_probe(int argc, char *argv[])
 		break;
 	}
 
-	if (! rv) {
+	if (rv) {
 		printf("Nothing at 0x%08x\n", addr);
 		return;
 	}
 
 	switch (size) {
 	case 1:
-		printf("0x%08x: 0x%02\n", addr, val.u8);
+		printf("0x%08x: 0x%02x\n", addr, val.u8);
 		break;
 
 	case 4:
-		printf("0x%08x: 0x%02\n", addr, val.u32);
+		printf("0x%08x: 0x%08x\n", addr, val.u32);
 		break;
 
 	case 2:
 	default:
-		printf("0x%08x: 0x%04\n", addr, val.u16);
+		printf("0x%08x: 0x%04x\n", addr, val.u16);
 		break;
 	}
 }

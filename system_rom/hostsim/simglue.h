@@ -28,7 +28,7 @@
 #define	simglue_h_included
 
 void	sim_uart_init(void);
-bool	sim_uart_pollc(int *);
+int	sim_uart_pollc(void);
 int	sim_uart_getc(void);
 void	sim_uart_putc(int);
 

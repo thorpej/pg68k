@@ -31,7 +31,7 @@
 
 void	cons_init(void);
 int	cons_getc(void);
-bool	cons_pollc(int *);
+int	cons_pollc(void);
 void	cons_putc(int);
 
 #endif /* console_h_included */

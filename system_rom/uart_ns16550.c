@@ -72,14 +72,13 @@ uart_init(int unit, int speed)
 	REG_WRITE(unit, com_ier, 0);
 }
 
-bool
-uart_pollc(int unit, int *chp)
+int
+uart_pollc(int unit)
 {
 	if (REG_READ(unit, com_lsr) & LSR_RXRDY) {
-		*chp = REG_READ(unit, com_data);
-		return true;
+		return REG_READ(unit, com_data);
 	}
-	return false;
+	return -1;
 }
 
 int

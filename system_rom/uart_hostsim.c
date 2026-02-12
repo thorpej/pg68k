@@ -36,11 +36,11 @@ uart_init(int unit, int speed)
 	sim_uart_init();
 }
 
-bool
-uart_pollc(int unit, int *chp)
+int
+uart_pollc(int unit)
 {
 	assert(unit == 0);
-	return sim_uart_pollc(chp);
+	return sim_uart_pollc();
 }
 
 int

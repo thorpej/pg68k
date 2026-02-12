@@ -36,10 +36,10 @@ cons_init(void)
 	uart_init(CONFIG_CONSOLE_UART, CONFIG_UART_SPEED);
 }
 
-bool
-cons_pollc(int *chp)
+int
+cons_pollc(void)
 {
-	return uart_pollc(CONFIG_CONSOLE_UART, chp);
+	return uart_pollc(CONFIG_CONSOLE_UART);
 }
 
 int

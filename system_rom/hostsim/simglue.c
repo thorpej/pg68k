@@ -108,18 +108,17 @@ sim_uart_init(void)
 	tcsetattr(stdout_fd, TCSAFLUSH, &raw_termios);
 }
 
-bool
-sim_uart_pollc(int *chp)
+int
+sim_uart_pollc(void)
 {
 	if (poll(&stdout_pfd, 1, 0) > 0 &&
 	    (stdout_pfd.revents & POLLIN) != 0) {
 		uint8_t ch;
 
 		(void) read(stdout_fd, &ch, 1);
-		*chp = ch;
-		return true;
+		return ch;
 	}
-	return false;
+	return -1;
 }
 
 int

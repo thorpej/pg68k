@@ -32,7 +32,7 @@
 void	uart_configure(void);
 void	uart_init(int, int);
 int	uart_getc(int);
-bool	uart_pollc(int, int *);
+int	uart_pollc(int);
 void	uart_putc(int, int);
 
 #endif /* uart_h_included */

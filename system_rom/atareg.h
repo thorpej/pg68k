@@ -243,6 +243,8 @@ atacmd_to48(int cmd32)
 /* parameters uploaded to device/heads register */
 #define	WDSD_IBM		0xa0	/* forced to 512 byte sector, ecc */
 #define	WDSD_CHS		0x00	/* cylinder/head/sector addressing */
+#define	WDSD_DRV0		0x00	/* select drive 0 */
+#define	WDSD_DRV1		0x10	/* select drive 1 */
 #define	WDSD_LBA		0x40	/* logical block addressing */
 #define	WDSD_FUA		0x80	/* Forced Unit Access (FUA) */
 

@@ -59,7 +59,7 @@
 
 /* when in LBA mode: */
 #define	wd_lba_lo		3	/* lba address, low byte (RW) */
-#define	wd_lba_mi		4	/* lba address, middle byte (RW) */
+#define	wd_lba_mid		4	/* lba address, middle byte (RW) */
 #define	wd_lba_hi		5	/* lba address, high byte (RW) */
 /* wd_sdh contains upper 4 bits */
 
@@ -86,11 +86,11 @@
  */
 #define	wd_ctrl_block_bias	6
 #define	wd_aux_altsts		0	/* alternate fixed disk status (R) */
-	/* see ATA_STATUS_* above */
-
-#define	wd_aux_control		1	/* device control (W) */
+#define	wd_aux_control		0	/* device control (W) */
 #define	wd_aux_drvaddr		1	/* drive address (R) */
 
+#define	WDCTL_HOB		0x80	/* read high order byte */
+#define	WDCTL_4BIT		0x08	/* use four head bits (wd1003) */
 #define	WDCTL_RST		0x04	/* reset the controller */
 #define	WDCTL_IDS		0x02	/* disable controller interrupts */
 

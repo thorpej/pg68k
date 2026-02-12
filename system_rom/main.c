@@ -524,7 +524,7 @@ cli_u_reboot(const char *str)
 static void
 cli_h_reboot(int argc, char *argv[])
 {
-	reboot();
+	sys_reboot();
 }
 
 static void version(void);
@@ -1101,7 +1101,7 @@ cli_longjmp(void)
 		longjmp(cli_env, 1);
 	}
 	printf("XXX cli_longjmp XXX\n");
-	reboot();
+	sys_reboot();
 }
 
 static void
@@ -1135,7 +1135,7 @@ main(int argc, char *argv[])
 }
 
 void
-reboot(void)
+sys_reboot(void)
 {
 #if defined(CONFIG_REBOOT_VECTAB)
 	/*

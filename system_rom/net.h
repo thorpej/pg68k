@@ -168,6 +168,7 @@ int	ip_cksum(const void *, size_t);
 char *	inet_ntoa(in_addr_t, char *, size_t);
 
 #define	IPPROTO_UDP		17	/* user datagram protocol */
+#undef INADDR_BROADCAST
 #define	INADDR_BROADCAST	0xffffffffU
 #define	INET_ADDR_STRLEN	sizeof("255.255.255.255")
 

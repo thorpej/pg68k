@@ -571,7 +571,6 @@ cli_h_mem(int argc, char *argv[])
 	u_long maxval;
 	char *cp;
 	int size;
-	bool rv;
 
 	switch (argc) {
 	case 2:
@@ -610,20 +609,20 @@ cli_h_mem(int argc, char *argv[])
 		case 1:
 			maxval = 0xff;
 			val.u8 = *(uint8_t *)addr;
-			printf("<0x%08x>[0x%02x]", addr, val.u8);
+			printf("<0x%08lx>[0x%02x]", (u_long)addr, val.u8);
 			break;
 
 		case 4:
 			maxval = 0xffffffff;
 			val.u32 = *(uint32_t *)addr;
-			printf("<0x%08x>[0x%08x]", addr, val.u32);
+			printf("<0x%08lx>[0x%08x]", (u_long)addr, val.u32);
 			break;
 
 		case 2:
 		default:
 			maxval = 0xffff;
 			val.u16 = *(uint16_t *)addr;
-			printf("<0x%08x>[0x%04x]", addr, val.u16);
+			printf("<0x%08lx>[0x%04x]", (u_long)addr, val.u16);
 			break;
 		}
 
@@ -758,22 +757,22 @@ cli_h_probe(int argc, char *argv[])
 	}
 
 	if (rv) {
-		printf("Nothing at 0x%08x\n", addr);
+		printf("Nothing at 0x%08lx\n", (u_long)addr);
 		return;
 	}
 
 	switch (size) {
 	case 1:
-		printf("0x%08x: 0x%02x\n", addr, val.u8);
+		printf("0x%08lx: 0x%02x\n", (u_long)addr, val.u8);
 		break;
 
 	case 4:
-		printf("0x%08x: 0x%08x\n", addr, val.u32);
+		printf("0x%08lx: 0x%08x\n", (u_long)addr, val.u32);
 		break;
 
 	case 2:
 	default:
-		printf("0x%08x: 0x%04x\n", addr, val.u16);
+		printf("0x%08lx: 0x%04x\n", (u_long)addr, val.u16);
 		break;
 	}
 }

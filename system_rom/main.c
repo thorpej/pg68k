@@ -100,6 +100,12 @@ mmu_sme_set(unsigned long segva, uint16_t val)
 	control_outw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)), val);
 }
 
+static uint16_t
+mmu_sme0_get(unsigned long segva)
+{
+	return control_inw(MMUREG_SEGMAP0_ENTRY(PGMMU_SEGNUM(segva)));
+}
+
 static void
 mmu_sme0_set(unsigned long segva, uint16_t val)
 {
@@ -145,17 +151,39 @@ mmu_map(uintptr_t va, unsigned long pa, size_t size, bool rw)
 static void
 mmu_unmap(uintptr_t va, size_t size)
 {
-	uintptr_t endva = round_page(va + size);
+	uintptr_t startva, endva = round_page(va + size);
 	uint32_t pme_index;
+	uint32_t pme;
+	uint16_t sme;
+	int i;
 
-	va = trunc_page(va);
+	startva = trunc_page(va);
 
 	pme_index = ROM_PME_BASE + (va >> PAGE_SHIFT);
 
-	for (; va < endva; va += PAGE_SIZE, pme_index++) {
+	for (va = startva; va < endva; va += PAGE_SIZE, pme_index++) {
 		mmu_pme_set(pme_index, 0);
 	}
-	/* don't bother invalidating SegMap entries. */
+
+	/* Invalidate any segments that have fully-invalid PMEGs. */
+	startva = trunc_seg(startva);
+	endva = round_seg(endva);
+	for (va = startva; va < endva; va += PGMMU_SEG_SIZE) {
+		sme = mmu_sme0_get(va);
+		if ((sme & SME_V) == 0) {
+			continue;
+		}
+		pme_index = (sme & SME_PMEG) * PGMMU_PMES_PER_PMEG;
+		for (i = 0; i < PGMMU_PMES_PER_PMEG; i++) {
+			pme = mmu_pme_get(pme_index + i);
+			if (pme & PME_V) {
+				break;
+			}
+		}
+		if (i == PGMMU_PMES_PER_PMEG) {
+			mmu_sme0_set(va, 0);
+		}
+	}
 }
 #define	CONFIG_MMU_COMMAND
 #endif /* CONFIG_MC68010 */

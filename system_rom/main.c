@@ -669,7 +669,7 @@ cli_h_part(int argc, char *argv[])
 
 	int fd = open(argv[1], O_RDONLY | O_RAW | O_WHOLE);
 	if (fd < 0) {
-		printf("%s: %s\n", argv[1], strerror(errno));
+		/* Error already reported by dev_open(). */
 		return;
 	}
 	struct open_file *f = getfile(fd);
@@ -1364,6 +1364,16 @@ main(int argc, char *argv[])
 	/* First step - initialize console so we can see messages. */
 	cons_init();
 
+	/*
+	 * Set up an emergency fault handler that will break us out
+	 * into command loop if something bad happens before we get
+	 * there.
+	 */
+	if (setjmp(cli_env)) {
+		goto enter_loop;
+	}
+	cli_env_valid = true;
+
 	configure_quietly = !BOOT_HOWTO_ANNOUNCE(boot_howto);
 
 	/* Hello, world! */
@@ -1379,6 +1389,8 @@ main(int argc, char *argv[])
 	if (boot_howto == BOOT_HOWTO_DEFAULT) {
 		auto_boot();
 	}
+
+ enter_loop:
 	cli_loop();
 }
 

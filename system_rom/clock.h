@@ -30,7 +30,7 @@
 #include "config.h"
 #include "systypes.h"
 
-void	clock_configure(void);
+void	clock_configure(bool);
 void	clock_quiesce(void);
 
 #ifdef CONFIG_MACH_HOST_SIM

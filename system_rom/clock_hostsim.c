@@ -31,7 +31,7 @@
 #include "simglue.h"
 
 void
-clock_configure(void)
+clock_configure(bool do_init)
 {
 	/* Shhhhh... */
 }

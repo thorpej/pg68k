@@ -97,6 +97,7 @@
 struct ata_drive {
 	uint64_t	drv_nblks;
 	int		drv_secsize;
+	char		drv_model[41];
 };
 
 struct ata_controller {
@@ -380,21 +381,24 @@ wdc_decode_identify_string(const char *in, size_t insize, char *out)
 }
 
 void
-ata_init(int ctlr)
+ata_init(int ctlr, bool do_init)
 {
 	struct ataparams *atap = &ata_identify_buf;
-	int rv, drive, error;
-	char model[sizeof(atap->atap_model) + 1];
+	int rv = 0, drive, error;
 	uint16_t u16;
 	uint32_t capacity;
 	struct ata_drive *drv;
 
-	rv = wdc_probe(ctlr);
+	for (drive = 0; do_init && drive < 2; drive++) {
+		if (drive == 0) {
+			rv = wdc_probe(ctlr);
 #if 0
-	printf("ata_init(%d): result -> 0x%02x\n", ctlr, rv);
+			printf("ata_init(%d): result -> 0x%02x\n", ctlr, rv);
 #endif
+		}
 
-	for (drive = 0; drive < 2; drive++) {
+		drv = &ata_controllers[ctlr].ata_drives[drive];
+
 		if ((rv & __BIT(drive)) == 0) {
 			continue;
 		}
@@ -418,15 +422,21 @@ ata_init(int ctlr)
 		capacity = le16toh(atap->atap_capacity[1]);
 		capacity = (capacity << 16) | le16toh(atap->atap_capacity[0]);
 
-		drv = &ata_controllers[ctlr].ata_drives[drive];
+		wdc_decode_identify_string(atap->atap_model,
+					   sizeof(atap->atap_model),
+					   drv->drv_model);
 		drv->drv_secsize = 512;
 		drv->drv_nblks = capacity;
+	}
+
+	for (drive = 0; drive < 2; drive++) {
+		drv = &ata_controllers[ctlr].ata_drives[drive];
+		if (drv->drv_secsize == 0) {
+			continue;
+		}
 
 		configure_printf("  drive %d: <%s> %llu %d-byte blocks\n",
-		    drive,
-		    wdc_decode_identify_string(atap->atap_model,
-					       sizeof(atap->atap_model),
-					       model),
+		    drive, drv->drv_model,
 		    drv->drv_nblks, drv->drv_secsize);
 	}
 }

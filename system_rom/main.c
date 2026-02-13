@@ -163,7 +163,7 @@ size_memory_bank(struct memory_bank *mb)
 }
 
 static void
-size_memory(void)
+size_memory(bool do_init)
 {
 	struct memory_bank *mb;
 	u_long psize;
@@ -184,7 +184,9 @@ size_memory(void)
 			/* not supported on this machine; skip */
 			continue;
 		} else {
-			size_memory_bank(mb);
+			if (do_init) {
+				size_memory_bank(mb);
+			}
 			if (mb->size == 0) {
 				/* no memory in this bank; skip */
 				continue;
@@ -224,19 +226,30 @@ configure_printf(const char *fmt, ...)
 static void
 configure(void)
 {
+	static bool devices_initialized;
+
+	/*
+	 * First pass through, this configures the devices.
+	 * Any subsequent calls merely report them.
+	 */
+
 	configure_printf("Memory configuration:\n");
-	size_memory();
+	size_memory(!devices_initialized);
 	configure_printf("\n");
 
 	configure_printf("Device configuration:\n");
-	intr_init();
-	clock_configure();
+	if (!devices_initialized) {
+		intr_init();
+	}
+	clock_configure(!devices_initialized);
 #ifdef UART0_ADDR
-	uart_configure();
+	uart_configure(!devices_initialized);
 #endif
 #ifdef ATA_ADDR
-	ata_configure();
+	ata_configure(!devices_initialized);
 #endif
+
+	devices_initialized = true;
 }
 
 void
@@ -482,6 +495,19 @@ cli_h_boot(int argc, char *argv[])
 	}
 
 	(void) exec(LOAD_ALL, argc, argv);
+}
+
+static void
+cli_u_devs(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_devs(int argc, char *argv[])
+{
+	configure();
+	printf("\n");
 }
 
 static void
@@ -993,6 +1019,11 @@ static const struct cli_handler {
 	  "boot an executable file",
 	  cli_h_boot,
 	  cli_u_boot,
+	},
+	{ "devs",
+	  "show memory and device configuration",
+	  cli_h_devs,
+	  cli_u_devs,
 	},
 	{ "ls",
 	  "show listing of a directory",

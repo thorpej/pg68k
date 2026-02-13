@@ -39,14 +39,14 @@ int	ata_count = arraycount(ata_addrs) / 2;
 #define	MAXATA		1	/* max # of controllers */
 
 void
-ata_configure(void)
+ata_configure(bool do_init)
 {
 	int i;
 
 	for (i = 0; i < ata_count; i++) {
 		configure_printf("ata%d at 0x%08lx\n", i,
 		    (u_long)ata_addrs[(i << 1)]);
-		ata_init(i);
+		ata_init(i, do_init);
 	}
 }
 

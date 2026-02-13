@@ -135,32 +135,36 @@ static struct intr_handle pgtimer_intr_handle = {
 static int hz = CONFIG_HZ;
 
 void
-clock_configure(void)
+clock_configure(bool do_init)
 {
 	int s;
 
-	/* Calibrate the delay divisor. */
-	pgtimer_delaycal();
+	if (do_init) {
+		/* Calibrate the delay divisor. */
+		pgtimer_delaycal();
+	}
 
 	configure_printf("timer0 at 0x%08lx (delay divisor: %u)\n",
 	    (u_long)TIMER_ADDR, delay_divisor);
 
-	/* Register the timer interrupt. */
-	intr_establish(&pgtimer_intr_handle);
+	if (do_init) {
+		/* Register the timer interrupt. */
+		intr_establish(&pgtimer_intr_handle);
 
-	/* Start the timer. */
-	s = splhigh();
-	if (1000000 % hz) {
-		printf("Cannot get %d Hz clock; using 100 Hz\n", hz);
-		hz = 100;
+		/* Start the timer. */
+		s = splhigh();
+		if (1000000 % hz) {
+			printf("Cannot get %d Hz clock; using 100 Hz\n", hz);
+			hz = 100;
+		}
+		pgtimer_initclock(1000000 / hz);
+
+		/*
+		 * Drop to IPL5 to allow timer interrupts, but block
+		 * everything else.
+		 */
+		_spl(PSL_S|PSL_IPL5);
 	}
-	pgtimer_initclock(1000000 / hz);
-
-	/*
-	 * Drop to IPL5 to allow timer interrupts, but block
-	 * everything else.
-	 */
-	_spl(PSL_S|PSL_IPL5);
 }
 
 void

@@ -32,7 +32,7 @@ int	sim_uart_pollc(void);
 int	sim_uart_getc(void);
 void	sim_uart_putc(int);
 
-void	sim_ata_init(void);
+void	sim_ata_init(bool);
 int	sim_ata_strategy(void *, int, uint64_t, size_t, void *, size_t *);
 int	sim_ata_open(int, void **);
 int	sim_ata_close(void *);

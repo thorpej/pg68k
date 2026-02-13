@@ -29,7 +29,7 @@
 
 #include "systypes.h"
 
-void	ata_configure(void);
-void	ata_init(int);
+void	ata_configure(bool);
+void	ata_init(int, bool);
 
 #endif /* ata_h_included */

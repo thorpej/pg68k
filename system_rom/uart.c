@@ -40,7 +40,7 @@ int	uart_count = arraycount(uart_addrs);
 #endif /* UART0_ADDR */
 
 void
-uart_configure(void)
+uart_configure(bool do_init)
 {
 	int i;
 
@@ -48,9 +48,11 @@ uart_configure(void)
 		configure_printf("uart%d at 0x%08lx\n",
 		    i, (u_long)uart_addrs[i]);
 
-		/* Console UART already configured. */
-		if (i != CONFIG_CONSOLE_UART) {
-			uart_init(i, CONFIG_UART_SPEED);
+		if (do_init) {
+			/* Console UART already configured. */
+			if (i != CONFIG_CONSOLE_UART) {
+				uart_init(i, CONFIG_UART_SPEED);
+			}
 		}
 	}
 }

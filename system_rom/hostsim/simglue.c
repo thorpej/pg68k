@@ -153,13 +153,13 @@ struct sim_ata_softc {
 static struct sim_ata_softc sim_ata_drives[2];
 
 void
-sim_ata_init(void)
+sim_ata_init(bool do_init)
 {
 	char drive_name[32];
 	struct sim_ata_softc *sc;
 	struct stat sb;
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; do_init && i < 2; i++) {
 		sc = &sim_ata_drives[i];
 		snprintf(drive_name, sizeof(drive_name),
 		    "disk%d.img", i);
@@ -175,6 +175,13 @@ sim_ata_init(void)
 			goto bad;
 		}
 		sc->sc_nblks = sb.st_size / sc->sc_secsize;
+	}
+
+	for (int i = 0; i < 2; i++) {
+		sc = &sim_ata_drives[i];
+		if (sc->sc_nblks == 0) {
+			continue;
+		}
 		printf("  drive %d: <Host Sim Disk> %llu %d-byte blocks\n",
 		    i, (unsigned long long)sc->sc_nblks, sc->sc_secsize);
 	}

@@ -29,7 +29,7 @@
 
 #include "systypes.h"
 
-void	uart_configure(void);
+void	uart_configure(bool);
 void	uart_init(int, int);
 int	uart_getc(int);
 int	uart_pollc(int);

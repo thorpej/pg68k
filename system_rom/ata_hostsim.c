@@ -32,10 +32,10 @@
 #include "ata.h"
 
 void
-ata_init(int ctlr)
+ata_init(int ctlr, bool do_init)
 {
 	if (ctlr == 0) {
-		sim_ata_init();
+		sim_ata_init(do_init);
 	}
 }
 

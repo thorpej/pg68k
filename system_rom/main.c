@@ -213,11 +213,14 @@ size_memory_bank(struct memory_bank *mb)
 	size_t maxchunks = mb->maxsize / chunksize;
 	size_t chunk, i;
 
+#ifdef RAM_PROBE_VIRT
+	p = (uint32_t *)RAM_PROBE_VIRT;
+#endif
+
 	for (chunk = 0; chunk < maxchunks; chunk++) {
 #ifdef RAM_PROBE_VIRT
 		mmu_map(RAM_PROBE_VIRT, mb->start + (chunk * chunksize),
 		    chunksize, true);
-		p = (uint32_t *)RAM_PROBE_VIRT;
 #else
 		p = (uint32_t *)(mb->start + (chunk * chunksize));
 #endif
@@ -230,7 +233,6 @@ size_memory_bank(struct memory_bank *mb)
 #ifdef RAM_PROBE_VIRT
 			mmu_map(RAM_PROBE_VIRT, mb->start + (i * chunksize),
 			    chunksize, true);
-			p = (uint32_t *)RAM_PROBE_VIRT;
 #else
 			p = (uint32_t *)(mb->start + (i * chunksize));
 #endif

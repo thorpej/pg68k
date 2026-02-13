@@ -242,14 +242,16 @@ start:
 	movec	%d0,%dfc
 
 	|
-	| We're not sure how we got here; it could have been a system
-	| reset, or it could have been the operating system requesting
-	| a reboot.  In the latter case, the MMU would be turned on,
-	| so we need to turn basically everything off.  But we need to
-	| preserve the "please reboot" bit.
+	| We can't know with certainty how we got here; it could have
+	| been a system reset ("cold boot"), it could have been a
+	| reboot/halt request from the operating system ("warm-boot"),
+	| or is could have been some silly program just jumping to
+	| the reset vector target.  In any case, the MMU may or may
+	| not be enabled, ditto the interrupt controller. And who
+	| knows what the VBR might look like!
 	|
-	| N.B. this also disables all interrupts, including the NMI,
-	| which is good, actually, because we can't use the stack yet!
+	| So, set it to a known good state while preserving the boot
+	| howto value for use later.
 	|
 	movea.l	#CTLREG_SYSEN,%a5	| %a5 = System Enable register
 	moves.b	(%a5),%d5		| %d5 <- System Enable register

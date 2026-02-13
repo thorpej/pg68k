@@ -98,7 +98,17 @@ ls(const char *path)
 	char		*p;
 	struct open_file *f;
 
-	if ((fd = open(path, O_RDONLY)) < 0
+	fd = open(path, O_RDONLY);
+	if (fd < 0 &&
+	    (errno == ENXIO || errno == ESRCH)) {
+		/*
+		 * No need to report our own error here; dev_open()
+		 * will have taken care of it for us.
+		 */
+		return;
+	}
+
+	if (fd < 0
 	    || fstat(fd, &sb) < 0
 	    || (sb.st_mode & S_IFMT) != S_IFDIR) {
 		/* Path supplied isn't a directory, open parent

@@ -38,9 +38,9 @@ _start:
 	movea.l	ROMCALL_BASE+ROMCALL_PUTC,%a2
 
 	lea	hellorld_string,%a3	| %a3 = string to print
-	moveq	#0,%d2			| clear all of %d0
+	moveq	#0,%d2			| clear all of %d2
 	move.l	%d2,-(%sp)		| make stack slot for char argument
-1:	move.b	(%a3)+,%d2		| %d0 = *cp++
+1:	move.b	(%a3)+,%d2		| %d2 = *cp++
 	beq	1f			| break out of loop if '\0'
 	move.l	%d2,(%sp)		| char into arg slot on stack
 	jsr	(%a2)			| (*putc)(ch)

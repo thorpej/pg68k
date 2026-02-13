@@ -41,9 +41,40 @@
 
 #include "memory.h"
 
+size_t
+getpagesize(void)
+{
+	return CONFIG_PAGESIZE;
+}
+
+uintptr_t
+trunc_page(uintptr_t addr)
+{
+	return addr & ~(CONFIG_PAGESIZE - 1);
+}
+
+uintptr_t
+round_page(uintptr_t addr)
+{
+	return trunc_page(addr + (CONFIG_PAGESIZE - 1));
+}
+
 #ifdef CONFIG_MC68010
 #include "control.h"
 #include "cpu010_mmu.h"
+#include "mmu_config.h"
+
+static uintptr_t
+trunc_seg(uintptr_t addr)
+{
+	return addr & ~PGMMU_SEG_OFFSET;
+}
+
+static uintptr_t
+round_seg(uintptr_t addr)
+{
+	return trunc_seg(addr + PGMMU_SEG_OFFSET);
+}
 
 static uint8_t
 mmu_getcontext(void)
@@ -69,6 +100,12 @@ mmu_sme_set(unsigned long segva, uint16_t val)
 	control_outw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)), val);
 }
 
+static void
+mmu_sme0_set(unsigned long segva, uint16_t val)
+{
+	control_outw(MMUREG_SEGMAP0_ENTRY(PGMMU_SEGNUM(segva)), val);
+}
+
 static uint32_t
 mmu_pme_get(unsigned long pme_index)
 {
@@ -79,6 +116,46 @@ static uint32_t
 mmu_pme_set(unsigned long pme_index, uint32_t val)
 {
 	control_outl(MMUREG_PAGEMAP_ENTRY(pme_index), val);
+}
+
+static void
+mmu_map(uintptr_t va, unsigned long pa, size_t size, bool rw)
+{
+	uintptr_t startva, endva = round_page(va + size);
+	uint32_t pme = PME_V | PME_K | (rw ? PME_W : 0) | (pa >> PAGE_SHIFT);
+	uint32_t pme_index;
+	uint16_t pmeg;
+
+	startva = trunc_page(va);
+
+	pme_index = ROM_PME_BASE + (va >> PAGE_SHIFT);
+	pmeg = pme_index / PGMMU_PMES_PER_PMEG;
+
+	for (va = startva; va < endva; va += PAGE_SIZE, pme++, pme_index++) {
+		mmu_pme_set(pme_index, pme);
+	}
+
+	startva = trunc_seg(startva);
+	endva = round_seg(endva);
+	for (va = startva; va < endva; va += PGMMU_SEG_SIZE, pmeg++) {
+		mmu_sme0_set(va, SME_V | pmeg);
+	}
+}
+
+static void
+mmu_unmap(uintptr_t va, size_t size)
+{
+	uintptr_t endva = round_page(va + size);
+	uint32_t pme_index;
+
+	va = trunc_page(va);
+
+	pme_index = ROM_PME_BASE + (va >> PAGE_SHIFT);
+
+	for (; va < endva; va += PAGE_SIZE, pme_index++) {
+		mmu_pme_set(pme_index, 0);
+	}
+	/* don't bother invalidating SegMap entries. */
 }
 #define	CONFIG_MMU_COMMAND
 #endif /* CONFIG_MC68010 */
@@ -137,14 +214,26 @@ size_memory_bank(struct memory_bank *mb)
 	size_t chunk, i;
 
 	for (chunk = 0; chunk < maxchunks; chunk++) {
+#ifdef RAM_PROBE_VIRT
+		mmu_map(RAM_PROBE_VIRT, mb->start + (chunk * chunksize),
+		    chunksize, true);
+		p = (uint32_t *)RAM_PROBE_VIRT;
+#else
 		p = (uint32_t *)(mb->start + (chunk * chunksize));
+#endif
 		if (badaddr_write32(p, chunk)) {
 			/* Bus error writing this chunk. */
 			break;
 		}
 		/* Validate the write. */
 		for (i = 0; i < chunk; i++) {
+#ifdef RAM_PROBE_VIRT
+			mmu_map(RAM_PROBE_VIRT, mb->start + (i * chunksize),
+			    chunksize, true);
+			p = (uint32_t *)RAM_PROBE_VIRT;
+#else
 			p = (uint32_t *)(mb->start + (i * chunksize));
+#endif
 			if (badaddr_read32(p, &val)) {
 				/* Bus error reading chunk. */
 				break;
@@ -158,6 +247,10 @@ size_memory_bank(struct memory_bank *mb)
 			break;
 		}
 	}
+
+#ifdef RAM_PROBE_VIRT
+	mmu_unmap(RAM_PROBE_VIRT, chunksize);
+#endif
 
 	mb->size = chunk * chunksize;
 }
@@ -196,7 +289,7 @@ size_memory(bool do_init)
 		psize = mb->size / 1024;
 		mod = 'K';
 
-		if (psize > 1024) {
+		if (psize >= 1024 && (psize % 1024) == 0) {
 			mod = 'M';
 			psize = psize / 1024;
 		}

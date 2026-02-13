@@ -101,18 +101,6 @@ static int findbucket(union overhead *, int);
 
 static uintptr_t curbrk;
 
-static inline size_t
-getpagesize(void)
-{
-	return CONFIG_PAGESIZE;
-}
-
-static inline void *
-round_page(void *addr)
-{
-	return (void *)roundup(addr, getpagesize());
-}
-
 static void *
 init_brk(void *addr)
 {
@@ -132,7 +120,7 @@ sbrk(int incr)
 		incr = 0;
 	}
 
-	uintptr_t newbrk = (uintptr_t)round_page((void *)(curbrk + incr));
+	uintptr_t newbrk = round_page(curbrk + incr);
 	void *rv;
 
 #ifdef BRK_LIMIT

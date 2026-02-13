@@ -128,6 +128,10 @@ void *	malloc(size_t);
 void *	realloc(void *, size_t);
 void	free(void *);
 
+size_t	getpagesize(void);
+uintptr_t round_page(uintptr_t);
+uintptr_t trunc_page(uintptr_t);
+
 unsigned long strtoul(const char *restrict, char **restrict, int);
 
 int	setjmp(jmp_buf);

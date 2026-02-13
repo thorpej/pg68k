@@ -38,7 +38,12 @@
 #define	RAM0_START	0x00000000	/* start of on-board RAM */
 #define	RAM0_SIZE	0x00800000	/* fixed size of on-board RAM */
 #define	RAM0_DESC	"On-board RAM"
-/* XXX Add expansion RAM */
+
+#define	RAM1_START	0x00800000	/* start of expansion RAM */
+#define	RAM1_MAXSIZE	0x03800000	/* max expansion RAM size */
+#define	RAM1_DESC	"NQVME expansion RAM"
+
+#define	RAM_PROBE_VIRT	0x00900000	/* VA to use for probing RAM */
 
 /*
  * ROM physically starts at $04000000 and is linked at $00F0.0000.

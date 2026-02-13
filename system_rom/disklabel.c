@@ -193,7 +193,7 @@ partition_list_scan_gpt(struct open_file *f, struct partition_list *pl)
 	lba_end = le64toh(hdr->hdr_lba_end);
 	lba_table = le64toh(hdr->hdr_lba_table);
 	if (lba_start < 0 || lba_end < 0 || lba_table < 0) {
-		printf("WARNING: GPT block numbers out of range\n");
+		verbose_printf("WARNING: GPT block numbers out of range\n");
 		error = ESRCH;
 		goto out;
 	}
@@ -208,14 +208,14 @@ partition_list_scan_gpt(struct open_file *f, struct partition_list *pl)
 	error = dev_read(f, lba_table, buf, sz);
 	if (error) {
 		/* XXX Should check alternate location. */
-		printf("WARNING: unable to read GPT partition array: %s\n",
-		    strerror(error));
+		verbose_printf("WARNING: unable to read GPT partition array: "
+			       "%s\n", strerror(error));
 		goto out;
 	}
 
 	if (crc32(0, buf, entries * entsz) != gpe_crc) {
 		/* XXX Should check alternate location. */
-		printf("Bad GPT partition array CRC\n");
+		verbose_printf("Bad GPT partition array CRC\n");
 		error = ESRCH;
 		goto out;
 	}
@@ -406,12 +406,12 @@ find_bsd44_label_in_sector(void *buf, size_t secsize, bool *swappedp)
 
 		if ((uintptr_t)lp + DISKLABEL_BSD44_SIZE(npartitions) >
 		    (uintptr_t)buf + secsize) {
-			printf("4.4BSD partition count out of range\n");
+			verbose_printf("4.4BSD partition count out of range\n");
 			continue;
 		}
 
 		if (dkcsum_bsd44(lp, npartitions) != 0) {
-			printf("Bad 4.4BSD disk label checksum\n");
+			verbose_printf("Bad 4.4BSD disk label checksum\n");
 			continue;
 		}
 
@@ -607,7 +607,7 @@ partition_list_choose(struct partition_list *pl, int partnum)
 			break;
 		}
 		if ((p = pl->pl_chosen) != NULL) {
-			printf("Choosing partition %u\n", p->p_partnum);
+			verbose_printf("Choosing partition %u\n", p->p_partnum);
 			return 0;
 		} else if (TAILQ_EMPTY(&pl->pl_list)) {
 			pl->pl_chosen = &full_disk;

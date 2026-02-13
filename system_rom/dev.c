@@ -273,7 +273,8 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 			error = partition_list_scan(f, pl);
 			if (error == 0) {
 				if (pl->pl_scheme != PARTITION_SCHEME_UNKNOWN) {
-					printf("Found %s partition scheme\n",
+					verbose_printf(
+					    "Found %s partition scheme\n",
 					    partition_scheme_name(
 					    pl->pl_scheme));
 				}

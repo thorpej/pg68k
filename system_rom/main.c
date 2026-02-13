@@ -307,7 +307,7 @@ int
 configure_printf(const char *fmt, ...)
 {
 	va_list ap;
-	int rv;
+	int rv = 0;
 
 	if (! configure_quietly) {
 		va_start(ap, fmt);
@@ -352,6 +352,23 @@ quiesce(void)
 {
 	clock_quiesce();
 	intr_fini();
+}
+
+static bool verbose;
+
+int
+verbose_printf(const char *fmt, ...)
+{
+	va_list ap;
+	int rv = 0;
+
+	if (verbose) {
+		va_start(ap, fmt);
+		rv = vprintf(fmt, ap);
+		va_end(ap);
+	}
+
+	return rv;
 }
 
 #ifndef CONFIG_MACH_HOST_SIM
@@ -678,6 +695,38 @@ static void
 cli_h_version(int argc, char *argv[])
 {
 	version();
+}
+
+static void
+cli_u_verbose(const char *str)
+{
+	printf("usage: %s [ on | off]\n");
+}
+
+static void
+cli_h_verbose(int argc, char *argv[])
+{
+	switch (argc) {
+	case 1:
+	we_are_verbose:
+		printf("Verbose is %s.\n", verbose ? "on" : "off");
+		return;
+
+	case 2:
+		if (strcmp(argv[1], "on") == 0) {
+			verbose = true;
+			goto we_are_verbose;
+		} else if (strcmp(argv[1], "off") == 0) {
+			verbose = false; /* (shh.... */
+			/* we are not verbose ;-) */
+			return;
+		}
+		/* FALLTHROUGH */
+
+	default:
+		cli_u_verbose(argv[0]);
+		break;
+	}
 }
 
 static void
@@ -1144,6 +1193,11 @@ static const struct cli_handler {
 	  "print the system and firmware versions",
 	  cli_h_version,
 	  cli_u_version,
+	},
+	{ "verbose",
+	  "get / set the verbosity level",
+	  cli_h_verbose,
+	  cli_u_verbose,
 	},
 	{ "mem",
 	  "examine / modify memory",

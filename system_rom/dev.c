@@ -280,8 +280,9 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 				error = partition_list_choose(pl, f->f_devpart);
 				if (error) {
 					partition_list_discard(pl);
+				} else {
+					f->f_devpart = pl->pl_chosen->p_partnum;
 				}
-				f->f_devpart = pl->pl_chosen->p_partnum;
 			}
 		}
 	}

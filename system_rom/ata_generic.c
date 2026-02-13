@@ -410,8 +410,8 @@ ata_init(int ctlr)
 		}
 		u16 = le16toh(atap->atap_capabilities1);
 		if ((u16 & WDC_CAP_LBA) == 0) {
-			printf("  drive %d: no LBA capability, ignoring\n",
-			    drive);
+			configure_printf("  drive %d: no LBA capability, "
+					 "ignoring\n", drive);
 			continue;
 		}
 
@@ -422,7 +422,8 @@ ata_init(int ctlr)
 		drv->drv_secsize = 512;
 		drv->drv_nblks = capacity;
 
-		printf("  drive %d: <%s> %llu %d-byte blocks\n", drive,
+		configure_printf("  drive %d: <%s> %llu %d-byte blocks\n",
+		    drive,
 		    wdc_decode_identify_string(atap->atap_model,
 					       sizeof(atap->atap_model),
 					       model),

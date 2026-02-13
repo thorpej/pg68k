@@ -37,6 +37,7 @@
 #include "config.h"
 #include "cache.h"
 #include "psl.h"
+#include "boot.h"
 
 #ifdef CONFIG_MC68010
 #include "control.h"
@@ -179,8 +180,44 @@ vectab:
 | which defines the layout and size of this vector table.
 |
 	.globl	romcalls
+	.globl	romcalls_end
 romcalls:
-	.long	0		| version 0 -- nothing
+	.long	1
+
+	.long	romcall_reboot
+	.long	romcall_halt
+	.long	romcall_poweroff
+
+	.long	malloc
+	.long	realloc
+	.long	free
+
+	.long	cons_pollc
+	.long	cons_putc
+romcalls_end:
+
+#ifdef CONFIG_MC68010
+	.globl	romcall_reboot_noauto
+romcall_reboot_noauto:
+	move.l	#(BOOT_HOWTO_NOAUTO << SYSEN_HOWTO_SHIFT),%d1
+	bra	1f
+
+romcall_reboot:
+	move.l	#(BOOT_HOWTO_REBOOT << SYSEN_HOWTO_SHIFT),%d1
+	bra	1f
+
+romcall_halt:
+romcall_poweroff:
+	move.l	#(BOOT_HOWTO_HALT << SYSEN_HOWTO_SHIFT),%d1
+1:
+	move.w	#PSL_HIGHIPL,%sr	| splhigh()
+	moveq	#FC_CONTROL,%d0
+	movec	%d0,%sfc
+	movec	%d0,%dfc
+	movea.l	#CTLREG_SYSEN,%a0	| %a5 = System Enable register
+	moves.b	%d1,(%a0)		| set howto, disable everything else
+	bra	start
+#endif /* CONFIG_MC68010 */
 
 rom_argv0:
 	.asciz	"pg68krom"
@@ -216,7 +253,7 @@ start:
 	|
 	movea.l	#CTLREG_SYSEN,%a5	| %a5 = System Enable register
 	moves.b	(%a5),%d5		| %d5 <- System Enable register
-	and.l	#SYSEN_REBOOT,%d5	| clear everything except REBOOT
+	and.l	#SYSEN_HOWTO,%d5	| clear everything except howto
 	moves.b	%d5,(%a5)		| %d5 -> System Enable register
 
 	|
@@ -312,7 +349,6 @@ start:
 	|
 	or.b	#SYSEN_MMU,%d5
 	moves.b	%d5,(%a5)
-
 #endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000
@@ -354,6 +390,18 @@ start:
 	pea	_edata
 	jbsr	memset		| memset(_edata, 0, d0)
 	add.l	#12,%sp
+
+#ifdef CONFIG_MC68010
+	|
+	| Now that .data and .bss are initialized, we can get
+	| boot_howto out of the System Enable register.
+	|
+	movea.l	#CTLREG_SYSEN,%a5	| %a5 = System Enable register
+	moves.b	(%a5),%d5		| %d5 <- System Enable register
+	and.l	#SYSEN_HOWTO,%d5	| clear everything except howto
+	lsr.l	#SYSEN_HOWTO_SHIFT,%d5
+	move.l	%d5,boot_howto
+#endif /* CONFIG_MC68010 */
 
 #ifdef CONFIG_MC68030
 	|

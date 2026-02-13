@@ -37,6 +37,7 @@
 #include "loadfile.h"	/* for load flags passed to exec() */
 #include "ls.h"
 #include "cli.h"
+#include "boot.h"
 
 #include "memory.h"
 
@@ -198,19 +199,36 @@ size_memory(void)
 			psize = psize / 1024;
 		}
 
-		printf("%lu%cB %s @ 0x%08lx\n",
+		configure_printf("%lu%cB %s @ 0x%08lx\n",
 		    psize, mod, mb->desc, (u_long)mb->start);
 	}
+}
+
+static bool configure_quietly;
+
+int
+configure_printf(const char *fmt, ...)
+{
+	va_list ap;
+	int rv;
+
+	if (! configure_quietly) {
+		va_start(ap, fmt);
+		rv = vprintf(fmt, ap);
+		va_end(ap);
+	}
+
+	return rv;
 }
 
 static void
 configure(void)
 {
-	printf("Memory configuration:\n");
+	configure_printf("Memory configuration:\n");
 	size_memory();
-	printf("\n");
+	configure_printf("\n");
 
-	printf("Device configuration:\n");
+	configure_printf("Device configuration:\n");
 	intr_init();
 	clock_configure();
 #ifdef UART0_ADDR
@@ -1087,6 +1105,9 @@ cli_loop(void)
 	setjmp(cli_env);
 	cli_env_valid = true;
 
+	/* Once we enter the command loop, all messages are printable. */
+	configure_quietly = false;
+
 	for (;;) {
 		cli_get_cmdline(">>> ");
 		cli_get_argv();
@@ -1117,38 +1138,49 @@ version(void)
 	    CONFIG_ROM_VERSION_MINOR);
 }
 
+static void
+auto_boot(void)
+{
+	/*
+	 * Eventually we want to check the auto-boot configuration
+	 * setting and, if set, attempt to auto-boot.  Otherwise,
+	 * we just return and fall into the CLI loop.
+	 */
+}
+
+u_int	boot_howto;
+
 int
 main(int argc, char *argv[])
 {
 	/* First step - initialize console so we can see messages. */
 	cons_init();
 
+	configure_quietly = !BOOT_HOWTO_ANNOUNCE(boot_howto);
+
 	/* Hello, world! */
-	version();
+	if (! configure_quietly) {
+		version();
+	}
 
 	/* Configure / probe the hardware. */
 	configure();
 
 	printf("\n");
 
+	if (boot_howto == BOOT_HOWTO_DEFAULT) {
+		auto_boot();
+	}
 	cli_loop();
 }
 
 void
 sys_reboot(void)
 {
-#if defined(CONFIG_REBOOT_VECTAB)
-	/*
-	 * This implementation reboots the system by jumping to the
-	 * reset vector.  The start-up code deals with all the rest.
-	 */
-	extern unsigned long vectab[];
-	void (*reset_vec)(void) = (void *)vectab[1];
+	extern void romcall_reboot_noauto(void);
+
 	quiesce();
-	(*reset_vec)();
-#else
-	printf("HOW CAN I HAZ REBOOT?!?\n");
-#endif
+	romcall_reboot_noauto();
 }
 
 void

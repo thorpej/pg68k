@@ -138,6 +138,8 @@ int	snprintf(char *, size_t, const char *, ...) __printflike(3,4);
 int	vprintf(const char *, va_list) __printflike(1, 0);
 int	vsnprintf(char *, size_t, const char *, va_list) __printflike(3,0);
 
+int	configure_printf(const char *, ...) __printflike(1,2);
+
 void	sys_reboot(void);
 void	panic(const char *, ...);
 

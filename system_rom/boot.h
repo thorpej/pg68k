@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,41 +24,18 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
+#ifndef boot_h_included
+#define	boot_h_included
 
-#include "uart.h"
-
-#ifdef UART0_ADDR
-const uintptr_t uart_addrs[] = {
-	UART0_ADDR,
-#ifdef UART1_ADDR
-	UART1_ADDR,
+#ifndef __ASSEMBLER__
+extern unsigned int boot_howto;
 #endif
-};
-int	uart_count = arraycount(uart_addrs);
-#endif /* UART0_ADDR */
 
-void
-uart_configure(void)
-{
-	int i;
+#define	BOOT_HOWTO_DEFAULT	0	/* default; check auto-boot setting */
+#define	BOOT_HOWTO_NOAUTO	1	/* no auto-boot */
+#define	BOOT_HOWTO_REBOOT	2	/* reboot into operating system */
+#define	BOOT_HOWTO_HALT		3	/* halt (quetly) to command prompt */
 
-	for (i = 0; i < uart_count; i++) {
-		configure_printf("uart%d at 0x%08lx\n",
-		    i, (u_long)uart_addrs[i]);
+#define	BOOT_HOWTO_ANNOUNCE(x)	((x) < BOOT_HOWTO_REBOOT)
 
-		/* Console UART already configured. */
-		if (i != CONFIG_CONSOLE_UART) {
-			uart_init(i, CONFIG_UART_SPEED);
-		}
-	}
-}
-
-#if defined(CONFIG_UART_16550)
-#include "uart_ns16550.c"
-#elif defined(CONFIG_UART_HOST_SIM)
-#include "uart_hostsim.c"
-#else
-#error No UART configured.
-#endif
+#endif /* boot_h_included */

@@ -142,8 +142,8 @@ clock_configure(void)
 	/* Calibrate the delay divisor. */
 	pgtimer_delaycal();
 
-	printf("timer0 at 0x%08lx (delay divisor: %u)\n", (u_long)TIMER_ADDR,
-	    delay_divisor);
+	configure_printf("timer0 at 0x%08lx (delay divisor: %u)\n",
+	    (u_long)TIMER_ADDR, delay_divisor);
 
 	/* Register the timer interrupt. */
 	intr_establish(&pgtimer_intr_handle);

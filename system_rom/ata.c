@@ -44,7 +44,7 @@ ata_configure(void)
 	int i;
 
 	for (i = 0; i < ata_count; i++) {
-		printf("ata%d at 0x%08lx\n", i,
+		configure_printf("ata%d at 0x%08lx\n", i,
 		    (u_long)ata_addrs[(i << 1)]);
 		ata_init(i);
 	}

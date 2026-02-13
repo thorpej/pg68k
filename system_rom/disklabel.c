@@ -576,13 +576,14 @@ partition_list_discard(struct partition_list *pl)
 static const struct partition full_disk = {
 	.p_startblk	= 0,
 	.p_nblks	= UINT64_MAX,
-	.p_partnum	= -1,
+	.p_partnum	= -2,
 };
 
 int
-partition_list_choose(struct partition_list *pl, int partnum)
+partition_list_choose(struct partition_list *pl, int *partnump)
 {
 	const struct partition *p;
+	int partnum = *partnump;
 
 	pl->pl_chosen = NULL;
 
@@ -607,9 +608,11 @@ partition_list_choose(struct partition_list *pl, int partnum)
 			break;
 		}
 		if ((p = pl->pl_chosen) != NULL) {
+			*partnump = p->p_partnum;
 			verbose_printf("Choosing partition %u\n", p->p_partnum);
 			return 0;
 		} else if (TAILQ_EMPTY(&pl->pl_list)) {
+			*partnump = -2;
 			pl->pl_chosen = &full_disk;
 			return 0;
 		}

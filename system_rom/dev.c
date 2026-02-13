@@ -105,8 +105,12 @@ dev_string(struct open_file *f, char *buf, size_t buflen)
 	if (dv->dv_nargs >= 3) {
 		if (f->f_devpart >= 0) {
 			rv = snprintf(buf, buflen, ",%d", f->f_devpart);
-		} else {
+		}
+		/* distinguish between "whole device" and "unspecified" */
+		else if (f->f_devpart != -2) {
 			rv = snprintf(buf, buflen, ",");
+		} else {
+			rv = 0;
 		}
 		ADVANCE;
 	}
@@ -250,7 +254,7 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 
 	/*
 	 * Default the controller and unit numbers to 0.  Partition
-	 * number gets to say unspecified, hinting that the partition
+	 * number gets to stay unspecified, hinting that the partition
 	 * code should search for a good candidate.
 	 */
 	if (f->f_dev->dv_nargs > 0 && f->f_devctlr == -1) {
@@ -278,11 +282,10 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 					    partition_scheme_name(
 					    pl->pl_scheme));
 				}
-				error = partition_list_choose(pl, f->f_devpart);
+				error = partition_list_choose(pl,
+				    &f->f_devpart);
 				if (error) {
 					partition_list_discard(pl);
-				} else {
-					f->f_devpart = pl->pl_chosen->p_partnum;
 				}
 			}
 		}

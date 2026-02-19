@@ -1,0 +1,168 @@
+/dts-v1/;
+
+/ {
+	interrupt-parent = <&intc>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	model = "Phaethon 1";
+	compatible = "pg68k,cpu010-mk1";
+
+	chosen {
+		bootargs = "";
+		stdout-path = "serial0:115200n8r";
+		netbsd,hardclock = "timer0";
+	};
+
+	aliases {
+		/*
+		 * The firmware will use these names in the
+		 * pg68k,booted-controller property in /chosen.
+		 */
+		ata0 = "/obio/ata@8000400";
+
+		/*
+		 * Possible console devices.
+		 */
+		serial0 = "/obio/serial@8000000";
+		serial1 = "/obio/serial@8000100";
+
+		/*
+		 * System timer.
+		 */
+		timer0 = "/obio/timer@8000200";
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "motorola,68010";
+			device_type = "cpu";
+			reg = <0>;
+			clock-frequency = <10000000>;
+			mmu-type = "pg68k,cpu010";
+		};
+	};
+
+	clocks {
+		mmu_clk: osc40M_clk {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <40000000>;
+		};
+
+		sys_clk: sys_clk {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mmu_clk>;
+			clock-mult = <1>;
+			clock-div = <4>;
+		};
+
+		uart_clk: osc1_8432M_clk {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <1843200>;
+		};
+	};
+
+	memory@0 {
+		/*
+		 * Phaethon 1 has 8MB of base memory.  If the firmware
+		 * detects NQVME expansion memory, it will adjust the
+		 * size accordingly.
+		 *
+		 * N.B. memory information is also provided in the
+		 * bootinfo data passed to the kernel.
+		 */
+		device_type = "memory";
+		reg = <0x0 0x800000>;
+	};
+
+	ctrl: control-space {
+		/*
+		 * This is not memory-mapped in the traditional
+		 * sense, so not compatible with generic "syscon".
+		 */
+		compatible = "pg68k,control-space";
+		fc = <4>;
+	};
+
+	intc: interrupt-controller {
+		/*
+		 * Interrupt cells:
+		 * - Interrupt priority level (1-7)
+		 * - Interrupt vector (0 == auto-vector)
+		 */
+		compatible = "motorola,68000-generic-interrupts";
+		interrupt-controller;
+		#interrupt-cells = <2>;
+
+		/*
+		 * Interrupts are gated by the System Enable
+		 * Register.
+		 */
+		interrupt-enable-controller = <&ctrl>;
+		interrupt-enable-reg = <0x20>;
+		interrupt-enable-reg-mask = <0xfd>;
+		interrupt-enable-value = <0x02>;
+	};
+
+	obio {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		serial@8000000 {
+			compatible = "ns16550a";
+			reg = <0x8000000 0x10>;
+			reg-shift = <1>;
+			clocks = <&uart_clk>;
+			interrupts = <5 0>;
+		};
+
+		serial@8000100 {
+			compatible = "ns16550a";
+			reg = <0x8000100 0x10>;
+			reg-shift = <1>;
+			clocks = <&uart_clk>;
+			interrupts = <5 0>;
+		};
+
+		timer@8000200 {
+			compatible = "pg68k,ioctl010-timer";
+			reg = <0x8000200 0x8>;
+			reg-shift = <1>;
+			clocks = <&sys_clk>;
+			clock-div = <16>;
+			interrupts = <6 0>;
+		};
+
+		i2c0: i2c@8000300 {
+			compatible = "nxp,pcf8584";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x8000300 0x04>;
+			reg-shift = <1>;
+			clocks = <&sys_clk>;
+			interrupts = <5 0>;
+		};
+
+		ata@8000400 {
+			compatible = "ata-generic";
+			reg = <0x8000400 0x10>,	/* command */
+			      <0x8000416 0x04>;	/* control */
+			reg-shift = <1>;
+			interrupts = <3 0>;
+			ata-generic,use16bit;
+		};
+	};
+
+	vme {
+		compatible = "pg68k,nqvme";
+		#address-cells = <1>;
+		#size-cells = <1>;
+	};
+};

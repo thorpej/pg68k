@@ -125,7 +125,6 @@
  */
 #define	SYSEN_MMU	0x01		/* enable MMU */
 #define	SYSEN_INT	0x02		/* enable interrupts */
-#define	SYSEN_HALT	0x40		/* system should halt (quietly) */
 #define	SYSEN_HOWTO	0xc0		/* boot howto mask */
 #define	SYSEN_HOWTO_SHIFT 6
 

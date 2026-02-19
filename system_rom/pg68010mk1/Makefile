@@ -3,13 +3,16 @@ MACH_CPU=	68010
 MACH_PROG=	pg68010mk1.elf
 MACH_IMGS=	pg68010mk1.bin
 MACH_CLEANFILES=${MACH_PROG}.list
+DEVICE_TREE=	../../cpu010/dts/pg68k-cpu010.dts
 
 XCOMP_CPU=	m68010
 
 .include "../xcomp.mk"
 .include "../sysrom.mk"
 
-OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS}
+OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
+OBJS+=		device-tree.o
+CPPFLAGS+=	${FDTCPPFLAGS}
 
 ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \

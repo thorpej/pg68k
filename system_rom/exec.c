@@ -95,6 +95,8 @@ set_booted_device(int fd)
 		snprintf(devstr, sizeof(devstr), "%s",
 		    f->f_dev->dv_name);
 	}
+	verbose_printf("FDT: /chosen/%s = \"%s\"\n", prop_booted_ctlr,
+	    devstr);
 	fdterr = fdt_setprop_string(fdt_store, chosen, prop_booted_ctlr,
 	    devstr);
 	if (fdterr) {
@@ -103,6 +105,8 @@ set_booted_device(int fd)
 	}
 
 	if (f->f_dev->dv_nargs > 1) {
+		verbose_printf("FDT: /chosen/%s = %u\n",
+		    prop_booted_unit, f->f_devunit);
 		fdterr = fdt_setprop_u32(fdt_store, chosen,
 		    prop_booted_unit, f->f_devunit);
 		if (fdterr) {
@@ -112,6 +116,8 @@ set_booted_device(int fd)
 	}
 
 	if (f->f_dev->dv_nargs > 2) {
+		verbose_printf("FDT: /chosen/%s = %u\n",
+		    prop_booted_part, f->f_devpart);
 		fdterr = fdt_setprop_u32(fdt_store, chosen,
 		    prop_booted_part, f->f_devpart);
 		if (fdterr) {
@@ -124,12 +130,16 @@ set_booted_device(int fd)
 	    (p = f->f_blk.f_partitions.pl_chosen) != NULL) {
 		fdterr = fdt_setprop_u64(fdt_store, chosen,
 		    prop_booted_pstart, p->p_startblk);
+		verbose_printf("FDT: /chosen/%s = %llu\n",
+		    prop_booted_pstart, (unsigned long long)p->p_startblk);
 		if (fdterr) {
 			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
 			    prop_booted_pstart, fdt_strerror(fdterr));
 		}
 		fdterr = fdt_setprop_u64(fdt_store, chosen,
 		    prop_booted_psize, p->p_nblks);
+		verbose_printf("FDT: /chosen/%s = %llu\n",
+		    prop_booted_psize, (unsigned long long)p->p_nblks);
 		if (fdterr) {
 			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
 			    prop_booted_psize, fdt_strerror(fdterr));
@@ -137,8 +147,13 @@ set_booted_device(int fd)
 #ifdef CONFIG_DISKLABEL_GPT
 		if (f->f_blk.f_partitions.pl_scheme == PARTITION_SCHEME_GPT) {
 			/* Encode into the native GPT byte order. */
+			char strbuf[UUID_STR_LEN];
 			char buf[sizeof(struct uuid)];
+			uuid_snprintf(strbuf, sizeof(strbuf),
+			    &p->p_gpt_info.gpt_ent);
 			uuid_enc_le(buf, &p->p_gpt_info.gpt_ent);
+			verbose_printf("FDT: /chosen/%s = << %s >>\n",
+			    prop_booted_gpt_guid, strbuf);
 			fdterr = fdt_setprop(fdt_store, chosen,
 			    prop_booted_gpt_guid, buf, sizeof(buf));
 			if (fdterr) {
@@ -204,25 +219,30 @@ set_memory_nodes(void)
 	for (bank = 0; bank < memory_bank_count; bank++) {
 		offset = find_fdt_memory_entry(memory_banks[bank].start, &reg);
 		if (offset >= 0) {
-			/* Patch up the entry, if needed. */
-			if (memory_banks[bank].size != fdt32_ld(reg + 1)) {
-				memcpy(newreg, reg, sizeof(newreg));
-				fdt32_st(&newreg[1], memory_banks[bank].size);
-				fdterr = fdt_setprop_inplace(fdt_store,
-				    offset, "reg", newreg, sizeof(newreg));
-				if (fdterr) {
-					printf("%s: "
-					  "fdt_setprop_inplace(/memory@%lx/reg)"
-					  " - %s\n", __func__,
-					  (u_long)memory_banks[bank].start,
-					  fdt_strerror(fdterr));
-				}
+			/* Patch up the entry. */
+			memcpy(newreg, reg, sizeof(newreg));
+			fdt32_st(&newreg[1], memory_banks[bank].size);
+			verbose_printf("FDT: /memory@%lx/reg = <%lx %lx>\n",
+			    (u_long)memory_banks[bank].start,
+			    (u_long)memory_banks[bank].size);
+			fdterr = fdt_setprop_inplace(fdt_store,
+			    offset, "reg", newreg, sizeof(newreg));
+			if (fdterr) {
+				printf("%s: "
+				  "fdt_setprop_inplace(/memory@%lx/reg)"
+				  " - %s\n", __func__,
+				  (u_long)memory_banks[bank].start,
+				  fdt_strerror(fdterr));
 			}
 		} else {
 			/* Create the node. */
 			snprintf(memnode_name, sizeof(memnode_name),
 			    "memory@%lx",
 			    (u_long)memory_banks[bank].start);
+			verbose_printf("FDT: /%s/reg = <%lx %lx>\n",
+			    memnode_name,
+			    (u_long)memory_banks[bank].start,
+			    (u_long)memory_banks[bank].size);
 			offset = fdt_add_subnode(fdt_store,
 			    fdt_path_offset(fdt_store, "/"), memnode_name);
 			if (offset < 0) {
@@ -315,6 +335,8 @@ exec_prep_fdt(int fd, int load_flags, int argc, char *argv[], u_long *marks)
 		}
 		offset = fdt_path_offset(fdt_store, "/chosen");
 		if (offset >= 0) {
+			verbose_printf("FDT: /chosen/bootargs = \"%s\"\n",
+			    bootargs);
 			fdterr = fdt_setprop_string(fdt_store, offset,
 			    "bootargs", bootargs);
 			if (fdterr) {

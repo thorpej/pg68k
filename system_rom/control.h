@@ -164,7 +164,7 @@ setsfc(int val)
 
 #if defined(FC_CONTROL)	/* defined in config.h if the system has it */
 
-static uint8_t
+static inline uint8_t
 control_inb(unsigned long addr)
 {
 	int sfc = getsfc();
@@ -177,7 +177,7 @@ control_inb(unsigned long addr)
 	return rv;
 }
 
-static void
+static inline void
 control_outb(unsigned long addr, uint8_t val)
 {
 	int dfc = getdfc();
@@ -187,7 +187,7 @@ control_outb(unsigned long addr, uint8_t val)
 	setdfc(dfc);
 }
 
-static uint16_t
+static inline uint16_t
 control_inw(unsigned long addr)
 {
 	int sfc = getsfc();
@@ -200,7 +200,7 @@ control_inw(unsigned long addr)
 	return rv;
 }
 
-static void
+static inline void
 control_outw(unsigned long addr, uint16_t val)
 {
 	int dfc = getdfc();
@@ -210,7 +210,7 @@ control_outw(unsigned long addr, uint16_t val)
 	setdfc(dfc);
 }
 
-static uint32_t
+static inline uint32_t
 control_inl(unsigned long addr)
 {
 	int sfc = getsfc();
@@ -223,7 +223,7 @@ control_inl(unsigned long addr)
 	return rv;
 }
 
-static void
+static inline void
 control_outl(unsigned long addr, uint32_t val)
 {
 	int dfc = getdfc();

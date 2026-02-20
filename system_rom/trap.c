@@ -91,7 +91,7 @@ badaddr_write32(volatile uint32_t *p, uint32_t val)
 }
 
 #ifdef CONFIG_MC68010
-void
+static void
 cpu010_mmu_page_fault(struct trap_frame *tf, uint8_t berr)
 {
 	struct trap_frame_ext8 *ext = trap_frame_ext(tf);

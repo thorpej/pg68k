@@ -3,7 +3,7 @@
 #
 
 CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE) -DKERNEL_USE
-CFLAGS=		-Os -Wall -Werror
+CFLAGS=		-Os -Wall -Wstrict-prototypes -Werror
 ASFLAGS=
 
 .ifdef MACH_CPU

@@ -137,8 +137,6 @@ static int hz = CONFIG_HZ;
 void
 clock_configure(bool do_init)
 {
-	int s;
-
 	if (do_init) {
 		/* Calibrate the delay divisor. */
 		pgtimer_delaycal();
@@ -152,7 +150,7 @@ clock_configure(bool do_init)
 		intr_establish(&pgtimer_intr_handle);
 
 		/* Start the timer. */
-		s = splhigh();
+		splhigh();
 		if (1000000 % hz) {
 			printf("Cannot get %d Hz clock; using 100 Hz\n", hz);
 			hz = 100;

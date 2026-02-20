@@ -315,9 +315,9 @@ ELFNAMEEND(readfile_global)(int fd, u_long offset, Elf_Off elfoff,
 
 /*
  * Load a dynamic ELF binary into memory. Layout of the memory:
- * +------------+--------------+------------+------------------------+
- * | ELF HEADER | SECT HEADERS | KERN SECTS | REL/RELA/SYM/STR SECTS |
- * +------------+--------------+------------+------------------------+
+ * +------------+--------------+------------+----+------------------------+
+ * | ELF HEADER | SECT HEADERS | KERN SECTS | BI | REL/RELA/SYM/STR SECTS |
+ * +------------+--------------+------------+----+------------------------+
  * The ELF HEADER start address is marks[MARK_END]. We then map the rest
  * by increasing maxp. An alignment is enforced between the code sections.
  *
@@ -334,7 +334,7 @@ ELFNAMEEND(loadfile_dynamic)(int fd, Elf_Ehdr *elf, u_long *marks, int flags)
 	Elf_Addr shpp, addr;
 	int i, j, loaded;
 	size_t size, shdrsz, align;
-	Elf_Addr maxp, elfp = 0;
+	Elf_Addr maxp, endp, elfp = 0;
 	int ret;
 
 	maxp = marks[MARK_END] - offset;
@@ -374,6 +374,7 @@ ELFNAMEEND(loadfile_dynamic)(int fd, Elf_Ehdr *elf, u_long *marks, int flags)
 	/* Save location of the SECTION HEADERS. */
 	shpp = maxp;
 	maxp += roundup(shdrsz, ELFROUND);
+	endp = 0;
 
 	/*
 	 * Load the KERNEL SECTIONS.
@@ -414,8 +415,23 @@ ELFNAMEEND(loadfile_dynamic)(int fd, Elf_Ehdr *elf, u_long *marks, int flags)
 		if (loaded) {
 			shdr[i].sh_offset = addr - elfp;
 			maxp = roundup(addr + size, align);
+			if (endp < addr + size) {
+				endp = addr + size;
+			}
 		}
 	}
+
+	/* Reserve space for the bootinfo. */
+	if ((flags & (LOAD_BOOTINFO|COUNT_BOOTINFO)) != 0 &&
+	    marks[MARK_BOOTINFOSZ] != 0) {
+		endp = roundup(endp, BOOTINFO_ALIGN);
+		marks[MARK_BOOTINFO] = endp;
+		endp += marks[MARK_BOOTINFOSZ];
+		if (maxp < endp) {
+			maxp = endp;
+		}
+	}
+
 	maxp = roundup(maxp, KERNALIGN_LARGE);
 
 	/*

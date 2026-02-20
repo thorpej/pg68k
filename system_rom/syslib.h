@@ -78,7 +78,7 @@
 #define	EBUSY		8	/* Device busy */
 #define	EEXIST		9	/* File exists */
 #define	ENODEV		10	/* Operation not supported by device */
-#define	ENOTDIR		11	/* /* Not a directory */
+#define	ENOTDIR		11	/* Not a directory */
 #define	EINVAL		12	/* Invalid argument */
 #define	EMFILE		13	/* Too many open files */
 #define	EFBIG		14	/* File too large */

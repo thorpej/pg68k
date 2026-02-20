@@ -37,12 +37,12 @@ static struct bi_record *
 _bootinfo_set_size(struct bi_record *bi, size_t sz, bool wr)
 {
 	uintptr_t addr = (uintptr_t)bi;
+	uintptr_t next_addr = roundup(addr + sz, BOOTINFO_ROUND);
 
-	sz = (sz + sizeof(*bi) + 3) & ~3;
 	if (wr) {
-		bi->bi_size = sz;
+		bi->bi_size = next_addr - addr;
 	}
-	return (struct bi_record *)(addr + sz);
+	return (struct bi_record *)next_addr;
 }
 
 static struct bi_record *

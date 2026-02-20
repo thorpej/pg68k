@@ -40,7 +40,14 @@
  * Each record has a header with the type tag and record size, followed
  * by a data field.  Each record + data is padded to align the record
  * header at a 4-byte boundary.
+ *
+ * The bootinfo is located immediately following the kernel image, i.e.
+ * at _end[].  Qemu rounds the bootinfo location up to a word boundary,
+ * so the implicit assumption is that _end[] is word-aligned?
  */
+
+#define	BOOTINFO_ALIGN	2
+#define	BOOTINFO_ROUND	4
 
 struct bi_record {
 	uint16_t	bi_tag;		/* record type */

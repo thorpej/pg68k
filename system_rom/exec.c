@@ -231,6 +231,7 @@ set_memory_nodes(void)
 			fdt32_st(&newreg[1], memory_banks[bank].size);
 			verbose_printf("FDT: /memory@%lx/reg = <%lx %lx>\n",
 			    (u_long)memory_banks[bank].start,
+			    (u_long)memory_banks[bank].start,
 			    (u_long)memory_banks[bank].size);
 			fdterr = fdt_setprop_inplace(fdt_store,
 			    offset, "reg", newreg, sizeof(newreg));

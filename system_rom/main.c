@@ -82,7 +82,7 @@ mmu_getcontext(void)
 	return control_inb(MMUREG_CONTEXT);
 }
 
-static uint8_t
+static void
 mmu_setcontext(uint8_t val)
 {
 	control_outb(MMUREG_CONTEXT, val);
@@ -94,11 +94,13 @@ mmu_sme_get(unsigned long segva)
 	return control_inw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)));
 }
 
+#if 0
 static void
 mmu_sme_set(unsigned long segva, uint16_t val)
 {
 	control_outw(MMUREG_SEGMAP_ENTRY(PGMMU_SEGNUM(segva)), val);
 }
+#endif
 
 static uint16_t
 mmu_sme0_get(unsigned long segva)
@@ -118,7 +120,7 @@ mmu_pme_get(unsigned long pme_index)
 	return control_inl(MMUREG_PAGEMAP_ENTRY(pme_index));
 }
 
-static uint32_t
+static void
 mmu_pme_set(unsigned long pme_index, uint32_t val)
 {
 	control_outl(MMUREG_PAGEMAP_ENTRY(pme_index), val);
@@ -728,7 +730,7 @@ cli_h_version(int argc, char *argv[])
 static void
 cli_u_verbose(const char *str)
 {
-	printf("usage: %s [ on | off]\n");
+	printf("usage: %s [ on | off]\n", str);
 }
 
 static void
@@ -950,6 +952,7 @@ cli_h_probe(int argc, char *argv[])
 
 	default:
 		cli_u_probe(argv[0]);
+		return;
 	}
 
 	if (! parse_va(addr_arg, &addr)) {

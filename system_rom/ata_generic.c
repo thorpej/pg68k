@@ -180,7 +180,6 @@ wdc_probe(int ctlr)
 {
 	int rv = __BITS(0,1);
 	uint8_t reg0, reg1;
-	uint8_t drive;
 
 	/*
 	 * Step 1: Make sure there is something there at all.
@@ -422,7 +421,7 @@ ata_init(int ctlr, bool do_init)
 		capacity = le16toh(atap->atap_capacity[1]);
 		capacity = (capacity << 16) | le16toh(atap->atap_capacity[0]);
 
-		wdc_decode_identify_string(atap->atap_model,
+		wdc_decode_identify_string((char *)atap->atap_model,
 					   sizeof(atap->atap_model),
 					   drv->drv_model);
 		drv->drv_secsize = 512;
@@ -448,7 +447,7 @@ ata_strategy(struct open_file *f, int flags, daddr_t blk, size_t len,
 	struct ata_drive *drv = f->f_devdata;
 	size_t blkcnt;
 	ssize_t actual = 0;
-	int error;
+	int error = 0;
 
 	*actualp = 0;
 

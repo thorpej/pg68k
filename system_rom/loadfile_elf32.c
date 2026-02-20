@@ -42,6 +42,7 @@
 #include "endian.h"
 
 #include "loadfile.h"
+#include "bootinfo.h"
 
 #if ((ELFSIZE == 32) && defined(BOOT_ELF32)) || \
     ((ELFSIZE == 64) && defined(BOOT_ELF64))
@@ -647,9 +648,9 @@ out:
 
 /*
  * Load a static ELF binary into memory. Layout of the memory:
- * +-----------------+------------+-----------------+-----------------+
- * | KERNEL SEGMENTS | ELF HEADER | SECTION HEADERS | SYMBOL SECTIONS |
- * +-----------------+------------+-----------------+-----------------+
+ * +-----------------+----+------------+-----------------+-----------------+
+ * | KERNEL SEGMENTS | BI | ELF HEADER | SECTION HEADERS | SYMBOL SECTIONS |
+ * +-----------------+----+------------+-----------------+-----------------+
  * The KERNEL SEGMENTS start address is fixed by the segments themselves. We
  * then map the rest by increasing maxp.
  *
@@ -748,6 +749,14 @@ ELFNAMEEND(loadfile_static)(int fd, Elf_Ehdr *elf, u_long *marks, int flags)
 		}
 	}
 	DEALLOC(phdr, sz);
+
+	/* Reserve space for the bootinfo. */
+	if (flags & (LOAD_BOOTINFO|COUNT_BOOTINFO) != 0 &&
+	    marks[MARK_BOOTINFOSZ] != 0) {
+		maxp = roundup(maxp, BOOTINFO_ALIGN);
+		marks[MARK_BOOTINFO] = maxp;
+		maxp += marks[MARK_BOOTINFOSZ];
+	}
 	maxp = roundup(maxp, ELFROUND);
 
 	/*

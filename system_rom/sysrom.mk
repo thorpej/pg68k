@@ -49,7 +49,7 @@ M68KOBJS=	start.o setjmp.o trap.o malloc.o \
 
 OBJS=		$(SYSLIBOBJS) main.o uart.o console.o clock.o dev.o \
 		disklabel.o files.o fs.o ls.o fnmatch.o loadfile.o \
-		loadfile_elf32.o exec.o
+		loadfile_elf32.o bootinfo.o exec.o
 
 CLEANFILES=	assym.h $(MACH_CLEANFILES)
 

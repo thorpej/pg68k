@@ -152,8 +152,11 @@ int	puts(const char *);
 int	putstrn(const char *, size_t);
 int	putchar(int);
 
+void *	get_fdt(void);
+
 int	exec(int, int, char *[]);
 void	quiesce(void);
+void	transfer(uintptr_t, ...);
 
 uint32_t crc32(uint32_t, const void *, size_t);
 

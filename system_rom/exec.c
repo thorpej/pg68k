@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2025, 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 #include "syslib.h"
 #include "sysfile.h"
 
+#include "bootinfo.h"
 #include "loadfile.h"
 
 #include "memory.h"
@@ -45,6 +46,12 @@
  * the booted kernel.
  */
 static uint32_t fdt_store[4096 / sizeof(uint32_t)];
+
+void *
+get_fdt(void)
+{
+	return fdt_store;
+}
 
 static const void *
 rom_fdt(void)
@@ -381,6 +388,18 @@ exec(int load_flags, int argc, char *argv[])
 		return error;
 	}
 
+#ifdef CONFIG_DEVICETREE
+	error = exec_prep_fdt(fd, load_flags, argc, argv, marks);
+	if (error) {
+		close(fd);
+		return error;
+	}
+#endif
+
+	if (load_flags & LOAD_BOOTINFO) {
+		marks[MARK_BOOTINFOSZ] = bootinfo_size();
+	}
+
 	printf("Loading %s%s ...\n",
 	    dev_string(getfile(fd), dstr, sizeof(dstr)),
 	    file_name(fd));
@@ -391,17 +410,46 @@ exec(int load_flags, int argc, char *argv[])
 		close(fd);
 		return error;
 	}
-	if ((load_flags & LOAD_SYM) != 0 && marks[MARK_SYM] != 0) {
-		printf("Symbols @ 0x%lx\n", marks[MARK_SYM]);
+
+	bool have_bootinfo = (load_flags & LOAD_BOOTINFO) != 0
+			     && marks[MARK_BOOTINFO] != 0;
+
+	bool have_sym      = (load_flags & LOAD_SYM) != 0
+			     && marks[MARK_SYM] != 0;
+
+	if ((load_flags & LOAD_BOOTINFO) != 0 && !have_bootinfo) {
+		printf("Failed to reserve space for Bootinfo.\n");
+		close(fd);
+		return ENOMEM;
 	}
 
+	struct bi_record *bi;
+	void *vbi = (void *)marks[MARK_BOOTINFO];
+
+	if (have_bootinfo) {
+		bootinfo_populate(vbi);
+		if (have_sym) {
+			bi = bootinfo_find(vbi, BI_PG68K_ELF_SYMS);
+			if (bi != NULL) {
+				bootinfo_set_mem_info(bi,
+				    BI_PG68K_ELF_SYMS,
+				    marks[MARK_SYM],
+				    marks[MARK_END] - marks[MARK_SYM]);
+			}
+		}
+		printf("Bootinfo @ 0x%lx\n", marks[MARK_BOOTINFO]);
 #ifdef CONFIG_DEVICETREE
-	error = exec_prep_fdt(fd, load_flags, argc, argv, marks);
-	if (error) {
-		close(fd);
-		return error;
+		bi = bootinfo_find(vbi, BI_PG68K_FDT);
+		if (bi != NULL) {
+			struct bi_data *d = bootinfo_dataptr(bi);
+			printf("FDT @ %p\n", &d->data_bytes[0]);
+		}
+#endif /* CONFIG_DEVICETREE */
 	}
-#endif
+
+	if (have_sym) {
+		printf("Symbols @ 0x%lx\n", marks[MARK_SYM]);
+	}
 
 	closeall();
 	quiesce();
@@ -410,13 +458,16 @@ exec(int load_flags, int argc, char *argv[])
 #ifdef CONFIG_MACH_HOST_SIM
 	sim_boot_fdt(fdt_store, fdt_totalsize(fdt_store));
 #else
-#ifdef CONFIG_DEVICETREE
-	void (*entry)(const void *) = (void *)marks[MARK_ENTRY];
-	(*entry)(fdt_store);
-#else
-	void (*entry)(int argc, char *argv[]) = (void *)marks[MARK_ENTRY];
-	(*entry)(argc, argv);
-#endif /* CONFIG_DEVICETREE */
+	if (load_flags & LOAD_BOOTINFO) {
+		/*
+		 * The bootinfo is loaded at the next longword boundary
+		 * after _end[], but we will pass in a pointer as the
+		 * argument anyway.
+		 */
+		transfer(marks[MARK_ENTRY], vbi);
+	} else {
+		transfer(marks[MARK_ENTRY], argc, argv);
+	}
 #endif /* CONFIG_MACH_HOST_SIM */
 
 	/* NOTREACHED */

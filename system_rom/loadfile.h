@@ -49,10 +49,12 @@
 #define MARK_START	0
 #define MARK_ENTRY	1
 #define MARK_DATA	2
-#define MARK_NSYM	3
-#define MARK_SYM	4
-#define MARK_END	5
-#define MARK_MAX	6
+#define MARK_BOOTINFO	3
+#define MARK_NSYM	4
+#define MARK_SYM	5
+#define MARK_END	6
+#define MARK_BOOTINFOSZ	7	/* input */
+#define MARK_MAX	8
 
 /*
  * Bit flags for sections to load
@@ -64,10 +66,11 @@
 #define LOAD_SYM	0x0010
 #define LOAD_HDR	0x0020
 #define LOAD_NOTE	0x0040
-#define LOAD_ALL	0x007f
+#define LOAD_BOOTINFO	0x0080
+#define LOAD_ALL	0x00ff
 #define LOAD_MINIMAL	0x002f
 #define LOAD_BACKWARDS	0x0050
-#define LOAD_DYN	0x4000
+#define LOAD_DYN	0x8000
 
 #define COUNT_TEXT	0x0100
 #define COUNT_TEXTA	0x0200
@@ -75,7 +78,8 @@
 #define COUNT_BSS	0x0800
 #define COUNT_SYM	0x1000
 #define COUNT_HDR	0x2000
-#define COUNT_ALL	0x3f00
+#define COUNT_BOOTINFO	0x4000
+#define COUNT_ALL	0x7f00
 
 int loadfile(const char *, u_long *, int);
 int fdloadfile(int fd, u_long *, int);

@@ -429,6 +429,18 @@ start:
 1:	bra	1b
 
 |
+| transfer(uintptr_t entry, ...)
+|
+| Transfer control to a client program.
+|
+	.globl	transfer
+transfer:
+	movea.l	4(%sp),%a0	| %a0 = entry point
+	addq.l	#8,%sp		| pop return addr and entry arg
+	pea	romcall_halt	| push halt vector has return addr
+	jmp	(%a0)		| jump to entry point w/ remaining args
+
+|
 | delay_(unsigned int N)
 |
 | Delay for at least (N/1024) microseconds.

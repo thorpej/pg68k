@@ -182,7 +182,7 @@ struct bi_record *	bootinfo_find(void *, uint32_t);
 void			bootinfo_enumerate(void *,
 					   bool (*)(struct bi_record *, void *),
 					   void *);
-size_t			bootinfo_size(void);
-void			bootinfo_populate(void *);
+size_t			bootinfo_size(const char *);
+void			bootinfo_populate(void *, const char *);
 
 #endif /* bootinfo_h_included */

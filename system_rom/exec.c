@@ -307,10 +307,9 @@ set_memory_nodes(void)
 }
 
 static int
-exec_prep_fdt(int fd, int load_flags, int argc, char *argv[], u_long *marks)
+exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
 {
-	int i, fdterr, offset;
-	size_t size;
+	int fdterr, offset;
 	const void *rfdt = rom_fdt();
 
 	if (rfdt == NULL) {
@@ -325,35 +324,18 @@ exec_prep_fdt(int fd, int load_flags, int argc, char *argv[], u_long *marks)
 		return EIO;
 	}
 
-	/* Construct bootargs. */
-	for (size = 0, i = 2; i < argc; i++) {
-		size += strlen(argv[i]) + 1;
-	}
-	if (size != 0) {
-		char *bootargs = malloc(size);
-		char *cp, *str = bootargs;
-		for (i = 2; i < argc; i++) {
-			cp = argv[i];
-			while ((*str = *cp++) != '\0') {
-				str++;
-			}
-			if (i < argc - 1) {
-				*str++ = ' ';
-			}
+	/* Set the bootargs. */
+	if (bargs != NULL && strlen(bargs) != 0 &&
+	    (offset = fdt_path_offset(fdt_store, "/chosen")) >= 0) {
+		verbose_printf("FDT: /chosen/bootargs = \"%s\"\n",
+		    bargs);
+		fdterr = fdt_setprop_string(fdt_store, offset,
+		    "bootargs", bargs);
+		if (fdterr) {
+			printf("%s: fdt_setprop(/chosen/bootargs) "
+			    "- %s\n", __func__,
+			    fdt_strerror(fdterr));
 		}
-		offset = fdt_path_offset(fdt_store, "/chosen");
-		if (offset >= 0) {
-			verbose_printf("FDT: /chosen/bootargs = \"%s\"\n",
-			    bootargs);
-			fdterr = fdt_setprop_string(fdt_store, offset,
-			    "bootargs", bootargs);
-			if (fdterr) {
-				printf("%s: fdt_setprop(/chosen/bootargs) "
-				    "- %s\n", __func__,
-				    fdt_strerror(fdterr));
-			}
-		}
-		free(bootargs);
 	}
 
 	/* Set the boot device entries. */
@@ -378,7 +360,9 @@ exec(int load_flags, int argc, char *argv[])
 {
 	char dstr[DEV_STRING_SIZE];
 	u_long marks[MARK_MAX] = { 0 };
-	int error;
+	char *bargs = NULL;
+	size_t size;
+	int i, error;
 
 	/* Args already checked. */
 
@@ -386,19 +370,36 @@ exec(int load_flags, int argc, char *argv[])
 	if (fd < 0) {
 		error = errno;
 		printf("%s: %s\n", argv[1], strerror(error));
-		return error;
+		goto bad;
+	}
+
+	/* Construct bootargs. */
+	for (size = 0, i = 2; i < argc; i++) {
+		size += strlen(argv[i]) + 1;
+	}
+	if (size != 0) {
+		bargs = malloc(size);
+		char *cp, *str = bargs;
+		for (i = 2; i < argc; i++) {
+			cp = argv[i];
+			while ((*str = *cp++) != '\0') {
+				str++;
+			}
+			if (i < argc - 1) {
+				*str++ = ' ';
+			}
+		}
 	}
 
 #ifdef CONFIG_DEVICETREE
-	error = exec_prep_fdt(fd, load_flags, argc, argv, marks);
+	error = exec_prep_fdt(fd, load_flags, bargs, marks);
 	if (error) {
-		close(fd);
-		return error;
+		goto bad;
 	}
 #endif
 
 	if (load_flags & LOAD_BOOTINFO) {
-		marks[MARK_BOOTINFOSZ] = bootinfo_size();
+		marks[MARK_BOOTINFOSZ] = bootinfo_size(bargs);
 	}
 
 	printf("Loading %s%s ...\n",
@@ -408,8 +409,7 @@ exec(int load_flags, int argc, char *argv[])
 	if (error) {
 		error = errno;
 		printf("Failed to load %s: %s\n", argv[1], strerror(error));
-		close(fd);
-		return error;
+		goto bad;
 	}
 
 	bool have_bootinfo = (load_flags & LOAD_BOOTINFO) != 0
@@ -420,15 +420,15 @@ exec(int load_flags, int argc, char *argv[])
 
 	if ((load_flags & LOAD_BOOTINFO) != 0 && !have_bootinfo) {
 		printf("Failed to reserve space for Bootinfo.\n");
-		close(fd);
-		return ENOMEM;
+		error = ENOMEM;
+		goto bad;
 	}
 
 	struct bi_record *bi;
 	void *vbi = (void *)marks[MARK_BOOTINFO];
 
 	if (have_bootinfo) {
-		bootinfo_populate(vbi);
+		bootinfo_populate(vbi, bargs);
 		if (have_sym) {
 			bi = bootinfo_find(vbi, BI_PG68K_ELF_SYMS);
 			if (bi != NULL) {
@@ -452,6 +452,9 @@ exec(int load_flags, int argc, char *argv[])
 		printf("Symbols @ 0x%lx\n", marks[MARK_SYM]);
 	}
 
+	if (bargs != NULL) {
+		free(bargs);
+	}
 	closeall();
 	quiesce();
 	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
@@ -473,4 +476,12 @@ exec(int load_flags, int argc, char *argv[])
 
 	/* NOTREACHED */
 	return 0;
+ bad:
+	if (fd >= 0) {
+		close(fd);
+	}
+	if (bargs != NULL) {
+		free(bargs);
+	}
+	return error;
 }

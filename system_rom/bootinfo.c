@@ -34,12 +34,13 @@
 #endif
 
 static struct bi_record *
-_bootinfo_set_size(struct bi_record *bi, size_t sz, bool wr)
+_bootinfo_set_size(struct bi_record *bi, uint16_t tag, size_t sz, bool wr)
 {
 	uintptr_t addr = (uintptr_t)bi;
-	uintptr_t next_addr = roundup(addr + sz, BOOTINFO_ROUND);
+	uintptr_t next_addr = roundup(addr + sizeof(*bi) + sz, BOOTINFO_ROUND);
 
 	if (wr) {
+		bi->bi_tag = tag;
 		bi->bi_size = next_addr - addr;
 	}
 	return (struct bi_record *)next_addr;
@@ -51,7 +52,7 @@ _bootinfo_set_u32(struct bi_record *bi, uint16_t tag, uint32_t val, bool wr)
 	if (wr) {
 		*(uint32_t *)bootinfo_dataptr(bi) = val;
 	}
-	return _bootinfo_set_size(bi, sizeof(val), wr);
+	return _bootinfo_set_size(bi, tag, sizeof(val), wr);
 }
 
 struct bi_record *
@@ -71,7 +72,7 @@ _bootinfo_set_mem_info(struct bi_record *bi, uint16_t tag,
 		m->mem_size = size;
 	}
 
-	return _bootinfo_set_size(bi, sizeof(*m), wr);
+	return _bootinfo_set_size(bi, tag, sizeof(*m), wr);
 }
 
 struct bi_record *
@@ -92,7 +93,7 @@ _bootinfo_set_data(struct bi_record *bi, uint16_t tag,
 		memcpy(&d->data_bytes[0], data, d->data_length);
 	}
 
-	return _bootinfo_set_size(bi, sizeof(*d) + (uint16_t)len, wr);
+	return _bootinfo_set_size(bi, tag, sizeof(*d) + (uint16_t)len, wr);
 }
 
 struct bi_record *
@@ -151,7 +152,7 @@ bootinfo_set_string(struct bi_record *bi, uint16_t tag,
 #endif
 
 static struct bi_record *
-_bootinfo_populate(struct bi_record *bi, bool wr)
+_bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 {
 	struct bi_record *next_bi;
 	int i;
@@ -194,6 +195,10 @@ _bootinfo_populate(struct bi_record *bi, bool wr)
 		bi = next_bi;
 	}
 
+	if (bargs != NULL && strlen(bargs) != 0) {
+		bi = _bootinfo_set_string(bi, BI_COMMAND_LINE, bargs, wr);
+	}
+
 #ifdef CONFIG_DEVICETREE
 	void *fdt = get_fdt();
 	int off = fdt_path_offset(fdt, "/");
@@ -207,22 +212,27 @@ _bootinfo_populate(struct bi_record *bi, bool wr)
 	    CONFIG_MACHINE_STRING, wr);
 #endif /* CONFIG_DEVICETREE */
 
-	/* ELF syms are patched up later. */
+	/*
+	 * Put ELF symbols record at the end.  This is patched up later.
+	 * If we have symbols, the addr / size fields are fixed up to
+	 * reflect their location.  If we don't, then the tag is set to
+	 * BI_LAST.
+	 */
 	bi = _bootinfo_set_mem_info(bi, BI_PG68K_ELF_SYMS, 0, 0, wr);
 
-	return bi;
+	return _bootinfo_set_size(bi, BI_LAST, 0, wr);
 }
 
 size_t
-bootinfo_size(void)
+bootinfo_size(const char *bargs)
 {
-	return (size_t)_bootinfo_populate(NULL, false);
+	return (size_t)_bootinfo_populate(NULL, bargs, false);
 }
 
 void
-bootinfo_populate(void *vbi)
+bootinfo_populate(void *vbi, const char *bargs)
 {
-	(void)_bootinfo_populate(vbi, true);
+	(void)_bootinfo_populate(vbi, bargs, true);
 }
 
 struct bi_record *

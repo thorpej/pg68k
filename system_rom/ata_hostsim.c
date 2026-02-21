@@ -57,6 +57,7 @@ ata_open(struct open_file *f)
 		return ENXIO;
 	}
 
+	f->f_devaddr = 0xcafebabe;
 	return sim_ata_open(f->f_devunit, &f->f_devdata);
 }
 

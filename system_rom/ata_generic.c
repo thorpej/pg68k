@@ -509,6 +509,7 @@ ata_open(struct open_file *f)
 	}
 
 	f->f_devdata = drv;
+	f->f_devaddr = ata_addrs[f->f_devctlr << 1];
 
 	return 0;
 }

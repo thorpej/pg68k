@@ -107,6 +107,7 @@ struct open_file {
 	int		f_flags;	/* see F_* below */
 	const struct devsw *f_dev;	/* pointer to device operations */
 	void		*f_devdata;	/* device specific data */
+	uintptr_t	f_devaddr;	/* device controller address */
 	int		f_devctlr;	/* device controller # */
 	int		f_devunit;	/* device unit # */
 	int		f_devpart;	/* device partition # */

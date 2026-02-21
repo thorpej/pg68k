@@ -70,6 +70,26 @@
 #define	ATA_ADDR	(OBIO_VIRT+0x0400)
 #define	ATA_AUX_ADDR	(OBIO_VIRT+0x0410)
 
+#ifndef __ASSEMBLER__
+static inline unsigned long
+device_physaddr(unsigned long addr)
+{
+	if (addr >= ROM_VIRT &&
+	    addr < (ROM_VIRT + ROM_SIZE)) {
+		return ((addr - ROM_VIRT) + ROM_PHYS);
+	}
+
+	if (addr >= OBIO_VIRT &&
+	    addr < (OBIO_PHYS + OBIO_SIZE)) {
+		return ((addr - OBIO_VIRT) + OBIO_PHYS);
+	}
+
+	return addr;
+}
+
+#define	DEVICE_PHYSADDR(x) device_physaddr((uintptr_t)(x))
+#endif /* ! __ASSEMBLER__ */
+
 #define	FC_CONTROL	4		/* control space is FC==4 */
 
 #define	CONFIG_MACHINE_STRING	"Phaethon 1"
@@ -176,6 +196,10 @@
 
 #if defined(CONFIG_ATA_GENERIC) || defined(CONFIG_ATA_HOST_SIM)
 #define	CONFIG_DEV_ATA
+#endif
+
+#ifndef DEVICE_PHYSADDR
+#define	DEVICE_PHYSADDR(x)	((unsigned long)(x))
 #endif
 
 #ifndef RAM0_SIZE

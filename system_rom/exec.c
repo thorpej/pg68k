@@ -64,7 +64,27 @@ rom_fdt(void)
 #endif
 }
 
-static const char prop_booted_ctlr[] = "pg68k,booted-controller";
+/*
+ * We set the following properties to indicate where we booted from:
+ *
+ * ==> pg68k,booted-controller-type
+ *     The controller type (our driver name), e.g. "ata", "eth", etc.
+ *
+ * ==> pg68k,booted-controller-phys
+ *     The system physical address of the booted controller.
+ *
+ * ==> pg68k,booted-unit
+ *     For controllers with multiple drive units (e.g. "ata"), the
+ *     unit number of the booted device.
+ *
+ * ==> pg68k,booted-partition
+ * ==> pg68k,booted-partition-startblk		(2 cells)
+ * ==> pg68k,booted-partition-nblks		(2 cells)
+ *     For device types that can have partitions, the partition number,
+ *     starting block, and size in blocks of the booted parition.
+ */
+static const char prop_booted_ctlr_type[] = "pg68k,booted-controller-type";
+static const char prop_booted_ctlr_phys[] = "pg68k,booted-controller-phys";
 static const char prop_booted_unit[] = "pg68k,booted-unit";
 static const char prop_booted_part[] = "pg68k,booted-partition";
 static const char prop_booted_pstart[] = "pg68k,booted-partition-startblk";
@@ -77,7 +97,6 @@ static void
 set_booted_device(int fd)
 {
 	struct open_file *f = getfile(fd);
-	char devstr[16];
 	int chosen, fdterr;
 	const struct partition *p;
 
@@ -95,20 +114,22 @@ set_booted_device(int fd)
 	 * offset of /chosen should not change.
 	 */
 
-	if (f->f_dev->dv_nargs > 0) {
-		snprintf(devstr, sizeof(devstr), "%s%d",
-		    f->f_dev->dv_name, f->f_devctlr);
-	} else {
-		snprintf(devstr, sizeof(devstr), "%s",
-		    f->f_dev->dv_name);
-	}
-	verbose_printf("FDT: /chosen/%s = \"%s\"\n", prop_booted_ctlr,
-	    devstr);
-	fdterr = fdt_setprop_string(fdt_store, chosen, prop_booted_ctlr,
-	    devstr);
+	verbose_printf("FDT: /chosen/%s = \"%s\"\n", prop_booted_ctlr_type,
+	    f->f_dev->dv_name);
+	fdterr = fdt_setprop_string(fdt_store, chosen, prop_booted_ctlr_type,
+	    f->f_dev->dv_name);
 	if (fdterr) {
 		printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
-		    prop_booted_ctlr, fdt_strerror(fdterr));
+		    prop_booted_ctlr_type, fdt_strerror(fdterr));
+	}
+
+	verbose_printf("FDT: /chosen/%s = 0x%lx\n", prop_booted_ctlr_phys,
+	    (u_long)DEVICE_PHYSADDR(f->f_devaddr));
+	fdterr = fdt_setprop_u32(fdt_store, chosen, prop_booted_ctlr_phys,
+	    DEVICE_PHYSADDR(f->f_devaddr));
+	if (fdterr) {
+		printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
+		    prop_booted_ctlr_phys, fdt_strerror(fdterr));
 	}
 
 	if (f->f_dev->dv_nargs > 1) {
@@ -122,31 +143,29 @@ set_booted_device(int fd)
 		}
 	}
 
-	if (f->f_dev->dv_nargs > 2) {
+	if (DEV_IS_BLKDEV(f->f_dev) &&
+	    (p = f->f_blk.f_partitions.pl_chosen) != NULL &&
+	    p->p_partnum >= 0) {
 		verbose_printf("FDT: /chosen/%s = %u\n",
-		    prop_booted_part, f->f_devpart);
+		    prop_booted_part, p->p_partnum);
 		fdterr = fdt_setprop_u32(fdt_store, chosen,
-		    prop_booted_part, f->f_devpart);
+		    prop_booted_part, p->p_partnum);
 		if (fdterr) {
 			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
 			    prop_booted_part, fdt_strerror(fdterr));
 		}
-	}
-
-	if (DEV_IS_BLKDEV(f->f_dev) &&
-	    (p = f->f_blk.f_partitions.pl_chosen) != NULL) {
-		fdterr = fdt_setprop_u64(fdt_store, chosen,
-		    prop_booted_pstart, p->p_startblk);
 		verbose_printf("FDT: /chosen/%s = %llu\n",
 		    prop_booted_pstart, (unsigned long long)p->p_startblk);
+		fdterr = fdt_setprop_u64(fdt_store, chosen,
+		    prop_booted_pstart, p->p_startblk);
 		if (fdterr) {
 			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
 			    prop_booted_pstart, fdt_strerror(fdterr));
 		}
-		fdterr = fdt_setprop_u64(fdt_store, chosen,
-		    prop_booted_psize, p->p_nblks);
 		verbose_printf("FDT: /chosen/%s = %llu\n",
 		    prop_booted_psize, (unsigned long long)p->p_nblks);
+		fdterr = fdt_setprop_u64(fdt_store, chosen,
+		    prop_booted_psize, p->p_nblks);
 		if (fdterr) {
 			printf("%s: fdt_setprop(/chosen/%s) - %s\n", __func__,
 			    prop_booted_psize, fdt_strerror(fdterr));

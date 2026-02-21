@@ -769,6 +769,9 @@ ELFNAMEEND(loadfile_static)(int fd, Elf_Ehdr *elf, u_long *marks, int flags)
 	/* Reserve space for the bootinfo. */
 	if ((flags & (LOAD_BOOTINFO|COUNT_BOOTINFO)) != 0 &&
 	    marks[MARK_BOOTINFOSZ] != 0) {
+		if (flags & LOAD_BOOTINFO) {
+			PROGRESS(("+%lu", marks[MARK_BOOTINFOSZ]));
+		}
 		maxp = roundup(maxp, BOOTINFO_ALIGN);
 		marks[MARK_BOOTINFO] = maxp;
 		maxp += marks[MARK_BOOTINFOSZ];

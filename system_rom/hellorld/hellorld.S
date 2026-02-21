@@ -31,15 +31,13 @@ _start:
 	add.l	romcall_base,%a2	| %a2 = base of call vector
 	move.l	%a2,romcall_base	| stash it away for later
 
-	lea	ROMCALL_PUTC(%a2),%a2	| %a2 = (*putc)() func pointer
-
 	lea	hellorld_string,%a3	| %a3 = string to print
 	moveq	#0,%d2			| clear all of %d2
 	move.l	%d2,-(%sp)		| make stack slot for char argument
 1:	move.b	(%a3)+,%d2		| %d2 = *cp++
 	beq	1f			| break out of loop if '\0'
 	move.l	%d2,(%sp)		| char into arg slot on stack
-	jsr	(%a2)			| (*putc)(ch)
+	jsr	ROMCALL_PUTC(%a2)	| (*putc)(ch)
 	bra	1b			| go around again
 1:
 	addql	#4,%sp			| pop the stack slot

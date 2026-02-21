@@ -7,17 +7,6 @@
 | Public domain.
 |
 
-#include "config.h"
-
-|
-| The romcall vector is located in ROM just after the vector table.
-|
-#ifdef ROM_VIRT
-#define	ROMCALL_BASE	(ROM_VIRT + 0x400)
-#else
-#define	ROMCALL_BASE	(ROM_ADDR + 0x400)
-#endif
-
 |
 | The romcall version number is the 0th longword. The (*halt)() vector
 | is at slot 2 and the (*putc)() vector is at slot 8.
@@ -34,8 +23,16 @@ _start:
 	| whatever that may be.
 	|
 
-	| Get the firmware (*putc)() function.
-	movea.l	ROMCALL_BASE+ROMCALL_PUTC,%a2
+	|
+	| The firmware call vector immediately follows the vector
+	| table.  Adust romcall_base by the value of the VBR.
+	| XXX Not on plain-Jane 68000.
+	|
+	movec	%vbr,%a2
+	add.l	romcall_base,%a2	| %a2 = base of call vector
+	move.l	%a2,romcall_base	| stash it away for later
+
+	lea	ROMCALL_PUTC(%a2),%a2	| %a2 = (*putc)() func pointer
 
 	lea	hellorld_string,%a3	| %a3 = string to print
 	moveq	#0,%d2			| clear all of %d2
@@ -51,8 +48,12 @@ _start:
 
 	| Get the formware (*halt)() function and halt back out to
 	| the firmware.
-	movea.l	ROMCALL_BASE+ROMCALL_HALT,%a2
-	jmp	(%a2)
+	movea.l	romcall_base,%a2
+	jmp	ROMCALL_HALT(%a2)
 
 hellorld_string:
 	.string	"Hellorld!\n"
+
+	.data
+romcall_base:
+	.long	0x400			| immediately follows vector table

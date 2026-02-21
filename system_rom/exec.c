@@ -234,6 +234,7 @@ set_memory_nodes(void)
 {
 	char memnode_name[sizeof("memory@XXXXXXXX")];
 	int bank, offset, plen;
+	int last_entry_offset;
 	const fdt32_t *reg;
 	int fdterr;
 	fdt32_t newreg[2];
@@ -242,16 +243,50 @@ set_memory_nodes(void)
 	 * First, go through our memory bank entries and add fixup
 	 * existing FDT entries or add them, as needed.
 	 */
-	for (bank = 0; bank < memory_bank_count; bank++) {
+	for (bank = 0, last_entry_offset = -1;
+	     bank < memory_bank_count;
+	     bank++, last_entry_offset = offset) {
+		if (memory_banks[bank].size == 0) {
+			continue;
+		}
+
+		/* Attempt to merge adjacent banks into a single entry. */
+		if (bank > 0 &&
+		    (memory_banks[bank - 1].start +
+		     memory_banks[bank - 1].size)
+		    == memory_banks[bank].start &&
+		    last_entry_offset != -1) {
+			reg = fdt_getprop(fdt_store, last_entry_offset,
+			    "reg", NULL);
+			memcpy(newreg, reg, sizeof(newreg));
+			fdt32_st(&newreg[1],
+			    fdt32_ld(&newreg[1]) + memory_banks[bank].size);
+			verbose_printf("FDT: MERGED "
+			    "/memory@%x/reg = <0x%x 0x%x>\n",
+			    fdt32_ld(&newreg[0]),
+			    fdt32_ld(&newreg[0]),
+			    fdt32_ld(&newreg[1]));
+			fdterr = fdt_setprop_inplace(fdt_store,
+			    offset, "reg", newreg, sizeof(newreg));
+			if (fdterr) {
+				printf("%s: "
+				  "fdt_setprop_inplace(/memory@%x/reg)"
+				  " - %s\n", __func__,
+				  fdt32_ld(&newreg[0]),
+				  fdt_strerror(fdterr));
+			}
+			continue;
+		}
+
 		offset = find_fdt_memory_entry(memory_banks[bank].start, &reg);
 		if (offset >= 0) {
 			/* Patch up the entry. */
 			memcpy(newreg, reg, sizeof(newreg));
 			fdt32_st(&newreg[1], memory_banks[bank].size);
-			verbose_printf("FDT: /memory@%lx/reg = <%lx %lx>\n",
-			    (u_long)memory_banks[bank].start,
-			    (u_long)memory_banks[bank].start,
-			    (u_long)memory_banks[bank].size);
+			verbose_printf("FDT: /memory@%x/reg = <%x %x>\n",
+			    fdt32_ld(&newreg[0]),
+			    fdt32_ld(&newreg[0]),
+			    fdt32_ld(&newreg[1]));
 			fdterr = fdt_setprop_inplace(fdt_store,
 			    offset, "reg", newreg, sizeof(newreg));
 			if (fdterr) {
@@ -266,10 +301,12 @@ set_memory_nodes(void)
 			snprintf(memnode_name, sizeof(memnode_name),
 			    "memory@%lx",
 			    (u_long)memory_banks[bank].start);
-			verbose_printf("FDT: /%s/reg = <%lx %lx>\n",
+			fdt32_st(&newreg[0], memory_banks[bank].start);
+			fdt32_st(&newreg[1], memory_banks[bank].size);
+			verbose_printf("FDT: /%s/reg = <%x %x>\n",
 			    memnode_name,
-			    (u_long)memory_banks[bank].start,
-			    (u_long)memory_banks[bank].size);
+			    fdt32_ld(&newreg[0]),
+			    fdt32_ld(&newreg[1]));
 			offset = fdt_add_subnode(fdt_store,
 			    fdt_path_offset(fdt_store, "/"), memnode_name);
 			if (offset < 0) {
@@ -284,16 +321,16 @@ set_memory_nodes(void)
 				printf("%s: fdt_setprop(/%s/device_type - %s\n",
 				    __func__, memnode_name,
 				    fdt_strerror(offset));
+				offset = -1;
 				continue;
 			}
-			fdt32_st(&newreg[0], memory_banks[bank].start);
-			fdt32_st(&newreg[1], memory_banks[bank].size);
 			fdterr = fdt_setprop(fdt_store, offset,
 			    "reg", newreg, sizeof(newreg));
 			if (fdterr) {
 				printf("%s: fdt_setprop(/%s/reg - %s\n",
 				    __func__, memnode_name,
 				    fdt_strerror(fdterr));
+				offset = -1;
 				continue;
 			}
 		}
@@ -301,7 +338,8 @@ set_memory_nodes(void)
 
 	/*
 	 * Now go through all of the memory entries and delete the
-	 * "reg" property from any we don't know about.
+	 * "reg" property from any we don't know about or whose size
+	 * is 0.
 	 */
  again:
 	offset = -1;
@@ -311,11 +349,12 @@ set_memory_nodes(void)
 		if (reg == NULL || plen != sizeof(*reg) * 2) {
 			continue;
 		}
-		if (find_memory_bank_entry(fdt32_ld(reg)) < 0) {
+		if (find_memory_bank_entry(fdt32_ld(&reg[0])) < 0 ||
+		    fdt32_ld(&reg[1]) == 0) {
 			fdterr = fdt_delprop(fdt_store, offset, "reg");
 			if (fdterr < 0) {
 				printf("%s: fdt_delprop(/memory@%x/reg - %s\n",
-				    __func__, be32toh(reg[0]),
+				    __func__, fdt32_ld(&reg[0]),
 				    fdt_strerror(fdterr));
 				continue;
 			}

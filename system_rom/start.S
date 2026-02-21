@@ -1,5 +1,5 @@
 |
-| Copyright (c) 2025 Jason R. Thorpe.
+| Copyright (c) 2025, 2026 Jason R. Thorpe.
 | All rights reserved.
 |
 | Redistribution and use in source and binary forms, with or without
@@ -472,6 +472,9 @@ delay_:
 | Trap handler stubs.
 |
 trap_badtrap:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_badtrap,%a0
+	jra	trap_common
 
 trap_buserr:
 	movem.l	#0xFFFF,-(%sp)		| save all registers
@@ -479,10 +482,19 @@ trap_buserr:
 	jra	trap_common
 
 trap_addrerr:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_addrerr,%a0
+	jra	trap_common
 
 trap_illinst:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_illinst,%a0
+	jra	trap_common
 
 trap_zerodiv:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_zerodiv,%a0
+	jra	trap_common
 
 trap_common:
 	jbsr	(%a0)			| go handle the trap
@@ -497,3 +509,6 @@ trap_intrav:
 	rte
 
 trap_nmi:
+	movem.l	#0xFFFF,-(%sp)		| save all registers
+	lea	trap_handler_nmi,%a0
+	jra	trap_common

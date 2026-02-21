@@ -121,6 +121,15 @@ cpu010_mmu_page_fault(struct trap_frame *tf, uint8_t berr)
 #endif /* CONFIG_MC68010 */
 
 void
+trap_handler_badtrap(struct trap_frame tf)
+{
+	printf("!!! UNEXPECTED TRAP PC=0x%08x SR=0x%04x FMT=0x%x "
+	       "VECTOR=0x%x\n",
+	       tf.tf_pc, tf.tf_sr, tf.tf_format, tf.tf_vector);
+	cli_longjmp();
+}
+
+void
 trap_handler_buserr(struct trap_frame tf)
 {
 #ifdef CONFIG_MC68010
@@ -137,6 +146,70 @@ trap_handler_buserr(struct trap_frame tf)
 		longjmp(nofault_env, 1);
 	}
 
-	printf("Yup, got a Bus Error trap!\n");
+	struct trap_frame_ext8 *ext = trap_frame_ext(&tf);
+	int fc;
+
+	if (tf.tf_format != 8) {
+		printf("!!! BUS ERROR UNEXPECTED FRAME FORMAT %d\n",
+		    tf.tf_format);
+		cli_longjmp();
+	}
+
+	fc = __SHIFTOUT(ext->tf_ssw, SSW_FC);
+
+	printf("!!! BUS ERROR PC=0x%08x ADDR=0x%08x FC=%d"
+#ifdef CONFIG_MC68010
+	       " BERR=0x%02x"
+#endif
+	       "\n",
+	    tf.tf_pc, ext->tf_faultaddr, fc,
+#ifdef CONFIG_MC68010
+	    berr
+#endif
+	    );
+
+	cli_longjmp();
+}
+
+void
+trap_handler_addrerr(struct trap_frame tf)
+{
+	struct trap_frame_ext8 *ext = trap_frame_ext(&tf);
+	int fc;
+
+	if (tf.tf_format != 8) {
+		printf("!!! ADDRESS ERROR UNEXPECTED FRAME FORMAT %d\n",
+		    tf.tf_format);
+		cli_longjmp();
+	}
+
+	fc = __SHIFTOUT(ext->tf_ssw, SSW_FC);
+
+	printf("!!! ADDRESS ERROR PC=0x%08x ADDR=0x%08x FC=%d\n",
+	    tf.tf_pc, ext->tf_faultaddr, fc);
+	cli_longjmp();
+}
+
+void
+trap_handler_illinst(struct trap_frame tf)
+{
+	printf("!!! ILLEGAL INSTRUCTION TRAP PC=0x%08x SR=0x%04x\n",
+	    tf.tf_pc, tf.tf_sr);
+	cli_longjmp();
+}
+
+void
+trap_handler_zerodiv(struct trap_frame tf)
+{
+	printf("!!! DIVISION BY ZERO TRAP PC=0x%08x SR=0x%04x\n",
+	    tf.tf_pc, tf.tf_sr);
+	cli_longjmp();
+}
+
+void
+trap_handler_nmi(struct trap_frame tf)
+{
+	printf("!!! DEBUG SWITCH NMI PC=0x%08x SR=0x%04x\n",
+	    tf.tf_pc, tf.tf_sr);
 	cli_longjmp();
 }

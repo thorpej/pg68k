@@ -100,7 +100,12 @@ bool	badaddr_read32(volatile uint32_t *, uint32_t *);
 bool	badaddr_write32(volatile uint32_t *, uint32_t);
 
 #ifndef CONFIG_MACH_HOST_SIM
+void	trap_handler_badtrap(struct trap_frame);
 void	trap_handler_buserr(struct trap_frame);
+void	trap_handler_addrerr(struct trap_frame);
+void	trap_handler_illinst(struct trap_frame);
+void	trap_handler_zerodiv(struct trap_frame);
+void	trap_handler_nmi(struct trap_frame);
 #endif /* ! CONFIG_MACH_HOST_SIM */
 #endif /* ! __ASSEMBLER__ */
 

@@ -105,6 +105,7 @@ device_physaddr(unsigned long addr)
 #define	CONFIG_PGTIMER
 #define	CONFIG_PGTIMER_FREQ	(10000000 / 16)
 #define	CONFIG_ATA_GENERIC
+#define	CONFIG_ATA_8BIT_PIO	/* XXX */
 #define	CONFIG_DISKLABEL_BSD44
 #define	CONFIG_DISKLABEL_GPT
 #define	CONFIG_FS_UFS

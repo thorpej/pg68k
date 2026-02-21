@@ -288,7 +288,11 @@ wdc_exec_command(int ctlr, const struct wdc_command *cmd)
 static void
 wdc_read_data(int ctlr, void *buf, u_int count)
 {
+#ifdef CONFIG_ATA_8BIT_PIO
 	DATA_IN8(ctlr, buf, count);
+#else
+	DATA_IN16(ctlr, buf, count);
+#endif
 }
 
 static void
@@ -401,12 +405,14 @@ ata_init(int ctlr, bool do_init)
 		if ((rv & __BIT(drive)) == 0) {
 			continue;
 		}
-#if 1 /* XXX */
+#ifdef CONFIG_ATA_8BIT_PIO
 		error = wdc_cmd_set_feature(ctlr, drive, WDSF_8BIT_PIO_EN);
 		if (error) {
+			configure_printf("  drive %d: no 8-bit capability, "
+					 "ignoring\n", drive);
 			continue;
 		}
-#endif
+#endif /* CONFIG_ATA_8BIT_PIO */
 		error = wdc_cmd_identify_drive(ctlr, drive, atap);
 		if (error) {
 			continue;

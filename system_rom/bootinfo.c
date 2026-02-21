@@ -107,7 +107,10 @@ static struct bi_record *
 _bootinfo_set_string(struct bi_record *bi, uint16_t tag,
     const char *str, bool wr)
 {
-	return _bootinfo_set_data(bi, tag, str, strlen(str) + 1, wr);
+	if (wr) {
+		strcpy(bootinfo_dataptr(bi), str);
+	}
+	return _bootinfo_set_size(bi, tag, strlen(str) + 1, wr);
 }
 
 struct bi_record *

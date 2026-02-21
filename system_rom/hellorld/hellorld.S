@@ -8,10 +8,9 @@
 |
 
 |
-| The romcall version number is the 0th longword. The (*halt)() vector
-| is at slot 2 and the (*putc)() vector is at slot 8.
+| The romcall version number is the 0th longword.  Tthe (*putc)() vector
+| is at slot 8.
 |
-#define	ROMCALL_HALT	(2 * 4)
 #define	ROMCALL_PUTC	(8 * 4)
 
 	.text
@@ -44,15 +43,15 @@ _start:
 	bra	1b			| go around again
 1:
 	addql	#4,%sp			| pop the stack slot
-					|   (not that it matters)
 
-	| Get the formware (*halt)() function and halt back out to
-	| the firmware.
-	movea.l	romcall_base,%a2
-	jmp	ROMCALL_HALT(%a2)
+	|
+	| For very simple programs (like this one), we can simply return
+	| and the firmware will gracefully perform the halt for us.
+	|
+	rts
 
 hellorld_string:
-	.string	"Hellorld!\n"
+	.asciz	"Hellorld!\n"
 
 	.data
 romcall_base:

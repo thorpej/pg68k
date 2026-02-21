@@ -4,11 +4,11 @@
 
 CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE) -DKERNEL_USE
 CFLAGS=		-Os -Wall -Wstrict-prototypes -Werror
-ASFLAGS=
+AFLAGS=
 
 .ifdef MACH_CPU
 CFLAGS+=	-mcpu=$(MACH_CPU)
-ASFLAGS+=	-mcpu=$(MACH_CPU)
+AFLAGS+=	-mcpu=$(MACH_CPU)
 .endif
 
 .PATH: ..

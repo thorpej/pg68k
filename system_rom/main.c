@@ -1409,5 +1409,12 @@ sys_reboot(void)
 void
 panic(const char *fmt, ...)
 {
-	/* XXX */
+	va_list ap;
+
+	va_start(ap, fmt);
+	printf("panic: ");
+	vprintf(fmt, ap);
+	va_end(ap);
+
+	sys_reboot();
 }

@@ -8,7 +8,7 @@
 |
 
 |
-| The romcall version number is the 0th longword.  Tthe (*putc)() vector
+| The romcall version number is the 0th longword.  The (*putc)() vector
 | is at slot 8.
 |
 #define	ROMCALL_PUTC	(8 * 4)
@@ -25,11 +25,16 @@ _start:
 	|
 	| The firmware call vector immediately follows the vector
 	| table.  Adust romcall_base by the value of the VBR.
-	| XXX Not on plain-Jane 68000.
+	| Obviously, we can't do this on a plain-Jane 68000.
+	| (It's very lame that the compiler doesn't give us a better
+	| signal here.)
 	|
+#if defined(__mc68010__) || defined(__mc68020__) || defined(__mc68030__) || \
+    defined(__mc68040__)
 	movec	%vbr,%a2
 	add.l	romcall_base,%a2	| %a2 = base of call vector
 	move.l	%a2,romcall_base	| stash it away for later
+#endif
 
 	lea	hellorld_string,%a3	| %a3 = string to print
 	moveq	#0,%d2			| clear all of %d2
@@ -42,6 +47,11 @@ _start:
 1:
 	addql	#4,%sp			| pop the stack slot
 
+	| Call into C code to dump the bootinfo.
+	pea	_end
+	jsr	showme			| showme(&_end)
+	addql	#4,%sp
+
 	|
 	| For very simple programs (like this one), we can simply return
 	| and the firmware will gracefully perform the halt for us.
@@ -52,5 +62,6 @@ hellorld_string:
 	.asciz	"Hellorld!\n"
 
 	.data
+	.globl	romcall_base
 romcall_base:
 	.long	0x400			| immediately follows vector table

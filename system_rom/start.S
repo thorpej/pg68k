@@ -219,11 +219,17 @@ romcall_poweroff:
 	bra	start
 #endif /* CONFIG_MC68010 */
 
+	.section .rodata
+main_ret_panicstr:
+	.asciz	"main returned"
 rom_argv0:
 	.asciz	"pg68krom"
 
 	.align	4
+rom_argv:
+	.long	rom_argv0
 
+	.text
 	.globl	start
 start:
 	| Before we do anything else, disable all interrupts.
@@ -420,12 +426,14 @@ start:
 	| %fp, push's main's arguments, and call it.
 	|
 	movea.l	#0,%fp
-	pea	rom_argv0
+	pea	rom_argv
 	move.l	#1,-(%sp)
-	jbsr	main		| main(1, &rom_argv0)
+	jbsr	main		| main(1, rom_argv)
 	addq.l	#8,%sp
 
-	| main() should never return.  If it does, just loop forever.
+	| main() should never return.
+	pea	main_ret_panicstr
+	jbsr	panic
 1:	bra	1b
 
 |

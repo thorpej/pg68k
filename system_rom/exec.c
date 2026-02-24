@@ -488,17 +488,17 @@ exec(int load_flags, int argc, char *argv[])
 	if (have_bootinfo) {
 		bootinfo_populate(vbi, bargs);
 		if (have_sym) {
-			bi = bootinfo_find(vbi, BI_PG68K_ELF_SYMS);
+			bi = bootinfo_find(vbi, BI_FDT_ELF_SYMS);
 			if (bi != NULL) {
 				bootinfo_set_mem_info(bi,
-				    BI_PG68K_ELF_SYMS,
+				    BI_FDT_ELF_SYMS,
 				    marks[MARK_SYM],
 				    marks[MARK_END] - marks[MARK_SYM]);
 			}
 		}
 		printf("Bootinfo @ 0x%lx\n", marks[MARK_BOOTINFO]);
 #ifdef CONFIG_DEVICETREE
-		bi = bootinfo_find(vbi, BI_PG68K_FDT);
+		bi = bootinfo_find(vbi, BI_FDT_BLOB);
 		if (bi != NULL) {
 			struct bi_data *d = bootinfo_dataptr(bi);
 			printf("FDT @ %p\n", &d->data_bytes[0]);

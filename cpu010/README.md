@@ -305,9 +305,9 @@ may do exactly that.
 
 There are 3 basic parts which make up a virtual address translation:
 
-* Context - a number in range of 0-63 that identifies a virtual memory
-context (Unix process).  All supervisor access is hard-wired to use
-context 0.  The context selects a range in the Segment Map.  Because
+* Context - a number in the range of 0-63 that identifies a virtual
+memory context (Unix process).  All supervisor access is hard-wired to
+use context 0.  The context selects a range in the Segment Map.  Because
 there are 64 total contexts and 32,768 Segment Map entries, a context
 is comprised of 512 segments.
 * Segment Map - The Segment Map divides the address space into 512
@@ -357,12 +357,12 @@ Phaethon 1's control space:
  xxxx.xxxx xxxx.xxxx xxxx.1110   (unused; reserved)
 ```
 
-By placing the Segment Map index at the top of the virtual address,
-we eliminiate the need for a mux for that address (because that's
-where it lives naturally).  A separate address range for context 0's
-Segment Map is provided because it is expectedto be a hot path in the
-operating system kernel, and eliminates the need to modify the context
-register to modify the kernel's address space.
+By placing the Segment Map index at the top of the control space
+address, we eliminiate the need for a mux for that address (because
+that's where it lives naturally).  A separate address range for context
+0's Segment Map is provided because it is expectedto be a hot path in
+the operating system kernel, and eliminates the need to modify the
+context register to change mappings in the kernel's address space.
 
 The Page Map entry index, unlike the Segment Map index, does require
 a mux.  This stands in contrast to the Sun 3 MMU, which indexed Page
@@ -370,7 +370,58 @@ Map entries via the normal address translation mechanism.  The Sun 3
 approach is not unreasonable, but it requires a valid Segment Map entry
 to access any Page Map entries, which risks uninitialized Page Map
 entries being available for address translation, which I preferred
-to avoid.
+to avoid; using a mux allows for direct access to the PMEs without
+having to use the Segment Map.
+
+### Programming examples
+
+Here are a few examples of programming the Phaethon 1's MMU.
+
+#### Set context register
+
+```
+set_context:
+        movec     %dfc,%d1        | save dst FC
+        moveq     #4,%d0
+        movec     %d0,%dfc        | dst FC=4
+        move.l    4(%sp),%d0      | get context argument
+        lea       6,%a0           | address of context register
+        moves.b   %d0,(%a0)       | set the context value
+        movec     %d1,%dfc        | restore dst FC
+        rts                       | all done
+```
+
+#### Get Segment Map entry for context 0
+
+```
+get_sme0:
+        movec     %sfc,%d1        | save src FC
+        moveq     #4,%d0
+        movec     %d0,%sfc        | src FC=4
+        move.l    4(%sp),%d0      | get VA argument
+        and.l     #FF8000,%d0     | truncate to segment
+        movea.l   %d0,%a0         | VA into %a0
+        lea       2(%a0),%a0      | add in SegMap0 selector
+        moveq     #0,%d0          | zero (extend) %d0
+        moves.w   (%a0),%d0       | %d0 = selected SME
+        movec     %d1,%sfc        | restore src FC
+        rts                       | all done, return value in %d0
+
+```
+
+#### Get a Page Map entry
+
+```
+get_pme:
+        movec     %sfc,%d1        | save src FC
+        moveq     #4,%d0
+        movec     %d0,%sfc        | src FC=4
+        movea.l   4(%sp),%a0      | get PME index argument
+        lea       8(%a0),%a0      | add in PageMap Upper selector
+        moves.l   (%a0),%d0       | %d0 = selected PME
+        movec     %d1,%sfc        | restore src FC
+        rts                       | all done, return value in %d0
+```
 
 ### Address translation
 
@@ -404,4 +455,52 @@ Address translation follows the following flow:
 ### Validty and permission checking
 
 Validity and permission checks happen in parallel with address
-translation.  The upper 16 bits of the PME contain XXX more to come.
+translation.  The upper 16 bits of the PME contain the various
+page control bits for the page.  The MMU logic is only concerned
+with Valid, Write, Kernel, Modified, and Referenced, and so those
+are the only bits wired up to the CPLD.  In addition, the SME valid
+bit (bit 15) is also wired up to the MMU.
+
+Translation and permission errors are reported via the MMU's
+Bus Error register.  The translation-related bits in the Bus Error
+Register are:
+
+```
+      001     Invalid translation
+      010     Protection error
+      100     Privilege error
+```
+
+Only one of those bits will be set at any given time.
+
+The translation error is computed continuously using combinatorial
+logic:
+
+```
+wire KernelAcc = (FC == FC_SUPER_DATA || FC == FC_SUPER_PROGRAM);
+
+wire TransOK = (SME_V && PME_V);
+wire PrivOK  = (~PME_K || KernelAcc);
+wire ProtOK  = (RnW || PME_W);
+
+wire [2:0] TranslationError =
+    {(~PrivOK & TransOK), (~ProtOK & TransOK & PrivOK), ~TransOK};
+```
+
+Which is to say:
+
+* Kernel access is being performed if the FC indicates a Supervisor Data
+or Supervisor Program cycle.
+* The translation is valid if the Valid bit is set in both the SME and
+the PME.
+* The privilege check passes if either the PME does not indicate
+Kernel-only access or if the cycle is not a Kernel cycle.
+* The protection check passes if it is a read cycle or if the PME
+indicates the page is writable.
+
+These individual checks are then combined to a translation error
+indicator.  If the translation is not valid, any privilege and
+protection errors are ignored.  If there is a privilege error, any
+protection error is ignored.
+
+XXX more to come

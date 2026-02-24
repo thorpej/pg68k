@@ -55,7 +55,7 @@ described in the next section.
 
 A[23..25] == 0 selects the on-board RAM.  For all other values of
 A[23..25], expansion RAM is selected.  When expansion RAM is selected,
-the (vmeglue][gal-files/vmeglue.gal] GAL sets the VMEbus Address
+the [vmeglue](gal-files/vmeglue.gal) GAL sets the VMEbus Address
 Modifier to a value in the range of `$11` to `$1f`, with the lower
 3 bits being taken from A[23..25], thus allowing expansion RAM to
 phyically reside on the nqVME bus without occupying nqVME address

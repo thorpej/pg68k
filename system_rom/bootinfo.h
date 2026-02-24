@@ -77,25 +77,26 @@ struct bi_record {
 #define	BI_VIRT_CTRL_BASE	BI_MACHDEP(5)	/* uint32_t */
 
 /*
- * pg68k bootinfo record types.
+ * FDT bootinfo record types.
  *
- * BI_PG68K_PLATFORM		bi_data (C string list)
- * This is a copy of the "compatible" property from the root node of
- * the device tree.  This is intended to enable early bootstrap code
- * to make platform-specific decisions before the FDT can be parsed.
+ * BI_FDT_PLATFORM		(C string)
+ * This is a copy of the first string in the "compatible" property from
+ * the root node of the device tree.  This is intended to enable early
+ * bootstrap code to make platform-specific decisions before the FDT
+ * can be parsed.
  *
- * BI_PG68K_FDT			bi_data
+ * BI_FDT_BLOB			bi_data
  * Flattened Device Tree describing the system.
  *
- * BI_PG68K_ELF_SYMS		bi_mem_info
+ * BI_FDT_ELF_SYMS		bi_mem_info
  * Symbol table for the loaded program.  Symbol table is in the format
  * of a standard ELF image.  The loaded program may assume that the
  * symbols are contiguous with the program image and trailing bootinfo
  * data.
  */
-#define	BI_PG68K_PLATFORM	BI_MACHDEP(0)	/* bi_data (C string list) */
-#define	BI_PG68K_FDT		BI_MACHDEP(1)	/* bi_mem_info */
-#define	BI_PG68K_ELF_SYMS	BI_MACHDEP(2)	/* bi_mem_info */
+#define	BI_FDT_PLATFORM		BI_MACHDEP(0)	/* (C string) */
+#define	BI_FDT_BLOB		BI_MACHDEP(1)	/* bi_data */
+#define	BI_FDT_ELF_SYMS		BI_MACHDEP(2)	/* bi_mem_info */
 
 struct bi_mem_info {
 	uint32_t	mem_addr;	/* PA of memory segment */
@@ -130,7 +131,7 @@ struct bi_virt_dev {
 #define	BI_MACH_M5441X		13
 #define	BI_MACH_VIRT		14
 /* pg68k extensions: */
-#define	BI_MACH_PG68K		-1
+#define	BI_MACH_FDT		-1
 
 /*
  * Values for BI_CPUTYPE.

@@ -160,7 +160,7 @@ _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 	struct bi_record *next_bi;
 	int i;
 
-	bi = _bootinfo_set_u32(bi, BI_MACHTYPE, BI_MACH_PG68K, wr);
+	bi = _bootinfo_set_u32(bi, BI_MACHTYPE, BI_MACH_FDT, wr);
 	bi = _bootinfo_set_u32(bi, BI_CPUTYPE, BI_CPU_value, wr);
 #ifdef BI_FPU_value
 	/* XXX should also probe for FPU type. */
@@ -207,11 +207,11 @@ _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 	int off = fdt_path_offset(fdt, "/");
 	const char *str = fdt_getprop(fdt, off, "compatible", NULL);
 	if (str != NULL) {
-		bi = _bootinfo_set_string(bi, BI_PG68K_PLATFORM, str, wr);
+		bi = _bootinfo_set_string(bi, BI_FDT_PLATFORM, str, wr);
 	}
-	bi = _bootinfo_set_data(bi, BI_PG68K_FDT, fdt, fdt_totalsize(fdt), wr);
+	bi = _bootinfo_set_data(bi, BI_FDT_BLOB, fdt, fdt_totalsize(fdt), wr);
 #else
-	bi = _bootinfo_set_string(bi, BI_PG68K_PLATFORM,
+	bi = _bootinfo_set_string(bi, BI_FDT_PLATFORM,
 	    CONFIG_MACHINE_STRING, wr);
 #endif /* CONFIG_DEVICETREE */
 
@@ -221,7 +221,7 @@ _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 	 * reflect their location.  If we don't, then the tag is set to
 	 * BI_LAST.
 	 */
-	bi = _bootinfo_set_mem_info(bi, BI_PG68K_ELF_SYMS, 0, 0, wr);
+	bi = _bootinfo_set_mem_info(bi, BI_FDT_ELF_SYMS, 0, 0, wr);
 
 	return _bootinfo_set_size(bi, BI_LAST, 0, wr);
 }

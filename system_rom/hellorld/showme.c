@@ -86,13 +86,14 @@ print_machtype(struct bi_record *bi)
 	};
 	static const int nmachtypes = __arraycount(machtypes);
 	uint32_t val = bootinfo_get_u32(bi);
-	const char *cp;
+	const char *cp = NULL;
 
-	if (val == BI_MACH_PG68K) {
-		cp = "68k Playground";
+	if (val == BI_MACH_FDT) {
+		cp = "FDT Platform";
 	} else if (val < nmachtypes) {
 		cp = machtypes[val];
-	} else {
+	}
+	if (cp == NULL) {
 		cp = unk(val);
 	}
 
@@ -189,13 +190,13 @@ print_rndseed(struct bi_record *bi)
 }
 
 static void
-print_pg68k_platform(struct bi_record *bi)
+print_fdt_platform(struct bi_record *bi)
 {
 	printf("PLATFORM: \"%s\"\n", bootinfo_dataptr(bi));
 }
 
 static void
-print_pg68k_fdt(struct bi_record *bi)
+print_fdt_blob(struct bi_record *bi)
 {
 	struct bi_data *d = bootinfo_dataptr(bi);
 
@@ -203,7 +204,7 @@ print_pg68k_fdt(struct bi_record *bi)
 }
 
 static void
-print_pg68k_elf_syms(struct bi_record *bi)
+print_fdt_elf_syms(struct bi_record *bi)
 {
 	struct bi_mem_info *m = bootinfo_dataptr(bi);
 
@@ -220,14 +221,18 @@ static const prfunc_t prfuncs[] = {
 [BI_COMMAND_LINE]	=	print_commandline,
 [BI_RNG_SEED]		=	print_rndseed,
 };
-static const int nprfuncs = __arraycount(prfuncs);
+static const u_int nprfuncs = __arraycount(prfuncs);
+
+#define	I(x)	((x) - BI_MACHDEP(0))
 
 static const prfunc_t mdprfuncs[] = {
-[BI_PG68K_PLATFORM]	=	print_pg68k_platform,
-[BI_PG68K_FDT]		=	print_pg68k_fdt,
-[BI_PG68K_ELF_SYMS]	=	print_pg68k_elf_syms,
+[I(BI_FDT_PLATFORM)]	=	print_fdt_platform,
+[I(BI_FDT_BLOB)]	=	print_fdt_blob,
+[I(BI_FDT_ELF_SYMS)]	=	print_fdt_elf_syms,
 };
-static const int nmdprfuncs = __arraycount(mdprfuncs);
+static const u_int nmdprfuncs = __arraycount(mdprfuncs);
+
+#undef I
 
 static void
 dump_bi(struct bi_record *bi)
@@ -238,8 +243,8 @@ dump_bi(struct bi_record *bi)
 		prf = NULL;
 		if (bi->bi_tag < nprfuncs) {
 			prf = prfuncs[bi->bi_tag];
-		} if (bi->bi_tag >= BI_MACHDEP(0) &&
-		      bi->bi_tag <  (BI_MACHDEP(0) + nmdprfuncs)) {
+		} else if (bi->bi_tag >= BI_MACHDEP(0) &&
+			   bi->bi_tag <  (BI_MACHDEP(0) + nmdprfuncs)) {
 			prf = mdprfuncs[bi->bi_tag - BI_MACHDEP(0)];
 		}
 		if (prf != NULL) {

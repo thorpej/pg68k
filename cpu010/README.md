@@ -53,11 +53,11 @@ PLCC44 CPLD programmed with [memctl010](cpld-files/memctl010.v).
 This CPLD also performs this function for the ROM region, which is
 described in the next section.
 
-A[23..25] == 0 selects the on-board RAM.  For all other values of
-A[23..25], expansion RAM is selected.  When expansion RAM is selected,
+A[25:23] == 0 selects the on-board RAM.  For all other values of
+A[25:23], expansion RAM is selected.  When expansion RAM is selected,
 the [vmeglue](gal-files/vmeglue.gal) GAL sets the VMEbus Address
 Modifier to a value in the range of `$11` to `$1f`, with the lower
-3 bits being taken from A[23..25], thus allowing expansion RAM to
+3 bits being taken from A[25:23], thus allowing expansion RAM to
 phyically reside on the nqVME bus without occupying nqVME address
 space.
 
@@ -357,10 +357,31 @@ Phaethon 1's control space:
  xxxx.xxxx xxxx.xxxx xxxx.1110   (unused; reserved)
 ```
 
+For future reference in the rest of this section, this combinatorial
+logic decodes MMU register addresses:
+
+```
+localparam MMUADDR_SegMap0      = 3'd1;
+localparam MMUADDR_SegMap       = 3'd2;
+localparam MMUADDR_ContextReg   = 3'd3;
+localparam MMUADDR_PageMapU     = 3'd4;
+localparam MMUADDR_PageMapL     = 3'd5;
+localparam MMUADDR_BusErrorReg  = 3'd6;
+
+wire SegMap0Sel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
+wire SegMapSel      = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
+wire PageMapUSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
+wire PageMapLSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
+wire ContextRegSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
+wire BusErrorRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_BusErrorReg);
+```
+
+(`ADDR` is VA[3:1] from the CPU.)
+
 By placing the Segment Map index at the top of the control space
 address, we eliminiate the need for a mux for that address (because
 that's where it lives naturally).  A separate address range for context
-0's Segment Map is provided because it is expectedto be a hot path in
+0's Segment Map is provided because it is expected to be a hot path in
 the operating system kernel, and eliminates the need to modify the
 context register to change mappings in the kernel's address space.
 
@@ -416,7 +437,9 @@ get_pme:
         movec     %sfc,%d1        | save src FC
         moveq     #4,%d0
         movec     %d0,%sfc        | src FC=4
-        movea.l   4(%sp),%a0      | get PME index argument
+        movea.l   4(%sp),%d0      | get PME index argument
+        lsl.l     #4,%d0          | shift it into place
+        movea.l   %d0,%a0         | PME address into %a0
         lea       8(%a0),%a0      | add in PageMap Upper selector
         moves.l   (%a0),%d0       | %d0 = selected PME
         movec     %d1,%sfc        | restore src FC
@@ -425,14 +448,33 @@ get_pme:
 
 ### Address translation
 
-Address translation follows the following flow:
+The MMU translates bus cycles for Function Codes 1 (User Data),
+2 (User Program), 5 (Supervisor Data), and 6 (Superisor Program).
+Bus cycles for other Function Codes are not translated.  Furthermore,
+address translation does not occur if the MMU is not enabled; the
+MMU-enable signal is an input from the System Enble Register described
+earlier in the Control space section.
 
 ```
- +---------------+--------------------+
- | Context [5:0] | Segment [VA 23:15] |
- +---------------+--------------------+--> 15-bit SegMap index --+
-                                                                 |
- +---------------------------------------------------------------+
+wire UserAcc   = (FC == FC_USER_DATA  || FC == FC_USER_PROGRAM);
+wire KernelAcc = (FC == FC_SUPER_DATA || FC == FC_SUPER_PROGRAM);
+wire Translate = (UserAcc || KernelAcc) && MMU_EN;
+```
+
+The `Translate` wire controls the address mux at the output of the MMU;
+if `Translate` is true, then the page frame number from the Page Map
+is routed to A[27:12], otherwise VA[23:12] are selected and
+zero-extended into A[27:12].  VA[11:1] are simply buffered and always
+routed to A[11:1].
+
+This chart shows the address translation flow:
+
+```
+ +---------------+---------------------+
+ | Context [5:0] | Segment (VA[23:15]) |
+ +---------------+---------------------+--> 15-bit SegMap index --+
+                                                                  |
+ +----------------------------------------------------------------+
  |
  +--> SegMap entry contains 15-bit PMEG number --+
                                                  |
@@ -449,17 +491,17 @@ Address translation follows the following flow:
                                                            |
  +---------------------------------------------------------+
  |
- +--> (PFN << 12) | VA[11:0] -> Physical address
+ +--> (PFN << 12) | VA[11:1] -> Physical address
 ```
 
-### Validty and permission checking
+### Validity and permission checking
 
 Validity and permission checks happen in parallel with address
 translation.  The upper 16 bits of the PME contain the various
 page control bits for the page.  The MMU logic is only concerned
 with Valid, Write, Kernel, Modified, and Referenced, and so those
-are the only bits wired up to the CPLD.  In addition, the SME valid
-bit (bit 15) is also wired up to the MMU.
+are the only bits wired up to the CPLD.  In addition, the SME Valid
+bit (bit 15) is also wired up to the CPLD.
 
 Translation and permission errors are reported via the MMU's
 Bus Error register.  The translation-related bits in the Bus Error
@@ -477,8 +519,6 @@ The translation error is computed continuously using combinatorial
 logic:
 
 ```
-wire KernelAcc = (FC == FC_SUPER_DATA || FC == FC_SUPER_PROGRAM);
-
 wire TransOK = (SME_V && PME_V);
 wire PrivOK  = (~PME_K || KernelAcc);
 wire ProtOK  = (RnW || PME_W);
@@ -489,12 +529,10 @@ wire [2:0] TranslationError =
 
 Which is to say:
 
-* Kernel access is being performed if the FC indicates a Supervisor Data
-or Supervisor Program cycle.
 * The translation is valid if the Valid bit is set in both the SME and
 the PME.
 * The privilege check passes if either the PME does not indicate
-Kernel-only access or if the cycle is not a Kernel cycle.
+kernel-only access or if the cycle is not a kernel cycle.
 * The protection check passes if it is a read cycle or if the PME
 indicates the page is writable.
 
@@ -502,5 +540,105 @@ These individual checks are then combined to a translation error
 indicator.  If the translation is not valid, any privilege and
 protection errors are ignored.  If there is a privilege error, any
 protection error is ignored.
+
+In order to avoid side-effects for bus cycles that result in invalid
+translations or permission/protection violations, the MMU gates the
+`/AS`, `/UDS`, and `/LDS` signals from the CPU.  In order to do this,
+we keep two internal registers in the MMU:
+
+```
+reg TranslationValid;
+reg AccessValid;
+```
+
+These registers are reset when the bus cycle state machine is idle, and
+each set to `1` when the state machine has verified the translation and
+access are OK.  Combinatorial logic is then used to gate the output to
+the rest of the system:
+
+```
+assign nAS_out  = nAS  | (Translate && ~TranslationValid);
+assign nUDS_out = nUDS | (Translate && ~AccessValid);
+assign nLDS_out = nLDS | (Translate && ~AccessValid);
+```
+
+There are two separate controls for the strobe gates in order to handle
+the way Read-Modify-Write cycles work on the 68010.  For background, the
+68020 has an output signal, `/RMC`, that indicates an indivisible R-M-W
+cycle is in-progress.  Other than `/RMC`, the read and write portions of
+an R-M-W cycle look exactly the same as normal read and write cycles,
+specifically the `/AS` signal from the CPU negates between the read and
+write portion, just as it would with any regular cycle.  That's not how
+it works on the 68010, however.  The 68010 does not have an `/RMC`
+signal, and, crucially, `/AS` remains asserted for the _entire cycle_.
+This means that, from the MMU's perspective, the first part of a R-M-W
+cycle looks exactly like a normal read cycle.  This complicates write
+permission checking.
+
+The Phaethon 1's MMU handles this by watching for the `R/W` signal from
+the CPU transitioning from high (read) to low (write) while the `/AS`
+signal remains asserted.  When it sees this transition, it resets
+`AccessValid` and performs another permission check.  If the permission
+check passes, `AccessValid` is re-asserted and the data strobes are
+once again un-gated.  Otherwise, a bus error is signalled and the cycle
+is aborted.  **This is an area where I plan to explore some
+optimizations.**  In particular, I want to explore eliminating the
+`AccessValid` register and simply using `ProtOK` instead.
+
+`TranslationValid` serves an additional purpose: it is used to latch
+the Page Map index for the duration of the bus cycle.  `TranslationValid`
+is only reset once the MMU's bus cycle state machine returns to the idle
+state, which is after the CPU negates `/AS`.  This ensures that the Page
+Map index will be stable throughout the entire cycle, which is imporant
+because the MMU must write back the upper 16 bits of the PME at the end
+of the cycle in order to update the Modified and Referenced bits.
+
+### Segment Map control
+
+The Segment Map is a 32K x 16 SRAM with independent chip-enable,
+output-enable, write-enable, and byte-lane-enable control inputs.
+The SRAM part chosen has the property that the write-enable input
+overrides the output-enable input, thus allowing for the chip-enable
+and output-enable inputs to be permanently asserted by connecting them
+to GND.  The data pins of the SRAM each have two connections: to a 74'245
+bus transceiver and to a 74'373 transparent latch.  The '245 facilitates
+access to the Segment Map by the CPU, and the '373 ensures the stability
+of the Page Map Entry index for the duration of the bus cycle.
+
+The address inputs to the Segment Map SRAM are comprised of:
+
+* VA[23:15] from the CPU
+* the CTX output from the MMU logic
+
+CTX is generated based on the context being used for any given cycle,
+and may come from the context register or be hard-wired to 0:
+
+```
+reg [5:0] ContextReg;
+assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
+```
+
+The normal steady state of the Segment Map is to be continuously
+outputting Segment Map entries out to the Page Map index latch and
+MMU logic, meaning that the SRAM `/WE` signal is high and both `/UB`
+and `/LB` signals are low.  However, this is not the case when the
+Segment Map is being accessed by the CPU, in which case those control
+signals are mapped to the CPU's `R/W`, `/UDS`, and `/LDS` signals:
+
+```
+assign nSM_WE = (SegMap0Sel || SegMapSel) ? (RnW  | nAS) : 1'b1;
+assign nSM_UB = (SegMap0Sel || SegMapSel) ? (nUDS | nAS) : 1'b0;
+assign nSM_LB = (SegMap0Sel || SegMapSel) ? (nLDS | nAS) : 1'b0;
+```
+
+And finally, when the CPU does access the Segment Map, the '245s have
+to connect the SRAM data pins to the CPU's.  The '245s' direction
+pins are directly controlled by the CPU's `R/W` signal.
+
+```
+assign nSMSEL = ~(SegMap0Sel || SegMapSel) | nAS;
+```
+
+### Page Map control
 
 XXX more to come

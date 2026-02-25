@@ -452,7 +452,7 @@ The MMU translates bus cycles for Function Codes 1 (User Data),
 2 (User Program), 5 (Supervisor Data), and 6 (Superisor Program).
 Bus cycles for other Function Codes are not translated.  Furthermore,
 address translation does not occur if the MMU is not enabled; the
-MMU-enable signal is an input from the System Enble Register described
+MMU-enable signal is an input from the System Enable Register described
 earlier in the Control space section.
 
 ```
@@ -499,9 +499,10 @@ This chart shows the address translation flow:
 Validity and permission checks happen in parallel with address
 translation.  The upper 16 bits of the PME contain the various
 page control bits for the page.  The MMU logic is only concerned
-with Valid, Write, Kernel, Modified, and Referenced, and so those
-are the only bits wired up to the CPLD.  In addition, the SME Valid
-bit (bit 15) is also wired up to the CPLD.
+with Valid, Write, Kernel, Modified, and Referenced, all of which
+reside in the upper byte of the upper PME word, and so that byte
+is the only PME byte wired up to the CPLD.  In addition, the SME
+Valid bit (bit 15) is also wired up to the CPLD.
 
 Translation and permission errors are reported via the MMU's
 Bus Error register.  The translation-related bits in the Bus Error
@@ -520,7 +521,7 @@ logic:
 
 ```
 wire TransOK = (SME_V && PME_V);
-wire PrivOK  = (~PME_K || KernelAcc);
+wire PrivOK  = (KernelAcc || ~PME_K);
 wire ProtOK  = (RnW || PME_W);
 
 wire [2:0] TranslationError =
@@ -531,15 +532,19 @@ Which is to say:
 
 * The translation is valid if the Valid bit is set in both the SME and
 the PME.
-* The privilege check passes if either the PME does not indicate
-kernel-only access or if the cycle is not a kernel cycle.
+* The privilege check passes if either the cycle is a kernel cycle or
+PME does not indicate kernel-only access.
 * The protection check passes if it is a read cycle or if the PME
 indicates the page is writable.
 
 These individual checks are then combined to a translation error
 indicator.  If the translation is not valid, any privilege and
 protection errors are ignored.  If there is a privilege error, any
-protection error is ignored.
+protection error is ignored.  This computed `TranslationError` is
+then consulted in the bus cycle state machine to determine whether
+to let the cycle proceed or to abort the cycle by signalling a bus
+error, in which case `TranslationError` is latched into the Bus Error
+Register for reporting to the operating system's bus error handler.
 
 In order to avoid side-effects for bus cycles that result in invalid
 translations or permission/protection violations, the MMU gates the
@@ -568,12 +573,17 @@ the way Read-Modify-Write cycles work on the 68010.  For background, the
 cycle is in-progress.  Other than `/RMC`, the read and write portions of
 an R-M-W cycle look exactly the same as normal read and write cycles,
 specifically the `/AS` signal from the CPU negates between the read and
-write portion, just as it would with any regular cycle.  That's not how
-it works on the 68010, however.  The 68010 does not have an `/RMC`
-signal, and, crucially, `/AS` remains asserted for the _entire cycle_.
-This means that, from the MMU's perspective, the first part of a R-M-W
-cycle looks exactly like a normal read cycle.  This complicates write
-permission checking.
+write portion, just as it would with any regular cycle, which allows the
+MMU to trigger access checking based on the falling edge of `/AS`, and
+to know that the cycle requires write access if `/RMC` is asserted,
+even though for the first portion of the cycle, `R/W` will indicate a
+read.
+
+That's not how it works on the 68010, however.  The 68010 does not have
+an `/RMC` signal, and, crucially, `/AS` remains asserted for the
+_entire cycle_. This means that, from the MMU's perspective, the first
+part of a R-M-W cycle looks exactly like a normal read cycle.  This
+complicates write permission checking.
 
 The Phaethon 1's MMU handles this by watching for the `R/W` signal from
 the CPU transitioning from high (read) to low (write) while the `/AS`

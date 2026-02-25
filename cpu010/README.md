@@ -287,7 +287,7 @@ cycle state machine.
 * Bus transceivers that allow the Segment Map and Page Map entries to
 be accessed by the CPU.
 * Transparent latches to ensure the stability of the PME index while
-the MMU writes back the upper 16 bits of the PME to update the Modified
+the MMU writes back the upper 8 bits of the PME to update the Modified
 and Referenced PME bits.
 * Muxes to select the source of the PME index (either the latched
 value during an address translation, or a virtual address from the

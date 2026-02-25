@@ -407,16 +407,14 @@ assign PME = PME_update ? PME_new : 8'bzzzzzzzz;
  *  1     0     1       Supervisor Data Space
  *  1     1     0       Supervisor Program Space
  *  1     1     1       CPU Space
+ *
+ * N.B. "regular space" is one in which FC[1] ^ FC[0] -> 1
  */
-localparam FC_USER_DATA		= 3'd1;
-localparam FC_USER_PROGRAM	= 3'd2;
-localparam FC_CONTROL		= 3'd4;
-localparam FC_SUPER_DATA	= 3'd5;
-localparam FC_SUPER_PROGRAM	= 3'd6;
-
-wire UserAcc   = (FC == FC_USER_DATA  || FC == FC_USER_PROGRAM);
-wire KernelAcc = (FC == FC_SUPER_DATA || FC == FC_SUPER_PROGRAM);
-wire Translate = (UserAcc || KernelAcc) && MMU_EN;
+wire RegularSpace = (FC[1] ^ FC[0]);
+wire ControlSpace = (FC == 3'd4);
+wire UserAcc      = (RegularSpace & ~FC[2]);
+wire KernelAcc    = (RegularSpace &  FC[2]);
+wire Translate    = (RegularSpace & MMU_EN);
 
 /*
  * ADDR[2:0] (CPU A3..A1) indicates which part of the Control space is
@@ -467,12 +465,12 @@ localparam MMUADDR_PageMapU	= 3'd4;
 localparam MMUADDR_PageMapL	= 3'd5;
 localparam MMUADDR_BusErrorReg	= 3'd6;
 
-wire SegMap0Sel     = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap0);
-wire SegMapSel      = (FC == FC_CONTROL) && (ADDR == MMUADDR_SegMap);
-wire PageMapUSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapU);
-wire PageMapLSel    = (FC == FC_CONTROL) && (ADDR == MMUADDR_PageMapL);
-wire ContextRegSel  = (FC == FC_CONTROL) && (ADDR == MMUADDR_ContextReg);
-wire BusErrorRegSel = (FC == FC_CONTROL) && (ADDR == MMUADDR_BusErrorReg);
+wire SegMap0Sel     = ControlSpace && (ADDR == MMUADDR_SegMap0);
+wire SegMapSel      = ControlSpace && (ADDR == MMUADDR_SegMap);
+wire PageMapUSel    = ControlSpace && (ADDR == MMUADDR_PageMapU);
+wire PageMapLSel    = ControlSpace && (ADDR == MMUADDR_PageMapL);
+wire ContextRegSel  = ControlSpace && (ADDR == MMUADDR_ContextReg);
+wire BusErrorRegSel = ControlSpace && (ADDR == MMUADDR_BusErrorReg);
 
 /*
  * From the MMU's perspective, CPU access to any of the MMU's SRAMs

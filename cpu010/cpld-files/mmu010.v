@@ -282,25 +282,6 @@ assign CPU_CLK = ClockDiv[1];
  *     there will probably end up being a wait state incurred for
  *     Context Register writes.
  *
- * ==> For RnW, what we need to do there is, while waiting for termination
- *     of a translated read cycle, we watch for RnW to transition from
- *     high to low before the cycle terminates.  In a normal read cycle
- *     the 68010 de-asserts /AS on the falling edge of S7 before changing
- *     RnW (in S0) for any write cycle immediately following, so we would
- *     observe AS_s being de-assrted before RnW_s going low.  However, for
- *     a R-M-W cycle, only /UDS and /LDS are de-asserted; /AS remains asserted,
- *     and the bus signals aren't changed by the 68010 for S8-S11.  S12
- *     begins the write portion of the cycle, and RnW transitions to low
- *     on the rising edge of S14, and the data strobe is re-asserted on
- *     the rising edge of S16.  That is a VERY tight margin for observing
- *     the high-to-low transition of RnW_s, and if we are late, then the
- *     consequence is that a byte of data might be written to a read-only
- *     page; NOT GOOD.  So, for this reason, we also have to synchronize
- *     a copy of /DTACK.  We will watch for DTACK_s to de-assert while
- *     waiting for the termination of a read cycle, and when we observe
- *     that, we will re-gate the data strobes while waiting to see what
- *     happens next: either RnW_s transitions or AS_s de-asserts.
- *
  * NOTE: ALL OF THESE SYNCHRONIZED INPUTS ARE ACTIVE-HIGH, EVEN IF THE
  * ORIGINAL SIGNAL IS ACTIVE-LOW.
  *
@@ -312,8 +293,6 @@ reg AS1;
 reg AS_s;
 reg UDS1;
 reg UDS_s;
-reg DTACK1;
-reg DTACK_s;
 reg RnW1;
 reg RnW_s;
 always @(posedge CLK40, negedge nRST) begin
@@ -324,9 +303,6 @@ always @(posedge CLK40, negedge nRST) begin
 		UDS1  <= 1'b0;
 		UDS_s <= 1'b0;
 
-		DTACK1  <= 1'b0;
-		DTACK_s <= 1'b0;
-
 		RnW1  <= 1'b0;
 		RnW_s <= 1'b0;
 	end
@@ -336,9 +312,6 @@ always @(posedge CLK40, negedge nRST) begin
 
 		UDS1  <= ~nUDS;
 		UDS_s <= UDS1;
-
-		DTACK1  <= ~nDTACK;
-		DTACK_s <= DTACK1;
 
 		RnW1  <= RnW;
 		RnW_s <= RnW1;
@@ -720,8 +693,8 @@ localparam CYCLE_WR_XLATE	= 6'b110000;
  *	S_WR_CONTEXT
  *	S_MMU_REG_TERM_WAIT
  *	S_ERROR_REG_TERM_WAIT
- *	S_RD_XLATE_TERM_WAIT0
- *	S_XLATE_TERM_WAIT
+ *	S_RD_XLATE_TERM_WAIT
+ *	S_WR_XLATE_TERM_WAIT
  *	S_MMU_ERROR
  *
  * S_WR_CONTEXT
@@ -733,23 +706,19 @@ localparam CYCLE_WR_XLATE	= 6'b110000;
  * S_ERROR_REG_TERM_WAIT
  *	S_IDLE
  *
- * S_RD_XLATE_TERM_WAIT0
- *	S_IDLE
+ * S_RD_XLATE_TERM_WAIT
  *	S_RD_XLATE_TERM_WAIT1
- *	S_BUS_ERROR_DETECTED
  *
  * S_RD_XLATE_TERM_WAIT1
  *	S_IDLE
- *	S_RD_XLATE_TERM_WAIT2
  *	S_BUS_ERROR_DETECTED
- *
- * S_RD_XLATE_TERM_WAIT2
- *	S_IDLE
- *	S_XLATE_TERM_WAIT
  *	S_MMU_ERROR
- *	S_BUS_ERROR_DETECTED
+ *	S_WR_XLATE_TERM_WAIT
  *
- * S_XLATE_TERM_WAIT
+ * S_WR_XLATE_TERM_WAIT
+ *	S_WR_XLATE_TERM_WAIT1
+ *
+ * S_WR_XLATE_TERM_WAIT1
  *	S_IDLE
  *	S_BUS_ERROR_DETECTED
  *
@@ -766,10 +735,10 @@ localparam S_IDLE			= 4'd0;
 localparam S_WR_CONTEXT			= 4'd1;
 localparam S_MMU_REG_TERM_WAIT		= 4'd2;
 localparam S_ERROR_REG_TERM_WAIT	= 4'd3;
-localparam S_RD_XLATE_TERM_WAIT0	= 4'd4;
+localparam S_RD_XLATE_TERM_WAIT		= 4'd4;
 localparam S_RD_XLATE_TERM_WAIT1	= 4'd5;
-localparam S_RD_XLATE_TERM_WAIT2	= 4'd6;
-localparam S_XLATE_TERM_WAIT		= 4'd7;
+localparam S_WR_XLATE_TERM_WAIT		= 4'd6;
+localparam S_WR_XLATE_TERM_WAIT1	= 4'd7;
 localparam S_MMU_ERROR			= 4'd8;
 localparam S_BUS_ERROR_DETECTED		= 4'd9;
 localparam S_BUS_ERROR			= 4'd10;
@@ -849,7 +818,7 @@ always @(negedge CLK40) begin
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
-					state <= S_RD_XLATE_TERM_WAIT0;
+					state <= S_RD_XLATE_TERM_WAIT;
 				end
 			end
 
@@ -866,7 +835,7 @@ always @(negedge CLK40) begin
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
-					state <= S_XLATE_TERM_WAIT;
+					state <= S_WR_XLATE_TERM_WAIT;
 				end
 			end
 
@@ -885,9 +854,6 @@ always @(negedge CLK40) begin
 				 */
 				if (bus_error_detected) begin
 					state <= S_BUS_ERROR_DETECTED;
-				end
-				else begin
-					state <= S_IDLE;
 				end
 			end
 			endcase
@@ -917,66 +883,21 @@ always @(negedge CLK40) begin
 			end
 		end
 
-		S_RD_XLATE_TERM_WAIT0: begin
-			/*
-			 * We watch for two different scenarios here.
-			 * If we see /AS de-asserted first, then it's
-			 * just a normal read.  Cool.  Otherwise, we
-			 * watch for the target device to assert /DTACK
-			 * and when wait for /DTACK to be de-asserted,
-			 * at which time we will wait for RnW to go low
-			 * and then perform another permission check for
-			 * the R-M-W cycle.
-			 */
+		S_RD_XLATE_TERM_WAIT: begin
 			PME_update <= 1'b0;
-			if (bus_error_detected) begin
-				state <= S_BUS_ERROR_DETECTED;
-			end
-			else if (~AS_s) begin
-				TranslationValid <= 1'b0;
-				state <= S_IDLE;
-			end
-			/*
-			 * Wait for /DTACK to be asserted by the target.
-			 * Either it will be, and we move onto the next
-			 * step, or the cycle ends for some other reason
-			 * and we'll notice de-assertion of /AS on our
-			 * next pass throug this state.
-			 */
-			else if (DTACK_s) begin
-				state <= S_RD_XLATE_TERM_WAIT1;
-			end
+			state <= S_RD_XLATE_TERM_WAIT1;
 		end
 
 		S_RD_XLATE_TERM_WAIT1: begin
 			/*
-			 * We've observed /DTACK being asserted by the
-			 * target, now we need to wait for /DTACK to
-			 * be de-asserted by the target.  When that
-			 * happens, we need to re-gate the data strobe
-			 * outputs (they should already be de-asserted
-			 * by the CPU) in case we have to perform another
-			 * permission check.
-			 */
-			if (bus_error_detected) begin
-				state <= S_BUS_ERROR_DETECTED;
-			end
-			else if (~AS_s) begin
-				TranslationValid <= 1'b0;
-				state <= S_IDLE;
-			end
-			else if (~DTACK_s) begin
-				state <= S_RD_XLATE_TERM_WAIT2;
-			end
-		end
-
-		S_RD_XLATE_TERM_WAIT2: begin
-			/*
-			 * Now we wait to see if this is really an
-			 * R-M-W cycle.  If it is, /AS will remain
-			 * asserted while RnW will go low.  If we
-			 * obvserve that happening, then we need to
-			 * perform another permission check.
+			 * We watch for two different scenarios here:
+			 *
+			 * 1. If we see /AS negated, then it's just a
+			 *    normal read, cool.
+			 *
+			 * 2. If we see RnW go low, then we need to
+			 *    perform another permission check because
+			 *    it's an R-M-W cycle.
 			 */
 			if (bus_error_detected) begin
 				state <= S_BUS_ERROR_DETECTED;
@@ -986,26 +907,33 @@ always @(negedge CLK40) begin
 				state <= S_IDLE;
 			end
 			else if (~RnW_s) begin
+				/*
+				 * This is an R-M-W cycle; perform another
+				 * permission check.
+				 */
 				if (TranslationError) begin
 					state <= S_MMU_ERROR;
 				end
 				else begin
+					/*
+					 * Mod bit needs updating.
+					 */
 					PME_update <= 1'b1;
-					state <= S_XLATE_TERM_WAIT;
+					state <= S_WR_XLATE_TERM_WAIT;
 				end
 			end
 		end
 
-		S_XLATE_TERM_WAIT: begin
-			/*
-			 * N.B. it's totally safe to update both PME_update
-			 * and TranslationValid (which latches the PageMap
-			 * indexes) in this same state because we know we'll
-			 * visit this state at least twice per bus cycle
-			 * before observing AS_s de-assert.
-			 */
+		S_WR_XLATE_TERM_WAIT: begin
 			PME_update <= 1'b0;
-			if (~AS_s) begin
+			state <= S_WR_XLATE_TERM_WAIT1;
+		end
+
+		S_WR_XLATE_TERM_WAIT1: begin
+			if (bus_error_detected) begin
+				state <= S_BUS_ERROR_DETECTED;
+			end
+			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
 				state <= S_IDLE;
 			end
@@ -1029,6 +957,7 @@ always @(negedge CLK40) begin
 
 		S_BUS_ERROR: begin
 			if (~AS_s) begin
+				TranslationValid <= 1'b0;
 				state <= S_IDLE;
 			end
 		end

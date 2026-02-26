@@ -760,18 +760,22 @@ always @(negedge CLK40) begin
 		state <= S_IDLE;
 	end
 	else begin
-		/*
-		 * Always grab a copy of the relevant PageMap entry.
-		 * That way we can use the values stored there as
-		 * soon as we see a translated bus cycle begin.
-		 */
-		PME_copy <= PME;
-
 		case (state)
 		S_IDLE: begin
 			/* Check for the beginning of a bus cycle. */
 			casex (Cycle)
 			CYCLE_NONE: begin
+				/*
+				 * Continuously grab a copy of the PageMap
+				 * entry while we're waiting for AS_s to
+				 * be asserted.  By the time we've observed
+				 * AS_s's assertion the address will have
+				 * been stable on the bus for a sufficiently
+				 * long time for the SegMap and PageMap
+				 * SRAMs to result in a valid PME being
+				 * present.
+				 */
+				PME_copy <= PME;
 				state <= S_IDLE;
 			end
 

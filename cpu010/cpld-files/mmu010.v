@@ -608,21 +608,21 @@ assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
  * when the output of the signal should be blocked, and since it's
  * active-low, we can just OR block it.
  *
- * We do something similar with /UDS and /LDS, except it's with an AccessValid
- * flag.  We need a separate gating flag for the data strobes because of the
- * way Read-Modify-Write cycles (used by the TAS instruction) work on the
+ * We do something similar with /UDS and /LDS, except we add ProtOK to
+ * the gating criteria; we need to add that to the data strobes because of
+ * the way Read-Modify-Write cycles (used by the TAS instruction) work on the
  * 68010: /AS remains asserted for the entirety of the R-M-W cycle, and the
  * R/W signal changes between the read and write portions.  This means we
  * may have to perform a second permission check while waiting for the
  * termination of a read cycle, and when we detect RnW going low during
- * that time, we want to immediately block the data strobes while we perform
- * that check.
+ * that time, we re-check TranslationError.  Note that ProtOK sufficies;
+ * not being true would have signalled an error for the read portion of
+ * the R-M-W cycle.
  */
 reg TranslationValid;
-reg AccessValid;
 assign nAS_out  = nAS  | (Translate && ~TranslationValid);
-assign nUDS_out = nUDS | (Translate && ~AccessValid);
-assign nLDS_out = nLDS | (Translate && ~AccessValid);
+assign nUDS_out = nUDS | (Translate && ~TranslationValid && ~ProtOK);
+assign nLDS_out = nLDS | (Translate && ~TranslationValid && ~ProtOK);
 
 /*
  * We latch the PageMap index while we consider the translation valid
@@ -782,7 +782,6 @@ always @(negedge CLK40) begin
 		ContextReg <= 6'd0;
 
 		TranslationValid <= 1'b0;
-		AccessValid <= 1'b0;
 
 		PME_update <= 1'b0;
 		PME_copy <= 8'b0;
@@ -850,7 +849,6 @@ always @(negedge CLK40) begin
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
-					AccessValid <= 1'b1;
 					state <= S_RD_XLATE_TERM_WAIT0;
 				end
 			end
@@ -868,7 +866,6 @@ always @(negedge CLK40) begin
 				else begin
 					PME_update <= 1'b1;
 					TranslationValid <= 1'b1;
-					AccessValid <= 1'b1;
 					state <= S_XLATE_TERM_WAIT;
 				end
 			end
@@ -937,7 +934,6 @@ always @(negedge CLK40) begin
 			end
 			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
-				AccessValid <= 1'b0;
 				state <= S_IDLE;
 			end
 			/*
@@ -967,11 +963,9 @@ always @(negedge CLK40) begin
 			end
 			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
-				AccessValid <= 1'b0;
 				state <= S_IDLE;
 			end
 			else if (~DTACK_s) begin
-				AccessValid <= 1'b0;
 				state <= S_RD_XLATE_TERM_WAIT2;
 			end
 		end
@@ -989,7 +983,6 @@ always @(negedge CLK40) begin
 			end
 			else if (~AS_s) begin
 				TranslationValid <= 1'b0;
-				AccessValid <= 1'b0;
 				state <= S_IDLE;
 			end
 			else if (~RnW_s) begin
@@ -998,7 +991,6 @@ always @(negedge CLK40) begin
 				end
 				else begin
 					PME_update <= 1'b1;
-					AccessValid <= 1'b1;
 					state <= S_XLATE_TERM_WAIT;
 				end
 			end
@@ -1015,7 +1007,6 @@ always @(negedge CLK40) begin
 			PME_update <= 1'b0;
 			if (~AS_s) begin
 				TranslationValid <= 1'b0;
-				AccessValid <= 1'b0;
 				state <= S_IDLE;
 			end
 		end

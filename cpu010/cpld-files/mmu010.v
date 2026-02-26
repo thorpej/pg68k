@@ -289,29 +289,29 @@ assign CPU_CLK = ClockDiv[1];
  * because I don't want to be bothered with dealing with both /DTACK
  * and /VPA.
  */
-reg AS1;
-reg AS_s;
-reg UDS1;
-reg UDS_s;
+reg nAS1;
+reg nAS_s;
+reg nUDS1;
+reg nUDS_s;
 reg RnW1;
 reg RnW_s;
 always @(posedge CLK40, negedge nRST) begin
 	if (~nRST) begin
-		AS1  <= 1'b0;
-		AS_s <= 1'b0;
+		nAS1  <= 1'b1;
+		nAS_s <= 1'b1;
 
-		UDS1  <= 1'b0;
-		UDS_s <= 1'b0;
+		nUDS1  <= 1'b1;
+		nUDS_s <= 1'b1;
 
-		RnW1  <= 1'b0;
-		RnW_s <= 1'b0;
+		RnW1  <= 1'b1;
+		RnW_s <= 1'b1;
 	end
 	else begin
-		AS1  <= ~nAS;
-		AS_s <= AS1;
+		nAS1  <= nAS;
+		nAS_s <= nAS1;
 
-		UDS1  <= ~nUDS;
-		UDS_s <= UDS1;
+		nUDS1  <= nUDS;
+		nUDS_s <= nUDS1;
 
 		RnW1  <= RnW;
 		RnW_s <= RnW1;
@@ -675,17 +675,17 @@ wire bus_timeout = (bus_timer == BUS_TIMER_TIMEOUT);
 wire bus_error_detected = (bus_timeout | ~n_vme_berr);
 
 wire [5:0] Cycle =
-    {AS_s, Translate, RnW, ContextRegSel, BusErrorRegSel, MapSel};
+    {nAS_s, Translate, RnW, ContextRegSel, BusErrorRegSel, MapSel};
 
-localparam CYCLE_NONE		= 6'b0xxxxx;
-localparam CYCLE_RD_CONTEXT	= 6'b101100;
-localparam CYCLE_WR_CONTEXT	= 6'b100100;
-localparam CYCLE_RD_ERROR	= 6'b101010;
-localparam CYCLE_WR_ERROR	= 6'b100010;
-localparam CYCLE_RD_MAP		= 6'b101001;
-localparam CYCLE_WR_MAP		= 6'b100001;
-localparam CYCLE_RD_XLATE	= 6'b111000;
-localparam CYCLE_WR_XLATE	= 6'b110000;
+localparam CYCLE_NONE		= 6'b1xxxxx;
+localparam CYCLE_RD_CONTEXT	= 6'b001100;
+localparam CYCLE_WR_CONTEXT	= 6'b000100;
+localparam CYCLE_RD_ERROR	= 6'b001010;
+localparam CYCLE_WR_ERROR	= 6'b000010;
+localparam CYCLE_RD_MAP		= 6'b001001;
+localparam CYCLE_WR_MAP		= 6'b000001;
+localparam CYCLE_RD_XLATE	= 6'b011000;
+localparam CYCLE_WR_XLATE	= 6'b010000;
 
 /*
  * State transitions:
@@ -767,7 +767,7 @@ always @(negedge CLK40) begin
 			CYCLE_NONE: begin
 				/*
 				 * Continuously grab a copy of the PageMap
-				 * entry while we're waiting for AS_s to
+				 * entry while we're waiting for nAS_s to
 				 * be asserted.  By the time we've observed
 				 * AS_s's assertion the address will have
 				 * been stable on the bus for a sufficiently
@@ -864,7 +864,7 @@ always @(negedge CLK40) begin
 		end
 
 		S_WR_CONTEXT: begin
-			if (UDS_s) begin
+			if (~nUDS_s) begin
 				ContextReg <= DATA[5:0];
 				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
@@ -872,7 +872,7 @@ always @(negedge CLK40) begin
 		end
 
 		S_MMU_REG_TERM_WAIT: begin
-			if (~AS_s) begin
+			if (nAS_s) begin
 				dtack <= 1'b0;
 				state <= S_IDLE;
 			end
@@ -880,7 +880,7 @@ always @(negedge CLK40) begin
 
 		S_ERROR_REG_TERM_WAIT: begin
 			/* Bus Error Register is reset after reading. */
-			if (~AS_s) begin
+			if (nAS_s) begin
 				bus_error_reg <= BERR_NONE;
 				dtack <= 1'b0;
 				state <= S_IDLE;
@@ -906,7 +906,7 @@ always @(negedge CLK40) begin
 			if (bus_error_detected) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
-			else if (~AS_s) begin
+			else if (nAS_s) begin
 				TranslationValid <= 1'b0;
 				state <= S_IDLE;
 			end
@@ -937,7 +937,7 @@ always @(negedge CLK40) begin
 			if (bus_error_detected) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
-			else if (~AS_s) begin
+			else if (nAS_s) begin
 				TranslationValid <= 1'b0;
 				state <= S_IDLE;
 			end
@@ -960,7 +960,7 @@ always @(negedge CLK40) begin
 		end
 
 		S_BUS_ERROR: begin
-			if (~AS_s) begin
+			if (nAS_s) begin
 				TranslationValid <= 1'b0;
 				state <= S_IDLE;
 			end

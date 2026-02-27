@@ -325,7 +325,7 @@ always @(posedge CLK40, negedge nRST) begin
 	end
 end
 
-/*****************************************************************************/
+/**************************** BUS ERROR REGISTER *****************************/
 
 /*
  * Bus Error Register
@@ -348,18 +348,20 @@ initial begin
 	bus_error_reg = BERR_NONE;
 end
 
-/*****************************************************************************/
+/************************* PAGE MAP ENTRY LOGIC ******************************/
 
 /*
  * We need to latch the upper byte of the PME when performing a
  * translation so that we can update the MOD and REF bits upon
- * a successful bus cycle.  We also define shorthand for the
- * important bits.
+ * a successful bus cycle.  This happens continuously in the bus
+ * cycle state machine while we're waiting to observe the assertion
+ * of the synchronized copy of /AS (see S_IDLE:CYCLE_NONE).  We
+ * also define shorthand for the important bits.
  */
 reg [7:0] PME_copy;
-wire PME_V = PME[7];		/* valid bit */
-wire PME_W = PME[6];		/* write bit */
-wire PME_K = PME[5];		/* kernel bit */
+wire PME_V = PME_copy[7];	/* valid bit */
+wire PME_W = PME_copy[6];	/* write bit */
+wire PME_K = PME_copy[5];	/* kernel bit */
 
 /*
  * The updated PageMap entry always gets the REF bit set, and we set
@@ -374,6 +376,18 @@ wire [7:0] PME_new = {PME_copy[7], PME_copy[6], PME_copy[5], PME_copy[4],
  */
 reg PME_update;
 assign PME = PME_update ? PME_new : 8'bzzzzzzzz;
+
+/*
+ * We latch the PageMap index while we consider the translation valid
+ * so that the index remains stable while we update the MOD and REF bits.
+ *
+ * The /LE input on the 74'373 is high when transparent, and low when
+ * latched.
+ */
+reg PME_index_latched;
+assign nPM_LE = ~PME_index_latched;
+
+/************************** MMU ADDRESS DECODING *****************************/
 
 /*
  * Booleans to indicate a User vs Kernel access.
@@ -394,7 +408,6 @@ wire RegularSpace = (FC[1] ^ FC[0]);
 wire ControlSpace = (FC == 3'd4);
 wire UserAcc      = (RegularSpace & ~FC[2]);
 wire KernelAcc    = (RegularSpace &  FC[2]);
-wire Translate    = (RegularSpace & MMU_EN);
 
 /*
  * ADDR[2:0] (CPU A3..A1) indicates which part of the Control space is
@@ -406,8 +419,8 @@ wire Translate    = (RegularSpace & MMU_EN);
  *	SSSS.SSSS Sxxx.xxxx xxxx.0010	SegMap entry for Context 0
  *	SSSS.SSSS Sxxx.xxxx xxxx.0100	SegMap entry (relative to Context Reg)
  *	xxxx.xxxx xxxx.xxxx xxxx.0110	Context Register (byte)
- *	xxPP.PPPP PPPP.PPPP PPPP.1000	PageMap entry (upper word)
- *      xxPP.PPPP PPPP.PPPP PPPP.1010	PageMap entry (lower word)
+ *	xxPP.PPPP PPPP.PPPP Pppp.1000	PageMap entry (upper word)
+ *      xxPP.PPPP PPPP.PPPP Pppp.1010	PageMap entry (lower word)
  *        ^^^^^^^^^^^^^^^^^^^|||
  *                 PMEG      |||
  *                           ^^^
@@ -459,6 +472,8 @@ wire BusErrorRegSel = ControlSpace && (ADDR == MMUADDR_BusErrorReg);
  */
 wire MapSel = (SegMap0Sel || SegMapSel || PageMapUSel || PageMapLSel);
 
+/********************** SEGMENT MAP CONTROL LOGIC ****************************/
+
 /*
  * Address inputs to the SegMap always come from ContextReg + upper CPU
  * Address bits, so there is no mux required.  We just need combinatorial
@@ -470,6 +485,8 @@ assign nSM_LB = (SegMap0Sel || SegMapSel) ? (nLDS | nAS) : 1'b0;
 
 /* Connect CPU to SegMap data pins if SegMap is selected. */
 assign nSMSEL = ~(SegMap0Sel || SegMapSel) | nAS;
+
+/*********************** PAGE MAP CONTROL LOGIC ******************************/
 
 /*
  * If the CPU wants to access the PageMap, then it needs to drive the
@@ -505,11 +522,14 @@ assign nPML_LB = PageMapLSel ? (nLDS | nAS) : 1'b0;
 assign nPMUSEL = ~PageMapUSel | nAS;
 assign nPMLSEL = ~PageMapLSel | nAS;
 
+/********************** ADDRESS TRANSLATION LOGIC ****************************/
+
 /*
  * If the MMU is translating an address, then it gets to drive the
  * system address bus (well, A31..A12, anyway).  This output signal
  * controls those muxes.
  */
+wire Translate  = (RegularSpace & MMU_EN);
 assign MMU_ADDR = Translate;
 
 /*
@@ -555,21 +575,6 @@ wire [2:0] TranslationError =
     {(~PrivOK & TransOK), (~ProtOK & TransOK & PrivOK), ~TransOK};
 
 /*
- * Qual MMU_DTACK on the non-synchronized /AS input to ensure it de-asserts
- * as quickly as possbile.
- *
- * "AC ELECTRICAL SPECIFICATIONS - READ AND WRITE CYCLES" from the "M68000
- * Family Reference Manual" lists a minimum 0ns "/AS negated to /DTACK negated"
- * time (characteristic #28), as well as for "/AS negated to /BERR negated"
- * time (characteristic #30).
- *
- * Also qual with the combined /xDS signal so that we can assert our
- * internal dtack early.
- */
-reg dtack;
-assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
-
-/*
  * Gate the /AS, /UDS, and /LDS signals that go to the system on address
  * translation success.
  *
@@ -611,15 +616,7 @@ assign nAS_out   = nAS  | strobe_gate;
 assign nUDS_out  = nUDS | strobe_gate;
 assign nLDS_out  = nLDS | strobe_gate;
 
-/*
- * We latch the PageMap index while we consider the translation valid
- * so that the index remains stable while we update the MOD and REF bits.
- *
- * The /LE input on the 74'373 is high when transparent, and low when
- * latched.
- */
-reg PME_index_latched;
-assign nPM_LE = ~PME_index_latched;
+/*************************** MMU REGISTER ACCESS *****************************/
 
 /*
  * Logic for reading internal MMU registers.
@@ -635,7 +632,22 @@ always @(*) begin
 end
 assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
 
-/*****************************************************************************/
+/*
+ * Qual MMU_DTACK on the non-synchronized /AS input to ensure it de-asserts
+ * as quickly as possbile.
+ *
+ * "AC ELECTRICAL SPECIFICATIONS - READ AND WRITE CYCLES" from the "M68000
+ * Family Reference Manual" lists a minimum 0ns "/AS negated to /DTACK negated"
+ * time (characteristic #28), as well as for "/AS negated to /BERR negated"
+ * time (characteristic #30).
+ *
+ * Also qual with the combined /xDS signal so that we can assert our
+ * internal dtack early.
+ */
+reg dtack;
+assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
+
+/************************ BUS CYCLE TIMEOUT LOGIC ****************************/
 
 /*
  * Bus timer module for 68000 busses.

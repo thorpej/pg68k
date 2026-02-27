@@ -132,8 +132,8 @@
  * physical address space.  A transparent latch would be required to use
  * them so that they would remain stable while the upper SRAM is updated
  * with Mod/Ref information.  That latch would not need to be controlled
- * by the MMU logic; it could be controlled entirely by the /AS signal
- * coming out of the CPU.
+ * by any additional MMU logic; it could be controlled entirely by the
+ * system /AS output already provided by the MMU.
  *
  * ==> Because this MMU always uses context 0 for kernel accesses, the
  *     inclusion of a K bit seems a little redundant.  However, including

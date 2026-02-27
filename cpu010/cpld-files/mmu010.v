@@ -128,6 +128,13 @@
  * upper word; that upper SRAM can be output-disabled at any time during
  * the cycle for updating those bits.
  *
+ * The lower 4 bits of the upper SRAM are reserved for expansion of the
+ * physical address space.  A transparent latch would be required to use
+ * them so that they would remain stable while the upper SRAM is updated
+ * with Mod/Ref information.  That latch would not need to be controlled
+ * by the MMU logic; it could be controlled entirely by the /AS signal
+ * coming out of the CPU.
+ *
  * ==> Because this MMU always uses context 0 for kernel accesses, the
  *     inclusion of a K bit seems a little redundant.  However, including
  *     it is practically free, and it would make it easier to adapt this
@@ -576,19 +583,23 @@ assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
  *	  is disabled.  In this scenario, the output strobes will not
  *	  be gated because the MMU is not involved in the cycle.
  *
- *	- If we have not yet observed our synchronized /AS input signal,
- *	  then that will gate the output strobes.
+ *	- If we have not yet observed the assertion of our synchronized
+ *	  /AS input signal, then that will gate the output strobes.
  *
  *	- While we are waiting for the synchronized /AS input signal,
- *	  combinatorial logic is computing TranslationValid.  Once we
- *	  observe the synchronized /AS assertion, we are guaranteed
+ *	  combinatorial logic is continuously computing TranslationValid.
+ *	  Once we observe the synchronized /AS assertion, we are guaranteed
  *	  that TranslationValid will be stable.  Inverting TranslationValid
  *	  will result in a 1 if the translation is *not* valid, which
  *	  will keep the strobes gated.
  *
  *	- In the case of an R-M-W cycle, RnW will transition from high
- *	  to low, which will cause TranslationValid to be re-computed,
- *	  re-gating the strobes with only combinatorial logic if necessary.
+ *	  to low, which, since it's continously computed using combinatorial
+ *	  logic, will update TranslationValid, re-gating the strobes if the
+ *	  PME indicates a read-only page.  The bus cycle state machine is
+ *	  watching for the transition of a synchronized copy of RnW and
+ *	  and if that transition is observed, will consult TranslationValid
+ *	  again and signal an MMU bus error if warranted.
  */
 wire strobe_gate = (Translate & (nAS_s | ~TranslationValid));
 assign nAS_out   = nAS  | strobe_gate;

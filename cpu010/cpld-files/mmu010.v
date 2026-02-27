@@ -539,10 +539,11 @@ assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
  * N.B. the MMU guarantees that PROT and PRIV will not be set if INV is
  * set, and PROT will not be set if PRIV is set.
  */
-wire TransOK = (SME_V && PME_V);
-wire PrivOK  = (~PME_K || KernelAcc);
-wire ProtOK  = (RnW || PME_W);
+wire TransOK = (SME_V & PME_V);
+wire PrivOK  = (KernelAcc | ~PME_K);
+wire ProtOK  = (RnW | PME_W);
 
+wire TranslationValid = (TransOK & PrivOK & ProtOK);
 wire [2:0] TranslationError =
     {(~PrivOK & TransOK), (~ProtOK & TransOK & PrivOK), ~TransOK};
 
@@ -562,40 +563,37 @@ reg dtack;
 assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
 
 /*
- * Gate the /AS signal that goes to the system on address translation success.
+ * Gate the /AS, /UDS, and /LDS signals that go to the system on address
+ * translation success.
  *
- * We do this by OR'in (Translate && ~TranslationValid).  Here's now that
- * works:
+ * We do this by OR'ing in:
  *
- *	- Translate is 1 when we detect {User,Supervisor} {Data,Program}
- *	  accesses -and- the MMU is enabled.
- *		==> If not a translated space, Translate is 0.
- *		==> If MMU is disabled, Translate is 0.
+ *	(Translate & (nAS_s | ~TranslationValid))
  *
- *	- TranslationValid starts with 0, inverting it gives us 1, and
- *	  it stays that way until we have validated the translation,
- *	  at which time TranslationValid is set to 1 and inverting it
- *	  gives us 0.
+ * Here's now that works:
  *
- * So, the result of AND'ing those two things together results in a 1
- * when the output of the signal should be blocked, and since it's
- * active-low, we can just OR block it.
+ *	- Translate is 0 if we have a not-translated-space or the MMU
+ *	  is disabled.  In this scenario, the output strobes will not
+ *	  be gated because the MMU is not involved in the cycle.
  *
- * We do something similar with /UDS and /LDS, except we add ProtOK to
- * the gating criteria; we need to add that to the data strobes because of
- * the way Read-Modify-Write cycles (used by the TAS instruction) work on the
- * 68010: /AS remains asserted for the entirety of the R-M-W cycle, and the
- * R/W signal changes between the read and write portions.  This means we
- * may have to perform a second permission check while waiting for the
- * termination of a read cycle, and when we detect RnW going low during
- * that time, we re-check TranslationError.  Note that ProtOK sufficies;
- * not being true would have signalled an error for the read portion of
- * the R-M-W cycle.
+ *	- If we have not yet observed our synchronized /AS input signal,
+ *	  then that will gate the output strobes.
+ *
+ *	- While we are waiting for the synchronized /AS input signal,
+ *	  combinatorial logic is computing TranslationValid.  Once we
+ *	  observe the synchronized /AS assertion, we are guaranteed
+ *	  that TranslationValid will be stable.  Inverting TranslationValid
+ *	  will result in a 1 if the translation is *not* valid, which
+ *	  will keep the strobes gated.
+ *
+ *	- In the case of an R-M-W cycle, RnW will transition from high
+ *	  to low, which will cause TranslationValid to be re-computed,
+ *	  re-gating the strobes with only combinatorial logic if necessary.
  */
-reg TranslationValid;
-assign nAS_out  = nAS  | (Translate && ~TranslationValid);
-assign nUDS_out = nUDS | (Translate && ~TranslationValid && ~ProtOK);
-assign nLDS_out = nLDS | (Translate && ~TranslationValid && ~ProtOK);
+wire strobe_gate = (Translate & (nAS_s | ~TranslationValid));
+assign nAS_out   = nAS  | strobe_gate;
+assign nUDS_out  = nUDS | strobe_gate;
+assign nLDS_out  = nLDS | strobe_gate;
 
 /*
  * We latch the PageMap index while we consider the translation valid
@@ -604,7 +602,8 @@ assign nLDS_out = nLDS | (Translate && ~TranslationValid && ~ProtOK);
  * The /LE input on the 74'373 is high when transparent, and low when
  * latched.
  */
-assign nPM_LE = ~TranslationValid;
+reg PME_index_latched;
+assign nPM_LE = ~PME_index_latched;
 
 /*
  * Logic for reading internal MMU registers.
@@ -750,8 +749,7 @@ always @(negedge CLK40) begin
 
 		ContextReg <= 6'd0;
 
-		TranslationValid <= 1'b0;
-
+		PME_index_latched <= 1'b0;
 		PME_update <= 1'b0;
 		PME_copy <= 8'b0;
 
@@ -816,13 +814,13 @@ always @(negedge CLK40) begin
 			end
 
 			CYCLE_RD_XLATE: begin
-				if (TranslationError) begin
-					state <= S_MMU_ERROR;
+				if (TranslationValid) begin
+					PME_index_latched <= 1'b1;
+					PME_update <= 1'b1;
+					state <= S_RD_XLATE_TERM_WAIT;
 				end
 				else begin
-					PME_update <= 1'b1;
-					TranslationValid <= 1'b1;
-					state <= S_RD_XLATE_TERM_WAIT;
+					state <= S_MMU_ERROR;
 				end
 			end
 
@@ -833,13 +831,13 @@ always @(negedge CLK40) begin
 				 * except that we don't have to check
 				 * for R-M-W.
 				 */
-				if (TranslationError) begin
-					state <= S_MMU_ERROR;
+				if (TranslationValid) begin
+					PME_index_latched <= 1'b1;
+					PME_update <= 1'b1;
+					state <= S_WR_XLATE_TERM_WAIT;
 				end
 				else begin
-					PME_update <= 1'b1;
-					TranslationValid <= 1'b1;
-					state <= S_WR_XLATE_TERM_WAIT;
+					state <= S_MMU_ERROR;
 				end
 			end
 
@@ -907,7 +905,7 @@ always @(negedge CLK40) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
 			else if (nAS_s) begin
-				TranslationValid <= 1'b0;
+				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 			else if (~RnW_s) begin
@@ -915,15 +913,13 @@ always @(negedge CLK40) begin
 				 * This is an R-M-W cycle; perform another
 				 * permission check.
 				 */
-				if (TranslationError) begin
-					state <= S_MMU_ERROR;
-				end
-				else begin
-					/*
-					 * Mod bit needs updating.
-					 */
+				if (TranslationValid) begin
+					/* Mod bit needs updating. */
 					PME_update <= 1'b1;
 					state <= S_WR_XLATE_TERM_WAIT;
+				end
+				else begin
+					state <= S_MMU_ERROR;
 				end
 			end
 		end
@@ -938,7 +934,7 @@ always @(negedge CLK40) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
 			else if (nAS_s) begin
-				TranslationValid <= 1'b0;
+				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 		end
@@ -961,7 +957,7 @@ always @(negedge CLK40) begin
 
 		S_BUS_ERROR: begin
 			if (nAS_s) begin
-				TranslationValid <= 1'b0;
+				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 		end

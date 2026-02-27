@@ -709,6 +709,9 @@ localparam CYCLE_WR_XLATE	= 6'b010000;
  *	S_RD_XLATE_TERM_WAIT1
  *
  * S_RD_XLATE_TERM_WAIT1
+ *	S_RD_XLATE_TERM_WAIT2
+ *
+ * S_RD_XLATE_TERM_WAIT2
  *	S_IDLE
  *	S_BUS_ERROR_DETECTED
  *	S_MMU_ERROR
@@ -718,6 +721,9 @@ localparam CYCLE_WR_XLATE	= 6'b010000;
  *	S_WR_XLATE_TERM_WAIT1
  *
  * S_WR_XLATE_TERM_WAIT1
+ *	S_WR_XLATE_TERM_WAIT2
+ *
+ * S_WR_XLATE_TERM_WAIT2
  *	S_IDLE
  *	S_BUS_ERROR_DETECTED
  *
@@ -736,11 +742,13 @@ localparam S_MMU_REG_TERM_WAIT		= 4'd2;
 localparam S_ERROR_REG_TERM_WAIT	= 4'd3;
 localparam S_RD_XLATE_TERM_WAIT		= 4'd4;
 localparam S_RD_XLATE_TERM_WAIT1	= 4'd5;
-localparam S_WR_XLATE_TERM_WAIT		= 4'd6;
-localparam S_WR_XLATE_TERM_WAIT1	= 4'd7;
-localparam S_MMU_ERROR			= 4'd8;
-localparam S_BUS_ERROR_DETECTED		= 4'd9;
-localparam S_BUS_ERROR			= 4'd10;
+localparam S_RD_XLATE_TERM_WAIT2	= 4'd6;
+localparam S_WR_XLATE_TERM_WAIT		= 4'd7;
+localparam S_WR_XLATE_TERM_WAIT1	= 4'd8;
+localparam S_WR_XLATE_TERM_WAIT2	= 4'd9;
+localparam S_MMU_ERROR			= 4'd10;
+localparam S_BUS_ERROR_DETECTED		= 4'd11;
+localparam S_BUS_ERROR			= 4'd12;
 
 reg [3:0] state;
 always @(negedge CLK40) begin
@@ -891,6 +899,11 @@ always @(negedge CLK40) begin
 		end
 
 		S_RD_XLATE_TERM_WAIT1: begin
+			PME_index_latched <= 1'b0;
+			state <= S_RD_XLATE_TERM_WAIT2;
+		end
+
+		S_RD_XLATE_TERM_WAIT2: begin
 			/*
 			 * We watch for two different scenarios here:
 			 *
@@ -905,7 +918,6 @@ always @(negedge CLK40) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
 			else if (nAS_s) begin
-				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 			else if (~RnW_s) begin
@@ -915,6 +927,7 @@ always @(negedge CLK40) begin
 				 */
 				if (TranslationValid) begin
 					/* Mod bit needs updating. */
+					PME_index_latched <= 1'b1;
 					PME_update <= 1'b1;
 					state <= S_WR_XLATE_TERM_WAIT;
 				end
@@ -930,11 +943,15 @@ always @(negedge CLK40) begin
 		end
 
 		S_WR_XLATE_TERM_WAIT1: begin
+			PME_index_latched <= 1'b0;
+			state <= S_WR_XLATE_TERM_WAIT2;
+		end
+
+		S_WR_XLATE_TERM_WAIT2: begin
 			if (bus_error_detected) begin
 				state <= S_BUS_ERROR_DETECTED;
 			end
 			else if (nAS_s) begin
-				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 		end
@@ -957,7 +974,6 @@ always @(negedge CLK40) begin
 
 		S_BUS_ERROR: begin
 			if (nAS_s) begin
-				PME_index_latched <= 1'b0;
 				state <= S_IDLE;
 			end
 		end

@@ -575,16 +575,19 @@ assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
  *
  * We do this by OR'ing in:
  *
- *	(Translate & (nAS_s | ~TranslationValid))
+ *	(nAS_s | (Translate & ~TranslationValid))
  *
- * Here's now that works:
+ * Here's how that works:
+ *
+ *	- Always gate on the synchronized copy of /AS.  Even when the
+ *	  MMU is not involved in the bus cycle (either it's a non-tranlated
+ *	  space or the MMU is disabled), there are muxes on the address
+ *	  outputs, and delaying the assertion of /AS as observed by the
+ *	  rest of the system allows for some switching and propagation delay
+ *	  through those muxes.
  *
  *	- Translate is 0 if we have a not-translated-space or the MMU
- *	  is disabled.  In this scenario, the output strobes will not
- *	  be gated because the MMU is not involved in the cycle.
- *
- *	- If we have not yet observed the assertion of our synchronized
- *	  /AS input signal, then that will gate the output strobes.
+ *	  is disabled.  In this scenario, TranslationValid will be ignored.
  *
  *	- While we are waiting for the synchronized /AS input signal,
  *	  combinatorial logic is continuously computing TranslationValid.
@@ -599,9 +602,11 @@ assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
  *	  PME indicates a read-only page.  The bus cycle state machine is
  *	  watching for the transition of a synchronized copy of RnW and
  *	  and if that transition is observed, will consult TranslationValid
- *	  again and signal an MMU bus error if warranted.
+ *	  again and signal an MMU bus error if warranted.  However, even with
+ *	  the synchronizer delay, the signal will be gated correctly due to
+ *	  TranslationValid's continuous computation.
  */
-wire strobe_gate = (Translate & (nAS_s | ~TranslationValid));
+wire strobe_gate = (nAS_s | (Translate & ~TranslationValid));
 assign nAS_out   = nAS  | strobe_gate;
 assign nUDS_out  = nUDS | strobe_gate;
 assign nLDS_out  = nLDS | strobe_gate;

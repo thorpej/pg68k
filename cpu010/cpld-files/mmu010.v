@@ -406,7 +406,6 @@ assign nPM_LE = ~PME_index_latched;
  */
 wire RegularSpace = (FC[1] ^ FC[0]);
 wire ControlSpace = (FC == 3'd4);
-wire UserAcc      = (RegularSpace & ~FC[2]);
 wire KernelAcc    = (RegularSpace &  FC[2]);
 
 /*

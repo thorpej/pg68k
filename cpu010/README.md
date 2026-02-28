@@ -651,4 +651,66 @@ assign nSMSEL = ~(SegMap0Sel || SegMapSel) | nAS;
 
 ### Page Map control
 
+The Page Map is a pair of 256K x 16 SRAMs that form the upper and lower
+words of the 32-bit Page Map entry.  Like the Segment Map SRAM, these
+devices have independent chip-enagble, output-enable, write-enable, and
+byte-lane enable control inputs, have the same write-overrides-output
+behavior, and the same permanently-asserted chip- and ouput-enables.
+The data pins of the Page Map SRAMs each have two connections: to a
+74'245 bus transceiver and to the B-inputs of a 74'157 mux.  The '245
+facilitates access to the Page Map by the CPU, and the '157 is the
+system address mux; the A-inputs of the mux are connected to the
+corresponding VA[23:12] lines from the CPU (or GND for A[27:24]).
+
+The address inputs to the Page Map SRAMs are also connected to a
+set of '157 muxes.  The A-inputs of these muxes are connected to the
+Segment Map latch outputs, and the B-inputs are connected to VA[21:4].
+The steady state for the Page Map index mux is for the A-inputs to be
+selected, but the B-inputs are selected when the CPU wishes to access
+the Page Map:
+
+```
+assign PMACC = (PageMapUSel || PageMapLSel);
+```
+
+As with the Segment Map, the Page Map's steady state is to be continuously
+outputting Page Map entries out to the system address mux and the MMU
+logic.  The lower byte of the upper word, however, is not used by the
+MMU logic nor by the system address mux; it holds 4 reserved bits (for
+possible future physical address space expansion in a 68020 version of
+this MMU), plus 4 software-defined bits that the operating system kernel
+may use for its own purposes.  For that reason, that byte lane does not
+need to to be enabled during steady state operation.
+
+The most-significant byte of the PME contains the Modified and 
+Referenced bits, so that byte needs to be written back at the end of a
+successful bus cycle.
+
+```
+assign nPMU_WE = PageMapUSel ? (RnW  | nAS) : ~PME_update;
+assign nPMU_UB = PageMapUSel ? (nUDS | nAS) : 1'b0;
+assign nPMU_LB = PageMapUSel ? (nLDS | nAS) : 1'b1;
+
+assign nPML_WE = PageMapLSel ? (RnW  | nAS) : 1'b1;
+assign nPML_UB = PageMapLSel ? (nUDS | nAS) : 1'b0;
+assign nPML_LB = PageMapLSel ? (nLDS | nAS) : 1'b0;
+```
+
+That most-significant byte is copied into a temporary register inside
+bus cycle state machine.  This temporary copy is then used to generate
+the updated partial PME:
+
+```
+reg [7:0] PME_copy;
+wire PME_V = PME[7];            /* valid bit */
+wire PME_W = PME[6];            /* write bit */
+wire PME_K = PME[5];            /* kernel bit */
+
+wire [7:0] PME_new = {PME_copy[7], PME_copy[6], PME_copy[5], PME_copy[4],
+    PME_copy[3], PME_copy[2], 1'b1 /* REF */, (PME_copy[0] | ~RnW) /* MOD */};
+
+reg PME_update;
+assign PME = PME_update ? PME_new : 8'bzzzzzzzz;
+```
+
 XXX more to come

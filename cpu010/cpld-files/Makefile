@@ -17,3 +17,6 @@ all: $(EDIFS) $(VCDS)
 
 clean:
 	-rm -f *.edif *.io *.pin *.tt3 *.vvp *.vcd
+
+spotless: clean
+	-rm -f *.fit *.jed

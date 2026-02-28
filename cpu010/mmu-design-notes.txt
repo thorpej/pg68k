@@ -1,0 +1,109 @@
+=== Design notes for a 68010 MMU. ===
+
+The 68010 has a 24-bit address space, meaning that the total virtual
+address space we have is 16MB.  Of course, we don't have to limit the
+physical address space to 16MB; we can leverage the MMU to give us
+16MB of RAM + 16MB of I/O space + ... you get the idea.  Sun did this
+on the sun2 with a "type" field in the page map entry.
+
+My initial thinking is to have a dedicated "kernel context" that gets
+supervisor accesses and one or more "user contexts" that get user accesses.
+Kernel + user would have completely separate addresses spaces, much like
+on the 68851 with the separate root pointers.
+
+Will use Sun terminology for this.
+
+Because address space is at such a premium, the MMU will contain all of
+the storage needed for page mappings.  Assuming 4KB pages, that is only
+4096 pages per address space, which is 16KB assuming longword PTEs.  This
+is 8192 words, 4096 longwords.  2x 64k-x-16 SRAMs will provide 64K words,
+which is sufficient to fully map 16 contexts.  2x 256k-x-16 SRAMs will
+provide 256K longwords, which is sufficient to fully map 64 contexts.
+
+256K PageMap entries would require 18 bits in each SegMap entry.  If we
+group PageMap entries into groups of 8 pages (32KB space), each SegMap
+entry requires only 15 bits and has a valid bit remaining.
+
+If a SegMap entry covers 32KB of space, then a 16MB context has 512 segments,
+each of which is described by a 16-bit word.  A 32k-x-16 SRAM is therefore
+good for 64 contexts.
+
+So that means:
+
+	- 1x IS61C3216AL (32K x 16 for SegMap)
+	- 2x AS7C4098A (256K x 16 for PageMap)
+
+Address translation:
+
++---------------+--------------------+
+| Context [5:0] | Segment [VA 23:15] |
+|    6          |    9               |
++---------------+--------------------+--> 15-bit SegMap index --+
+                                                                |
++---------------------------------------------------------------+
+|
++--> SegMap contains 15-bit PMEG index --+
+                                         |
++----------------------------------------+
+|
++----------------------------+
+|         PageMap index      |
+| PMEG -> [17:3] | VA[14:12] |
++----------------------------+--> 18-bit PageMap index --+
+                                                         |
++--------------------------------------------------------+
+|
++--> PageMap entry (32-bits) (lower N bits are PFN) -----+
+                                                         |
++--------------------------------------------------------+
+|
++--> (PFN << 12) | VA[11:0] -> PROFIT!
+
+PageMap entry format.  Similar to that used by Sun3, but for 4K pages
+and the type field moved elsewhere.
+
+ 31          28   26         23         20 19 18 17                0
+| V | W | K |  (r)  | R | M | s3 s2 s1 s0 |  T  | Page Frame Number |
+| a   r   e     e     e   o   (software      y
+| l   i   r     s     f   d      defined)    p
+| i   t   n     e     e   i                  e
+| d   e   e     r     r   f
+          l     v     e   i
+                e     n   e
+                d     c   d
+                      e
+                      d
+
+The system is broken up into 4 1GB physical address spaces, indicated by
+the Type field which essentially stands in for the upper 2 bits of the
+physical address:
+
+Type 00: On-board memory (obmem)
+     01: On-board ROM (obrom)
+     10: On-board I/O (obio)
+     11: Expansion (exp)
+
+=====
+
+Inputs to MMU:
+- VA[23:1] from CPU
+- D[15:0] from CPU
+- RnW from CPU (1=RD, 0=WR)
+- /AS from CPU
+- /DS from CPU
+- /SegMapSel from decode logic
+- /PageMapSel from decode logic
+- /CtxSel from decode logic
+- XLATE from decode logic.  This signal is influenced by the FC from the
+  CPU as well as bits in the SystemEnable register.  If XLATE is low, then
+  the address is not translated and is passed straight through.
+- KERN from decode logic.  This signal is influenced by the FC from the
+  CPU.  It will be high unless the FC indicates a user-mode address cycle.
+
+Outputs:
+- XA[31:12] + VA[11:1]
+- D[15:0]
+- /AS to system
+- /DS to system
+
+...more to come (2025-12-29)

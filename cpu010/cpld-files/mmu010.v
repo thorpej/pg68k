@@ -66,28 +66,28 @@
  *
  * Address translation:
  *
- * +---------------+--------------------+
- * | Context [5:0] | Segment [VA 23:15] |
- * +---------------+--------------------+--> 15-bit SegMap index --+
- *                                                                 |
- * +---------------------------------------------------------------+
+ * +---------------+----------------------+
+ * | Context [5:0] | Segment 9[VA 23:15]) |
+ * +---------------+----------------------+--> 15-bit SegMap index --+
+ *                                                                   |
+ * +--------------------------==-------------------------------------+
  * |
- * +--> SegMap contains 15-bit PMEG index --+
- *                                          |
- * +----------------------------------------+
+ * +--> SegMap entry contains 15-bit PMEG number --+
+ *                                                 |
+ * +-----------------------------------------------+
  * |
- * +----------------------------+
- * |         PageMap index      |
- * | PMEG -> [17:3] | VA[14:12] |
- * +----------------------------+--> 18-bit PageMap index --+
- *                                                          |
- * +--------------------------------------------------------+
+ * +-------------------------+
+ * |      PageMap index      |
+ * | (PMEG << 3) | VA[14:12] |
+ * +-------------------------+--> 18-bit PageMap index --+
+ *                                                       |
+ * +-----------------------------------------------------+
  * |
  * +--> PageMap entry (32-bits) (lower 16 bits are PFN) -----+
  *                                                           |
  * +---------------------------------------------------------+
  * |
- * +--> (PFN << 12) | VA[11:0] -> PROFIT!
+ * +--> (PFN << 12) | VA[11:1] -> Physical address
  *
  * The PageMap entry format is similar to that used by the Sun3, but is
  * for 4K pages and the bits are shuffled around a little:
@@ -155,9 +155,9 @@
  * ==> This design uses a lot of external muxes.  Like, a lot.  Maybe
  *     too many.  Assuming 74ACHT157 quad 2-to-1 muxes:
  *
- *	* 4x for the MMU output address (20 bits: XA27..XA12).  Direct
- *	  passthrough from the CPU's A23..A12 if the address is untranslated,
- *	  otherwise PA27..PA12 from the PageMap.
+ *	* 4x for the MMU output address (20 bits: A27..A12).  Direct
+ *	  passthrough from the CPU's A23..A12 if the address is
+ *	  untranslated, otherwise PA27..PA12 from the PageMap.
  *
  *	* 5x for the PageMap address inputs (18 bits).  These addresses
  *	  must be driven either by the CPU (A21..A4) or by the SegMap.
@@ -412,20 +412,20 @@ wire KernelAcc    = FC[2];
  * ADDR[2:0] (CPU A3..A1) indicates which part of the Control space is
  * being accessed.
  *
- *	                    selector bits
+ *                          selector bits
  *	                         vvv
- *	xxxx.xxxx xxxx.xxxx xxxx.000x	non-MMU control space (ignored)
- *	SSSS.SSSS Sxxx.xxxx xxxx.0010	SegMap entry for Context 0
- *	SSSS.SSSS Sxxx.xxxx xxxx.0100	SegMap entry (relative to Context Reg)
- *	xxxx.xxxx xxxx.xxxx xxxx.0110	Context Register (byte)
- *	xxPP.PPPP PPPP.PPPP Pppp.1000	PageMap entry (upper word)
- *      xxPP.PPPP PPPP.PPPP Pppp.1010	PageMap entry (lower word)
+ *      xxxx.xxxx xxxx.xxxx xxxx.000x   non-MMU control space (ignored)
+ *      SSSS.SSSS Sxxx.xxxx xxxx.0010   SegMap entry for Context 0
+ *      SSSS.SSSS Sxxx.xxxx xxxx.0100   SegMap entry (relative to Context Reg)
+ *      xxxx.xxxx xxxx.xxxx xxxx.0110   Context Register (byte)
+ *      xxPP.PPPP PPPP.PPPP Pppp.1000   PageMap entry (upper word)
+ *      xxPP.PPPP PPPP.PPPP Pppp.1010   PageMap entry (lower word)
  *        ^^^^^^^^^^^^^^^^^^^|||
  *                 PMEG      |||
  *                           ^^^
  *                    Entry within PMEG
- *	xxxx.xxxx xxxx.xxxx xxxx.1100	Bus Error Register (byte)
- *	xxxx.xxxx xxxx.xxxx xxxx.1110	(unused; reserved)
+ *      xxxx.xxxx xxxx.xxxx xxxx.1100   Bus Error Register (byte)
+ *      xxxx.xxxx xxxx.xxxx xxxx.1110   (unused; reserved)
  *
  * The index for SegMap access is placed where it is because those are the
  * address bits that would be normally connected to select the SegMap index

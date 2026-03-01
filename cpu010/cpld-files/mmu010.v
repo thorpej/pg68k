@@ -1010,7 +1010,7 @@ always @(negedge CLK40) begin
 end
 
 /* Signal /BERR to the CPU if the state machine says so. */
-assign n_berr_out = ~(state == S_BUS_ERROR) | ~nAS;
+assign n_berr_out = ~(state == S_BUS_ERROR) | nAS;
 
 endmodule
 

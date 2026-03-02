@@ -661,7 +661,6 @@ assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
  * XXX code is replicated here (see rtl/bus_timer.v).
  */
 
-wire bus_timeout;
 wire bus_timer_enable = ~nAS;
 
 localparam BUS_TIMER_INITIAL	=	6'd0;

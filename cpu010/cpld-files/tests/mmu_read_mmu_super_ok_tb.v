@@ -143,7 +143,6 @@ initial begin
 
 	mmu_en = 1;
 	sme_v = 1;
-	pme_from_sram = 8'b10100000;	/* V+K */
 
 	@(posedge cpu_clk);
 	$display("S0: CPU drives FC[2:0] and RnW=1");
@@ -155,6 +154,7 @@ initial begin
 
 	@(posedge cpu_clk);
 	$display("S2: CPU asserts /AS, /UDS");
+	pme_from_sram = 8'b10100000;	/* V+K */
 	n_as = 0;
 	n_uds = 0;
 

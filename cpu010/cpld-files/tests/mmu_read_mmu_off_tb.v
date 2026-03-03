@@ -137,6 +137,8 @@ end
 always #12.500 mmu_clk = ~mmu_clk;
 
 initial begin
+	$display("MMU TEST: Read cycle, MMU disabled.");
+
 	@(posedge cpu_clk);
 	$display("Coming out of reset.");
 	n_rst = 1;

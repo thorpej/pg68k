@@ -110,7 +110,7 @@ assign pme = n_pmu_we ? pme_from_sram : 8'bzzzzzzzz;
 	);
 
 initial begin
-	$dumpfile("mmu_read_mmu_super_ok.vcd");
+	$dumpfile("mmu_write_super_ok.vcd");
 	$dumpvars;
 
 	n_rst = 0;
@@ -137,6 +137,8 @@ end
 always #12.500 mmu_clk = ~mmu_clk;
 
 initial begin
+	$display("MMU TEST: Supervisor write cycle, valid translation.");
+
 	@(posedge cpu_clk);
 	$display("Coming out of reset.");
 	n_rst = 1;
@@ -153,15 +155,15 @@ initial begin
 	$display("S1: CPU drives A[23:1]");
 
 	@(posedge cpu_clk);
-	$display("S2: CPU asserts /AS, /UDS");
-	pme_from_sram = 8'b10100000;	/* V+K */
+	$display("S2: CPU asserts /AS, RnW=0");
+	pme_from_sram = 8'b11100000;	/* V+W+K */
 	n_as = 0;
-	n_uds = 0;
+	rnw = 0;
 
 	@(negedge cpu_clk);
-	$display("S3: no bus signals are altered");
+	$display("S3: CPU places data on data bus");
 
-	/* Verify PTE REF write-back. */
+	/* Verify PTE REF+MOD write-back. */
 	@(posedge mmu_clk);
 	if (n_pmu_we) begin
 		$fatal(1, "FATAL: MMU failed to write-back to upper PageMap.");
@@ -175,12 +177,13 @@ initial begin
 	if (~pme[1]) begin
 		$fatal(1, "FATAL: MMU write-back did not set REF bit.");
 	end
-	if (pme[0]) begin
-		$fatal(1, "FATAL: MMU write-back unexpectedly set MOD bit.");
+	if (~pme[0]) begin
+		$fatal(1, "FATAL: MMU write-back did not set MOD bit.");
 	end
 
 	@(posedge cpu_clk);
-	$display("S4: CPU waits for cycle termination signal");
+	$display("S4: CPU asserts /UDS, waits for cycle termination signal");
+	n_uds = 0;
 	n_dtack = 0;
 
 	/* Verify MMU computations: */
@@ -219,9 +222,6 @@ initial begin
 	if (n_as_out) begin
 		$fatal(1, "FATAL: MMU failed to un-gate /AS.");
 	end
-	if (n_uds_out) begin
-		$fatal(1, "FATAL: MMU failed to un-gate /UDS.");
-	end
 	if (~n_berr_out) begin
 		$fatal(1, "FATAL: MMU unexpedly signaled /BERR.");
 	end
@@ -229,11 +229,16 @@ initial begin
 	@(negedge cpu_clk);
 	$display("S5: no bus signals are altered");
 
+	/* /UDS is asserted later in write cycles. */
+	if (n_uds_out) begin
+		$fatal(1, "FATAL: MMU failed to un-gate /UDS.");
+	end
+
 	@(posedge cpu_clk);
-	$display("S6: data from device is driven onto data bus");
+	$display("S6: no bus signals are altered");
 
 	@(negedge cpu_clk);
-	$display("S7: CPU latches data, negates /AS, /UDS");
+	$display("S7: CPU negates /AS, /UDS");
 	n_as = 1;
 	n_uds = 1;
 

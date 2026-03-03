@@ -137,6 +137,8 @@ end
 always #12.500 mmu_clk = ~mmu_clk;
 
 initial begin
+	$display("MMU TEST: Basic MMU clock visualization.");
+
 	@(posedge mmu_clk);
 	$display("T=%0t: First positive edge detected", $time);
 

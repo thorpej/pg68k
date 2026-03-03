@@ -385,7 +385,8 @@ assign PME = PME_update ? PME_new : 8'bzzzzzzzz;
  * latched.
  */
 reg PME_index_latched;
-assign nPM_LE = ~PME_index_latched;
+//assign nPM_LE = ~PME_index_latched;
+assign nPM_LE = nAS_out;
 
 /************************** MMU ADDRESS DECODING *****************************/
 

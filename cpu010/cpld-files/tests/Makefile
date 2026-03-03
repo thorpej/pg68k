@@ -1,6 +1,7 @@
 VCDS=	mmu_clk.vcd \
 	mmu_read_mmu_off.vcd \
-	mmu_read_mmu_super_ok.vcd
+	mmu_read_mmu_super_ok.vcd \
+	mmu_write_mmu_super_ok.vcd
 
 .SUFFIXES: .vvp .vcd
 
@@ -23,3 +24,7 @@ mmu_read_mmu_off.vvp: mmu_read_mmu_off_tb.v ../mmu010.v
 mmu_read_mmu_super_ok.vcd: mmu_read_mmu_super_ok.vvp
 mmu_read_mmu_super_ok.vvp: mmu_read_mmu_super_ok_tb.v ../mmu010.v
 	iverilog -tvvp -o $@ mmu_read_mmu_super_ok_tb.v ../mmu010.v
+
+mmu_write_mmu_super_ok.vcd: mmu_write_mmu_super_ok.vvp
+mmu_write_mmu_super_ok.vvp: mmu_write_mmu_super_ok_tb.v ../mmu010.v
+	iverilog -tvvp -o $@ mmu_write_mmu_super_ok_tb.v ../mmu010.v

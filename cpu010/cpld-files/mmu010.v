@@ -354,7 +354,7 @@ end
 
 `ifdef BUILD_FOR_TEST
 /* Provide a hook for testbench code to peek at the Bus Error Register. */
-assign bus_error_reg_test_out = bus_error_reg;
+assign bus_error_reg_test_out = {2'b00, bus_error_reg};
 `endif
 
 /************************* PAGE MAP ENTRY LOGIC ******************************/

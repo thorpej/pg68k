@@ -241,6 +241,10 @@ module mmu010(
 
 	output wire n_berr_out,	/* /BERR output to CPU */
 
+`ifdef BUILD_FOR_TEST
+	output wire [7:0] bus_error_reg_test_out,
+`endif
+
 	output wire MMU_DTACK	/* drives open-drain inverter */
 );
 
@@ -347,6 +351,11 @@ reg [5:0] bus_error_reg;
 initial begin
 	bus_error_reg = BERR_NONE;
 end
+
+`ifdef BUILD_FOR_TEST
+/* Provide a hook for testbench code to peek at the Bus Error Register. */
+assign bus_error_reg_test_out = bus_error_reg;
+`endif
 
 /************************* PAGE MAP ENTRY LOGIC ******************************/
 

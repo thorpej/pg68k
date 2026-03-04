@@ -9,7 +9,8 @@ MMU_TESTCASES+=	mmu_read_mmu_off
 MMU_TESTCASES+=	mmu_read_super_ok \
 		mmu_read_super_inv \
 		mmu_read_user_ok \
-		mmu_read_user_inv
+		mmu_read_user_inv \
+		mmu_read_user_priv
 
 TESTCASES=	${MMU_TESTCASES}
 

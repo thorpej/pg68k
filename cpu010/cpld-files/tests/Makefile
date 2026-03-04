@@ -14,7 +14,11 @@ MMU_TESTCASES+=	mmu_read_super_ok \
 
 MMU_TESTCASES+=	mmu_write_super_ok \
 		mmu_write_super_inv \
-		mmu_write_super_prot
+		mmu_write_super_prot \
+		mmu_write_user_ok \
+		mmu_write_user_inv \
+		mmu_write_user_prot \
+		mmu_write_user_priv
 
 TESTCASES=	${MMU_TESTCASES}
 

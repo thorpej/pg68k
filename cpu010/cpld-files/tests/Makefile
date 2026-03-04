@@ -22,7 +22,8 @@ MMU_TESTCASES+=	mmu_write_super_ok \
 		mmu_write_user_prot \
 		mmu_write_user_priv
 
-MMU_TESTCASES+=	mmu_rmw_super_ok
+MMU_TESTCASES+=	mmu_rmw_super_ok \
+		mmu_rmw_super_prot
 
 TESTCASES=	${MMU_TESTCASES}
 

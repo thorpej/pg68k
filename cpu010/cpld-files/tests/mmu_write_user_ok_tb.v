@@ -120,7 +120,7 @@ assign pme = n_pmu_we ? pme_from_sram : 8'bzzzzzzzz;
 	);
 
 initial begin
-	$dumpfile("mmu_write_user_ok.vcd");
+	$dumpfile(`DUMPFILE);
 	$dumpvars;
 
 	n_rst = 0;

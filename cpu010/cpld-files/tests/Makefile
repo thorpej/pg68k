@@ -49,5 +49,5 @@ ${tc}.vcd: ${tc}.vvp
 
 .for tc in ${MMU_TESTCASES}
 ${tc}.vvp: ${tc}_tb.v ../mmu010.v
-	iverilog $(VFLAGS) -o $@ ${.ALLSRC}
+	iverilog -D'DUMPFILE="${tc}.vcd"' $(VFLAGS) -o $@ ${.ALLSRC}
 .endfor

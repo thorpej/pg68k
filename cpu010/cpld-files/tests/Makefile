@@ -1,3 +1,7 @@
+#
+# NOTE: This requires bmake (BSD make(1) -- preferably the one from NetBSD).
+#
+
 MMU_TESTCASES=	mmu_clk
 
 MMU_TESTCASES+=	mmu_read_mmu_off

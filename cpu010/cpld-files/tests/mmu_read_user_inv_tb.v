@@ -147,7 +147,7 @@ end
 always #12.500 mmu_clk = ~mmu_clk;
 
 initial begin
-	$display("MMU TEST: Supervisor read cycle, valid translation.");
+	$display("MMU TEST: User read cycle, invalid trans error.");
 
 	@(posedge cpu_clk);
 	$display("Coming out of reset.");

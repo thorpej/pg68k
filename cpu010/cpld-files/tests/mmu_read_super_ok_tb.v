@@ -17,6 +17,12 @@ localparam FC_CONTROL    = 3'd4;
 localparam FC_SUPER_DATA = 3'd5;
 localparam FC_SUPER_PROG = 3'd6;
 
+localparam BUS_ERROR_INV  = 8'b00000001;
+localparam BUS_ERROR_PROT = 8'b00000010;
+localparam BUS_ERROR_PRIV = 8'b00000100;
+localparam BUS_ERROR_TIMO = 8'b00010000;
+localparam BUS_ERROR_VME  = 8'b00100000;
+
 reg [2:0] fc;
 reg [2:0] addr;
 
@@ -27,6 +33,9 @@ assign data = ~rnw ? data_out : 8'bzzzzzzzz;
 
 reg mmu_en;
 reg n_vme_berr;
+
+wire n_berr_out;
+wire [7:0] bus_error_reg;
 
 wire [5:0] ctx;
 
@@ -105,6 +114,7 @@ assign pme = n_pmu_we ? pme_from_sram : 8'bzzzzzzzz;
 		.CPU_CLK(cpu_clk),
 
 		.n_berr_out(n_berr_out),
+		.bus_error_reg_test_out(bus_error_reg),
 
 		.MMU_DTACK(mmu_dtack)
 	);

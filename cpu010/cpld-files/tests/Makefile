@@ -12,6 +12,10 @@ MMU_TESTCASES+=	mmu_read_super_ok \
 		mmu_read_user_inv \
 		mmu_read_user_priv
 
+MMU_TESTCASES+=	mmu_write_super_ok \
+		mmu_write_super_inv \
+		mmu_write_super_prot
+
 TESTCASES=	${MMU_TESTCASES}
 
 .for tc in ${TESTCASES}

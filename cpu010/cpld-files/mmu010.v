@@ -825,6 +825,7 @@ always @(negedge CLK40) begin
 				 * We have to wait for the synchronized
 				 * /UDS signal to be asserted.
 				 */
+				dtack <= 1'b1;
 				state <= S_WR_CONTEXT;
 			end
 
@@ -899,7 +900,6 @@ always @(negedge CLK40) begin
 		S_WR_CONTEXT: begin
 			if (~nUDS_s) begin
 				ContextReg <= DATA[5:0];
-				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
 			end
 		end

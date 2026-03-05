@@ -26,6 +26,8 @@ MMU_TESTCASES+=	mmu_write_super_ok \
 MMU_TESTCASES+=	mmu_rmw_super_ok \
 		mmu_rmw_super_prot
 
+MMU_TESTCASES+=	mmu_ctx
+
 TESTCASES=	${MMU_TESTCASES}
 
 .for tc in ${TESTCASES}

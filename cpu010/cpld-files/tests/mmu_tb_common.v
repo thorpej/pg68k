@@ -19,6 +19,13 @@ localparam BUS_ERROR_PRIV = 8'b00000100;
 localparam BUS_ERROR_TIMO = 8'b00010000;
 localparam BUS_ERROR_VME  = 8'b00100000;
 
+localparam MMU_SegMap0      = 3'd1;
+localparam MMU_SegMap       = 3'd2;
+localparam MMU_ContextReg   = 3'd3;
+localparam MMU_PageMapU     = 3'd4;
+localparam MMU_PageMapL     = 3'd5;
+localparam MMU_BusErrorReg  = 3'd6;
+
 reg [2:0] fc;
 reg [2:0] addr;
 

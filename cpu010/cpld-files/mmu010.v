@@ -549,7 +549,7 @@ assign MMU_ADDR = Translate;
  * address range.
  */
 reg [5:0] ContextReg;
-assign CTX = (SegMap0Sel || KernelAcc) ? 6'd0 : ContextReg;
+assign CTX = (SegMap0Sel || (RegularSpace & KernelAcc)) ? 6'd0 : ContextReg;
 
 /*
  * Compute the translation error continuously.  It will be latched into

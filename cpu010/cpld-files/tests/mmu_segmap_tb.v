@@ -5,7 +5,7 @@ module tb();
 `include "mmu_tb_common.v"
 
 initial begin
-	$display("MMU TEST: Segmap Map control.");
+	$display("MMU TEST: Segment Map control.");
 
 	@(posedge cpu_clk);
 	$display("Coming out of reset.");

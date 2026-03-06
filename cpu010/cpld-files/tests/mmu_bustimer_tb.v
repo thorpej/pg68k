@@ -39,9 +39,12 @@ initial begin
 		    bus_timer_reg, BUS_TIMER_LIMIT);
 	end
 
+	@(negedge cpu_clk);
 	n_as = 1;
 	@(posedge cpu_clk);
 
+	/* XXX Why can't we observe this immediately upon latching it? */
+	@(posedge mmu_clk);
 	if (bus_timer_reg !== 8'd0) begin
 		$fatal(1, "FATAL: After negating /AS timer=%0d",
 		    bus_timer_reg);

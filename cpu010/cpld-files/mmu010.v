@@ -243,6 +243,7 @@ module mmu010(
 
 `ifdef BUILD_FOR_TEST
 	output wire [7:0] bus_error_reg_test_out,
+	output wire [7:0] bus_timer_reg_test_out,
 `endif
 
 	output wire MMU_DTACK	/* drives open-drain inverter */
@@ -697,6 +698,10 @@ always @(posedge CPU_CLK, negedge nRST) begin
 end
 
 wire bus_timeout = (bus_timer == BUS_TIMER_TIMEOUT);
+`ifdef BUILD_FOR_TEST
+/* Provide a hook for testbench code to peek at the bus timer register. */
+assign bus_timer_reg_test_out = {2'b00, bus_timer};
+`endif
 
 /************************* BUS CYCLE STATE MACHINE ***************************/
 

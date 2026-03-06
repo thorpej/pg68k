@@ -39,6 +39,7 @@ reg n_vme_berr;
 
 wire n_berr_out;
 wire [7:0] bus_error_reg;
+wire [7:0] bus_timer_reg;
 
 wire [5:0] ctx;
 
@@ -118,6 +119,7 @@ assign pme = n_pmu_we ? pme_from_sram : 8'bzzzzzzzz;
 
 		.n_berr_out(n_berr_out),
 		.bus_error_reg_test_out(bus_error_reg),
+		.bus_timer_reg_test_out(bus_timer_reg),
 
 		.MMU_DTACK(mmu_dtack)
 	);

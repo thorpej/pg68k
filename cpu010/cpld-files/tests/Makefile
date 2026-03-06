@@ -27,7 +27,8 @@ MMU_TESTCASES+=	mmu_rmw_super_ok \
 		mmu_rmw_super_prot
 
 MMU_TESTCASES+=	mmu_ctx \
-		mmu_segmap
+		mmu_segmap \
+		mmu_pagemap
 
 TESTCASES=	${MMU_TESTCASES}
 

@@ -112,7 +112,6 @@ print_cputype(struct bi_record *bi)
 	case BI_CPU_68040:	cp = "68040";	break;
 	case BI_CPU_68060:	cp = "68060";	break;
 	case BI_CPU_COLDFIRE:	cp = "ColdFire"; break;
-	case BI_CPU_68010:	cp = "68010";	break;
 	default:		cp = unkx(val);	break;
 	}
 
@@ -152,7 +151,6 @@ print_mmutype(struct bi_record *bi)
 	case BI_MMU_APOLLO:	cp = "Apollo";	break;
 	case BI_MMU_SUN3:	cp = "Sun3"; break;
 	case BI_MMU_COLDFIRE:	cp = "ColdFire"; break;
-	case BI_MMU_PG010:	cp = "PG010"; break;
 	default:		cp = unkx(val);	break;
 	}
 

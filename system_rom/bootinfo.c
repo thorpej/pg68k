@@ -121,7 +121,7 @@ bootinfo_set_string(struct bi_record *bi, uint16_t tag,
 }
 
 #if defined(CONFIG_MC68010)
-#define	BI_CPU_value	BI_CPU_68010
+/* No BI_CPU_value */
 #elif defined(CONFIG_MC68020)
 #define	BI_CPU_value	BI_CPU_68020
 #elif defined(CONFIG_MC68030)
@@ -143,7 +143,7 @@ bootinfo_set_string(struct bi_record *bi, uint16_t tag,
 #endif
 
 #if defined(CONFIG_MC68010)
-#define	BI_MMU_value	BI_MMU_PG010
+/* No BI_MMU_value */
 #elif defined(CONFIG_MC68020)
 #error need a 68020 case
 #elif defined(CONFIG_MC68030)
@@ -161,7 +161,9 @@ _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 	int i;
 
 	bi = _bootinfo_set_u32(bi, BI_MACHTYPE, BI_MACH_FDT, wr);
+#ifdef BI_CPU_value
 	bi = _bootinfo_set_u32(bi, BI_CPUTYPE, BI_CPU_value, wr);
+#endif
 #ifdef BI_FPU_value
 	/* XXX should also probe for FPU type. */
 	bi = _bootinfo_set_u32(bi, BI_FPUTYPE, BI_FPU_value, wr);

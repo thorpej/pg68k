@@ -131,7 +131,7 @@ struct bi_virt_dev {
 #define	BI_MACH_M5441X		13
 #define	BI_MACH_VIRT		14
 /* pg68k extensions: */
-#define	BI_MACH_FDT		-1
+#define	BI_MACH_FDT		15
 
 /*
  * Values for BI_CPUTYPE.
@@ -141,8 +141,6 @@ struct bi_virt_dev {
 #define	BI_CPU_68040		__BIT(2)
 #define	BI_CPU_68060		__BIT(3)
 #define	BI_CPU_COLDFIRE		__BIT(4)
-/* pg68k extensions: */
-#define	BI_CPU_68010		__BIT(31)
 
 /*
  * Values for BI_FPUTYPE.
@@ -164,8 +162,6 @@ struct bi_virt_dev {
 #define	BI_MMU_APOLLO		__BIT(4)
 #define	BI_MMU_SUN3		__BIT(5)
 #define	BI_MMU_COLDFIRE		__BIT(6)
-/* pg68k extensions: */
-#define	BI_MMU_PG010		__BIT(31)
 
 #define	bootinfo_dataptr(bi)	((void *)&(bi)->bi_data[0])
 

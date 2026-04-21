@@ -150,7 +150,11 @@
 			      <0x8000416 0x04>;	/* control */
 			reg-shift = <1>;
 			interrupts = <3 0>;
-			ata-generic,use16bit;
+			/*
+			 * XXX TME can't do 16-bit ATA transfers yet.
+			 * ata-generic,use16bit;
+			 */
+			ata-generic,use8bit;
 		};
 	};
 

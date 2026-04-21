@@ -60,12 +60,6 @@
 			clock-mult = <1>;
 			clock-div = <4>;
 		};
-
-		uart_clk: osc1_8432M_clk {
-			compatible = "fixed-clock";
-			#clock-cells = <0>;
-			clock-frequency = <1843200>;
-		};
 	};
 
 	memory@0 {
@@ -119,7 +113,7 @@
 			compatible = "ns16550a";
 			reg = <0x8000000 0x10>;
 			reg-shift = <1>;
-			clocks = <&uart_clk>;
+			clock-frequency = <1843200>;
 			interrupts = <5 0>;
 		};
 
@@ -127,7 +121,7 @@
 			compatible = "ns16550a";
 			reg = <0x8000100 0x10>;
 			reg-shift = <1>;
-			clocks = <&uart_clk>;
+			clock-frequency = <1843200>;
 			interrupts = <5 0>;
 		};
 

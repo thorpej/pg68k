@@ -60,7 +60,7 @@
 #define	CTLREG_DD7SEG_L	0x01	/* 7-segment display, lower */
 
 	/* 7-segment display can be written as a single word */
-#define	CTLREG_DD7SEG	CTLREG_7SEG_U
+#define	CTLREG_DD7SEG	CTLREG_DD7SEG_U
 
 #define	CTLREG_CFGSW_U	0x10	/* configuration switches, bits 15..8 */
 #define	CTLREG_CFGSW_L	0x11	/* configuration switches, bits 7..0 */

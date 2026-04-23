@@ -92,12 +92,13 @@ device_physaddr(unsigned long addr)
 
 #define	FC_CONTROL	4		/* control space is FC==4 */
 
-#define	CONFIG_MACHINE_STRING	"Phaethon 1"
+#define	CONFIG_MACHINE_STRING	"Phaethon 1 Anti-Workstation"
 #define	CONFIG_CPU_DESC_STRING	"10MHz MC68010"
 #define	CONFIG_RIISP		(RAM0_START+(RAM0_SIZE-0x00100000))
 #define	CONFIG_MC68010
 #define	CONFIG_DEVICETREE
 #define	CONFIG_DEV_REGSHIFT	1
+#define	CONFIG_DD7SEG
 #define	CONFIG_UART_16550
 #define	CONFIG_UART_FREQ	1843200
 #define	CONFIG_UART_SPEED	9600

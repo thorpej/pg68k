@@ -32,7 +32,7 @@ struct romcalls_v1 {
 
 	/*
 	 * System boot lifecycle.  These functions can be called
-	 * to long as the firmware appears in the address space where
+	 * as long as the firmware appears in the address space where
 	 * it's expected, but does not need to run with the firmware
 	 * mappings.
 	 *
@@ -79,6 +79,17 @@ struct romcalls_v1 {
 	 */
 	int	(*rv1_cnpollc)(void);
 	void	(*rv1_cnputc)(int);
+
+	/*
+	 * Diagnostic display.  This function can be called as long as the
+	 * firmware appears in the address space where it's expected, but
+	 * does not need to run with the firmware mappings.
+	 *
+	 * This takes single byte argument and basically diplays it as BCD.
+	 * If a nybble is the range of A - F, that nybble is cleared on the
+	 * display.
+	 */
+	void	(*rv1_diag)(unsigned char);
 };
 
 extern struct romcalls_v1 romcalls;

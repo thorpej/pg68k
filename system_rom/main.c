@@ -39,6 +39,10 @@
 #include "cli.h"
 #include "boot.h"
 
+#ifdef CONFIG_DD7SEG
+#include "dd7seg.h"
+#endif
+
 #include "memory.h"
 
 size_t
@@ -1340,13 +1344,10 @@ static void
 version(void)
 {
 	/* Hello, world! */
-	printf("%s", CONFIG_MACHINE_STRING);
-#ifdef CONFIG_CPU_DESC_STRING
-	printf(" - %s", CONFIG_CPU_DESC_STRING);
-#endif
-	printf("\n");
-	printf("Firmware version %d.%d\n\n", CONFIG_ROM_VERSION_MAJOR,
-	    CONFIG_ROM_VERSION_MINOR);
+	printf(" \ /  %s\n", CONFIG_MACHINE_STRING);
+	printf("- O - %s\n", CONFIG_CPU_DESC_STRING);
+	printf(" / \  %s\n", Firmware version %d.%d\n\n",
+	    CONFIG_ROM_VERSION_MAJOR, CONFIG_ROM_VERSION_MINOR);
 }
 
 static void
@@ -1366,6 +1367,11 @@ main(int argc, char *argv[])
 {
 	/* First step - initialize console so we can see messages. */
 	cons_init();
+
+#ifdef CONFIG_DD7SEG
+	/* Clear the diagnostic display. */
+	dd7seg(0xff);
+#endif
 
 	/*
 	 * Set up an emergency fault handler that will break us out

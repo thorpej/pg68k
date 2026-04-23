@@ -98,6 +98,9 @@ pgtimer_delaycal(void)
 	 * called before the system timer is initialized.
 	 */
 
+	/* default to ~8MHz 010/020/030 */
+	delay_divisor = 8192 / 8;
+
 	s = splhigh();
 	for (; delay_divisor > 0; delay_divisor--) {
 		REG_WRITE(TIMER_LSB, (uint8_t)ticks);

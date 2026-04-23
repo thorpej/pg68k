@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,30 +24,11 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "syslib.h"
+#ifndef dd7seg_h_included
+#define	dd7seg_h_included
 
-#include "clock.h"
+#include "systypes.h"
 
-/*
- * On the 68010/68020/68030, the value of delay_divisor is roughly
- * 8192 / cpu-freq-in-MHz.  It's wildly different for 68040/68060
- * (a lot smaller).  The larger the delay_divisor, the faster the
- * call to delay() completes.
- *
- * For the default value, we err on the side of a smaller delay_divisor
- * and a slower delay().  Once it's calibrated, delay() will be more
- * accurate.
- *
- * If you have a board faster than a 33MHz 68030, this will probably
- * need to be tweaked.
- */
-int	delay_divisor = 8192 / 33;
+void	dd7seg(unsigned char);
 
-/* Clock configuration is system-specific. */
-
-#if defined(CONFIG_MACH_HOST_SIM)
-#include "clock_hostsim.c"
-#elif defined(CONFIG_PGTIMER)
-#include "clock_pgtimer.c"
-#endif
+#endif /* dd7seg_h_included */

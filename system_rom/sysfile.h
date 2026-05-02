@@ -120,7 +120,7 @@ struct open_file {
 	};
 };
 
-#define	SOPEN_MAX	4		/* # of concurrent open files */
+#define	SOPEN_MAX	8		/* # of concurrent open files */
 
 /* f_flags values */
 #define	F_READ		0x0001		/* file opened for reading */

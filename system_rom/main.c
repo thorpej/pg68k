@@ -1344,9 +1344,9 @@ static void
 version(void)
 {
 	/* Hello, world! */
-	printf(" \ /  %s\n", CONFIG_MACHINE_STRING);
-	printf("- O - %s\n", CONFIG_CPU_DESC_STRING);
-	printf(" / \  %s\n", Firmware version %d.%d\n\n",
+	printf(" \ /   %s\n", CONFIG_MACHINE_STRING);
+	printf("- O -  %s\n", CONFIG_CPU_DESC_STRING);
+	printf(" / \   %s\n", Firmware version %d.%d\n\n",
 	    CONFIG_ROM_VERSION_MAJOR, CONFIG_ROM_VERSION_MINOR);
 }
 

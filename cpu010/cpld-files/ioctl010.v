@@ -97,6 +97,8 @@ module ioctl010(
 	input wire ATA_INT,	/* ATA disk interface interrupt */
 	input wire nI2C_INT,	/* I2C controller interrupt */
 
+	input wire ATA_IORDY,	/* ATA IORDY signal (unused for now) */
+
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
 	output wire [2:0] IPL,	/* IPL output to CPU */
@@ -601,6 +603,7 @@ endmodule
 //
 //	=== Devices side of the chip ===
 //
+//PIN: ATA_IORDY	: 72
 //PIN: nEXPSEL		: 75
 //PIN: nI2CINT		: 76
 //PIN: nI2CSEL		: 77

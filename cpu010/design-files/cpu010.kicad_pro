@@ -742,10 +742,6 @@
     [
       "4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c",
       "Power Supply"
-    ],
-    [
-      "b9d4eb82-1b9c-4b20-a12b-d1295f8432c4",
-      "VME termination"
     ]
   ],
   "text_variables": {}

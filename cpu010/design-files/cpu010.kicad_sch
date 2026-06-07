@@ -2612,48 +2612,6 @@
 		)
 	)
 	(sheet
-		(at 180.848 114.554)
-		(size 48.006 27.686)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "b9d4eb82-1b9c-4b20-a12b-d1295f8432c4")
-		(property "Sheetname" "VME termination"
-			(at 180.848 113.8424 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "cpu010-vme-term.kicad_sch"
-			(at 180.848 142.8246 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "cpu010"
-				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55"
-					(page "9")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 73.914 114.554)
 		(size 47.244 27.686)
 		(exclude_from_sim no)

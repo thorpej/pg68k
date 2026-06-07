@@ -6821,7 +6821,7 @@
 		)
 	)
 	(global_label "D13"
-		(shape input)
+		(shape output)
 		(at 227.33 46.99 180)
 		(fields_autoplaced yes)
 		(effects
@@ -6997,7 +6997,7 @@
 		)
 	)
 	(global_label "D8"
-		(shape input)
+		(shape output)
 		(at 227.33 34.29 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7063,7 +7063,7 @@
 		)
 	)
 	(global_label "D10"
-		(shape input)
+		(shape output)
 		(at 227.33 39.37 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7085,7 +7085,7 @@
 		)
 	)
 	(global_label "D2"
-		(shape input)
+		(shape output)
 		(at 227.33 88.9 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7129,7 +7129,7 @@
 		)
 	)
 	(global_label "D9"
-		(shape input)
+		(shape output)
 		(at 227.33 36.83 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7195,7 +7195,7 @@
 		)
 	)
 	(global_label "D14"
-		(shape input)
+		(shape output)
 		(at 227.33 49.53 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7239,7 +7239,7 @@
 		)
 	)
 	(global_label "D4"
-		(shape input)
+		(shape output)
 		(at 227.33 93.98 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7305,7 +7305,7 @@
 		)
 	)
 	(global_label "D6"
-		(shape input)
+		(shape output)
 		(at 227.33 99.06 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7613,7 +7613,7 @@
 		)
 	)
 	(global_label "D5"
-		(shape input)
+		(shape output)
 		(at 227.33 96.52 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7811,7 +7811,7 @@
 		)
 	)
 	(global_label "D0"
-		(shape input)
+		(shape output)
 		(at 227.33 83.82 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7855,7 +7855,7 @@
 		)
 	)
 	(global_label "D1"
-		(shape input)
+		(shape output)
 		(at 227.33 86.36 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7877,7 +7877,7 @@
 		)
 	)
 	(global_label "D7"
-		(shape input)
+		(shape output)
 		(at 227.33 101.6 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7921,7 +7921,7 @@
 		)
 	)
 	(global_label "D12"
-		(shape input)
+		(shape output)
 		(at 227.33 44.45 180)
 		(fields_autoplaced yes)
 		(effects
@@ -7965,7 +7965,7 @@
 		)
 	)
 	(global_label "D15"
-		(shape input)
+		(shape output)
 		(at 227.33 52.07 180)
 		(fields_autoplaced yes)
 		(effects
@@ -8009,7 +8009,7 @@
 		)
 	)
 	(global_label "D3"
-		(shape input)
+		(shape output)
 		(at 227.33 91.44 180)
 		(fields_autoplaced yes)
 		(effects
@@ -8053,7 +8053,7 @@
 		)
 	)
 	(global_label "D11"
-		(shape input)
+		(shape output)
 		(at 227.33 41.91 180)
 		(fields_autoplaced yes)
 		(effects
@@ -8519,7 +8519,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74HC245"
+		(property "Value" "74HCT245"
 			(at 242.1733 78.74 0)
 			(effects
 				(font
@@ -8547,6 +8547,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 240.03 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74HCT245NE4"
 			(at 240.03 96.52 0)
 			(effects
 				(font
@@ -8671,6 +8680,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 54.61 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "556-AF22V10C15PU"
 			(at 54.61 72.39 0)
 			(effects
 				(font
@@ -8807,6 +8825,15 @@
 			)
 		)
 		(property "Description" "8-bit D Flip-Flop, reset"
+			(at 109.22 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74HCT237E"
 			(at 109.22 87.63 0)
 			(effects
 				(font
@@ -9416,6 +9443,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4116R-1LF-470"
+			(at 129.54 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "16"
 			(uuid "e8e2a900-de36-4067-9af9-e8050a29bbba")
 		)
@@ -9827,7 +9863,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74HC245"
+		(property "Value" "74HCT245"
 			(at 49.1333 172.72 0)
 			(effects
 				(font
@@ -9855,6 +9891,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 46.99 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74HCT245NE4"
 			(at 46.99 190.5 0)
 			(effects
 				(font
@@ -10117,6 +10162,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "604-DA04-11SURKWA"
+			(at 170.18 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "15"
 			(uuid "fc8eb2d3-92ff-4023-ba22-edbcd0a42c4a")
 		)
@@ -10262,7 +10316,7 @@
 				)
 			)
 		)
-		(property "Value" "3K3"
+		(property "Value" "47K"
 			(at 281.94 108.966 90)
 			(effects
 				(font
@@ -10290,6 +10344,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 270.51 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-47K"
+			(at 270.51 109.22 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11107,6 +11170,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-CD74HCT237E"
+			(at 46.99 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "7"
 			(uuid "767158e1-bfeb-4512-b755-d40c600d3746")
 		)
@@ -11194,7 +11266,7 @@
 				)
 			)
 		)
-		(property "Value" "3K3"
+		(property "Value" "47K"
 			(at 281.94 59.436 90)
 			(effects
 				(font
@@ -11222,6 +11294,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 270.51 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-47K"
+			(at 270.51 59.69 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11319,6 +11400,15 @@
 			)
 		)
 		(property "Part" "Bourns 4116R-1-471LF"
+			(at 189.23 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4116R-1LF-470"
 			(at 189.23 85.09 90)
 			(effects
 				(font
@@ -11607,6 +11697,15 @@
 			)
 		)
 		(property "Description" "8-bit D Flip-Flop, reset"
+			(at 168.91 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74HCT237E"
 			(at 168.91 87.63 0)
 			(effects
 				(font
@@ -11979,7 +12078,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74HC245"
+		(property "Value" "74HCT245"
 			(at 242.1733 29.21 0)
 			(effects
 				(font
@@ -12007,6 +12106,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 240.03 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74HCT245NE4"
 			(at 240.03 46.99 0)
 			(effects
 				(font

@@ -6790,6 +6790,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-CD74ACT05E"
+			(at 40.64 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "4"
 			(uuid "18c574f6-b09b-4df4-8522-e1c409ae8e36")
 		)
@@ -7160,6 +7169,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4609X-1LF-47K"
+			(at 158.75 96.52 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "3"
 			(uuid "9cbdbf1a-5318-47fd-84b8-b331594d7431")
 		)
@@ -7462,6 +7480,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "771-BAT86113"
+			(at 114.3 170.18 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "58777d15-097b-4b0d-b31d-72b3e218ecb2")
 		)
@@ -7658,6 +7685,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 40.64 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74ACT05E"
 			(at 40.64 71.12 0)
 			(effects
 				(font
@@ -7966,6 +8002,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 40.64 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74ACT05E"
 			(at 40.64 43.18 0)
 			(effects
 				(font
@@ -9026,6 +9071,24 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "CTS MXO45HST-3C-40M0000"
+			(at 24.13 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "774-MXO45HST-3C-40.0"
+			(at 24.13 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "0109dbb2-670d-4288-bd23-3fa341d51af1")
 		)
@@ -9092,6 +9155,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 40.64 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74ACT05E"
 			(at 40.64 85.09 0)
 			(effects
 				(font
@@ -9342,6 +9414,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-CD74ACT05E"
+			(at 22.86 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "4"
 			(uuid "18c574f6-b09b-4df4-8522-e1c409ae8e3a")
 		)
@@ -9508,6 +9589,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 40.64 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74ACT05E"
 			(at 40.64 113.03 0)
 			(effects
 				(font
@@ -9767,6 +9857,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 102.87 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "9a2088eb-43b9-40ec-899b-3f7674598676")
 		)
@@ -9828,6 +9927,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 158.75 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-47K"
+			(at 158.75 127 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10483,6 +10591,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 80.01 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "02baae3b-58ee-48d6-a07a-b9135391df79")
 		)
@@ -10543,6 +10660,15 @@
 			)
 		)
 		(property "Description" "Reset Controller with pushbutton detection"
+			(at 127 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "700-DS1813-5+"
 			(at 127 154.94 0)
 			(effects
 				(font
@@ -10680,6 +10806,15 @@
 			)
 		)
 		(property "Description" "Inverter Open Collect"
+			(at 40.64 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-CD74ACT05E"
 			(at 40.64 99.06 0)
 			(effects
 				(font

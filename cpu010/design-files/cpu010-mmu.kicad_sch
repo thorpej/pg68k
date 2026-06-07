@@ -16053,6 +16053,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT373N"
+			(at 151.13 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "88b45a04-9424-43aa-9093-065067343187")
 		)
@@ -16389,6 +16398,15 @@
 			)
 		)
 		(property "JLCPCB" "C2064107"
+			(at 300.99 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "913-AS7C4098A-12JIN"
 			(at 300.99 171.45 0)
 			(effects
 				(font
@@ -17267,6 +17285,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 208.28 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "f35d1dfd-23fc-437d-a980-3fc4564efcae")
 		)
@@ -17639,6 +17666,15 @@
 			)
 		)
 		(property "Description" "Quad 2 to 1 line Multiplexer"
+			(at 302.26 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT157N"
 			(at 302.26 93.98 0)
 			(effects
 				(font
@@ -18037,6 +18073,15 @@
 			)
 		)
 		(property "JLCPCB" "C1521282"
+			(at 71.12 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "556-AF1508AS7AX100"
 			(at 71.12 82.55 0)
 			(effects
 				(font
@@ -18476,6 +18521,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 379.73 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 379.73 242.57 0)
 			(effects
 				(font
@@ -19221,6 +19275,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT245N"
+			(at 144.78 254 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "3c3254cc-f3c6-43d5-b364-d381e3061960")
 		)
@@ -19407,6 +19470,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 99.06 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 99.06 199.39 0)
 			(effects
 				(font
@@ -19741,6 +19813,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT245N"
+			(at 275.59 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "c177370e-d8df-4ef4-842b-3de40239eb2f")
 		)
@@ -20063,6 +20144,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 240.03 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "26988f5b-fe87-4def-9922-da96c3cc0f3a")
 		)
@@ -20237,6 +20327,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 99.06 254 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 99.06 254 0)
 			(effects
 				(font
@@ -20567,6 +20666,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 187.96 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 187.96 199.39 0)
 			(effects
 				(font
@@ -21029,6 +21137,15 @@
 			)
 		)
 		(property "Description" "Quad 2 to 1 line Multiplexer"
+			(at 254 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT157N"
 			(at 254 93.98 0)
 			(effects
 				(font
@@ -21764,6 +21881,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 377.19 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "5920ce86-7093-4a2c-bbd9-581ab5479642")
 		)
@@ -21868,6 +21994,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 187.96 254 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 187.96 254 0)
 			(effects
 				(font
@@ -22953,6 +23088,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 195.58 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "5ebc871c-76ed-4674-995b-7cc4002f4f81")
 		)
@@ -23057,6 +23201,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 144.78 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 144.78 199.39 0)
 			(effects
 				(font
@@ -23331,6 +23484,15 @@
 			)
 		)
 		(property "JLCPCB" "C2064107"
+			(at 242.57 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "913-AS7C4098A-12JIN"
 			(at 242.57 171.45 0)
 			(effects
 				(font
@@ -24173,6 +24335,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "870IS61C3216AL12KLI"
+			(at 50.8 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "38"
 			(uuid "22209e83-d08e-4799-ba21-07579a983f16")
 		)
@@ -24975,6 +25146,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT373N"
+			(at 151.13 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "f5c62cd8-4fc5-49f1-aab5-99dda5a7080f")
 		)
@@ -25517,6 +25697,15 @@
 			)
 		)
 		(property "Description" "Quad 2 to 1 line Multiplexer"
+			(at 284.48 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT157N"
 			(at 284.48 41.91 0)
 			(effects
 				(font
@@ -26107,6 +26296,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT373N"
+			(at 151.13 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "bae4fda9-afdb-44ae-a38a-b57bb3892206")
 		)
@@ -26433,6 +26631,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 330.2 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "9125d96a-ce85-48b0-bd1a-7f3705200742")
 		)
@@ -26611,6 +26818,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74AHCT157N"
+			(at 350.52 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "90866399-3e0f-4a56-98c0-a664ef41c272")
 		)
@@ -26715,6 +26931,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 227.33 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74AHCT245N"
 			(at 227.33 143.51 0)
 			(effects
 				(font

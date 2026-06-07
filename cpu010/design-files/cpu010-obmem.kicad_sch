@@ -12061,6 +12061,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
+			(at 44.45 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "d27733e1-35b9-44c7-84de-afef5eda55f2")
 		)
@@ -12411,6 +12420,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
+			(at 182.88 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "34802954-2ffb-4eac-b32f-f9d9174d32f8")
 		)
@@ -12599,6 +12617,15 @@
 			)
 		)
 		(property "Description" "Silicon Storage Technology (SSF) 512k x 8 Flash ROM"
+			(at 231.14 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "804-39SF0407CPHE"
 			(at 231.14 148.59 0)
 			(effects
 				(font
@@ -13654,6 +13681,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 386.08 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "e0e88d97-6d04-4c26-8262-20fe248592ad")
 		)
@@ -14010,6 +14046,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
+			(at 44.45 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "a613434b-64b4-4bbb-a0c4-3ce260c8b4ae")
 		)
@@ -14215,6 +14260,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 398.78 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "845ed674-6a98-461b-8dba-e2ee842c9170")
 		)
@@ -14295,6 +14349,15 @@
 			)
 		)
 		(property "JLCPCB" "C2950517"
+			(at 135.89 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
 			(at 135.89 114.3 0)
 			(effects
 				(font
@@ -14715,6 +14778,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
+			(at 182.88 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "8c1b1ffb-3272-436d-95ea-f8a0f7286e28")
 		)
@@ -14921,6 +14993,15 @@
 			)
 		)
 		(property "JLCPCB" "C2950517"
+			(at 91.44 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
 			(at 91.44 26.67 0)
 			(effects
 				(font
@@ -15398,6 +15479,15 @@
 			)
 		)
 		(property "Part" "ATF1504AS-10JU44"
+			(at 334.01 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "556-AF1504AS10JU44"
 			(at 334.01 93.98 0)
 			(effects
 				(font
@@ -15944,6 +16034,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "804-39SF0407CPHE"
+			(at 231.14 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "16"
 			(uuid "77877014-5377-4219-95f0-2d67bb03bc0c")
 		)
@@ -16113,6 +16212,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 298.45 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "3eb3f077-2cbe-4718-a956-f9d86c9c410a")
 		)
@@ -16193,6 +16301,15 @@
 			)
 		)
 		(property "JLCPCB" "C2950517"
+			(at 91.44 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
 			(at 91.44 114.3 0)
 			(effects
 				(font
@@ -16473,6 +16590,15 @@
 			)
 		)
 		(property "JLCPCB" "C2950517"
+			(at 135.89 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "727-CY62158EV45ZSXIT"
 			(at 135.89 26.67 0)
 			(effects
 				(font
@@ -17284,6 +17410,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 285.75 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 285.75 143.51 0)
 			(effects
 				(font

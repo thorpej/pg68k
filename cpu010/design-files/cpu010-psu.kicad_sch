@@ -2672,6 +2672,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 203.2 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "5675e1f9-fbfc-4bdd-b660-2840df0cd16d")
 		)
@@ -2743,6 +2752,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 215.9 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 215.9 110.49 0)
 			(effects
 				(font
@@ -2897,6 +2915,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "710-860040373002"
+			(at 228.6 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "aeb0dd9e-8d83-46e0-a5b8-9f95336cb3a0")
 		)
@@ -3043,6 +3070,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "71-CW005100R0JE73"
+			(at 194.31 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "3fdb7a62-e073-4436-9473-88413254854f")
 		)
@@ -3105,6 +3141,15 @@
 			)
 		)
 		(property "Description" "On/Off Controller with Debounce and ±15kV ESD Protection"
+			(at 99.06 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "700-MAX16054AZTT"
 			(at 99.06 60.96 0)
 			(effects
 				(font
@@ -3460,6 +3505,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "538-39-29-1248"
+			(at 143.51 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "41deeca3-536a-4a30-8a48-1ec2a2ff785e")
 		)
@@ -3663,6 +3717,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 190.5 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 190.5 110.49 0)
 			(effects
 				(font

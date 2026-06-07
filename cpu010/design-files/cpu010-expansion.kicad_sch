@@ -14864,6 +14864,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "511-L272D013TR"
+			(at 355.6 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2f951fd8-f626-4dbb-a729-746cca412b16")
 		)
@@ -15313,6 +15322,15 @@
 			)
 		)
 		(property "Part" "Bourns 4610X-104-331/471L"
+			(at 166.37 255.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4610X104331/471L"
 			(at 166.37 255.27 90)
 			(effects
 				(font
@@ -16307,6 +16325,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4610X104331/471L"
+			(at 209.55 198.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "c2ca4366-442e-4696-97ba-ea881dcdc383")
 		)
@@ -16731,6 +16758,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT32N"
+			(at 88.9 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2db1b949-d406-4a9a-a164-a36f59091a55")
 		)
@@ -17036,6 +17072,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 152.4 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 152.4 143.51 0)
 			(effects
 				(font
@@ -17439,6 +17484,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "511-L272D013TR"
+			(at 355.6 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2f951fd8-f626-4dbb-a729-746cca412b17")
 		)
@@ -17543,6 +17597,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 48.26 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "556-AF22V10C15PU"
 			(at 48.26 163.83 0)
 			(effects
 				(font
@@ -17754,6 +17817,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT32N"
+			(at 86.36 207.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2db1b949-d406-4a9a-a164-a36f59091a56")
 		)
@@ -17927,6 +17999,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT245N"
+			(at 365.76 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "32bcbc39-34c2-4592-9775-e1f82e31ca3f")
 		)
@@ -18059,6 +18140,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4610X104331/471L"
+			(at 125.73 198.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "be67922c-6043-49fa-bd3b-1e7a59e29405")
 		)
@@ -18145,6 +18235,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 247.65 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 247.65 143.51 0)
 			(effects
 				(font
@@ -18336,6 +18435,15 @@
 			)
 		)
 		(property "Description" "Dual Power Operation Amplifier, SOIC-16"
+			(at 316.23 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "511-L272D013TR"
 			(at 316.23 93.98 0)
 			(effects
 				(font
@@ -18947,6 +19055,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4610X104331/471L"
+			(at 166.37 198.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "e24a1492-6875-4b47-b3e9-6d18bd593b5f")
 		)
@@ -19033,6 +19150,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 312.42 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 312.42 45.72 0)
 			(effects
 				(font
@@ -19430,6 +19556,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 199.39 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 199.39 143.51 0)
 			(effects
 				(font
@@ -19963,6 +20098,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT32N"
+			(at 88.9 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2db1b949-d406-4a9a-a164-a36f59091a57")
 		)
@@ -20193,6 +20337,15 @@
 			)
 		)
 		(property "Description" "Quad 2-input OR"
+			(at 88.9 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT32N"
 			(at 88.9 147.32 0)
 			(effects
 				(font
@@ -20848,6 +21001,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT32N"
+			(at 88.9 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2db1b949-d406-4a9a-a164-a36f59091a59")
 		)
@@ -21225,6 +21387,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 302.26 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 302.26 93.98 0)
 			(effects
 				(font
@@ -21774,6 +21945,15 @@
 			)
 		)
 		(property "Part" "Bourns 4610X-104-331/471L"
+			(at 259.08 198.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4610X104331/471L"
 			(at 259.08 198.12 90)
 			(effects
 				(font
@@ -22702,6 +22882,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4610X104331/471L"
+			(at 209.55 255.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "fa589ed9-e9cb-4139-a238-896ec3d81e22")
 		)
@@ -22936,6 +23125,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4610X104331/471L"
+			(at 259.08 255.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "472e8545-6cb0-4829-b209-026d2978e531")
 		)
@@ -23098,6 +23296,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 302.26 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 302.26 116.84 0)
 			(effects
 				(font
@@ -23583,6 +23790,15 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
+			(at 302.26 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "710-860040373002"
 			(at 302.26 135.89 0)
 			(effects
 				(font

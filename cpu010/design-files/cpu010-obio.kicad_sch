@@ -14438,6 +14438,24 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "MXO45HST-3C-1M8432"
+			(at 140.97 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "774-MXO45HST-3C-1.8"
+			(at 140.97 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "dc18d3a9-78fa-46e6-b7c4-891aa22b48c5")
 		)
@@ -14506,6 +14524,15 @@
 			)
 		)
 		(property "Description" "Dual TL16C550-compatible UART"
+			(at 193.04 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-TL16C2552FN"
 			(at 193.04 74.93 0)
 			(effects
 				(font
@@ -14846,6 +14873,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "595-SN74ACT245N"
+			(at 242.57 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d78c657b-c360-4093-98c6-8e2d2019b711")
 		)
@@ -15036,6 +15072,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "652-4609X-1LF-10K"
+			(at 318.77 186.69 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "3"
 			(uuid "de4788b6-a54f-4437-a48d-c41861df1295")
 		)
@@ -15119,6 +15164,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 187.96 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 187.96 165.1 0)
 			(effects
 				(font
@@ -15242,6 +15296,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 140.97 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-3.3K"
+			(at 140.97 120.65 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17216,6 +17279,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "700-DS3231MZ+"
+			(at 153.67 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "33ec4a32-637a-4731-9828-eaf0a288bd6d")
 		)
@@ -17296,6 +17368,15 @@
 			)
 		)
 		(property "Description" "Octal BUS Transceivers, 3-State outputs"
+			(at 144.78 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "595-SN74ACT245N"
 			(at 144.78 165.1 0)
 			(effects
 				(font
@@ -17621,6 +17702,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 318.77 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-10K"
+			(at 318.77 156.21 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18416,6 +18506,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 259.08 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-10K"
+			(at 259.08 50.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19843,6 +19942,33 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "ATF1508AS-7AX100"
+			(at 76.2 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C1521282"
+			(at 76.2 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "556-AF1508AS7AX100"
+			(at 76.2 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "33"
 			(uuid "8461088b-d7aa-4c4a-b313-ff614161bf9e")
 		)
@@ -20554,6 +20680,15 @@
 		)
 		(property "Description" "8 resistor network, star topology, bussed resistors, small symbol"
 			(at 318.77 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser" "652-4609X-1LF-10K"
+			(at 318.77 125.73 90)
 			(effects
 				(font
 					(size 1.27 1.27)

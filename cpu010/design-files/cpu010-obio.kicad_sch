@@ -9612,6 +9612,16 @@
 	)
 	(wire
 		(pts
+			(xy 285.75 119.38) (xy 294.64 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1721946-74cd-4058-9a05-ebfbeb8259dc")
+	)
+	(wire
+		(pts
 			(xy 104.14 95.25) (xy 111.76 95.25)
 		)
 		(stroke
@@ -19165,6 +19175,73 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
 					(reference "#PWR0610")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 294.64 119.38 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d200861b-4905-4596-ab67-fb26ceb8951d")
+		(property "Reference" "#PWR0646"
+			(at 300.99 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 298.45 119.3799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 294.64 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 294.64 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 294.64 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b00c6fee-c242-4f02-afad-4a7a432d28f1")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/fbe8e7dc-2cbe-4b65-807d-71ce3f1eb657"
+					(reference "#PWR0646")
 					(unit 1)
 				)
 			)

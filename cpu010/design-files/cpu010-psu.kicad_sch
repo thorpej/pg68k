@@ -1791,7 +1791,7 @@
 	)
 	(text "General bulk capacitance."
 		(exclude_from_sim no)
-		(at 197.866 115.316 0)
+		(at 201.676 116.586 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1807,13 +1807,19 @@
 		(uuid "1161fb48-afcc-4102-86d5-caefe545a751")
 	)
 	(junction
-		(at 190.5 113.03)
+		(at 163.83 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "25fd7dfd-c478-4810-b210-2cee2216c952")
+	)
+	(junction
+		(at 194.31 114.3)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2c47ce0e-db58-4bb3-a77c-aeadea4bc8a3")
 	)
 	(junction
-		(at 215.9 113.03)
+		(at 219.71 114.3)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4536826d-7bf5-4b16-be48-c540a3b10433")
@@ -1825,13 +1831,13 @@
 		(uuid "4982043a-081c-491c-9798-a70b63738f07")
 	)
 	(junction
-		(at 215.9 107.95)
+		(at 219.71 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "61778808-7567-467a-881e-4c1962488430")
 	)
 	(junction
-		(at 203.2 113.03)
+		(at 207.01 114.3)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "718dd7a5-7231-4b04-94f9-a76bf09fe1a1")
@@ -1849,13 +1855,13 @@
 		(uuid "e4482bbd-18a9-49f8-b83e-46346b6b71ad")
 	)
 	(junction
-		(at 203.2 107.95)
+		(at 207.01 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f0a64a62-0ae3-474f-852b-a98394c59c61")
 	)
 	(junction
-		(at 190.5 107.95)
+		(at 194.31 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f4ef0635-7d49-4765-914c-5dab9f0a691f")
@@ -1867,6 +1873,16 @@
 	(no_connect
 		(at 114.3 67.31)
 		(uuid "a6bf2ef2-4489-4b2a-b9e1-4d706e8cf5cb")
+	)
+	(wire
+		(pts
+			(xy 179.07 104.14) (xy 179.07 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1bf0693f-ff22-4be0-9df0-350457322c5c")
 	)
 	(wire
 		(pts
@@ -1890,7 +1906,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 107.95) (xy 228.6 107.95)
+			(xy 219.71 109.22) (xy 232.41 109.22)
 		)
 		(stroke
 			(width 0)
@@ -1930,7 +1946,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 113.03) (xy 228.6 113.03)
+			(xy 219.71 114.3) (xy 232.41 114.3)
 		)
 		(stroke
 			(width 0)
@@ -1940,7 +1956,7 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 113.03) (xy 203.2 113.03)
+			(xy 194.31 114.3) (xy 207.01 114.3)
 		)
 		(stroke
 			(width 0)
@@ -1950,7 +1966,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 113.03) (xy 215.9 113.03)
+			(xy 207.01 114.3) (xy 219.71 114.3)
 		)
 		(stroke
 			(width 0)
@@ -1970,13 +1986,23 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 107.95) (xy 215.9 107.95)
+			(xy 207.01 109.22) (xy 219.71 109.22)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "a1743e15-9c2b-4019-85d3-25a6fec211a3")
+	)
+	(wire
+		(pts
+			(xy 179.07 96.52) (xy 163.83 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a985ee89-74c4-445b-98c0-bf2a4561bc7e")
 	)
 	(wire
 		(pts
@@ -1990,7 +2016,7 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 107.95) (xy 203.2 107.95)
+			(xy 194.31 109.22) (xy 207.01 109.22)
 		)
 		(stroke
 			(width 0)
@@ -2128,6 +2154,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PWR_OK"
+		(shape input)
+		(at 179.07 116.84 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b5a9e344-f282-4ebf-b6d1-7bc3a7fef00b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 179.07 127.3847 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -2342,7 +2390,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 190.5 113.03 0)
+		(at 194.31 114.3 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2351,7 +2399,7 @@
 		(fields_autoplaced yes)
 		(uuid "09d8b068-d6c5-44e1-b49d-3e183145aea7")
 		(property "Reference" "#PWR0809"
-			(at 190.5 119.38 0)
+			(at 194.31 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2360,7 +2408,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 190.5 118.11 0)
+			(at 194.31 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2368,7 +2416,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 190.5 113.03 0)
+			(at 194.31 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2377,7 +2425,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 190.5 113.03 0)
+			(at 194.31 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2386,7 +2434,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 190.5 113.03 0)
+			(at 194.31 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2610,7 +2658,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Polarized_Small")
-		(at 203.2 110.49 0)
+		(at 207.01 111.76 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2619,7 +2667,7 @@
 		(fields_autoplaced yes)
 		(uuid "3cf58a3c-4201-4350-8ec3-89f7b70f7070")
 		(property "Reference" "C802"
-			(at 205.74 108.6738 0)
+			(at 209.55 109.9438 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2628,7 +2676,7 @@
 			)
 		)
 		(property "Value" "100µF"
-			(at 205.74 111.2138 0)
+			(at 209.55 112.4838 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2637,7 +2685,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-			(at 203.2 110.49 0)
+			(at 207.01 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2646,7 +2694,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 203.2 110.49 0)
+			(at 207.01 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2655,7 +2703,7 @@
 			)
 		)
 		(property "Description" "Polarized capacitor, small symbol"
-			(at 203.2 110.49 0)
+			(at 207.01 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2664,7 +2712,7 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
-			(at 203.2 110.49 0)
+			(at 207.01 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2673,7 +2721,7 @@
 			)
 		)
 		(property "Mouser" "710-860040373002"
-			(at 203.2 110.49 0)
+			(at 207.01 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2698,7 +2746,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Polarized_Small")
-		(at 215.9 110.49 0)
+		(at 219.71 111.76 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2707,7 +2755,7 @@
 		(fields_autoplaced yes)
 		(uuid "3d714b8f-b9ae-405f-8d66-dbdac28630ed")
 		(property "Reference" "C803"
-			(at 218.44 108.6738 0)
+			(at 222.25 109.9438 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2716,7 +2764,7 @@
 			)
 		)
 		(property "Value" "100µF"
-			(at 218.44 111.2138 0)
+			(at 222.25 112.4838 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2725,7 +2773,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-			(at 215.9 110.49 0)
+			(at 219.71 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2734,7 +2782,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 215.9 110.49 0)
+			(at 219.71 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2743,7 +2791,7 @@
 			)
 		)
 		(property "Description" "Polarized capacitor, small symbol"
-			(at 215.9 110.49 0)
+			(at 219.71 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2752,7 +2800,7 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
-			(at 215.9 110.49 0)
+			(at 219.71 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2761,7 +2809,7 @@
 			)
 		)
 		(property "Mouser" "710-860040373002"
-			(at 215.9 110.49 0)
+			(at 219.71 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2779,6 +2827,76 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
 					(reference "C803")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 179.07 114.3 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "404d6b94-3cea-4536-87de-9215b492d812")
+		(property "Reference" "R803"
+			(at 181.61 113.0299 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "470R"
+			(at 181.61 115.5699 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 179.07 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 179.07 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 179.07 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "811e6f85-dfd0-4657-9be4-81d5827e4328")
+		)
+		(pin "2"
+			(uuid "9f27018a-c4e8-4288-8dd7-13b71a4f0397")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "R803")
 					(unit 1)
 				)
 			)
@@ -2853,7 +2971,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Polarized_Small")
-		(at 228.6 110.49 0)
+		(at 232.41 111.76 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2862,7 +2980,7 @@
 		(fields_autoplaced yes)
 		(uuid "545ded79-505f-443e-9bdd-d3d7ff0e3358")
 		(property "Reference" "C804"
-			(at 231.14 108.6738 0)
+			(at 234.95 109.9438 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2871,7 +2989,7 @@
 			)
 		)
 		(property "Value" "100µF"
-			(at 231.14 111.2138 0)
+			(at 234.95 112.4838 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2880,7 +2998,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-			(at 228.6 110.49 0)
+			(at 232.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2889,7 +3007,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 228.6 110.49 0)
+			(at 232.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2898,7 +3016,7 @@
 			)
 		)
 		(property "Description" "Polarized capacitor, small symbol"
-			(at 228.6 110.49 0)
+			(at 232.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2907,7 +3025,7 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
-			(at 228.6 110.49 0)
+			(at 232.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2916,7 +3034,7 @@
 			)
 		)
 		(property "Mouser" "710-860040373002"
-			(at 228.6 110.49 0)
+			(at 232.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3453,6 +3571,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:LED")
+		(at 179.07 107.95 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a130ac39-1435-4cad-a77a-f7a4bf6ed8aa")
+		(property "Reference" "D802"
+			(at 181.61 105.0924 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Power OK"
+			(at 181.61 107.6324 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+			(at 179.07 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 179.07 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Light emitting diode"
+			(at 179.07 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 179.07 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "143f6cfc-f639-4d3b-9e43-dce6adc92966")
+		)
+		(pin "2"
+			(uuid "8be86910-0d64-4608-a055-aa758fc27873")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "D802")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:ATX-24")
 		(at 143.51 81.28 0)
 		(unit 1)
@@ -3597,7 +3794,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 190.5 107.95 0)
+		(at 194.31 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3606,7 +3803,7 @@
 		(fields_autoplaced yes)
 		(uuid "bea2cf42-db54-4158-b531-a8a7dbe12b9a")
 		(property "Reference" "#PWR0810"
-			(at 190.5 111.76 0)
+			(at 194.31 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3615,7 +3812,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 190.5 102.87 0)
+			(at 194.31 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3623,7 +3820,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 190.5 107.95 0)
+			(at 194.31 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3632,7 +3829,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 190.5 107.95 0)
+			(at 194.31 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3641,7 +3838,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 190.5 107.95 0)
+			(at 194.31 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3663,7 +3860,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Polarized_Small")
-		(at 190.5 110.49 0)
+		(at 194.31 111.76 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3672,7 +3869,7 @@
 		(fields_autoplaced yes)
 		(uuid "c68141fb-8deb-48ac-9d2e-a821ea3e52f7")
 		(property "Reference" "C801"
-			(at 193.04 108.6738 0)
+			(at 196.85 109.9438 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3681,7 +3878,7 @@
 			)
 		)
 		(property "Value" "100µF"
-			(at 193.04 111.2138 0)
+			(at 196.85 112.4838 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3690,7 +3887,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-			(at 190.5 110.49 0)
+			(at 194.31 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3699,7 +3896,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 190.5 110.49 0)
+			(at 194.31 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3708,7 +3905,7 @@
 			)
 		)
 		(property "Description" "Polarized capacitor, small symbol"
-			(at 190.5 110.49 0)
+			(at 194.31 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3717,7 +3914,7 @@
 			)
 		)
 		(property "Part" "Wurth 860040373002"
-			(at 190.5 110.49 0)
+			(at 194.31 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3726,7 +3923,7 @@
 			)
 		)
 		(property "Mouser" "710-860040373002"
-			(at 190.5 110.49 0)
+			(at 194.31 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)

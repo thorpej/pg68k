@@ -3968,6 +3968,16 @@
 	)
 	(wire
 		(pts
+			(xy 80.01 187.96) (xy 92.71 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "19f054f7-46b4-4b79-8c1e-acb975e8c086")
+	)
+	(wire
+		(pts
 			(xy 74.93 55.88) (xy 83.82 55.88)
 		)
 		(stroke
@@ -4675,6 +4685,16 @@
 			(type default)
 		)
 		(uuid "c5e1bb01-d10d-4a54-9de1-dce127f6e989")
+	)
+	(wire
+		(pts
+			(xy 80.01 182.88) (xy 92.71 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c6d8e9cd-5bdc-437d-b14f-f02cbfc9eb5c")
 	)
 	(wire
 		(pts
@@ -10394,6 +10414,85 @@
 			(project "cpu010"
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
 					(reference "C202")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized_Small")
+		(at 80.01 185.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e6feafa7-d052-4bd6-92b6-32476be42bc3")
+		(property "Reference" "C206"
+			(at 82.55 183.6038 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100µF"
+			(at 82.55 186.1438 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
+			(at 80.01 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.01 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, small symbol"
+			(at 80.01 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Wurth 860040373002"
+			(at 80.01 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "02baae3b-58ee-48d6-a07a-b9135391df79")
+		)
+		(pin "1"
+			(uuid "92852638-5aa9-4a99-b3ff-ef678e197c29")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/40bef1ee-40eb-4732-8f1f-7a2dee1d9fd5"
+					(reference "C206")
 					(unit 1)
 				)
 			)

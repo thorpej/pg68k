@@ -535,6 +535,168 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:C_Polarized_Small"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.254 1.778 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C_Polarized_Small"
+				(at 0.254 -2.032 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Polarized capacitor, small symbol"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "CP_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_Polarized_Small_0_1"
+				(rectangle
+					(start -1.524 0.6858)
+					(end 1.524 0.3048)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.524 -0.3048)
+					(end 1.524 -0.6858)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 1.524) (xy -0.762 1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.016 1.27) (xy -1.016 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_Polarized_Small_1_1"
+				(pin passive line
+					(at 0 2.54 270)
+					(length 1.8542)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 1.8542)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:LED"
 			(pin_numbers
 				(hide yes)
@@ -1616,6 +1778,28 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Dummy load for +12V rail."
+		(exclude_from_sim no)
+		(at 203.454 93.218 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1443108f-8f34-4f2a-86ae-8cf20bd11ff7")
+	)
+	(text "General bulk capacitance."
+		(exclude_from_sim no)
+		(at 197.866 115.316 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2ed5cf44-e176-4d10-861d-c32138bddfe9")
+	)
 	(junction
 		(at 143.51 96.52)
 		(diameter 0)
@@ -1623,10 +1807,34 @@
 		(uuid "1161fb48-afcc-4102-86d5-caefe545a751")
 	)
 	(junction
+		(at 190.5 113.03)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2c47ce0e-db58-4bb3-a77c-aeadea4bc8a3")
+	)
+	(junction
+		(at 215.9 113.03)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4536826d-7bf5-4b16-be48-c540a3b10433")
+	)
+	(junction
 		(at 96.52 80.01)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4982043a-081c-491c-9798-a70b63738f07")
+	)
+	(junction
+		(at 215.9 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "61778808-7567-467a-881e-4c1962488430")
+	)
+	(junction
+		(at 203.2 113.03)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "718dd7a5-7231-4b04-94f9-a76bf09fe1a1")
 	)
 	(junction
 		(at 105.41 80.01)
@@ -1639,6 +1847,18 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e4482bbd-18a9-49f8-b83e-46346b6b71ad")
+	)
+	(junction
+		(at 203.2 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f0a64a62-0ae3-474f-852b-a98394c59c61")
+	)
+	(junction
+		(at 190.5 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f4ef0635-7d49-4765-914c-5dab9f0a691f")
 	)
 	(no_connect
 		(at 156.21 83.82)
@@ -1667,6 +1887,16 @@
 			(type default)
 		)
 		(uuid "21226417-f355-41ae-a798-1eb40e893c16")
+	)
+	(wire
+		(pts
+			(xy 215.9 107.95) (xy 228.6 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3fe2a37d-0de4-42d0-be26-500a0e3530ab")
 	)
 	(wire
 		(pts
@@ -1700,6 +1930,36 @@
 	)
 	(wire
 		(pts
+			(xy 215.9 113.03) (xy 228.6 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "735fdecd-9590-4ba4-b79f-7301e2df0d98")
+	)
+	(wire
+		(pts
+			(xy 190.5 113.03) (xy 203.2 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85537510-f8a0-42dd-af4a-12f916509bb6")
+	)
+	(wire
+		(pts
+			(xy 203.2 113.03) (xy 215.9 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "918ec351-8701-4f22-8a02-1b3b7a8b8c30")
+	)
+	(wire
+		(pts
 			(xy 177.8 81.28) (xy 179.07 81.28)
 		)
 		(stroke
@@ -1710,6 +1970,16 @@
 	)
 	(wire
 		(pts
+			(xy 203.2 107.95) (xy 215.9 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1743e15-9c2b-4019-85d3-25a6fec211a3")
+	)
+	(wire
+		(pts
 			(xy 86.36 67.31) (xy 96.52 67.31)
 		)
 		(stroke
@@ -1717,6 +1987,16 @@
 			(type default)
 		)
 		(uuid "aa3692b6-3fd5-4db8-85bb-602d5770e353")
+	)
+	(wire
+		(pts
+			(xy 190.5 107.95) (xy 203.2 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0d7415d-37fc-4e2c-a29d-82f2c17266ae")
 	)
 	(wire
 		(pts
@@ -2061,6 +2341,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 190.5 113.03 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "09d8b068-d6c5-44e1-b49d-3e183145aea7")
+		(property "Reference" "#PWR0809"
+			(at 190.5 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 190.5 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 190.5 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0b74ae18-9b9a-4d01-ba58-b8568ffb7bf4")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "#PWR0809")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R_Small")
 		(at 163.83 114.3 0)
 		(unit 1)
@@ -2263,6 +2609,164 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C_Polarized_Small")
+		(at 203.2 110.49 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3cf58a3c-4201-4350-8ec3-89f7b70f7070")
+		(property "Reference" "C802"
+			(at 205.74 108.6738 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100µF"
+			(at 205.74 111.2138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
+			(at 203.2 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 203.2 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, small symbol"
+			(at 203.2 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Wurth 860040373002"
+			(at 203.2 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "5675e1f9-fbfc-4bdd-b660-2840df0cd16d")
+		)
+		(pin "1"
+			(uuid "59a06958-68de-43f1-935a-ac11a9a38f50")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "C802")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized_Small")
+		(at 215.9 110.49 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3d714b8f-b9ae-405f-8d66-dbdac28630ed")
+		(property "Reference" "C803"
+			(at 218.44 108.6738 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100µF"
+			(at 218.44 111.2138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
+			(at 215.9 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 215.9 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, small symbol"
+			(at 215.9 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Wurth 860040373002"
+			(at 215.9 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "6e643401-64c2-4473-aee2-8e15cbc91809")
+		)
+		(pin "1"
+			(uuid "c934c6b6-5915-4bb5-ba00-2aae4e77f25c")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "C803")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+5V")
 		(at 156.21 78.74 270)
 		(unit 1)
@@ -2330,6 +2834,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C_Polarized_Small")
+		(at 228.6 110.49 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "545ded79-505f-443e-9bdd-d3d7ff0e3358")
+		(property "Reference" "C804"
+			(at 231.14 108.6738 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100µF"
+			(at 231.14 111.2138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
+			(at 228.6 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 228.6 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, small symbol"
+			(at 228.6 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Wurth 860040373002"
+			(at 228.6 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "aeb0dd9e-8d83-46e0-a5b8-9f95336cb3a0")
+		)
+		(pin "1"
+			(uuid "a71a1a57-7745-46a6-b60e-2734708abd98")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "C804")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:-12V")
 		(at 156.21 91.44 270)
 		(unit 1)
@@ -2391,6 +2974,85 @@
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
 					(reference "#PWR0801")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 194.31 92.71 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6cf86960-11ec-4a8b-9245-4dc0cf920dab")
+		(property "Reference" "R802"
+			(at 196.85 93.9801 0)
+			(effects
+				(font
+					(size 1.016 1.016)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 196.85 91.4401 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_Power_L25.0mm_W6.4mm_P27.94mm"
+			(at 194.31 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 194.31 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 194.31 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Vishay / Dale CW005100R0JE73"
+			(at 194.31 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "3fdb7a62-e073-4436-9473-88413254854f")
+		)
+		(pin "1"
+			(uuid "aa7880ba-4614-459c-977e-be3e096da121")
+		)
+		(instances
+			(project ""
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "R802")
 					(unit 1)
 				)
 			)
@@ -2612,6 +3274,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 194.31 95.25 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9dc90305-4f5a-473a-9420-b73be40ea59c")
+		(property "Reference" "#PWR0808"
+			(at 194.31 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 194.31 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 194.31 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 194.31 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 194.31 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7aa304a4-0ce7-4ff0-b1fc-2c22f3cbebd3")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "#PWR0808")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Switch:SW_Push")
 		(at 81.28 67.31 0)
 		(unit 1)
@@ -2808,6 +3536,151 @@
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
 					(reference "J801")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 190.5 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "bea2cf42-db54-4158-b531-a8a7dbe12b9a")
+		(property "Reference" "#PWR0810"
+			(at 190.5 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 190.5 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 190.5 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c60d4084-350d-4747-9634-47953a1a039f")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "#PWR0810")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized_Small")
+		(at 190.5 110.49 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c68141fb-8deb-48ac-9d2e-a821ea3e52f7")
+		(property "Reference" "C801"
+			(at 193.04 108.6738 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100µF"
+			(at 193.04 111.2138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
+			(at 190.5 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 190.5 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, small symbol"
+			(at 190.5 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "Wurth 860040373002"
+			(at 190.5 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "47eb3d2d-909d-4184-a755-26d8eb32489d")
+		)
+		(pin "1"
+			(uuid "c5b8116d-2ff5-47fa-b55e-80cdd434eda9")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "C801")
 					(unit 1)
 				)
 			)
@@ -3085,6 +3958,72 @@
 			(project ""
 				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
 					(reference "#PWR0804")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+12V")
+		(at 194.31 90.17 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e87211ec-e5b5-45cc-9c93-23f7d4aea687")
+		(property "Reference" "#PWR0807"
+			(at 194.31 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+12V"
+			(at 194.31 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 194.31 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 194.31 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 194.31 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f2dfad4a-9f38-4fc4-83a9-6414d59b520e")
+		)
+		(instances
+			(project "cpu010"
+				(path "/65f80d66-eea1-4882-b29a-ae1b65892b55/4c19becf-2d9f-4a86-8ce9-fcf77c2c5a2c"
+					(reference "#PWR0807")
 					(unit 1)
 				)
 			)

@@ -17585,6 +17585,15 @@
 				(hide yes)
 			)
 		)
+		(property "Mouser" "534-500"
+			(at 132.08 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "68c43517-f7f6-4c65-b85f-36864fb37453")
 		)

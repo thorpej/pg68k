@@ -16837,7 +16837,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 55.88 223.5199 0)
 			(effects
 				(font
@@ -19255,7 +19255,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 35.56 204.4699 0)
 			(effects
 				(font
@@ -19458,7 +19458,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 55.88 204.4699 0)
 			(effects
 				(font
@@ -21214,7 +21214,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 39.37 223.5199 0)
 			(effects
 				(font
@@ -22569,7 +22569,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 39.37 240.0299 0)
 			(effects
 				(font
@@ -23977,7 +23977,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 39.37 256.5399 0)
 			(effects
 				(font
@@ -24246,7 +24246,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470R"
+		(property "Value" "10K"
 			(at 57.15 240.0299 0)
 			(effects
 				(font

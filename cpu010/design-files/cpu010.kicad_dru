@@ -1,0 +1,2 @@
+(version 1)
+(rule via_annular_ring (condition "A.Type == 'Via'") (constraint annular_width (min 0.1250mm)))

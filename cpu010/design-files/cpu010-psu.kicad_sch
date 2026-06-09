@@ -3613,7 +3613,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 179.07 107.95 0)
 			(effects
 				(font
@@ -3649,7 +3649,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C9900024723"
+		(property "LCSC" "C2286"
 			(at 179.07 107.95 90)
 			(effects
 				(font
@@ -4064,7 +4064,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 163.83 107.95 0)
 			(effects
 				(font
@@ -4100,7 +4100,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C9900024723"
+		(property "LCSC" "C2286"
 			(at 163.83 107.95 90)
 			(effects
 				(font

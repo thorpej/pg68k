@@ -7,4 +7,4 @@ a 68000-based BASIC machine to (eventually, one of these days, maybe) a
 68060-based workstation.  As a person who has spent his entire career doing
 system software, this is a vehicle to learn hardware design.
 
-
+The first machine in the series is the [Phaethon 1](cpu010/README.md).

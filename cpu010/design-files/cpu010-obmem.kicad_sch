@@ -4,6 +4,12 @@
 	(generator_version "9.0")
 	(uuid "05dbc127-064e-46b2-a329-f8298b9f4e2b")
 	(paper "A3")
+	(title_block
+		(title "68k Playground CPU010")
+		(date "2026-06-08")
+		(rev "A")
+		(company "(c) 2025, 2026 Jason R. Thorpe.  All rights reserved.")
+	)
 	(lib_symbols
 		(symbol "Device:C_Polarized_Small"
 			(pin_numbers

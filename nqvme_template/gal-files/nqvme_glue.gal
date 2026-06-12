@@ -1,0 +1,35 @@
+GAL22V10
+NQVMEGLU
+
+/AS AM0 AM1 AM2 AM3 AM4 AM5 /UDS /LDS RnW  NC    GND
+ NC NC  NC  NC  NC  NC  NC   NC   NC  NC  /VMEAS VCC
+
+;
+; The Address Modifier values for the VME bus are:
+;
+;	$39	un-privileged data access
+;	$3A	un-privileged program access
+;	$3D	privileged data access
+;	$3E	privileged program access
+;
+; This is:
+;      AM5  AM4  AM3  AM2  AM1  AM0
+;	1    1    1    0    0    1
+;	1    1    1    0    1    0
+;	1    1    1    1    0    1
+;	1    1    1    1    1    0
+;
+; All other cycles with different Address Modifier values must
+; be ignored.
+;
+VMEAS = AS * AM5 * AM4 * AM3 * /AM2 * /AM1 *  AM0
+      + AS * AM5 * AM4 * AM3 * /AM2 *  AM1 * /AM0
+      + AS * AM5 * AM4 * AM3 *  AM2 * /AM1 *  AM0
+      + AS * AM5 * AM4 * AM3 *  AM2 *  AM1 * /AM0;
+
+DESCRIPTION
+
+VME top-level address decode logic for NQVME expansion boards.
+Boards should gate their own address matching on the /VMEAS
+("VME Address Strobe") output.  This can serve as a template
+for other logic functions related to the data strobes, as well.

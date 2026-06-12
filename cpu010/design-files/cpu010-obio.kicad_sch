@@ -6,8 +6,8 @@
 	(paper "A3")
 	(title_block
 		(title "68k Playground CPU010")
-		(date "2026-06-08")
-		(rev "A")
+		(date "2026-06-12")
+		(rev "B")
 		(company "(c) 2025, 2026 Jason R. Thorpe.  All rights reserved.")
 	)
 	(lib_symbols

@@ -1,0 +1,62 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "92cadfc1-8e63-4bdb-a6f5-005dfec1a40c")
+	(paper "A4")
+	(title_block
+		(title "NQVME Expansion Board Template")
+		(date "2026-06-12")
+		(rev "A")
+		(company "(c) 2026 Jason R. Thorpe.  All rights reserved.")
+	)
+	(lib_symbols)
+	(sheet
+		(at 20.32 21.844)
+		(size 33.02 30.48)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "66545e2b-f015-4e35-8363-e10ec4f10f00")
+		(property "Sheetname" "NQVME interface"
+			(at 20.32 21.1324 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "nqvme_interface.kicad_sch"
+			(at 20.32 52.9086 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "nqvme_template"
+				(path "/92cadfc1-8e63-4bdb-a6f5-005dfec1a40c"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

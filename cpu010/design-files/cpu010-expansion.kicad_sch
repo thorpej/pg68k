@@ -10077,7 +10077,7 @@
 		)
 		(uuid "251ee4ef-8f1f-400c-969a-ef461e4ea3a3")
 	)
-	(label "EXP_D6"
+	(label "EXP_D7"
 		(at 66.04 50.8 180)
 		(effects
 			(font
@@ -10327,7 +10327,7 @@
 		)
 		(uuid "42b4117e-7635-4838-8d28-b3c36f1db747")
 	)
-	(label "EXP_D6"
+	(label "EXP_D7"
 		(at 222.25 50.8 180)
 		(effects
 			(font
@@ -11317,7 +11317,7 @@
 		)
 		(uuid "9371ac66-5f4c-45a1-b62a-d3173f55d10f")
 	)
-	(label "EXP_D6"
+	(label "EXP_D7"
 		(at 146.05 50.8 180)
 		(effects
 			(font
@@ -11897,7 +11897,7 @@
 		)
 		(uuid "bfa2a9af-5d8f-4f64-8cc2-b854d24c7a03")
 	)
-	(label "EXP_D7"
+	(label "EXP_D6"
 		(at 66.04 48.26 180)
 		(effects
 			(font
@@ -12567,7 +12567,7 @@
 		)
 		(uuid "fa2a452a-c790-4678-bf8a-99b674525ad4")
 	)
-	(label "EXP_D7"
+	(label "EXP_D6"
 		(at 146.05 48.26 180)
 		(effects
 			(font
@@ -12667,7 +12667,7 @@
 		)
 		(uuid "ff16c5b8-51bd-4601-bf44-6d352825b10a")
 	)
-	(label "EXP_D7"
+	(label "EXP_D6"
 		(at 222.25 48.26 180)
 		(effects
 			(font

@@ -1,8 +1,8 @@
 GAL22V10
 NQVMEGLU
 
-/AS AM0 AM1 AM2 AM3 AM4 AM5 /UDS /LDS RnW  NC    GND
- NC NC  NC  NC  NC  NC  NC   NC   NC  NC  /VMEAS VCC
+/RMATCH NC RnW /LDS /UDS AM4 AM3 AM2 AM1 AM0  AM5   GND
+/AS     NC NC   NC   NC  NC  NC  NC  NC  NC  /VMEAS VCC
 
 ;
 ; The Address Modifier values for the VME bus are:
@@ -22,10 +22,10 @@ NQVMEGLU
 ; All other cycles with different Address Modifier values must
 ; be ignored.
 ;
-VMEAS = AS * AM5 * AM4 * AM3 * /AM2 * /AM1 *  AM0
-      + AS * AM5 * AM4 * AM3 * /AM2 *  AM1 * /AM0
-      + AS * AM5 * AM4 * AM3 *  AM2 * /AM1 *  AM0
-      + AS * AM5 * AM4 * AM3 *  AM2 *  AM1 * /AM0;
+VMEAS = AS * AM5 * AM4 * AM3 * /AM2 * /AM1 *  AM0 * RMATCH
+      + AS * AM5 * AM4 * AM3 * /AM2 *  AM1 * /AM0 * RMATCH
+      + AS * AM5 * AM4 * AM3 *  AM2 * /AM1 *  AM0 * RMATCH
+      + AS * AM5 * AM4 * AM3 *  AM2 *  AM1 * /AM0 * RMATCH;
 
 DESCRIPTION
 

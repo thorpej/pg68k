@@ -32,9 +32,16 @@
 extern const struct devsw ata_devsw;
 #endif
 
+#ifdef CONFIG_DEV_IMG
+extern const struct devsw img_devsw;
+#endif
+
 const struct devsw *devsw[] = {
 #ifdef CONFIG_DEV_ATA
 	&ata_devsw,
+#endif
+#ifdef CONFIG_DEV_IMG
+	&img_devsw,
 #endif
 	NULL,
 };
@@ -272,7 +279,7 @@ dev_open(struct open_file *f, const char *path, int flags, const char **fnamep)
 	error = DEV_OPEN(f->f_dev)(f);
 	if (error == 0) {
 		need_close = true;
-		if (DEV_IS_BLKDEV(f->f_dev)) {
+		if (DEV_HAS_PART(f->f_dev)) {
 			struct partition_list *pl = &f->f_blk.f_partitions;
 			error = partition_list_scan(f, pl);
 			if (error == 0) {

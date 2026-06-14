@@ -151,12 +151,15 @@ struct devsw {
 };
 
 #define	DEV_F_NETDEV		0x0001	/* is a network device */
+#define	DEV_F_NOPART		0x0002	/* no partitions on this device */
 
 extern const struct devsw *devsw[];	/* device array */
 extern const int ndevs;			/* number of elements in devsw[] */
 
 #define	DEV_IS_NETDEV(d)	((d)->dv_flags & DEV_F_NETDEV)
 #define	DEV_IS_BLKDEV(d)	(!DEV_IS_NETDEV(d))
+#define	DEV_HAS_PART(d)		(DEV_IS_BLKDEV(d) && \
+				 ((d)->dv_flags & DEV_F_NOPART) == 0)
 
 #define	DEV_NAME(d)		((d)->dv_name)
 #define	DEV_SEND(d)		((d)->dv_net.dv_send)

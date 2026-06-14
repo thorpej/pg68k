@@ -132,19 +132,6 @@
 #define	SYSEN_HOWTO	0xc0		/* boot howto mask */
 #define	SYSEN_HOWTO_SHIFT 6
 
-/*
- * Board Revision Register
- *
- * 'A' - 'Z' indicates real hardware.  All other values indicate
- * an emulator.  We can use this, in conjunction with the PLD
- * Revision Register, to determine board quirks that we need to
- * work around.  Anything the operating system needs to deal with
- * will be published in the Device Tree.
- */
-#define	BRDREV_HOSTSIM	0x00		/* 0 == host simulator */
-#define	BRDREV_TME	0x01		/* 1 == TME emulator */
-#define	BRDREV_MAME	0x02		/* 2 == MAME emulator */
-
 #ifndef __ASSEMBLER__
 
 static inline int

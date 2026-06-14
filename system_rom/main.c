@@ -680,10 +680,13 @@ cli_h_part(int argc, char *argv[])
 	}
 	struct open_file *f = getfile(fd);
 
-	if (DEV_IS_BLKDEV(f->f_dev)) {
+	if (DEV_HAS_PART(f->f_dev)) {
 		printf("Partitions for %s:\n",
 		    dev_string(f, dstr, sizeof(dstr)));
 		partition_list_show(&f->f_blk.f_partitions);
+	} else if (DEV_IS_BLKDEV(f->f_dev)) {
+		printf("%s does not support partitions.\n",
+		    dev_string(f, dstr, sizeof(dstr)));
 	} else {
 		printf("%s is not a block device.\n",
 		    dev_string(f, dstr, sizeof(dstr)));
@@ -1340,11 +1343,18 @@ cli_longjmp(void)
 	sys_reboot();
 }
 
+uint8_t brdrev;
+uint8_t pldrev;
+
+static char brdrev_strbuf[sizeof("XXX")] = "???";
+static const char *brdrev_str = brdrev_strbuf;
+
 static void
 version(void)
 {
 	/* Hello, world! */
-	printf(" \\ /   %s\n", CONFIG_MACHINE_STRING);
+	printf(" \\ /   %s, Rev %s.%u\n", CONFIG_MACHINE_STRING,
+	    brdrev_str, pldrev);
 	printf("- O -  %s\n", CONFIG_CPU_DESC_STRING);
 	printf(" / \\   Firmware version %d.%d\n\n",
 	    CONFIG_ROM_VERSION_MAJOR, CONFIG_ROM_VERSION_MINOR);
@@ -1384,6 +1394,31 @@ main(int argc, char *argv[])
 	cli_env_valid = true;
 
 	configure_quietly = !BOOT_HOWTO_ANNOUNCE(boot_howto);
+
+	/*
+	 * Get the board revision before we do any more work.  How we
+	 * get the board revision is different for each machine, but
+	 * how they're consumed is the same.
+	 */
+#if defined(CONFIG_MACH_PG68010_MK_I)
+	brdrev = control_inb(CTLREG_BRDREV);
+	pldrev = control_inb(CTLREG_PLDREV);
+#endif
+	switch (brdrev) {
+	case BRDREV_HOSTSIM:	brdrev_str = "Hostsim"; break;
+	case BRDREV_TME:	brdrev_str = "TME"; break;
+	case BRDREV_MAME:	brdrev_str = "MAME"; break;
+	default:
+		if (brdrev >= 'A' && brdrev <= 'Z') {
+			snprintf(brdrev_strbuf, sizeof(brdrev_strbuf),
+			    "%c", brdrev);
+		} else {
+			snprintf(brdrev_strbuf, sizeof(brdrev_strbuf),
+			    "%u", brdrev);
+		}
+		brdrev_str = brdrev_strbuf;
+		break;
+	}
 
 	/* Hello, world! */
 	if (! configure_quietly) {

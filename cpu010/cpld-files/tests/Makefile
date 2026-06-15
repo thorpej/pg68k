@@ -32,7 +32,16 @@ MMU_TESTCASES+=	mmu_ctx \
 		mmu_bustimer \
 		mmu_berr_reg
 
-TESTCASES=	${MMU_TESTCASES}
+MEMCTL_TESTCASES= memctl_decode \
+		  memctl_mmu_off \
+		  memctl_romsel \
+		  memctl_ramsel0 \
+		  memctl_ramsel1 \
+		  memctl_ramsel2 \
+		  memctl_ramsel3
+
+TESTCASES=	${MMU_TESTCASES} \
+		${MEMCTL_TESTCASES}
 
 .for tc in ${TESTCASES}
 VCDS+=	${tc}.vcd
@@ -56,5 +65,10 @@ ${tc}.vcd: ${tc}.vvp
 
 .for tc in ${MMU_TESTCASES}
 ${tc}.vvp: ${tc}_tb.v ../mmu010.v
+	iverilog -D'DUMPFILE="${tc}.vcd"' $(VFLAGS) -o $@ ${.ALLSRC}
+.endfor
+
+.for tc in ${MEMCTL_TESTCASES}
+${tc}.vvp: ${tc}_tb.v ../memctl010.v
 	iverilog -D'DUMPFILE="${tc}.vcd"' $(VFLAGS) -o $@ ${.ALLSRC}
 .endfor

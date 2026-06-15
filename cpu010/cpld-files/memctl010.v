@@ -60,6 +60,8 @@ module memctl010(
 
 `ifdef BUILD_FOR_TEST
 	output wire decode_out,
+	output wire [1:0] space_out,
+	output wire [4:0] bank_out,
 `endif
 
 	output wire DTACK	/* drives open-drain inverter */
@@ -80,26 +82,30 @@ module memctl010(
  */
 wire Decode = (FC[1] ^ FC[0]) && ~nAS;
 
-`ifdef BUILD_FOR_TEST
-/* Provide a hook for testbench code to peek at the Decode node. */
-assign decode_out = Decode;
-`endif
-
 localparam SEL_NONE	= 6'b000000;
 localparam SEL_ROM	= 6'b100000;
-localparam SEL_RAM0	= 6'b010000;
-localparam SEL_RAM1	= 6'b001000;
-localparam SEL_RAM2	= 6'b000100;
-localparam SEL_RAM3	= 6'b000010;
+localparam SEL_RAM3	= 6'b010000;
+localparam SEL_RAM2	= 6'b001000;
+localparam SEL_RAM1	= 6'b000100;
+localparam SEL_RAM0	= 6'b000010;
 localparam SEL_EXPRAM	= 6'b000001;
 
 localparam SP_dc	= 2'bxx;
 localparam SP_RAM	= 2'b00;
 localparam SP_ROM	= 2'b01;
 
+wire [1:0] Space = ADDR[27:26];
+wire [4:0] Bank  = ADDR[25:21];
+
+`ifdef BUILD_FOR_TEST
+assign decode_out = Decode;
+assign space_out = Space;
+assign bank_out = Bank;
+`endif
+
 reg [5:0] Selects;
 always @(*) begin
-	casex ({Decode, MMUEN, ADDR[27:26], ADDR[25:21]})
+	casex ({Decode, MMUEN, Space, Bank})
 	/* MMU disabled -> everything goes to ROM. */
 	{1'b1, 1'b0, SP_dc,  5'bxxxxx}: Selects = SEL_ROM;
 

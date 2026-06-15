@@ -165,6 +165,12 @@
  *     Seriously, like it's enough that I might consider another CPLD
  *     just to deal with the address muxing.
  *
+ *     Note, this was a concious design decision, not just an accident.
+ *     By having these muxes, especially those for the PageMap address
+ *     inputs, software can inspect any PME without having map its
+ *     PMEG in the current SegMap.  To contrast, the Sun3 MMU accesses
+ *     PMEs using the VA that the PME maps.
+ *
  * In addition to this CPLD, there are some external components required
  * to implement the MMU.  Specific logic families selected in order to
  * minimize propagation delays.
@@ -293,9 +299,6 @@ assign CPU_CLK = ClockDiv[1];
  *     signal synchronization to occur).  The practical upshot is that
  *     there will probably end up being a wait state incurred for
  *     Context Register writes.
- *
- * NOTE: ALL OF THESE SYNCHRONIZED INPUTS ARE ACTIVE-HIGH, EVEN IF THE
- * ORIGINAL SIGNAL IS ACTIVE-LOW.
  *
  * ALSO NOTE: The MC6800 peripheral interface is -- not supported --,
  * because I don't want to be bothered with dealing with both /DTACK

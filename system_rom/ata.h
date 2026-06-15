@@ -27,9 +27,18 @@
 #ifndef ata_h_included
 #define	ata_h_included
 
-#include "systypes.h"
+#include "syslib.h"
 
 void	ata_configure(bool);
 void	ata_init(int, bool);
+
+#ifdef CONFIG_MACH_PG68010_MK_I
+/* 16-bit ATA PIO is not working correctly in TME at the moment. */
+#define	ATA_FORCE_PIO8	(brdrev == BRDREV_TME)
+#endif
+
+#ifndef ATA_FORCE_PIO8
+#define	ATA_FORCE_PIO8	0
+#endif
 
 #endif /* ata_h_included */

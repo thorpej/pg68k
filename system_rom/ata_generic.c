@@ -102,7 +102,6 @@ struct ata_drive {
 
 struct ata_controller {
 	struct ata_drive ata_drives[2];
-	bool ata_8bit;
 };
 
 static struct ata_controller ata_controllers[MAXATA];
@@ -289,7 +288,7 @@ wdc_exec_command(int ctlr, const struct wdc_command *cmd)
 static void
 wdc_read_data(int ctlr, void *buf, u_int count)
 {
-	if (ata_controllers[ctlr].ata_8bit) {
+	if (ATA_FORCE_PIO8) {
 		DATA_IN8(ctlr, buf, count);
 	} else {
 		DATA_IN16(ctlr, buf, count);
@@ -393,16 +392,6 @@ ata_init(int ctlr, bool do_init)
 	uint32_t capacity;
 	struct ata_drive *drv;
 
-#ifdef CONFIG_MACH_PG68010_MK_I
-	/*
-	 * 16-bit ATA PIO is not working correctly in TME at
-	 * the moment.
-	 */
-	if (brdrev == BRDREV_TME) {
-		ata_controllers[ctlr].ata_8bit = true;
-	}
-#endif
-
 	for (drive = 0; do_init && drive < 2; drive++) {
 		if (drive == 0) {
 			rv = wdc_probe(ctlr);
@@ -416,7 +405,7 @@ ata_init(int ctlr, bool do_init)
 		if ((rv & __BIT(drive)) == 0) {
 			continue;
 		}
-		if (ata_controllers[ctlr].ata_8bit) {
+		if (ATA_FORCE_PIO8) {
 			error = wdc_cmd_set_feature(ctlr, drive,
 			    WDSF_8BIT_PIO_EN);
 			if (error) {

@@ -34,6 +34,10 @@
 #include "memory.h"
 #include "clock.h"
 
+#ifdef CONFIG_DEV_ATA
+#include "ata.h"
+#endif
+
 #ifdef CONFIG_MACH_HOST_SIM
 #include "simglue.h"
 #endif
@@ -318,7 +322,8 @@ set_memory_nodes(void)
 			fdterr = fdt_setprop(fdt_store, offset,
 			    "device_type", "memory", sizeof("memory"));
 			if (fdterr) {
-				printf("%s: fdt_setprop(/%s/device_type - %s\n",
+				printf("%s: fdt_setprop(/%s/device_type) "
+				    "- %s\n",
 				    __func__, memnode_name,
 				    fdt_strerror(offset));
 				offset = -1;
@@ -327,7 +332,7 @@ set_memory_nodes(void)
 			fdterr = fdt_setprop(fdt_store, offset,
 			    "reg", newreg, sizeof(newreg));
 			if (fdterr) {
-				printf("%s: fdt_setprop(/%s/reg - %s\n",
+				printf("%s: fdt_setprop(/%s/reg) - %s\n",
 				    __func__, memnode_name,
 				    fdt_strerror(fdterr));
 				offset = -1;
@@ -353,7 +358,7 @@ set_memory_nodes(void)
 		    fdt32_ld(&reg[1]) == 0) {
 			fdterr = fdt_delprop(fdt_store, offset, "reg");
 			if (fdterr < 0) {
-				printf("%s: fdt_delprop(/memory@%x/reg - %s\n",
+				printf("%s: fdt_delprop(/memory@%x/reg) - %s\n",
 				    __func__, fdt32_ld(&reg[0]),
 				    fdt_strerror(fdterr));
 				continue;
@@ -363,6 +368,49 @@ set_memory_nodes(void)
 		}
 	}
 }
+
+#ifdef CONFIG_DEV_ATA
+static void
+fixup_ata_nodes(void)
+{
+	int offset, fdterr, len;
+	char path[80];
+
+	if (! ATA_FORCE_PIO8) {
+		return;
+	}
+
+	for (offset = fdt_next_node(fdt_store, -1, NULL);
+	     offset >= 0;
+	     offset = fdt_next_node(fdt_store, offset, NULL)) {
+		if (fdt_getprop(fdt_store, offset,
+				"ata-generic,use16bit", &len) == NULL) {
+			continue;
+		}
+
+		if (fdt_get_path(fdt_store, offset, path, sizeof(path)) < 0) {
+			snprintf(path, sizeof(path),
+			    "fdt-offset-0x%x", offset);
+		}
+		verbose_printf("FDT: Forcing ata-generic,use8bit for %s\n",
+		    path);
+
+		fdterr = fdt_delprop(fdt_store, offset, "ata-generic,use16bit");
+		if (fdterr) {
+			printf("%s: fdt_delprop(%s/ata-generic,use16bit) "
+			    "- %s\n", __func__, path, fdt_strerror(fdterr));
+			continue;
+		}
+		fdterr = fdt_setprop_empty(fdt_store, offset,
+					   "ata-generic,use8bit");
+		if (fdterr) {
+			printf("%s: fdt_setprop(%s/ata-generic,use8bit) "
+			    "- %s\n", __func__, path, fdt_strerror(fdterr));
+			continue;
+		}
+	}
+}
+#endif /* CONFIG_DEV_ATA */
 
 static int
 exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
@@ -401,6 +449,10 @@ exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
 
 	/* Set the memory entries. */
 	set_memory_nodes();
+
+#ifdef CONFIG_DEV_ATA
+	fixup_ata_nodes();
+#endif
 
 	fdterr = fdt_pack(fdt_store);
 	if (fdterr) {

@@ -58,6 +58,10 @@ module memctl010(
 	output wire [3:0] nRAMSEL,
 	output wire nEXPRAMSEL,
 
+`ifdef BUILD_FOR_TEST
+	output wire decode_out,
+`endif
+
 	output wire DTACK	/* drives open-drain inverter */
 );
 
@@ -75,6 +79,11 @@ module memctl010(
  * Normal space that we decode: FC[1] ^ FC[0] -> 1
  */
 wire Decode = (FC[1] ^ FC[0]);
+
+`ifdef BUILD_FOR_TEST
+/* Provide a hook for testbench code to peek at the Decode node. */
+assign decode_out = Decode;
+`endif
 
 localparam SEL_NONE	= 6'b000000;
 localparam SEL_ROM	= 6'b100000;

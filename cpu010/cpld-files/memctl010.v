@@ -78,7 +78,7 @@ module memctl010(
  *
  * Normal space that we decode: FC[1] ^ FC[0] -> 1
  */
-wire Decode = (FC[1] ^ FC[0]);
+wire Decode = (FC[1] ^ FC[0]) && ~nAS;
 
 `ifdef BUILD_FOR_TEST
 /* Provide a hook for testbench code to peek at the Decode node. */

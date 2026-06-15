@@ -45,7 +45,7 @@ module memctl010(
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
 
-	input wire [27:21] ADDR,/* A27..A20 from MMU */
+	input wire [27:21] ADDR,/* A27..A21 from MMU */
 
 	/* Output strobes. */
 	output wire nU_RD,

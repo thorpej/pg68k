@@ -40,7 +40,8 @@ MEMCTL_TESTCASES= memctl_decode \
 		  memctl_ramsel2 \
 		  memctl_ramsel3 \
 		  memctl_expramsel \
-		  memctl_strobes
+		  memctl_strobes \
+		  memctl_dtack
 
 TESTCASES=	${MMU_TESTCASES} \
 		${MEMCTL_TESTCASES}

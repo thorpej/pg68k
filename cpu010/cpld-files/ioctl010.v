@@ -417,12 +417,12 @@ always @(posedge CLK, negedge nRST) begin
 				state <= S_DTACK;
 			end
 
-			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
+			{CYCLE_IOREAD, SEL_TMR_MSB}: begin
 				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
-			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
+			{CYCLE_IOWRITE, SEL_TMR_MSB}: begin
 				Timer_valmod <= 1'b1;
 				Timer_enab <= 1'b0;
 				Timer_value[15:8] = DATA;

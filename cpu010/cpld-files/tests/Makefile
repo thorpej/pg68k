@@ -43,7 +43,9 @@ MEMCTL_TESTCASES= memctl_decode \
 		  memctl_strobes \
 		  memctl_dtack
 
-IOCTL_TESTCASES= ioctl_inten
+IOCTL_TESTCASES= ioctl_inten \
+		 ioctl_extint_encode \
+		 ioctl_obioint
 
 TESTCASES=	${MMU_TESTCASES} \
 		${MEMCTL_TESTCASES} \

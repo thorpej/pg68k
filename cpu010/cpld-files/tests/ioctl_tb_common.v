@@ -1,0 +1,141 @@
+reg n_rst;
+reg cpu_clk;
+
+reg n_as;
+reg rnw;
+reg n_uds;
+reg n_lds;
+
+reg int_en;
+
+localparam FC_USER_DATA  = 3'd1;
+localparam FC_USER_PROG  = 3'd2;
+localparam FC_CONTROL    = 3'd4;
+localparam FC_SUPER_DATA = 3'd5;
+localparam FC_SUPER_PROG = 3'd6;
+
+reg [2:0] fc;
+reg [31:0] addr;
+
+reg n_irq7;
+reg n_irq6;
+reg n_irq5;
+reg n_irq4;
+reg n_irq3;
+
+reg uarta_int;
+reg uartb_int;
+reg ata_int;
+reg n_i2c_int;
+
+reg ata_iordy;
+
+wire [7:0] data;
+reg [7:0] data_out;
+assign data = ~rnw ? data_out : 8'bzzzzzzzz;
+
+wire [2:0] n_ipl;
+wire [2:0] ipl = ~n_ipl;
+
+wire n_duartsel;
+wire n_i2csel;
+wire n_atasel;
+wire n_ataauxsel;
+wire n_ataben;
+
+wire n_iord;
+wire n_iowr;
+
+wire iorst;
+
+wire n_expsel;
+
+wire n_avec;
+wire dtack;
+
+	/* Instantiate the device under test. */
+	ioctl010 dut (
+		.nRST(n_rst),
+		.CLK(cpu_clk),
+
+		.RnW(rnw),
+		.nAS(n_as),
+		.nUDS(n_uds),
+		.nLDS(n_lds),
+
+		.INT_EN(inten),
+
+		.FC(fc),
+		.ADDR(addr[11:1]),
+		.ADDRSP(addr[27:26]),
+		.CPUTYP(addr[19:16]),
+
+		.nIRQ7(n_irq7),
+		.nIRQ6(n_irq6),
+		.nIRQ5(n_irq5),
+		.nIRQ4(n_irq4),
+		.nIRQ3(n_irq3),
+
+		.UARTA_INT(uarta_int),
+		.UARTB_INT(uartb_int),
+		.ATA_INT(ata_int),
+		.nI2C_INT(n_i2cint),
+
+		.ATA_IORDY(ata_iordy),
+
+		.DATA(data),
+
+		.nIPL(n_ipl),
+
+		.nDUARTSEL(n_duartsel),
+		.nI2CSEL(n_i2csel),
+		.nATASEL(n_atasel),
+		.nATAAUXSEL(n_ataauxsel),
+		.nATABEN(n_ataben),
+
+		.nIORD(n_iord),
+		.nIOWR(n_iowr),
+
+		.IORST(iorst),
+
+		.nEXPSEL(n_expsel),
+
+		.nAVEC(n_avec),
+		.DTACK(dtack)
+	);
+
+initial begin
+	$dumpfile(`DUMPFILE);
+	$dumpvars;
+
+	n_rst = 0;
+	cpu_clk = 0;	/* 1 cycle is rising-edge-to-rising-edge */
+
+	rnw = 1;
+	n_as = 1;
+	n_uds = 1;
+	n_lds = 1;
+
+	int_en = 0;
+
+	fc = 0;
+	addr = 0;
+
+	n_irq7 = 1;
+	n_irq6 = 1;
+	n_irq5 = 1;
+	n_irq4 = 1;
+	n_irq3 = 1;
+
+	uarta_int = 0;
+	uartb_int = 0;
+	ata_int = 0;
+	n_i2c_int = 1;
+
+	ata_iordy = 1;
+
+	data_out = 0;
+end
+
+/* 10MHz CPU clock -> 100ns period */
+always #50.000 cpu_clk = ~cpu_clk;

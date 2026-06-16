@@ -38,13 +38,10 @@ initial begin
 	for (i = 0; i < 8; i++) begin
 		#10
 		fc = i;
-		if (decode_out && ~want_decode) begin
+		if (decode_out != want_decode) begin
 			$fatal(1,
-			    "    --> FAILED unexpected decode fc=%0d", fc);
-		end
-		if (~decode_out && want_decode) begin
-			$fatal(1,
-			    "    --> FAILED expected decode fc=%0d", fc);
+			    "    --> FAILED decode=%0d want_decode=%0d fc=%0d",
+			    decode_out, want_decode, fc);
 		end
 	end
 

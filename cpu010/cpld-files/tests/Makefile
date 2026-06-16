@@ -43,8 +43,11 @@ MEMCTL_TESTCASES= memctl_decode \
 		  memctl_strobes \
 		  memctl_dtack
 
+IOCTL_TESTCASES= ioctl_inten
+
 TESTCASES=	${MMU_TESTCASES} \
-		${MEMCTL_TESTCASES}
+		${MEMCTL_TESTCASES} \
+		${IOCTL_TESTCASES}
 
 .for tc in ${TESTCASES}
 VCDS+=	${tc}.vcd
@@ -73,5 +76,10 @@ ${tc}.vvp: ${tc}_tb.v ../mmu010.v
 
 .for tc in ${MEMCTL_TESTCASES}
 ${tc}.vvp: ${tc}_tb.v ../memctl010.v
+	iverilog -D'DUMPFILE="${tc}.vcd"' $(VFLAGS) -o $@ ${.ALLSRC}
+.endfor
+
+.for tc in ${IOCTL_TESTCASES}
+${tc}.vvp: ${tc}_tb.v ../ioctl010.v
 	iverilog -D'DUMPFILE="${tc}.vcd"' $(VFLAGS) -o $@ ${.ALLSRC}
 .endfor

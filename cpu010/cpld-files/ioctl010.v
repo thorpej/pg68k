@@ -106,7 +106,7 @@ module ioctl010(
 
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
-	output wire [2:0] IPL,	/* IPL output to CPU */
+	output wire [2:0] nIPL,	/* IPL output to CPU */
 
 	/* On-board I/O device select outputs. */
 	output wire nDUARTSEL,
@@ -162,18 +162,18 @@ wire IRQ6 = ~nIRQ6 | Timer_int;
 /* Encode the IPL, IRQ7 highest priority, IRQ1 lowest. */
 reg [2:0] encoded_ipl;
 always @(*) begin
-	casex ({INT_EN,~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
-	8'b11xxxxxx:	encoded_ipl = 3'd7;
-	8'b101xxxxx:	encoded_ipl = 3'd6;
-	8'b1001xxxx:	encoded_ipl = 3'd5;
-	8'b10001xxx:	encoded_ipl = 3'd4;
-	8'b100001xx:	encoded_ipl = 3'd3;
-	8'b1000001x:	encoded_ipl = 3'd2;
-	8'b10000001:	encoded_ipl = 3'd1;
+	casex ({~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
+	7'b1xxxxxx:	encoded_ipl = 3'd7;
+	7'b01xxxxx:	encoded_ipl = 3'd6;
+	7'b001xxxx:	encoded_ipl = 3'd5;
+	7'b0001xxx:	encoded_ipl = 3'd4;
+	7'b00001xx:	encoded_ipl = 3'd3;
+	7'b000001x:	encoded_ipl = 3'd2;
+	7'b0000001:	encoded_ipl = 3'd1;
 	default:	encoded_ipl = 3'd0;
 	endcase
 end
-assign IPL = ~encoded_ipl;
+assign nIPL = INT_EN ? ~encoded_ipl : 3'd7;
 
 /* I/O strobe types. */
 localparam IO_STROBE_NONE = 2'b00;
@@ -608,9 +608,9 @@ endmodule
 //PIN: FC_0		: 10
 //PIN: FC_1		: 12
 //PIN: FC_2		: 13
-//PIN: IPL_0		: 14
-//PIN: IPL_1		: 16
-//PIN: IPL_2		: 17
+//PIN: nIPL_0		: 14
+//PIN: nIPL_1		: 16
+//PIN: nIPL_2		: 17
 //PIN: DATA_0		: 19
 //PIN: DATA_1		: 20
 //PIN: DATA_2		: 21

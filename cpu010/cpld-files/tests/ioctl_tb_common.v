@@ -17,6 +17,33 @@ localparam FC_SUPER_PROG = 3'd6;
 reg [2:0] fc;
 reg [31:0] addr;
 
+localparam OBIO_START    = 32'h08000000;
+localparam OBIO_END      = 32'h08001000;
+
+localparam OBIO_UARTB     = 32'h08000000;
+localparam OBIO_UARTB_END = 32'h08000010;
+
+localparam OBIO_UARTA     = 32'h08000100;
+localparam OBIO_UARTA_END = 32'h08000110;
+
+localparam OBIO_I2C       = 32'h08000300;
+localparam OBIO_I2C_END   = 32'h08000310;
+
+localparam OBIO_ATA        = 32'h08000400;
+localparam OBIO_ATA_END    = 32'h08000410;
+
+localparam OBIO_ATAAUX     = 32'h08000410;
+localparam OBIO_ATAAUX_END = 32'h08000420;
+
+localparam OBIO_TMR_CSR  = 32'h08000200;
+localparam OBIO_TMR_LSB  = 32'h08000202;
+localparam OBIO_TMR_MSB  = 32'h08000204;
+
+localparam CTRL_INT_SET  = 32'h00000040;
+localparam CTRL_INT_CLR  = 32'h00000050;
+localparam CTRL_BRDREV   = 32'h000000E0;
+localparam CTRL_PLDREV   = 32'h000000F0;
+
 reg n_irq7;
 reg n_irq6;
 reg n_irq5;

@@ -248,10 +248,10 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *
  * Normal access (User,Super Prog,Data) -> FC1 ^ FC0 == 1
  */
-wire SpaceIO   = (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
-wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
-wire SpaceCtrl = FC == 3'd4 && ADDR[3:1] == 3'b000;
-wire SpaceCPU  = FC == 3'd7;
+wire SpaceIO   = ~nAS && (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
+wire SpaceEXP  = ~nAS && (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
+wire SpaceCtrl = ~nAS && FC == 3'd4 && ADDR[3:1] == 3'b000;
+wire SpaceCPU  = ~nAS && FC == 3'd7;
 
 localparam DEVIDX_UART0		= 4'd0;
 localparam DEVIDX_UART1		= 4'd1;

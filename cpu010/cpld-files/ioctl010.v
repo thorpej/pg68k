@@ -167,14 +167,6 @@ always @(*) begin
 end
 assign nIPL = INT_EN ? ~encoded_ipl : 3'd7;
 
-/* I/O strobe types. */
-localparam IO_STROBE_NONE = 2'b00;
-localparam IO_STROBE_RD   = 2'b10;
-localparam IO_STROBE_WR   = 2'b01;
-wire [1:0] io_strobe_type = {RnW, ~RnW};
-reg [1:0] io_strobe;
-assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
-
 /*
  * Address decoding.
  *
@@ -317,6 +309,23 @@ wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
 		      ~DevSelects[SEL_IDX_TMR_LSB] |
 		      ~DevSelects[SEL_IDX_TMR_CSR];
 
+/* I/O strobe types. */
+localparam IO_STROBE_NONE = 2'b00;
+localparam IO_STROBE_RD   = 2'b10;
+localparam IO_STROBE_WR   = 2'b01;
+wire [1:0] io_strobe_type = {RnW, ~RnW};
+
+/*
+ * For devices where we can assert the I/O strobes immediately because
+ * they're fast enough / we're slow enough to meet the timing requirements.
+ */
+wire fast_io_strobe_p = ~DevSelects[SEL_IDX_DUART];
+wire [1:0] fast_io_strobe =
+    io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
+
+reg [1:0] io_strobe;
+assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
+
 /*
  * This is a **fast** DTACK to avoid wait states introduced by timing in the
  * bus cycle state machine when we know it's possible to do so.
@@ -324,7 +333,7 @@ wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
  * This is at least for the internal registers, and may apply to
  * other on-board peripherals, as well.
  */
-wire FAST_DTACK = internal_reg_p;
+wire FAST_DTACK = internal_reg_p | fast_io_strobe_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -407,16 +416,6 @@ always @(posedge CLK, negedge nRST) begin
 			 * devices need not be considered.
 			 */
 			casex ({Cycle, DevSelects})
-			/*
-			 * DUART timings are for the TL16C2552 at 5V.
-			 * That chip that respond faster than we can
-			 * drive it, so no wait states are required.
-			 */
-			{CYCLE_IOEITHER, SEL_DUART}: begin
-				io_strobe <= io_strobe_type;
-				state <= S_DTACK;
-			end
-
 			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
 				Timer_intack <= Timer_int;
 				state <= S_DTACK;

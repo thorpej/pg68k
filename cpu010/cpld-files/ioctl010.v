@@ -309,17 +309,22 @@ assign nATAAUXSEL = DevSelects[SEL_IDX_ATA_AUX];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
 
+wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
+		      ~DevSelects[SEL_IDX_BRDREV] |
+		      ~DevSelects[SEL_IDX_INTR_CLR] |
+		      ~DevSelects[SEL_IDX_INTR_SET] |
+		      ~DevSelects[SEL_IDX_TMR_MSB] |
+		      ~DevSelects[SEL_IDX_TMR_LSB] |
+		      ~DevSelects[SEL_IDX_TMR_CSR];
+
 /*
  * This is a **fast** DTACK to avoid wait states introduced by timing in the
  * bus cycle state machine when we know it's possible to do so.
+ *
+ * This is at least for the internal registers, and may apply to
+ * other on-board peripherals, as well.
  */
-wire FAST_DTACK = ~DevSelects[SEL_IDX_PLDREV] |
-		  ~DevSelects[SEL_IDX_BRDREV] |
-		  ~DevSelects[SEL_IDX_INTR_CLR] |
-		  ~DevSelects[SEL_IDX_INTR_SET] |
-		  ~DevSelects[SEL_IDX_TMR_MSB] |
-		  ~DevSelects[SEL_IDX_TMR_LSB] |
-		  ~DevSelects[SEL_IDX_TMR_CSR];
+wire FAST_DTACK = internal_reg_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -328,7 +333,7 @@ localparam REV_BOARD = 8'h41;	/* 'A' */
 localparam REV_PLDSET = 8'd0;	/* A.0 */
 
 /* Logic for reading the internal registers. */
-reg enable_data_out;
+wire enable_data_out = RnW && internal_reg_p;
 reg [7:0] data_out;
 always @(*) begin
 	case (DevSelects)
@@ -359,7 +364,6 @@ localparam S_DTACK		= 1'd1;
 reg state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		enable_data_out <= 1'b0;
 		io_strobe <= IO_STROBE_NONE;
 		state <= S_IDLE;
 
@@ -409,7 +413,6 @@ always @(posedge CLK, negedge nRST) begin
 
 			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
 				Timer_intack <= Timer_int;
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -419,7 +422,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -431,7 +433,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_TMR_MSB}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -471,7 +472,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_SET}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -482,7 +482,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_CLR}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -493,7 +492,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_BRDREV}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -503,7 +501,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_PLDREV}: begin
-				enable_data_out <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -525,7 +522,6 @@ always @(posedge CLK, negedge nRST) begin
 
 		S_DTACK: begin
 			if (nDS) begin
-				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
 				state <= S_IDLE;
 			end

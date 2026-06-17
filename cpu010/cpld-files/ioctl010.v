@@ -301,12 +301,6 @@ always @(*) begin
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[SEL_IDX_DUART];
-assign nI2CSEL    = DevSelects[SEL_IDX_I2C];
-assign nATASEL    = DevSelects[SEL_IDX_ATA];
-assign nATAAUXSEL = DevSelects[SEL_IDX_ATA_AUX];
-assign nATABEN    = nATASEL && nATAAUXSEL;
-assign nEXPSEL    = ~SpaceEXP;
 
 wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
 		      ~DevSelects[SEL_IDX_BRDREV] |
@@ -315,6 +309,16 @@ wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
 		      ~DevSelects[SEL_IDX_TMR_MSB] |
 		      ~DevSelects[SEL_IDX_TMR_LSB] |
 		      ~DevSelects[SEL_IDX_TMR_CSR];
+
+wire ata_reg_p = ~DevSelects[SEL_IDX_ATA] |
+		 ~DevSelects[SEL_IDX_ATA_AUX];
+
+assign nDUARTSEL  = DevSelects[SEL_IDX_DUART];
+assign nI2CSEL    = DevSelects[SEL_IDX_I2C];
+assign nATASEL    = DevSelects[SEL_IDX_ATA];
+assign nATAAUXSEL = DevSelects[SEL_IDX_ATA_AUX];
+assign nATABEN    = ~ata_reg_p;
+assign nEXPSEL    = ~SpaceEXP;
 
 /* I/O strobe types. */
 localparam IO_STROBE_NONE = 2'b00;
@@ -332,8 +336,7 @@ wire [1:0] io_strobe_type = {RnW, ~RnW};
  * /NOT/ for reads!
  */
 wire fast_io_strobe_p = ~DevSelects[SEL_IDX_DUART] |
-			((~DevSelects[SEL_IDX_ATA] |
-			  ~DevSelects[SEL_IDX_ATA_AUX]) & ~RnW);
+			(ata_reg_p & ~RnW);
 wire [1:0] fast_io_strobe =
     io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
 
@@ -351,9 +354,7 @@ assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
  * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
  * FAST_DTACK for ATA if both byte lanes are selected.
  */
-wire ata_fast_dtack_p = (~DevSelects[SEL_IDX_ATA] |
-			 ~DevSelects[SEL_IDX_ATA_AUX])
-		      & ~nUDS & ~nLDS;
+wire ata_fast_dtack_p = ata_reg_p & ~nUDS & ~nLDS;
 
 wire FAST_DTACK = internal_reg_p |
 		  ~DevSelects[SEL_IDX_DUART] |

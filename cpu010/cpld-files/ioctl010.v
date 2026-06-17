@@ -239,9 +239,15 @@ assign nIPL = ~encoded_ipl;
  *
  * Normal access (User,Super Prog,Data) -> FC1 ^ FC0 == 1
  */
-wire SpaceIO   = ~nAS && (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
-wire SpaceEXP  = ~nAS && (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
-wire SpaceCtrl = ~nAS && FC == 3'd4 && ADDR[2:0] == 3'b000;
+
+wire [3:0] DevIndex  = ADDR[10:7];
+wire [3:0] DevPart   = ADDR[6:3];
+wire [2:0] DevOffset = ADDR[2:0];
+
+wire SpaceNormal = FC[1] ^ FC[0];
+wire SpaceIO   = ~nAS && SpaceNormal && ADDRSP == 2'b10;
+wire SpaceEXP  = ~nAS && SpaceNormal && ADDRSP == 2'b11;
+wire SpaceCtrl = ~nAS && FC == 3'd4 && DevOffset == 3'b000;
 wire SpaceCPU  = ~nAS && FC == 3'd7;
 
 localparam DEVIDX_UART0		= 4'd0;
@@ -283,7 +289,7 @@ localparam SEL_IDX_PLDREV       = 0;
 
 reg [10:0] DevSelects;
 always @(*) begin
-	casex ({SpaceIO, SpaceCtrl, ADDR[10:7], ADDR[6:3], ADDR[2:0]})
+	casex ({SpaceIO, SpaceCtrl, DevIndex, DevPart, DevOffset})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;

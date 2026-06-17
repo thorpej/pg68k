@@ -13,6 +13,7 @@ localparam FC_USER_PROG  = 3'd2;
 localparam FC_CONTROL    = 3'd4;
 localparam FC_SUPER_DATA = 3'd5;
 localparam FC_SUPER_PROG = 3'd6;
+localparam FC_CPU        = 3'd7;
 
 reg [2:0] fc;
 reg [31:0] addr;

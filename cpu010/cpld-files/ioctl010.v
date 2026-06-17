@@ -318,8 +318,15 @@ wire [1:0] io_strobe_type = {RnW, ~RnW};
 /*
  * For devices where we can assert the I/O strobes immediately because
  * they're fast enough / we're slow enough to meet the timing requirements.
+ *
+ * N.B. for ATA PIO-0, we have to meet a 70ns address setup time (from
+ * assertion of chip select) before we can assert either I/O strobe, but
+ * at 10MHz, we can meet that without any extra delays for writes, but
+ * /NOT/ for reads!
  */
-wire fast_io_strobe_p = ~DevSelects[SEL_IDX_DUART];
+wire fast_io_strobe_p = ~DevSelects[SEL_IDX_DUART] |
+			((~DevSelects[SEL_IDX_ATA] |
+			  ~DevSelects[SEL_IDX_ATA_AUX]) & ~RnW);
 wire [1:0] fast_io_strobe =
     io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
 
@@ -330,10 +337,20 @@ assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
  * This is a **fast** DTACK to avoid wait states introduced by timing in the
  * bus cycle state machine when we know it's possible to do so.
  *
- * This is at least for the internal registers, and may apply to
- * other on-board peripherals, as well.
+ * N.B. We are living on the edge with 16-bit PIO-0 ATA transfers,
+ * which have a 165ns strobe pulse width (we hit 150ns, and we're
+ * going to live with that for now because this should only really
+ * be a problem on ancient drives).  For 8-bit transfers, however,
+ * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
+ * FAST_DTACK for ATA if both byte lanes are selected.
  */
-wire FAST_DTACK = internal_reg_p | fast_io_strobe_p;
+wire ata_fast_dtack_p = (~DevSelects[SEL_IDX_ATA] |
+			 ~DevSelects[SEL_IDX_ATA_AUX])
+		      & ~nUDS & ~nLDS;
+
+wire FAST_DTACK = internal_reg_p |
+		  ~DevSelects[SEL_IDX_DUART] |
+		  ata_fast_dtack_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -367,10 +384,11 @@ localparam CYCLE_IOREAD		= 3'b101;
 localparam CYCLE_IOWRITE	= 3'b100;
 localparam CYCLE_IOEITHER	= 3'b10x;
 
-localparam S_IDLE		= 1'd0;
-localparam S_DTACK		= 1'd1;
+localparam S_IDLE		= 2'd0;
+localparam S_ATA_WAIT_1		= 2'd1;
+localparam S_DTACK		= 2'd2;
 
-reg state;
+reg [1:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		io_strobe <= IO_STROBE_NONE;
@@ -443,20 +461,35 @@ always @(posedge CLK, negedge nRST) begin
 			/*
 			 * PIO mode 0 timings at 10MHz.
 			 *
-			 * XXX We might need to insert a wait
-			 * XXX state for 8-bit transfers, but
-			 * XXX then again, any drive we plug
-			 * XXX in is likely to be fast enough
-			 * XXX to work either way.
+			 * We can use the fast strobes for writes, but not
+			 * for reads.  And for 8-bit transfers, we need to
+			 * insert a wait state to meet the 290ns pulse width
+			 * for PIO-0.  These 8-bit pulses end up being 350ns
+			 * wide, and because this state machine transitions
+			 * on the rising edge of CPU_CLK, we end up with
+			 * 2 wait states.
+			 *
+			 * For 16-bit transfers, we end up using FAST_DTACK
+			 * to ensure that it's asserted by the end of S4.
 			 */
 			{CYCLE_IOEITHER, SEL_ATA}: begin
 				io_strobe <= io_strobe_type;
-				state <= S_DTACK;
+				if (nLDS) begin
+					state <= S_ATA_WAIT_1;
+				end
+				else begin
+					state <= S_DTACK;
+				end
 			end
 
 			{CYCLE_IOEITHER, SEL_ATA_AUX}: begin
 				io_strobe <= io_strobe_type;
-				state <= S_DTACK;
+				if (nLDS) begin
+					state <= S_ATA_WAIT_1;
+				end
+				else begin
+					state <= S_DTACK;
+				end
 			end
 
 			{CYCLE_IOWRITE, SEL_INTR_SET}: begin
@@ -480,6 +513,10 @@ always @(posedge CLK, negedge nRST) begin
 				state <= S_IDLE;
 			end
 			endcase
+		end
+
+		S_ATA_WAIT_1: begin
+			state <= S_DTACK;
 		end
 
 		S_DTACK: begin

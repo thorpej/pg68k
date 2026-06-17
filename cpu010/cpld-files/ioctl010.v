@@ -270,6 +270,18 @@ localparam SEL_INTR_CLR		= 11'b11111111011;
 localparam SEL_BRDREV		= 11'b11111111101;
 localparam SEL_PLDREV		= 11'b11111111110;
 
+localparam SEL_IDX_DUART        = 10;
+localparam SEL_IDX_TMR_CSR      = 9;
+localparam SEL_IDX_TMR_LSB      = 8;
+localparam SEL_IDX_TMR_MSB      = 7;
+localparam SEL_IDX_I2C          = 6;
+localparam SEL_IDX_ATA          = 5;
+localparam SEL_IDX_ATA_AUX      = 4;
+localparam SEL_IDX_INTR_SET     = 3;
+localparam SEL_IDX_INTR_CLR     = 2;
+localparam SEL_IDX_BRDREV       = 1;
+localparam SEL_IDX_PLDREV       = 0;
+
 reg [10:0] DevSelects;
 always @(*) begin
 	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[7:4], ADDR[3:1]})
@@ -290,12 +302,24 @@ always @(*) begin
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[10];
-assign nI2CSEL    = DevSelects[6];
-assign nATASEL    = DevSelects[5];
-assign nATAAUXSEL = DevSelects[4];
+assign nDUARTSEL  = DevSelects[SEL_IDX_DUART];
+assign nI2CSEL    = DevSelects[SEL_IDX_I2C];
+assign nATASEL    = DevSelects[SEL_IDX_ATA];
+assign nATAAUXSEL = DevSelects[SEL_IDX_ATA_AUX];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
+
+/*
+ * This is a **fast** DTACK to avoid wait states introduced by timing in the
+ * bus cycle state machine when we know it's possible to do so.
+ */
+wire FAST_DTACK = ~DevSelects[SEL_IDX_PLDREV] |
+		  ~DevSelects[SEL_IDX_BRDREV] |
+		  ~DevSelects[SEL_IDX_INTR_CLR] |
+		  ~DevSelects[SEL_IDX_INTR_SET] |
+		  ~DevSelects[SEL_IDX_TMR_MSB] |
+		  ~DevSelects[SEL_IDX_TMR_LSB] |
+		  ~DevSelects[SEL_IDX_TMR_CSR];
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -514,7 +538,7 @@ end
  * Assign DTACK according to the state machine.  BPACK also asserts DTACK
  * and IACK asserts /AVEC.
  */
-assign DTACK = ((state == S_DTACK) | BPACK) & ~nDS;
+assign DTACK = ((state == S_DTACK) | BPACK | FAST_DTACK) & ~nDS;
 assign nAVEC = ~IACK | nDS;
 
 /*

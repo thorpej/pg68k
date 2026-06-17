@@ -1,4 +1,4 @@
-Atmel ATF1504 Fitter Version 1918 ,running Wed Jun 17 15:33:19 2026
+Atmel ATF1504 Fitter Version 1918 ,running Wed Jun 17 16:13:32 2026
 
 
 
@@ -74,7 +74,7 @@ nAS assigned to pin  1
 
 Attempt to place floating signals ...
 ------------------------------------
-ADDR_6 is placed at pin 12 (MC 1)
+ADDR_0 is placed at pin 12 (MC 1)
 FC_1 is placed at pin 9 (MC 4)
 FC_0 is placed at pin 8 (MC 5)
 TDI is placed at pin 7 (MC 8)
@@ -83,12 +83,12 @@ RnW is placed at pin 5 (MC 14)
 nLDS is placed at pin 4 (MC 16)
 id00010Q is placed at feedback node 616 (MC 16)
 nU_RD is placed at pin 21 (MC 17)
-ADDR_5 is placed at pin 20 (MC 19)
-ADDR_1 is placed at pin 19 (MC 20)
-ADDR_0 is placed at pin 18 (MC 21)
-ADDR_4 is placed at pin 17 (MC 24)
+ADDR_6 is placed at pin 20 (MC 19)
+ADDR_5 is placed at pin 19 (MC 20)
+ADDR_4 is placed at pin 18 (MC 21)
+ADDR_3 is placed at pin 17 (MC 24)
 ADDR_2 is placed at pin 16 (MC 25)
-ADDR_3 is placed at pin 14 (MC 30)
+ADDR_1 is placed at pin 14 (MC 30)
 TMS is placed at pin 13 (MC 32)
 nU_WR is placed at pin 24 (MC 33)
 nL_RD is placed at pin 25 (MC 35)
@@ -115,12 +115,12 @@ DTACK is placed at pin 40 (MC 62)
              FC_1| 9                               37 |NC
               GND| 10                              36 |NC
                NC| 11            ATF1504           35 |VCC
-           ADDR_6| 12         44-Lead PLCC         34 |nEXPRAMSEL
+           ADDR_0| 12         44-Lead PLCC         34 |nEXPRAMSEL
               TMS| 13                              33 |nRAMSEL_3
-           ADDR_3| 14                              32 |TCK
+           ADDR_1| 14                              32 |TCK
               VCC| 15                              31 |nRAMSEL_2
            ADDR_2| 16                              30 |GND
-           ADDR_4| 17                              29 |nRAMSEL_1
+           ADDR_3| 17                              29 |nRAMSEL_1
                  |  18 19 20 21 22 23 24 25 26 27 28  |
                  +------------------------------------+
                      A  A  A  n  G  V  n  n  n  n  n  
@@ -128,7 +128,7 @@ DTACK is placed at pin 40 (MC 62)
                      D  D  D  _  D  C  _  _  _  O  A  
                      R  R  R  R        W  R  W  M  M  
                      _  _  _  D        R  D  R  S  S  
-                     0  1  5                    E  E  
+                     4  5  6                    E  E  
                                                 L  L  
                                                    _  
                                                    0  
@@ -167,7 +167,7 @@ RnW			(MC2	P)   : MUX 28		Ref (A14p)
 
 FanIn assignment for block C [12]
 {
-ADDR_0,ADDR_6,ADDR_3,ADDR_4,ADDR_2,ADDR_5,ADDR_1,
+ADDR_4,ADDR_0,ADDR_1,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
 MMUEN,
 RnW,
 id00010Q,
@@ -175,37 +175,37 @@ nUDS,nLDS,
 }
 Multiplexer assignment for block C
 MMUEN			(MC6	P)   : MUX 0		Ref (A11p)
-ADDR_0			(MC9	P)   : MUX 1		Ref (B21p)
-ADDR_6			(MC4	P)   : MUX 3		Ref (A1p)
-ADDR_3			(MC12	P)   : MUX 6		Ref (B30p)
+ADDR_4			(MC10	P)   : MUX 1		Ref (B21p)
+ADDR_0			(MC9	P)   : MUX 3		Ref (A1p)
+ADDR_1			(MC8	P)   : MUX 6		Ref (B30p)
 nUDS			(MC2	FB)  : MUX 12		Ref (OE2)
-ADDR_4			(MC10	P)   : MUX 13		Ref (B24p)
+ADDR_3			(MC12	P)   : MUX 13		Ref (B24p)
 ADDR_2			(MC11	P)   : MUX 22		Ref (B25p)
-ADDR_5			(MC5	P)   : MUX 23		Ref (B19p)
+ADDR_6			(MC4	P)   : MUX 23		Ref (B19p)
 RnW			(MC3	P)   : MUX 28		Ref (A14p)
 id00010Q		(MC1	FB)  : MUX 29		Ref (A16fb)
 nLDS			(MC7	P)   : MUX 30		Ref (A16p)
-ADDR_1			(MC8	P)   : MUX 35		Ref (B20p)
+ADDR_5			(MC5	P)   : MUX 35		Ref (B20p)
 
 FanIn assignment for block D [11]
 {
-ADDR_0,ADDR_6,ADDR_3,ADDR_4,ADDR_2,ADDR_5,ADDR_1,
+ADDR_4,ADDR_0,ADDR_1,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
 MMUEN,
 id00010Q,
 nUDS,nLDS,
 }
 Multiplexer assignment for block D
 MMUEN			(MC5	P)   : MUX 0		Ref (A11p)
-ADDR_0			(MC8	P)   : MUX 1		Ref (B21p)
-ADDR_6			(MC3	P)   : MUX 3		Ref (A1p)
-ADDR_3			(MC11	P)   : MUX 6		Ref (B30p)
+ADDR_4			(MC9	P)   : MUX 1		Ref (B21p)
+ADDR_0			(MC8	P)   : MUX 3		Ref (A1p)
+ADDR_1			(MC7	P)   : MUX 6		Ref (B30p)
 nUDS			(MC2	FB)  : MUX 12		Ref (OE2)
-ADDR_4			(MC9	P)   : MUX 13		Ref (B24p)
+ADDR_3			(MC11	P)   : MUX 13		Ref (B24p)
 ADDR_2			(MC10	P)   : MUX 22		Ref (B25p)
-ADDR_5			(MC4	P)   : MUX 23		Ref (B19p)
+ADDR_6			(MC3	P)   : MUX 23		Ref (B19p)
 id00010Q		(MC1	FB)  : MUX 29		Ref (A16fb)
 nLDS			(MC6	P)   : MUX 30		Ref (A16p)
-ADDR_1			(MC7	P)   : MUX 35		Ref (B20p)
+ADDR_5			(MC4	P)   : MUX 35		Ref (B20p)
 
 Creating JEDEC file memctl010.jed ...
 
@@ -255,14 +255,14 @@ Pin 6  = MMUEN; /* MC 11 */
 Pin 7  = TDI; /* MC 8 */
 Pin 8  = FC_0; /* MC 5 */
 Pin 9  = FC_1; /* MC 4 */
-Pin 12 = ADDR_6; /* MC  1 */
+Pin 12 = ADDR_0; /* MC  1 */
 Pin 13 = TMS; /* MC 32 */ 
-Pin 14 = ADDR_3; /* MC 30 */ 
+Pin 14 = ADDR_1; /* MC 30 */ 
 Pin 16 = ADDR_2; /* MC 25 */ 
-Pin 17 = ADDR_4; /* MC 24 */ 
-Pin 18 = ADDR_0; /* MC 21 */ 
-Pin 19 = ADDR_1; /* MC 20 */ 
-Pin 20 = ADDR_5; /* MC 19 */ 
+Pin 17 = ADDR_3; /* MC 24 */ 
+Pin 18 = ADDR_4; /* MC 21 */ 
+Pin 19 = ADDR_5; /* MC 20 */ 
+Pin 20 = ADDR_6; /* MC 19 */ 
 Pin 21 = nU_RD; /* MC 17 */ 
 Pin 24 = nU_WR; /* MC 33 */ 
 Pin 25 = nL_RD; /* MC 35 */ 
@@ -304,7 +304,7 @@ SO Pin Options Field = Summary of Allocations.
 
 
 MCell Pin# Oe   PinDrive   DCERP  FBDrive  DCERP  Foldback  CascadeOut     TotPT SO
-MC1   12   --   ADDR_6     INPUT  --              --        --             0     f- 
+MC1   12   --   ADDR_0     INPUT  --              --        --             0     f- 
 MC2   0         --                --              --        --             0     f- 
 MC3   11        --                --              --        --             0     f- 
 MC4   9    --   FC_1       INPUT  --              --        --             0     f- 
@@ -322,18 +322,18 @@ MC15  0         --                --              --        --             0    
 MC16  4    --   nLDS       INPUT  id00010Q C----  --        --             2     f- 
 MC17  21   on   nU_RD      C----  --              --        --             1     f- 
 MC18  0         --                --              --        --             0     f- 
-MC19  20   --   ADDR_5     INPUT  --              --        --             0     f- 
-MC20  19   --   ADDR_1     INPUT  --              --        --             0     f- 
-MC21  18   --   ADDR_0     INPUT  --              --        --             0     f- 
+MC19  20   --   ADDR_6     INPUT  --              --        --             0     f- 
+MC20  19   --   ADDR_5     INPUT  --              --        --             0     f- 
+MC21  18   --   ADDR_4     INPUT  --              --        --             0     f- 
 MC22  0         --                --              --        --             0     f- 
 MC23  0         --                --              --        --             0     f- 
-MC24  17   --   ADDR_4     INPUT  --              --        --             0     f- 
+MC24  17   --   ADDR_3     INPUT  --              --        --             0     f- 
 MC25  16   --   ADDR_2     INPUT  --              --        --             0     f- 
 MC26  0         --                --              --        --             0     f- 
 MC27  0         --                --              --        --             0     f- 
 MC28  0         --                --              --        --             0     f- 
 MC29  0         --                --              --        --             0     f- 
-MC30  14   --   ADDR_3     INPUT  --              --        --             0     f- 
+MC30  14   --   ADDR_1     INPUT  --              --        --             0     f- 
 MC31  0         --                --              --        --             0     f- 
 MC32  13   --   TMS        INPUT  --              --        --             0     f- 
 MC33  24   on   nU_WR      C----  --              --        --             1     f- 

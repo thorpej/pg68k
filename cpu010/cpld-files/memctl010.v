@@ -45,7 +45,7 @@ module memctl010(
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
 
-	input wire [27:21] ADDR,/* A27..A21 from MMU */
+	input wire [6:0] ADDR,/* A27..A21 from MMU */
 
 	/* Output strobes. */
 	output wire nU_RD,
@@ -94,8 +94,8 @@ localparam SP_dc	= 2'bxx;
 localparam SP_RAM	= 2'b00;
 localparam SP_ROM	= 2'b01;
 
-wire [1:0] Space = ADDR[27:26];
-wire [4:0] Bank  = ADDR[25:21];
+wire [1:0] Space = ADDR[6:5];
+wire [4:0] Bank  = ADDR[4:0];
 
 `ifdef BUILD_FOR_TEST
 assign decode_out = Decode;
@@ -153,13 +153,13 @@ endmodule
 //PIN: FC_0		: 8
 //PIN: FC_1		: 9
 //PIN: FC_2		: 11
-//PIN: ADDR_21		: 12
-//PIN: ADDR_22		: 14
-//PIN: ADDR_23		: 16
-//PIN: ADDR_24		: 17
-//PIN: ADDR_25		: 18
-//PIN: ADDR_26		: 19
-//PIN: ADDR_27		: 20
+//PIN: ADDR_0		: 12
+//PIN: ADDR_1		: 14
+//PIN: ADDR_2		: 16
+//PIN: ADDR_3		: 17
+//PIN: ADDR_4		: 18
+//PIN: ADDR_5		: 19
+//PIN: ADDR_6		: 20
 //PIN: nU_RD		: 21
 //PIN: nU_WR		: 24
 //PIN: nL_RD		: 25

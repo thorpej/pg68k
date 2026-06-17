@@ -323,19 +323,16 @@ assign DATA = (enable_data_out & ~nUDS) ? data_out : 8'bzzzzzzzz;
 /*
  * BUS CYCLE STATE MACHINE
  */
-wire [2:0] Cycle = {nDS, RnW, BPACK, IACK};
+wire [2:0] Cycle = {(SpaceIO | SpaceCtrl), nDS, RnW};
 
-localparam CYCLE_BPACK		= 4'b0x10;
-localparam CYCLE_IACK		= 4'b0x01;
-localparam CYCLE_IOREAD		= 4'b0100;
-localparam CYCLE_IOWRITE	= 4'b0000;
-localparam CYCLE_IOEITHER	= 4'b0x00;
+localparam CYCLE_IOREAD		= 3'b101;
+localparam CYCLE_IOWRITE	= 3'b100;
+localparam CYCLE_IOEITHER	= 3'b10x;
 
-localparam S_IDLE		= 2'd0;
-localparam S_DTACK		= 2'd1;
-localparam S_AVEC		= 2'd2;
+localparam S_IDLE		= 1'd0;
+localparam S_DTACK		= 1'd1;
 
-reg [1:0] state;
+reg state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		enable_data_out <= 1'b0;
@@ -376,14 +373,6 @@ always @(posedge CLK, negedge nRST) begin
 			 * for reads vs. writes.
 			 */
 			casex ({Cycle, DevSelects})
-			{CYCLE_BPACK, SEL_dc}: begin
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IACK, SEL_dc}: begin
-				state <= S_AVEC;
-			end
-
 			/*
 			 * DUART timings are for the TL16C2552 at 5V.
 			 * That chip that respond faster than we can
@@ -501,8 +490,8 @@ always @(posedge CLK, negedge nRST) begin
 
 			/*
 			 * We don't explcitly signal any bus
-			 * errors from this module.  May revisit
-			 * that at some point later.
+			 * errors from this module.  No response
+			 * will cause a bus timeout.
 			 */
 			default: begin
 				state <= S_IDLE;
@@ -517,19 +506,16 @@ always @(posedge CLK, negedge nRST) begin
 				state <= S_IDLE;
 			end
 		end
-
-		S_AVEC: begin
-			if (nDS) begin
-				state <= S_IDLE;
-			end
-		end
 		endcase
 	end
 end
 
-/* Assign DTACK and nAVEC according to the state machine. */
-assign DTACK = (state == S_DTACK) & ~nDS;
-assign nAVEC = (state == S_AVEC)  |  nDS;
+/*
+ * Assign DTACK according to the state machine.  BPACK also asserts DTACK
+ * and IACK asserts /AVEC.
+ */
+assign DTACK = ((state == S_DTACK) | BPACK) & ~nDS;
+assign nAVEC = ~IACK | nDS;
 
 /*
  * SYSTEM TIMER IMPLEMENTATION

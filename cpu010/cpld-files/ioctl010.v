@@ -122,6 +122,12 @@ module ioctl010(
 
 	output wire nEXPSEL,	/* expansion space selected */
 
+`ifdef BUILD_FOR_TEST
+	output wire timer_enab_out,
+	output wire [19:0] timer_current_out,
+	output wire timer_int_out,
+`endif
+
 	output wire nAVEC,	/* /AVEC connected directly to CPU */
 	output wire DTACK	/* drives open-drain inverter */
 );
@@ -575,6 +581,12 @@ always @(posedge CLK, negedge nRST) begin
 		Timer_was_enab <= Timer_enab;
 	end
 end
+
+`ifdef BUILD_FOR_TEST
+assign timer_enab_out = Timer_enab;
+assign timer_current_out = Timer_current;
+assign timer_int_out = Timer_int;
+`endif
 
 endmodule
 

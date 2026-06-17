@@ -86,6 +86,10 @@ wire n_expsel;
 wire n_avec;
 wire dtack;
 
+wire timer_enab;
+wire timer_int;
+wire [19:0] timer_current;
+
 	/* Instantiate the device under test. */
 	ioctl010 dut (
 		.nRST(n_rst),
@@ -132,6 +136,10 @@ wire dtack;
 		.IORST(iorst),
 
 		.nEXPSEL(n_expsel),
+
+		.timer_enab_out(timer_enab),
+		.timer_current_out(timer_current),
+		.timer_int_out(timer_int),
 
 		.nAVEC(n_avec),
 		.DTACK(dtack)

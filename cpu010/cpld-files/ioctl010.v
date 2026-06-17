@@ -399,6 +399,12 @@ always @(posedge CLK, negedge nRST) begin
 			 * This means that the number of slots needed
 			 * for address setup times might be different
 			 * for reads vs. writes.
+			 *
+			 * Also note that only bus cycles that need to
+			 * be processed here are, in fact, processed
+			 * here.  Devices that natively participate
+			 * in the 68000 bus protocol or FAST_DTACK
+			 * devices need not be considered.
 			 */
 			casex ({Cycle, DevSelects})
 			/*
@@ -421,18 +427,10 @@ always @(posedge CLK, negedge nRST) begin
 				state <= S_DTACK;
 			end
 
-			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
-				state <= S_DTACK;
-			end
-
 			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
 				Timer_valmod <= 1'b1;
 				Timer_enab <= 1'b0;
 				Timer_value[7:0] <= DATA;
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOREAD, SEL_TMR_MSB}: begin
 				state <= S_DTACK;
 			end
 
@@ -441,15 +439,6 @@ always @(posedge CLK, negedge nRST) begin
 				Timer_enab <= 1'b0;
 				Timer_value[15:8] = DATA;
 				state <= S_DTACK;
-			end
-
-			/*
-			 * PCF8584 participates in the 68000 bus
-			 * protocol natively.  The chip select is
-			 * asserted via combinatorial logic.
-			 */
-			{CYCLE_IOEITHER, SEL_I2C}: begin
-				state <= S_IDLE;
 			end
 
 			/*
@@ -471,41 +460,15 @@ always @(posedge CLK, negedge nRST) begin
 				state <= S_DTACK;
 			end
 
-			{CYCLE_IOREAD, SEL_INTR_SET}: begin
-				state <= S_DTACK;
-			end
-
 			{CYCLE_IOWRITE, SEL_INTR_SET}: begin
 				Intr_swint <=
 				    Intr_swint | DATA[1:0];
 				state <= S_DTACK;
 			end
 
-			{CYCLE_IOREAD, SEL_INTR_CLR}: begin
-				state <= S_DTACK;
-			end
-
 			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
 				Intr_swint <=
 				    Intr_swint & ~DATA[1:0];
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOREAD, SEL_BRDREV}: begin
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOWRITE, SEL_BRDREV}: begin
-				/* writes are ignored */
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOREAD, SEL_PLDREV}: begin
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOWRITE, SEL_PLDREV}: begin
-				/* writes are ignored */
 				state <= S_DTACK;
 			end
 

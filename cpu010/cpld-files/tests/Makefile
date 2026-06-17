@@ -47,6 +47,7 @@ IOCTL_TESTCASES= ioctl_inten \
 		 ioctl_extint_encode \
 		 ioctl_obioint \
 		 ioctl_decode_obio \
+		 ioctl_decode_exp \
 		 ioctl_iorst
 
 TESTCASES=	${MMU_TESTCASES} \

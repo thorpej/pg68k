@@ -39,6 +39,11 @@ localparam OBIO_TMR_CSR  = 32'h08000200;
 localparam OBIO_TMR_LSB  = 32'h08000202;
 localparam OBIO_TMR_MSB  = 32'h08000204;
 
+localparam EXP_START     = 32'h0c000000;
+localparam EXP_END       = 32'h0d000000;
+
+localparam ADDR_LIM      = 32'h10000000;
+
 localparam CTRL_INT_SET  = 32'h00000040;
 localparam CTRL_INT_CLR  = 32'h00000050;
 localparam CTRL_BRDREV   = 32'h000000E0;

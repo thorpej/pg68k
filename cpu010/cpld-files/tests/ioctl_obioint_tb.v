@@ -12,6 +12,7 @@ initial begin
 	n_rst = 1;
 
 	@(posedge cpu_clk);
+	$display("Enabling interrupts.");
 	int_en = 1;
 
 	$display("*** UARTA ***");

@@ -88,6 +88,7 @@ wire dtack;
 
 wire timer_enab;
 wire timer_int;
+wire [15:0] timer_value;
 wire [19:0] timer_current;
 
 	/* Instantiate the device under test. */
@@ -100,7 +101,7 @@ wire [19:0] timer_current;
 		.nUDS(n_uds),
 		.nLDS(n_lds),
 
-		.INT_EN(inten),
+		.INT_EN(int_en),
 
 		.FC(fc),
 		.ADDR(addr[11:1]),
@@ -116,7 +117,7 @@ wire [19:0] timer_current;
 		.UARTA_INT(uarta_int),
 		.UARTB_INT(uartb_int),
 		.ATA_INT(ata_int),
-		.nI2C_INT(n_i2cint),
+		.nI2C_INT(n_i2c_int),
 
 		.ATA_IORDY(ata_iordy),
 
@@ -138,6 +139,7 @@ wire [19:0] timer_current;
 		.nEXPSEL(n_expsel),
 
 		.timer_enab_out(timer_enab),
+		.timer_value_out(timer_value),
 		.timer_current_out(timer_current),
 		.timer_int_out(timer_int),
 

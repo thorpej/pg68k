@@ -124,6 +124,7 @@ module ioctl010(
 
 `ifdef BUILD_FOR_TEST
 	output wire timer_enab_out,
+	output wire [15:0] timer_value_out,
 	output wire [19:0] timer_current_out,
 	output wire timer_int_out,
 `endif
@@ -160,18 +161,18 @@ wire IRQ6 = ~nIRQ6 | Timer_int;
 /* Encode the IPL, IRQ7 highest priority, IRQ1 lowest. */
 reg [2:0] encoded_ipl;
 always @(*) begin
-	casex ({~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
-	7'b1xxxxxx:	encoded_ipl = 3'd7;
-	7'b01xxxxx:	encoded_ipl = 3'd6;
-	7'b001xxxx:	encoded_ipl = 3'd5;
-	7'b0001xxx:	encoded_ipl = 3'd4;
-	7'b00001xx:	encoded_ipl = 3'd3;
-	7'b000001x:	encoded_ipl = 3'd2;
-	7'b0000001:	encoded_ipl = 3'd1;
+	casex ({INT_EN,~nIRQ7,IRQ6,IRQ5,~nIRQ4,IRQ3,Intr_swint})
+	8'b11xxxxxx:	encoded_ipl = 3'd7;
+	8'b101xxxxx:	encoded_ipl = 3'd6;
+	8'b1001xxxx:	encoded_ipl = 3'd5;
+	8'b10001xxx:	encoded_ipl = 3'd4;
+	8'b100001xx:	encoded_ipl = 3'd3;
+	8'b1000001x:	encoded_ipl = 3'd2;
+	8'b10000001:	encoded_ipl = 3'd1;
 	default:	encoded_ipl = 3'd0;
 	endcase
 end
-assign nIPL = INT_EN ? ~encoded_ipl : 3'd7;
+assign nIPL = ~encoded_ipl;
 
 /*
  * Address decoding.
@@ -584,6 +585,7 @@ end
 
 `ifdef BUILD_FOR_TEST
 assign timer_enab_out = Timer_enab;
+assign timer_value_out = Timer_value;
 assign timer_current_out = Timer_current;
 assign timer_int_out = Timer_int;
 `endif

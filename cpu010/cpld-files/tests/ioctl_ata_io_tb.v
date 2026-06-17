@@ -11,7 +11,7 @@ initial begin
 	$display("Coming out of reset.");
 	n_rst = 1;
 
-	$display("*** ATA 8-bit write cycle. ***");
+	$display("*** ATA 16-bit write cycle. ***");
 
 	@(posedge cpu_clk);
 	$display("S0: CPU drives FC[2:0] and RnW=1");

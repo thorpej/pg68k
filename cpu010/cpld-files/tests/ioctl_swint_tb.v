@@ -12,6 +12,10 @@ initial begin
 	n_rst = 1;
 
 	@(posedge cpu_clk);
+	$display("Enabling interrupts.");
+	int_en = 1;
+
+	@(posedge cpu_clk);
 	if (ipl != 0) begin
 		$fatal(1, "    --> FAILED ipl=%0d", ipl);
 	end

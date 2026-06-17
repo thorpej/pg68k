@@ -50,7 +50,8 @@ IOCTL_TESTCASES= ioctl_inten \
 		 ioctl_decode_exp \
 		 ioctl_iorst \
 		 ioctl_iack \
-		 ioctl_bpack
+		 ioctl_bpack \
+		 ioctl_swint
 
 TESTCASES=	${MMU_TESTCASES} \
 		${MEMCTL_TESTCASES} \

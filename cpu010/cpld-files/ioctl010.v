@@ -258,17 +258,17 @@ localparam CTLIDX_BRDREV	= 4'd14;
 localparam CTLIDX_PLDREV	= 4'd15;
 
 localparam SEL_dc		= 10'bxxxxxxxxxx;
-localparam SEL_NONE		= 10'b1111111111;
-localparam SEL_DUART		= 10'b0111111111;
-localparam SEL_TMR_CSR		= 10'b1011111111;
-localparam SEL_TMR_VAL		= 10'b1101111111;
-localparam SEL_I2C		= 10'b1110111111;
-localparam SEL_ATA		= 10'b1111011111;	/* CH1Fx */
-localparam SEL_ATA_AUX		= 10'b1111101111;	/* CH3Fx */
-localparam SEL_INTR_SET		= 10'b1111110111;
-localparam SEL_INTR_CLR		= 10'b1111111011;
-localparam SEL_BRDREV		= 10'b1111111101;
-localparam SEL_PLDREV		= 10'b1111111110;
+localparam SEL_NONE		= 10'b0000000000;
+localparam SEL_DUART		= 10'b1000000000;
+localparam SEL_TMR_CSR		= 10'b0100000000;
+localparam SEL_TMR_VAL		= 10'b0010000000;
+localparam SEL_I2C		= 10'b0001000000;
+localparam SEL_ATA		= 10'b0000100000;	/* CH1Fx */
+localparam SEL_ATA_AUX		= 10'b0000010000;	/* CH3Fx */
+localparam SEL_INTR_SET		= 10'b0000001000;
+localparam SEL_INTR_CLR		= 10'b0000000100;
+localparam SEL_BRDREV		= 10'b0000000010;
+localparam SEL_PLDREV		= 10'b0000000001;
 
 reg [9:0] DevSelects;
 always @(*) begin
@@ -289,11 +289,11 @@ always @(*) begin
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[9];
-assign nI2CSEL    = DevSelects[6];
-assign nATASEL    = DevSelects[5];
-assign nATAAUXSEL = DevSelects[4];
-assign nATABEN    = nATASEL && nATAAUXSEL;
+assign nDUARTSEL  = ~DevSelects[9];
+assign nI2CSEL    = ~DevSelects[6];
+assign nATASEL    = ~DevSelects[5];
+assign nATAAUXSEL = ~DevSelects[4];
+assign nATABEN    = ~(DevSelects[5] | DevSelects[4]);
 assign nEXPSEL    = ~SpaceEXP;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);

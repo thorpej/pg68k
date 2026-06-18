@@ -333,8 +333,8 @@ localparam CYCLE_IOREAD		= 4'b0100;
 localparam CYCLE_IOWRITE	= 4'b0000;
 localparam CYCLE_IOEITHER	= 4'b0x00;
 
-localparam Idle			= 1'd0;
-localparam TermWait		= 1'd1;
+localparam S_IDLE		= 1'd0;
+localparam S_DTACK		= 1'd1;
 
 reg state;
 always @(posedge CLK, negedge nRST) begin
@@ -343,7 +343,7 @@ always @(posedge CLK, negedge nRST) begin
 		io_strobe <= IO_STROBE_NONE;
 		dtack <= 1'b0;
 		avec <= 1'b0;
-		state <= Idle;
+		state <= S_IDLE;
 
 		Intr_swint <= 2'b0;
 
@@ -358,7 +358,7 @@ always @(posedge CLK, negedge nRST) begin
 		 * represents 100ns.
 		 */
 		case (state)
-		Idle: begin
+		S_IDLE: begin
 			/*
 			 * The timer has processed these signals,
 			 * so clear them now.
@@ -381,12 +381,12 @@ always @(posedge CLK, negedge nRST) begin
 			casex ({Cycle, DevSelects})
 			{CYCLE_BPACK, SEL_dc}: begin
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IACK, SEL_dc}: begin
 				avec <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			/*
@@ -397,26 +397,26 @@ always @(posedge CLK, negedge nRST) begin
 			{CYCLE_IOEITHER, SEL_DUART}: begin
 				io_strobe <= io_strobe_type;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
 				Timer_intack <= Timer_int;
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_TMR_CSR}: begin
 				Timer_enab <= DATA[0];
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_TMR_VAL}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_TMR_VAL}: begin
@@ -424,7 +424,7 @@ always @(posedge CLK, negedge nRST) begin
 				Timer_enab <= 1'b0;
 				Timer_value <= {Timer_value[7:0], DATA};
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			/*
@@ -433,7 +433,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * asserted via combinatorial logic.
 			 */
 			{CYCLE_IOEITHER, SEL_I2C}: begin
-				state <= Idle;
+				state <= S_IDLE;
 			end
 
 			/*
@@ -448,63 +448,63 @@ always @(posedge CLK, negedge nRST) begin
 			{CYCLE_IOEITHER, SEL_ATA}: begin
 				io_strobe <= io_strobe_type;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOEITHER, SEL_ATA_AUX}: begin
 				io_strobe <= io_strobe_type;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_SET}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_INTR_SET}: begin
 				Intr_swint <=
 				    Intr_swint | DATA[1:0];
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_CLR}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
 				Intr_swint <=
 				    Intr_swint & ~DATA[1:0];
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_BRDREV}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_BRDREV}: begin
 				/* writes are ignored */
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOREAD, SEL_PLDREV}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			{CYCLE_IOWRITE, SEL_PLDREV}: begin
 				/* writes are ignored */
 				dtack <= 1'b1;
-				state <= TermWait;
+				state <= S_DTACK;
 			end
 
 			/*
@@ -513,18 +513,18 @@ always @(posedge CLK, negedge nRST) begin
 			 * that at some point later.
 			 */
 			default: begin
-				state <= Idle;
+				state <= S_IDLE;
 			end
 			endcase
 		end
 
-		TermWait: begin
+		S_DTACK: begin
 			if (nDS) begin
 				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
 				dtack <= 1'b0;
 				avec <= 1'b0;
-				state <= Idle;
+				state <= S_IDLE;
 			end
 		end
 		endcase

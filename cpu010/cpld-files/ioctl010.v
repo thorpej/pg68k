@@ -170,14 +170,6 @@ always @(*) begin
 end
 assign nIPL = ~encoded_ipl;
 
-/* I/O strobe types. */
-localparam IO_STROBE_NONE = 2'b00;
-localparam IO_STROBE_RD   = 2'b10;
-localparam IO_STROBE_WR   = 2'b01;
-wire [1:0] io_strobe_type = {RnW, ~RnW};
-reg [1:0] io_strobe;
-assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
-
 /*
  * Address decoding.
  *
@@ -293,12 +285,36 @@ end
 wire internal_reg_p = DevSelects[0] | DevSelects[1] | DevSelects[2] |
 		      DevSelects[3] | DevSelects[7] | DevSelects[8];
 
+wire ata_p = DevSelects[5] | DevSelects[4];
+
 assign nDUARTSEL  = ~DevSelects[9];
 assign nI2CSEL    = ~DevSelects[6];
 assign nATASEL    = ~DevSelects[5];
 assign nATAAUXSEL = ~DevSelects[4];
-assign nATABEN    = ~(DevSelects[5] | DevSelects[4]);
+assign nATABEN    = ~ata_p;
 assign nEXPSEL    = ~SpaceEXP;
+
+/* I/O strobe types. */
+localparam IO_STROBE_NONE = 2'b00;
+localparam IO_STROBE_RD   = 2'b10;
+localparam IO_STROBE_WR   = 2'b01;
+wire [1:0] io_strobe_type = {RnW, ~RnW};
+
+/*
+ * For devices where we can assert the I/O strobes immediately because
+ * they're fast enough / we're slow enough to meet the timing requirements.
+ *
+ * N.B. for ATA PIO-0, we have to meet a 70ns address setup time (from
+ * assertion of chip select) before we can assert either I/O strobe, but
+ * at 10MHz, we can meet that without any extra delays for writes, but
+ * /NOT/ for reads!
+ */
+wire fast_io_strobe_p = DevSelects[9] | (ata_p & ~RnW);
+wire [1:0] fast_io_strobe =
+    io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
+
+reg [1:0] io_strobe;
+assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
 
 /*
  * This is a **fast** DTACK to avoid wait states introduced by timing in the
@@ -311,7 +327,7 @@ assign nEXPSEL    = ~SpaceEXP;
  * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
  * FAST_DTACK for ATA if both byte lanes are selected.
  */
-wire ata_fast_dtack_p = (DevSelects[4] | DevSelects[5]) & ~nUDS & ~nLDS;
+wire ata_fast_dtack_p = ata_p & ~nUDS & ~nLDS;
 
 wire FAST_DTACK = internal_reg_p | DevSelects[9] | ata_fast_dtack_p;
 

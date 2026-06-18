@@ -15,6 +15,11 @@ VCDS=
 
 all: $(EDIFS) $(VCDS)
 
+program:
+	openocd -f cpu010-jtag.cfg \
+	    -c "svf cpu010-pld.svf" \
+	    -c "exit"
+
 clean:
 	-rm -f *.edif *.io *.pin *.tt3 *.vvp *.vcd
 

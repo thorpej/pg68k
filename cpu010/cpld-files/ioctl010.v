@@ -134,7 +134,6 @@ wire nDS = nUDS & nLDS;
 
 /* DTACK output register. */
 reg dtack;
-assign DTACK = dtack & ~nDS;
 
 /* Interrupt enable and Software interrupt (IRQ1, IRQ2) registers */
 reg [1:0] Intr_swint;
@@ -519,6 +518,7 @@ always @(posedge CLK, negedge nRST) begin
 	end
 end
 
+assign DTACK = dtack & ~nDS;
 assign nAVEC = ~IACK | nDS;
 
 /*

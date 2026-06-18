@@ -300,7 +300,20 @@ assign nATAAUXSEL = ~DevSelects[4];
 assign nATABEN    = ~(DevSelects[5] | DevSelects[4]);
 assign nEXPSEL    = ~SpaceEXP;
 
-wire FAST_DTACK = internal_reg_p;
+/*
+ * This is a **fast** DTACK to avoid wait states introduced by timing in the
+ * bus cycle state machine when we know it's possible to do so.
+ *
+ * N.B. We are living on the edge with 16-bit PIO-0 ATA transfers,
+ * which have a 165ns strobe pulse width (we hit 150ns, and we're
+ * going to live with that for now because this should only really
+ * be a problem on ancient drives).  For 8-bit transfers, however,
+ * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
+ * FAST_DTACK for ATA if both byte lanes are selected.
+ */
+wire ata_fast_dtack_p = (DevSelects[4] | DevSelects[5]) & ~nUDS & ~nLDS;
+
+wire FAST_DTACK = internal_reg_p | ata_fast_dtack_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);

@@ -141,7 +141,7 @@
 			reg = <0x8000300 0x04>;
 			reg-shift = <1>;
 			clocks = <&sys_clk>;
-			interrupts = <5 0>;
+			interrupts = <3 0>;
 		};
 
 		ata@8000400 {

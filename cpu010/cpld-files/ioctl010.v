@@ -85,7 +85,7 @@ module ioctl010(
 	input wire INT_EN,	/* Interrupt Enable input */
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
-	input wire [11:0] ADDR,	/* A11..A1 from MMU */
+	input wire [10:0] ADDR,	/* A11..A1 from MMU */
 
 	input wire [1:0] ADDRSP, /* A27..A26 from MMU */
 	input wire [3:0] CPUTYP, /* VA19-VA16 from CPU */

@@ -345,7 +345,7 @@ localparam REV_BOARD = 8'h41;	/* 'A' */
 localparam REV_PLDSET = 8'd0;	/* A.0 */
 
 /* Logic for reading the internal registers. */
-reg enable_data_out;
+wire enable_data_out = RnW && internal_reg_p;
 reg [7:0] data_out;
 always @(*) begin
 	case (DevSelects)
@@ -375,7 +375,6 @@ localparam S_DTACK		= 1'd1;
 reg state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
-		enable_data_out <= 1'b0;
 		io_strobe <= IO_STROBE_NONE;
 		dtack <= 1'b0;
 		state <= S_IDLE;
@@ -432,7 +431,6 @@ always @(posedge CLK, negedge nRST) begin
 
 			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
 				Timer_intack <= Timer_int;
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -444,7 +442,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_TMR_VAL}: begin
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -488,7 +485,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_SET}: begin
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -501,7 +497,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_CLR}: begin
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -514,7 +509,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_BRDREV}: begin
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -526,7 +520,6 @@ always @(posedge CLK, negedge nRST) begin
 			end
 
 			{CYCLE_IOREAD, SEL_PLDREV}: begin
-				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= S_DTACK;
 			end
@@ -550,7 +543,6 @@ always @(posedge CLK, negedge nRST) begin
 
 		S_DTACK: begin
 			if (nDS) begin
-				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
 				dtack <= 1'b0;
 				state <= S_IDLE;

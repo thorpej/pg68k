@@ -85,7 +85,7 @@ module ioctl010(
 	input wire INT_EN,	/* Interrupt Enable input */
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
-	input wire [11:1] ADDR,	/* A11..A1 from MMU */
+	input wire [11:0] ADDR,	/* A11..A1 from MMU */
 
 	input wire [1:0] ADDRSP, /* A27..A26 from MMU */
 	input wire [3:0] CPUTYP, /* VA19-VA16 from CPU */
@@ -248,7 +248,7 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  */
 wire SpaceIO   = (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
 wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
-wire SpaceCtrl = FC == 3'd4 && ADDR[3:1] == 3'b000;
+wire SpaceCtrl = FC == 3'd4 && ADDR[2:0] == 3'b000;
 wire SpaceCPU  = FC == 3'd7;
 
 localparam DEVIDX_UART0		= 4'd0;
@@ -277,7 +277,7 @@ localparam SEL_PLDREV		= 10'b1111111110;
 
 reg [9:0] DevSelects;
 always @(*) begin
-	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[7:4], ADDR[3:1]})
+	casex ({SpaceIO, SpaceCtrl, ADDR[10:7], ADDR[6:3], ADDR[2:0]})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;
@@ -605,17 +605,17 @@ endmodule
 //
 //	=== MMU address output side of the chip ===
 //
-//PIN: ADDR_1		: 28
-//PIN: ADDR_2		: 29
-//PIN: ADDR_3		: 30
-//PIN: ADDR_4		: 31
-//PIN: ADDR_5		: 32
-//PIN: ADDR_6		: 33
-//PIN: ADDR_7		: 35
-//PIN: ADDR_8		: 36
-//PIN: ADDR_9		: 37
-//PIN: ADDR_10		: 40
-//PIN: ADDR_11		: 41
+//PIN: ADDR_0		: 28
+//PIN: ADDR_1		: 29
+//PIN: ADDR_2		: 30
+//PIN: ADDR_3		: 31
+//PIN: ADDR_4		: 32
+//PIN: ADDR_5		: 33
+//PIN: ADDR_6		: 35
+//PIN: ADDR_7		: 36
+//PIN: ADDR_8		: 37
+//PIN: ADDR_9		: 40
+//PIN: ADDR_10		: 41
 //PIN: ADDRSP_0		: 42
 //PIN: ADDRSP_1		: 44
 //PIN: CPUTYP_0		: 45

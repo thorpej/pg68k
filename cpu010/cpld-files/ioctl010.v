@@ -206,12 +206,10 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *           $8000100 - com1
  *
  *      10xx xxxx.xxxx xxxx.0010 0000.0000 - Timer CSR (1 byte)
- *      10xx xxxx.xxxx xxxx.0010 0000.0010 - Timer LSB (1 byte)
- *      10xx xxxx.xxxx xxxx.0010 0000.0100 - Timer MSB (1 byte)
+ *      10xx xxxx.xxxx xxxx.0010 0000.0010 - Timer Value (1 byte)
  *
  *           $8000200 - Timer CSR
- *           $8000202 - Timer LSB
- *           $8000204 - Timer MSB
+ *           $8000202 - Timer Value
  *
  *      10xx xxxx.xxxx xxxx.0011 0000.00x0 - PCF8584 (2 bytes)
  *
@@ -264,28 +262,26 @@ localparam CTLIDX_INTCLR	= 4'd5;
 localparam CTLIDX_BRDREV	= 4'd14;
 localparam CTLIDX_PLDREV	= 4'd15;
 
-localparam SEL_dc		= 11'bxxxxxxxxxxx;
-localparam SEL_NONE		= 11'b11111111111;
-localparam SEL_DUART		= 11'b01111111111;
-localparam SEL_TMR_CSR		= 11'b10111111111;
-localparam SEL_TMR_LSB		= 11'b11011111111;
-localparam SEL_TMR_MSB		= 11'b11101111111;
-localparam SEL_I2C		= 11'b11110111111;
-localparam SEL_ATA		= 11'b11111011111;	/* CH1Fx */
-localparam SEL_ATA_AUX		= 11'b11111101111;	/* CH3Fx */
-localparam SEL_INTR_SET		= 11'b11111110111;
-localparam SEL_INTR_CLR		= 11'b11111111011;
-localparam SEL_BRDREV		= 11'b11111111101;
-localparam SEL_PLDREV		= 11'b11111111110;
+localparam SEL_dc		= 10'bxxxxxxxxxx;
+localparam SEL_NONE		= 10'b1111111111;
+localparam SEL_DUART		= 10'b0111111111;
+localparam SEL_TMR_CSR		= 10'b1011111111;
+localparam SEL_TMR_VAL		= 10'b1101111111;
+localparam SEL_I2C		= 10'b1110111111;
+localparam SEL_ATA		= 10'b1111011111;	/* CH1Fx */
+localparam SEL_ATA_AUX		= 10'b1111101111;	/* CH3Fx */
+localparam SEL_INTR_SET		= 10'b1111110111;
+localparam SEL_INTR_CLR		= 10'b1111111011;
+localparam SEL_BRDREV		= 10'b1111111101;
+localparam SEL_PLDREV		= 10'b1111111110;
 
-reg [10:0] DevSelects;
+reg [9:0] DevSelects;
 always @(*) begin
 	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[7:4], ADDR[3:1]})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;
-	{2'b10, DEVIDX_TMR,   4'd0, 3'd1}:   DevSelects = SEL_TMR_LSB;
-	{2'b10, DEVIDX_TMR,   4'd0, 3'd2}:   DevSelects = SEL_TMR_MSB;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd1}:   DevSelects = SEL_TMR_VAL;
 	{2'b10, DEVIDX_I2C,   4'd0, 3'bxxx}: DevSelects = SEL_I2C;
 	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
 	{2'b10, DEVIDX_ATA,   4'd1, 3'bxxx}: DevSelects = SEL_ATA_AUX;
@@ -298,7 +294,7 @@ always @(*) begin
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[10];
+assign nDUARTSEL  = DevSelects[9];
 assign nI2CSEL    = DevSelects[6];
 assign nATASEL    = DevSelects[5];
 assign nATAAUXSEL = DevSelects[4];
@@ -317,8 +313,6 @@ reg [7:0] data_out;
 always @(*) begin
 	case (DevSelects)
 	SEL_TMR_CSR:	data_out = {6'b0, Timer_int, Timer_enab};
-	SEL_TMR_LSB:	data_out = Timer_value[7:0];
-	SEL_TMR_MSB:	data_out = Timer_value[15:8];
 	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
 	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
 	SEL_BRDREV:	data_out = REV_BOARD;
@@ -419,30 +413,16 @@ always @(posedge CLK, negedge nRST) begin
 				state <= TermWait;
 			end
 
-			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
+			{CYCLE_IOREAD, SEL_TMR_VAL}: begin
 				enable_data_out <= 1'b1;
 				dtack <= 1'b1;
 				state <= TermWait;
 			end
 
-			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
+			{CYCLE_IOWRITE, SEL_TMR_VAL}: begin
 				Timer_valmod <= 1'b1;
 				Timer_enab <= 1'b0;
-				Timer_value[7:0] <= DATA;
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
-			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
-				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
-				state <= TermWait;
-			end
-
-			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
-				Timer_valmod <= 1'b1;
-				Timer_enab <= 1'b0;
-				Timer_value[15:8] = DATA;
+				Timer_value <= {Timer_value[7:0], DATA};
 				dtack <= 1'b1;
 				state <= TermWait;
 			end

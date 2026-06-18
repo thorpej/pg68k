@@ -289,12 +289,18 @@ always @(*) begin
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
+
+wire internal_reg_p = DevSelects[0] | DevSelects[1] | DevSelects[2] |
+		      DevSelects[3] | DevSelects[7] | DevSelects[8];
+
 assign nDUARTSEL  = ~DevSelects[9];
 assign nI2CSEL    = ~DevSelects[6];
 assign nATASEL    = ~DevSelects[5];
 assign nATAAUXSEL = ~DevSelects[4];
 assign nATABEN    = ~(DevSelects[5] | DevSelects[4]);
 assign nEXPSEL    = ~SpaceEXP;
+
+wire FAST_DTACK = internal_reg_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -518,7 +524,7 @@ always @(posedge CLK, negedge nRST) begin
 	end
 end
 
-assign DTACK = dtack & ~nDS;
+assign DTACK = (dtack | FAST_DTACK) & ~nDS;
 assign nAVEC = ~IACK | nDS;
 
 /*

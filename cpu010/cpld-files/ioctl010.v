@@ -362,15 +362,16 @@ assign DATA = (enable_data_out & ~nUDS) ? data_out : 8'bzzzzzzzz;
 /*
  * BUS CYCLE STATE MACHINE
  */
-wire [2:0] Cycle = {nDS, RnW, BPACK};
+wire [2:0] Cycle = {nDS, RnW};
 
-localparam CYCLE_BPACK		= 3'b0x1;
-localparam CYCLE_IOREAD		= 3'b010;
-localparam CYCLE_IOWRITE	= 3'b000;
-localparam CYCLE_IOEITHER	= 3'b0x0;
+localparam CYCLE_IOREAD		= 2'b01;
+localparam CYCLE_IOWRITE	= 2'b00;
+localparam CYCLE_IOEITHER	= 2'b0x;
 
-localparam S_IDLE		= 1'd0;
-localparam S_DTACK		= 1'd1;
+/* Arranged to try and use Gray encoding for FSM. */
+localparam S_IDLE		= 2'b00;
+localparam S_ATA_WAIT_1		= 2'b01;
+localparam S_DTACK		= 2'b11;
 
 reg state;
 always @(posedge CLK, negedge nRST) begin
@@ -413,11 +414,6 @@ always @(posedge CLK, negedge nRST) begin
 			 * for reads vs. writes.
 			 */
 			casex ({Cycle, DevSelects})
-			{CYCLE_BPACK, SEL_dc}: begin
-				dtack <= 1'b1;
-				state <= S_DTACK;
-			end
-
 			/*
 			 * DUART timings are for the TL16C2552 at 5V.
 			 * That chip that respond faster than we can
@@ -466,22 +462,37 @@ always @(posedge CLK, negedge nRST) begin
 			/*
 			 * PIO mode 0 timings at 10MHz.
 			 *
-			 * XXX We might need to insert a wait
-			 * XXX state for 8-bit transfers, but
-			 * XXX then again, any drive we plug
-			 * XXX in is likely to be fast enough
-			 * XXX to work either way.
+			 * We can use the fast strobes for writes, but not
+			 * for reads.  And for 8-bit transfers, we need to
+			 * insert a wait state to meet the 290ns pulse width
+			 * for PIO-0.  These 8-bit pulses end up being 350ns
+			 * wide, and because this state machine transitions
+			 * on the rising edge of CPU_CLK, we end up with
+			 * 2 wait states.
+			 *
+			 * For 16-bit transfers, we end up using FAST_DTACK
+			 * to ensure that it's asserted by the end of S4.
 			 */
 			{CYCLE_IOEITHER, SEL_ATA}: begin
 				io_strobe <= io_strobe_type;
-				dtack <= 1'b1;
-				state <= S_DTACK;
+				if (nLDS) begin
+					state <= S_ATA_WAIT_1;
+				end
+				else begin
+					dtack <= 1'b1;
+					state <= S_DTACK;
+				end
 			end
 
 			{CYCLE_IOEITHER, SEL_ATA_AUX}: begin
 				io_strobe <= io_strobe_type;
-				dtack <= 1'b1;
-				state <= S_DTACK;
+				if (nLDS) begin
+					state <= S_ATA_WAIT_1;
+				end
+				else begin
+					dtack <= 1'b1;
+					state <= S_DTACK;
+				end
 			end
 
 			{CYCLE_IOREAD, SEL_INTR_SET}: begin
@@ -541,6 +552,11 @@ always @(posedge CLK, negedge nRST) begin
 			endcase
 		end
 
+		S_ATA_WAIT_1: begin
+			dtack <= 1'b1;
+			state <= S_DTACK;
+		end
+
 		S_DTACK: begin
 			if (nDS) begin
 				io_strobe <= IO_STROBE_NONE;
@@ -552,7 +568,7 @@ always @(posedge CLK, negedge nRST) begin
 	end
 end
 
-assign DTACK = (dtack | FAST_DTACK) & ~nDS;
+assign DTACK = (dtack | FAST_DTACK | BPACK) & ~nDS;
 assign nAVEC = ~IACK | nDS;
 
 /*

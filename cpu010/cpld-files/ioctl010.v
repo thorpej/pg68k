@@ -313,7 +313,7 @@ assign nEXPSEL    = ~SpaceEXP;
  */
 wire ata_fast_dtack_p = (DevSelects[4] | DevSelects[5]) & ~nUDS & ~nLDS;
 
-wire FAST_DTACK = internal_reg_p | ata_fast_dtack_p;
+wire FAST_DTACK = internal_reg_p | DevSelects[9] | ata_fast_dtack_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);

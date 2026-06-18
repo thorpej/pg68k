@@ -41,8 +41,7 @@ static volatile uint64_t clock_ticks;
 #define	TIMER_CSR	0
 #define	  CSR_ENAB	0x01
 #define	  CSR_IPEND	0x02
-#define	TIMER_LSB	1
-#define	TIMER_MSB	2
+#define	TIMER_VAL	1
 
 static uint32_t
 pgtimer_us_to_ticks(unsigned int interval_us)
@@ -76,8 +75,8 @@ pgtimer_initclock(unsigned int interval_us)
 	 * have been written.  The value registers can be written in
 	 * any order.
 	 */
-	REG_WRITE(TIMER_LSB, (uint8_t)ticks);
-	REG_WRITE(TIMER_MSB, (uint8_t)(ticks >> 8));
+	REG_WRITE(TIMER_VAL, (uint8_t)(ticks >> 8));
+	REG_WRITE(TIMER_VAL, (uint8_t)ticks);
 	REG_WRITE(TIMER_CSR, CSR_ENAB);
 }
 
@@ -103,8 +102,8 @@ pgtimer_delaycal(void)
 
 	s = splhigh();
 	for (; delay_divisor > 0; delay_divisor--) {
-		REG_WRITE(TIMER_LSB, (uint8_t)ticks);
-		REG_WRITE(TIMER_MSB, (uint8_t)(ticks >> 8));
+		REG_WRITE(TIMER_VAL, (uint8_t)(ticks >> 8));
+		REG_WRITE(TIMER_VAL, (uint8_t)ticks);
 		REG_WRITE(TIMER_CSR, CSR_ENAB);
 		clock_delay(10000);
 		if (REG_READ(TIMER_CSR) & CSR_IPEND) {

@@ -50,11 +50,6 @@
  *	-> Software controlled interrupts at IPL1-IPL2 via two separate
  *	   SET and CLR registers.
  *
- * - Board and PLD revision registers (located in Control space)
- *	-> These can be used by system firmware to work around hardware
- *	   bugs, enable features found on later board revisions, and
- *	   detect whether or not it's running in an emulator.
- *
  * Random thoughts:
  *
  * It probably wouldn't be too difficult to support vectored interrupts
@@ -85,7 +80,7 @@ module ioctl010(
 	input wire INT_EN,	/* Interrupt Enable input */
 
 	input wire [2:0] FC,	/* FC2..FC0 from CPU */
-	input wire [10:0] ADDR,	/* A11..A1 from MMU */
+	input wire [11:1] ADDR,	/* A11..A1 from MMU */
 
 	input wire [1:0] ADDRSP, /* A27..A26 from MMU */
 	input wire [3:0] CPUTYP, /* VA19-VA16 from CPU */
@@ -106,7 +101,7 @@ module ioctl010(
 
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
-	output wire [2:0] nIPL,	/* IPL output to CPU */
+	output wire [2:0] IPL,	/* IPL output to CPU */
 
 	/* On-board I/O device select outputs. */
 	output wire nDUARTSEL,
@@ -122,13 +117,6 @@ module ioctl010(
 
 	output wire nEXPSEL,	/* expansion space selected */
 
-`ifdef BUILD_FOR_TEST
-	output wire timer_enab_out,
-	output wire [15:0] timer_value_out,
-	output wire [19:0] timer_current_out,
-	output wire timer_int_out,
-`endif
-
 	output wire nAVEC,	/* /AVEC connected directly to CPU */
 	output wire DTACK	/* drives open-drain inverter */
 );
@@ -138,6 +126,14 @@ assign IORST = ~nRST;
 
 /* Internal combined /xDS value. */
 wire nDS = nUDS & nLDS;
+
+/* DTACK output register. */
+reg dtack;
+assign DTACK = dtack & ~nDS;
+
+/* nAVEC output register. */
+reg avec;
+assign nAVEC = ~avec & ~nDS;
 
 /* Interrupt enable and Software interrupt (IRQ1, IRQ2) registers */
 reg [1:0] Intr_swint;
@@ -172,7 +168,15 @@ always @(*) begin
 	default:	encoded_ipl = 3'd0;
 	endcase
 end
-assign nIPL = ~encoded_ipl;
+assign IPL = ~encoded_ipl;
+
+/* I/O strobe types. */
+localparam IO_STROBE_NONE = 2'b00;
+localparam IO_STROBE_RD   = 2'b10;
+localparam IO_STROBE_WR   = 2'b01;
+wire [1:0] io_strobe_type = {RnW, ~RnW};
+reg [1:0] io_strobe;
+assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
 
 /*
  * Address decoding.
@@ -219,9 +223,6 @@ assign nIPL = ~encoded_ipl;
  *           xxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Set (1 byte)
  *           xxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Clear (1 byte)
  *
- *           xxxx.xxxx xxxx.xxxx 1110.0000 - Board revision ('A' and up)
- *           xxxx.xxxx xxxx.xxxx 1111.0000 - CPLD set revision
- *
  * CPU space addresses:
  *
  *           xxxx.0000 xxxx.xxxx xxxx.xxxx - BPACK cycle
@@ -239,18 +240,10 @@ assign nIPL = ~encoded_ipl;
  *
  * Normal access (User,Super Prog,Data) -> FC1 ^ FC0 == 1
  */
-
-wire [3:0] DevIndex  = ADDR[10:7];
-wire [3:0] DevPart   = ADDR[6:3];
-wire [2:0] DevOffset = ADDR[2:0];
-
-wire NilDevPart = DevPart == 4'b0;
-
-wire SpaceNormal = FC[1] ^ FC[0];
-wire SpaceIO   = ~nAS && SpaceNormal && ADDRSP == 2'b10;
-wire SpaceEXP  = ~nAS && SpaceNormal && ADDRSP == 2'b11;
-wire SpaceCtrl = ~nAS && FC == 3'd4 && DevOffset == 3'b000;
-wire SpaceCPU  = ~nAS && FC == 3'd7;
+wire SpaceIO   = (FC[1] ^ FC[0]) && ADDRSP == 2'b10;
+wire SpaceEXP  = (FC[1] ^ FC[0]) && ADDRSP == 2'b11;
+wire SpaceCtrl = FC == 3'd4 && ADDR[3:1] == 3'b000;
+wire SpaceCPU  = FC == 3'd7;
 
 localparam DEVIDX_UART0		= 4'd0;
 localparam DEVIDX_UART1		= 4'd1;
@@ -260,133 +253,84 @@ localparam DEVIDX_ATA		= 4'd4;
 
 localparam CTLIDX_INTSET	= 4'd4;
 localparam CTLIDX_INTCLR	= 4'd5;
-localparam CTLIDX_BRDREV	= 4'd14;
-localparam CTLIDX_PLDREV	= 4'd15;
 
-wire ControlSpaceDev = SpaceCtrl & (DevIndex == 4'd0);
+localparam SEL_dc		= 9'bxxxxxxxxx;
+localparam SEL_NONE		= 9'b111111111;
+localparam SEL_DUART		= 9'b011111111;
+localparam SEL_TMR_CSR		= 9'b101111111;
+localparam SEL_TMR_LSB		= 9'b110111111;
+localparam SEL_TMR_MSB		= 9'b111011111;
+localparam SEL_I2C		= 9'b111101111;
+localparam SEL_ATA		= 9'b111110111;	/* CH1Fx */
+localparam SEL_ATA_AUX		= 9'b111111011;	/* CH3Fx */
+localparam SEL_INTR_SET		= 9'b111111101;
+localparam SEL_INTR_CLR		= 9'b111111110;
 
-wire sel_pldrev  = ControlSpaceDev && (DevPart == CTLIDX_PLDREV);
-wire sel_brdrev  = ControlSpaceDev && (DevPart == CTLIDX_BRDREV);
-wire sel_intrclr = ControlSpaceDev && (DevPart == CTLIDX_INTCLR);
-wire sel_intrset = ControlSpaceDev && (DevPart == CTLIDX_INTSET);
+reg [8:0] DevSelects;
+always @(*) begin
+	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[4:7], ADDR[3:1]})
+	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
+	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd1}:   DevSelects = SEL_TMR_LSB;
+	{2'b10, DEVIDX_TMR,   4'd0, 3'd2}:   DevSelects = SEL_TMR_MSB;
+	{2'b10, DEVIDX_I2C,   4'd0, 3'bxxx}: DevSelects = SEL_I2C;
+	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
+	{2'b10, DEVIDX_ATA,   4'd1, 3'bxxx}: DevSelects = SEL_ATA_AUX;
 
-wire SimpleIO    = SpaceIO && NilDevPart;
+	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
+	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;
 
-wire sel_duart   = SimpleIO && (DevIndex == DEVIDX_UART0 ||
-			       DevIndex == DEVIDX_UART1);
-wire sel_tmr     = SimpleIO && DevIndex == DEVIDX_TMR;
-wire sel_i2c     = SimpleIO && DevIndex == DEVIDX_I2C;
-wire sel_ata     = SpaceIO  && DevIndex == DEVIDX_ATA;
-
-wire internal_reg_p =
-    sel_pldrev | sel_brdrev | sel_intrclr | sel_intrset | sel_tmr;
-
-assign nDUARTSEL  = ~sel_duart;
-assign nI2CSEL    = ~sel_i2c;
-assign nATASEL    = ~(sel_ata && DevPart == 4'd0);
-assign nATAAUXSEL = ~(sel_ata && DevPart == 4'd1);
+	default:                             DevSelects = SEL_NONE;
+	endcase
+end
+assign nDUARTSEL  = DevSelects[8];
+assign nI2CSEL    = DevSelects[4];
+assign nATASEL    = DevSelects[3];
+assign nATAAUXSEL = DevSelects[2];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
-
-/* I/O strobe types. */
-localparam IO_STROBE_NONE = 2'b00;
-localparam IO_STROBE_RD   = 2'b10;
-localparam IO_STROBE_WR   = 2'b01;
-wire [1:0] io_strobe_type = {RnW, ~RnW};
-
-/*
- * For devices where we can assert the I/O strobes immediately because
- * they're fast enough / we're slow enough to meet the timing requirements.
- *
- * N.B. for ATA PIO-0, we have to meet a 70ns address setup time (from
- * assertion of chip select) before we can assert either I/O strobe, but
- * at 10MHz, we can meet that without any extra delays for writes, but
- * /NOT/ for reads!
- */
-wire fast_io_strobe_p = sel_duart | (sel_ata & ~RnW);
-wire [1:0] fast_io_strobe =
-    io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
-
-reg [1:0] io_strobe;
-assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
-
-/*
- * This is a **fast** DTACK to avoid wait states introduced by timing in the
- * bus cycle state machine when we know it's possible to do so.
- *
- * N.B. We are living on the edge with 16-bit PIO-0 ATA transfers,
- * which have a 165ns strobe pulse width (we hit 150ns, and we're
- * going to live with that for now because this should only really
- * be a problem on ancient drives).  For 8-bit transfers, however,
- * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
- * FAST_DTACK for ATA if both byte lanes are selected.
- */
-wire ata_fast_dtack_p = sel_ata & ~nUDS & ~nLDS;
-
-wire FAST_DTACK = internal_reg_p | sel_duart | ata_fast_dtack_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
 
-localparam REV_BOARD = 8'h41;	/* 'A' */
-localparam REV_PLDSET = 8'd0;	/* A.0 */
-
 /* Logic for reading the internal registers. */
-wire enable_data_out = RnW && internal_reg_p;
+reg enable_data_out;
 reg [7:0] data_out;
 always @(*) begin
-	if (sel_tmr) begin
-		if (DevOffset == 3'd0) begin
-			data_out = {6'b0, Timer_int, Timer_enab};
-		end
-		else if (DevOffset == 3'd1) begin
-			data_out = Timer_value[7:0];
-		end
-		else if (DevOffset == 3'd2) begin
-			data_out = Timer_value[15:8];
-		end
-		else begin
-			data_out = 8'hFF;
-		end
-	end
-	else if (sel_intrset || sel_intrclr) begin
-		data_out = {6'b0, Intr_swint};
-	end
-	else if (sel_brdrev) begin
-		data_out = REV_BOARD;
-	end
-	else if (sel_pldrev) begin
-		data_out = REV_PLDSET;
-	end
-	else begin
-		data_out = 8'hFF;
-	end
+	case (DevSelects)
+	SEL_TMR_CSR:	data_out = {6'b0, Timer_int, Timer_enab};
+	SEL_TMR_LSB:	data_out = Timer_value[7:0];
+	SEL_TMR_MSB:	data_out = Timer_value[15:8];
+	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
+	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
+	default:	data_out = 8'hFF;
+	endcase
 end
 assign DATA = (enable_data_out & ~nUDS) ? data_out : 8'bzzzzzzzz;
 
 /*
  * BUS CYCLE STATE MACHINE
  */
-wire [1:0] Cycle = {nDS, RnW};
-localparam CYCLE_READ		= 3'b01;
-localparam CYCLE_WRITE		= 3'b00;
-localparam CYCLE_EITHER		= 3'b0x;
+wire [2:0] Cycle = {nDS, RnW, BPACK, IACK};
 
-wire [3:0] Target = {sel_tmr, sel_intrset, sel_intrclr, sel_ata};
-localparam TARG_TIMER		= 4'b1000;
-localparam TARG_INTRSET		= 4'b0100;
-localparam TARG_INTRCLR		= 4'b0010;
-localparam TARG_ATA		= 4'b0001;
+localparam CYCLE_BPACK		= 4'b0x10;
+localparam CYCLE_IACK		= 4'b0x01;
+localparam CYCLE_IOREAD		= 4'b0100;
+localparam CYCLE_IOWRITE	= 4'b0000;
+localparam CYCLE_IOEITHER	= 4'b0x00;
 
-reg [1:0] state;
-localparam S_IDLE		= 2'd0;
-localparam S_ATA_WAIT_1		= 2'd1;
-localparam S_DTACK		= 2'd2;
+localparam Idle			= 1'd0;
+localparam TermWait		= 1'd1;
 
+reg state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
+		enable_data_out <= 1'b0;
 		io_strobe <= IO_STROBE_NONE;
-		state <= S_IDLE;
+		dtack <= 1'b0;
+		avec <= 1'b0;
+		state <= Idle;
 
 		Intr_swint <= 2'b0;
 
@@ -401,7 +345,7 @@ always @(posedge CLK, negedge nRST) begin
 		 * represents 100ns.
 		 */
 		case (state)
-		S_IDLE: begin
+		Idle: begin
 			/*
 			 * The timer has processed these signals,
 			 * so clear them now.
@@ -420,90 +364,149 @@ always @(posedge CLK, negedge nRST) begin
 			 * This means that the number of slots needed
 			 * for address setup times might be different
 			 * for reads vs. writes.
-			 *
-			 * Also note that only bus cycles that need to
-			 * be processed here are, in fact, processed
-			 * here.  Devices that natively participate
-			 * in the 68000 bus protocol or FAST_DTACK
-			 * devices need not be considered.
 			 */
-			casex ({Cycle, Target})
-			{CYCLE_READ, TARG_TIMER}: begin
-				if (DevOffset == 3'b0) begin
-					Timer_intack <= Timer_int;
-				end
+			casex ({Cycle, DevSelects})
+			{CYCLE_BPACK, SEL_dc}: begin
+				dtack <= 1'b1;
+				state <= TermWait;
 			end
 
-			{CYCLE_WRITE, TARG_TIMER}: begin
-				if (DevOffset == 3'd0) begin
-					Timer_enab <= DATA[0];
-				end
-				else if (DevOffset == 3'd1) begin
-					Timer_value[7:0] <= DATA;
-					Timer_valmod <= 1'b1;
-					Timer_enab <= 1'b0;
-				end
-				else if (DevOffset == 3'd2) begin
-					Timer_value[15:8] = DATA;
-					Timer_valmod <= 1'b1;
-					Timer_enab <= 1'b0;
-				end
+			{CYCLE_IACK, SEL_dc}: begin
+				avec <= 1'b1;
+				state <= TermWait;
 			end
 
-			{CYCLE_WRITE, TARG_INTRSET}: begin
-				Intr_swint <= Intr_swint | DATA[1:0];
+			/*
+			 * DUART timings are for the TL16C2552 at 5V.
+			 * That chip that respond faster than we can
+			 * drive it, so no wait states are required.
+			 */
+			{CYCLE_IOEITHER, SEL_DUART}: begin
+				io_strobe <= io_strobe_type;
+				dtack <= 1'b1;
+				state <= TermWait;
 			end
 
-			{CYCLE_WRITE, TARG_INTRCLR}: begin
-				Intr_swint <= Intr_swint & ~DATA[1:0];
+			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
+				Timer_intack <= Timer_int;
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_TMR_CSR}: begin
+				Timer_enab <= DATA[0];
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
+				Timer_valmod <= 1'b1;
+				Timer_enab <= 1'b0;
+				Timer_value[7:0] <= DATA;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_TMR_LSB}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
+				Timer_valmod <= 1'b1;
+				Timer_enab <= 1'b0;
+				Timer_value[15:8] = DATA;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			/*
+			 * PCF8584 participates in the 68000 bus
+			 * protocol natively.  The chip select is
+			 * asserted via combinatorial logic.
+			 */
+			{CYCLE_IOEITHER, SEL_I2C}: begin
+				state <= Idle;
 			end
 
 			/*
 			 * PIO mode 0 timings at 10MHz.
 			 *
-			 * We can use the fast strobes for writes, but not
-			 * for reads.  And for 8-bit transfers, we need to
-			 * insert a wait state to meet the 290ns pulse width
-			 * for PIO-0.  These 8-bit pulses end up being 350ns
-			 * wide, and because this state machine transitions
-			 * on the rising edge of CPU_CLK, we end up with
-			 * 2 wait states.
-			 *
-			 * For 16-bit transfers, we end up using FAST_DTACK
-			 * to ensure that it's asserted by the end of S4.
+			 * XXX We might need to insert a wait
+			 * XXX state for 8-bit transfers, but
+			 * XXX then again, any drive we plug
+			 * XXX in is likely to be fast enough
+			 * XXX to work either way.
 			 */
-			{CYCLE_EITHER, TARG_ATA}: begin
+			{CYCLE_IOEITHER, SEL_ATA}: begin
 				io_strobe <= io_strobe_type;
-				if (nLDS) begin
-					state <= S_ATA_WAIT_1;
-				end
-				else begin
-					state <= S_DTACK;
-				end
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOEITHER, SEL_ATA_AUX}: begin
+				io_strobe <= io_strobe_type;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_INTR_SET}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_INTR_SET}: begin
+				Intr_swint <=
+				    Intr_swint | DATA[1:0];
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_INTR_CLR}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
+				Intr_swint <=
+				    Intr_swint & ~DATA[1:0];
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			/*
+			 * We don't explcitly signal any bus
+			 * errors from this module.  May revisit
+			 * that at some point later.
+			 */
+			default: begin
+				state <= Idle;
 			end
 			endcase
 		end
 
-		S_ATA_WAIT_1: begin
-			state <= S_DTACK;
-		end
-
-		S_DTACK: begin
+		TermWait: begin
 			if (nDS) begin
+				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
-				state <= S_IDLE;
+				dtack <= 1'b0;
+				avec <= 1'b0;
+				state <= Idle;
 			end
 		end
 		endcase
 	end
 end
-
-/*
- * Assign DTACK according to the state machine.  BPACK also asserts DTACK
- * and IACK asserts /AVEC.
- */
-assign DTACK = ((state == S_DTACK) | BPACK | FAST_DTACK) & ~nDS;
-assign nAVEC = ~IACK | nDS;
 
 /*
  * SYSTEM TIMER IMPLEMENTATION
@@ -545,13 +548,6 @@ always @(posedge CLK, negedge nRST) begin
 	end
 end
 
-`ifdef BUILD_FOR_TEST
-assign timer_enab_out = Timer_enab;
-assign timer_value_out = Timer_value;
-assign timer_current_out = Timer_current;
-assign timer_int_out = Timer_int;
-`endif
-
 endmodule
 
 // Pin assignment for Yosys workflow.
@@ -569,9 +565,9 @@ endmodule
 //PIN: FC_0		: 10
 //PIN: FC_1		: 12
 //PIN: FC_2		: 13
-//PIN: nIPL_0		: 14
-//PIN: nIPL_1		: 16
-//PIN: nIPL_2		: 17
+//PIN: IPL_0		: 14
+//PIN: IPL_1		: 16
+//PIN: IPL_2		: 17
 //PIN: DATA_0		: 19
 //PIN: DATA_1		: 20
 //PIN: DATA_2		: 21
@@ -586,17 +582,17 @@ endmodule
 //
 //	=== MMU address output side of the chip ===
 //
-//PIN: ADDR_0		: 28
-//PIN: ADDR_1		: 29
-//PIN: ADDR_2		: 30
-//PIN: ADDR_3		: 31
-//PIN: ADDR_4		: 32
-//PIN: ADDR_5		: 33
-//PIN: ADDR_6		: 35
-//PIN: ADDR_7		: 36
-//PIN: ADDR_8		: 37
-//PIN: ADDR_9		: 40
-//PIN: ADDR_10		: 41
+//PIN: ADDR_1		: 28
+//PIN: ADDR_2		: 29
+//PIN: ADDR_3		: 30
+//PIN: ADDR_4		: 31
+//PIN: ADDR_5		: 32
+//PIN: ADDR_6		: 33
+//PIN: ADDR_7		: 35
+//PIN: ADDR_8		: 36
+//PIN: ADDR_9		: 37
+//PIN: ADDR_10		: 40
+//PIN: ADDR_11		: 41
 //PIN: ADDRSP_0		: 42
 //PIN: ADDRSP_1		: 44
 //PIN: CPUTYP_0		: 45

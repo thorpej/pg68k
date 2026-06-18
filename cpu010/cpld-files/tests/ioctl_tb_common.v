@@ -37,8 +37,7 @@ localparam OBIO_ATAAUX     = 32'h08000410;
 localparam OBIO_ATAAUX_END = 32'h08000420;
 
 localparam OBIO_TMR_CSR  = 32'h08000200;
-localparam OBIO_TMR_LSB  = 32'h08000202;
-localparam OBIO_TMR_MSB  = 32'h08000204;
+localparam OBIO_TMR_VAL  = 32'h08000202;
 
 localparam EXP_START     = 32'h0c000000;
 localparam EXP_END       = 32'h0d000000;

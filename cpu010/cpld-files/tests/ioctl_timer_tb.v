@@ -48,7 +48,7 @@ initial begin
 	$display("Enabling interrupts.");
 	int_en = 1;
 
-	$display("*** Programming timer LSB. ***");
+	$display("*** Programming timer MSB. ***");
 
 	@(posedge cpu_clk);
 	$display("S0: CPU drives FC[2:0] and RnW=1");
@@ -57,7 +57,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S1: CPU drives A[23:1]");
-	addr = OBIO_TMR_LSB;
+	addr = OBIO_TMR_VAL;
 
 	@(posedge cpu_clk);
 	$display("S2: CPU asserts /AS, RnW=0");
@@ -66,7 +66,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S3: CPU places data on data bus");
-	data_out = LSB;
+	data_out = MSB;
 
 	@(posedge cpu_clk);
 	$display("S4: CPU asserts /UDS, waits for cycle termination signal");
@@ -87,7 +87,7 @@ initial begin
 	n_as = 1;
 	n_uds = 1;
 
-	$display("*** Programming timer MSB. ***");
+	$display("*** Programming timer LSB. ***");
 
 	@(posedge cpu_clk);
 	$display("S0: CPU drives FC[2:0] and RnW=1");
@@ -96,7 +96,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S1: CPU drives A[23:1]");
-	addr = OBIO_TMR_MSB;
+	addr = OBIO_TMR_VAL;
 
 	@(posedge cpu_clk);
 	$display("S2: CPU asserts /AS, RnW=0");
@@ -105,7 +105,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S3: CPU places data on data bus");
-	data_out = MSB;
+	data_out = LSB;
 
 	@(posedge cpu_clk);
 	$display("S4: CPU asserts /UDS, waits for cycle termination signal");
@@ -304,7 +304,7 @@ initial begin
 		$fatal(1, "    --> FAILED ipl=%0d", ipl);
 	end
 
-	$display("*** Programming timer LSB. ***");
+	$display("*** Programming timer MSB. ***");
 
 	@(posedge cpu_clk);
 	$display("S0: CPU drives FC[2:0] and RnW=1");
@@ -313,7 +313,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S1: CPU drives A[23:1]");
-	addr = OBIO_TMR_LSB;
+	addr = OBIO_TMR_VAL;
 
 	@(posedge cpu_clk);
 	$display("S2: CPU asserts /AS, RnW=0");
@@ -322,7 +322,7 @@ initial begin
 
 	@(negedge cpu_clk);
 	$display("S3: CPU places data on data bus");
-	data_out = LSB;
+	data_out = MSB;
 
 	@(posedge cpu_clk);
 	$display("S4: CPU asserts /UDS, waits for cycle termination signal");

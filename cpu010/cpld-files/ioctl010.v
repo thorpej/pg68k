@@ -373,7 +373,7 @@ localparam S_IDLE		= 2'b00;
 localparam S_ATA_WAIT_1		= 2'b01;
 localparam S_DTACK		= 2'b11;
 
-reg state;
+reg [1:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		io_strobe <= IO_STROBE_NONE;

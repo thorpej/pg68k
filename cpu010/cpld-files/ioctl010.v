@@ -136,10 +136,6 @@ wire nDS = nUDS & nLDS;
 reg dtack;
 assign DTACK = dtack & ~nDS;
 
-/* nAVEC output register. */
-reg avec;
-assign nAVEC = ~avec & ~nDS;
-
 /* Interrupt enable and Software interrupt (IRQ1, IRQ2) registers */
 reg [1:0] Intr_swint;
 
@@ -325,13 +321,12 @@ assign DATA = (enable_data_out & ~nUDS) ? data_out : 8'bzzzzzzzz;
 /*
  * BUS CYCLE STATE MACHINE
  */
-wire [2:0] Cycle = {nDS, RnW, BPACK, IACK};
+wire [2:0] Cycle = {nDS, RnW, BPACK};
 
-localparam CYCLE_BPACK		= 4'b0x10;
-localparam CYCLE_IACK		= 4'b0x01;
-localparam CYCLE_IOREAD		= 4'b0100;
-localparam CYCLE_IOWRITE	= 4'b0000;
-localparam CYCLE_IOEITHER	= 4'b0x00;
+localparam CYCLE_BPACK		= 3'b0x1;
+localparam CYCLE_IOREAD		= 3'b010;
+localparam CYCLE_IOWRITE	= 3'b000;
+localparam CYCLE_IOEITHER	= 3'b0x0;
 
 localparam S_IDLE		= 1'd0;
 localparam S_DTACK		= 1'd1;
@@ -342,7 +337,6 @@ always @(posedge CLK, negedge nRST) begin
 		enable_data_out <= 1'b0;
 		io_strobe <= IO_STROBE_NONE;
 		dtack <= 1'b0;
-		avec <= 1'b0;
 		state <= S_IDLE;
 
 		Intr_swint <= 2'b0;
@@ -381,11 +375,6 @@ always @(posedge CLK, negedge nRST) begin
 			casex ({Cycle, DevSelects})
 			{CYCLE_BPACK, SEL_dc}: begin
 				dtack <= 1'b1;
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IACK, SEL_dc}: begin
-				avec <= 1'b1;
 				state <= S_DTACK;
 			end
 
@@ -523,13 +512,14 @@ always @(posedge CLK, negedge nRST) begin
 				enable_data_out <= 1'b0;
 				io_strobe <= IO_STROBE_NONE;
 				dtack <= 1'b0;
-				avec <= 1'b0;
 				state <= S_IDLE;
 			end
 		end
 		endcase
 	end
 end
+
+assign nAVEC = ~IACK | nDS;
 
 /*
  * SYSTEM TIMER IMPLEMENTATION

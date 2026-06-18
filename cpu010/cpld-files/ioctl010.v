@@ -106,7 +106,7 @@ module ioctl010(
 
 	inout wire [7:0] DATA,	/* D15..D8 to/from CPU */
 
-	output wire [2:0] IPL,	/* IPL output to CPU */
+	output wire [2:0] nIPL,	/* IPL output to CPU */
 
 	/* On-board I/O device select outputs. */
 	output wire nDUARTSEL,
@@ -173,7 +173,7 @@ always @(*) begin
 	default:	encoded_ipl = 3'd0;
 	endcase
 end
-assign IPL = ~encoded_ipl;
+assign nIPL = ~encoded_ipl;
 
 /* I/O strobe types. */
 localparam IO_STROBE_NONE = 2'b00;
@@ -608,9 +608,9 @@ endmodule
 //PIN: FC_0		: 10
 //PIN: FC_1		: 12
 //PIN: FC_2		: 13
-//PIN: IPL_0		: 14
-//PIN: IPL_1		: 16
-//PIN: IPL_2		: 17
+//PIN: nIPL_0		: 14
+//PIN: nIPL_1		: 16
+//PIN: nIPL_2		: 17
 //PIN: DATA_0		: 19
 //PIN: DATA_1		: 20
 //PIN: DATA_2		: 21

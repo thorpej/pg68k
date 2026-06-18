@@ -244,6 +244,8 @@ wire [3:0] DevIndex  = ADDR[10:7];
 wire [3:0] DevPart   = ADDR[6:3];
 wire [2:0] DevOffset = ADDR[2:0];
 
+wire NilDevPart = DevPart == 4'b0;
+
 wire SpaceNormal = FC[1] ^ FC[0];
 wire SpaceIO   = ~nAS && SpaceNormal && ADDRSP == 2'b10;
 wire SpaceEXP  = ~nAS && SpaceNormal && ADDRSP == 2'b11;
@@ -261,69 +263,29 @@ localparam CTLIDX_INTCLR	= 4'd5;
 localparam CTLIDX_BRDREV	= 4'd14;
 localparam CTLIDX_PLDREV	= 4'd15;
 
-localparam SEL_dc		= 11'bxxxxxxxxxxx;
-localparam SEL_NONE		= 11'b11111111111;
-localparam SEL_DUART		= 11'b01111111111;
-localparam SEL_TMR_CSR		= 11'b10111111111;
-localparam SEL_TMR_LSB		= 11'b11011111111;
-localparam SEL_TMR_MSB		= 11'b11101111111;
-localparam SEL_I2C		= 11'b11110111111;
-localparam SEL_ATA		= 11'b11111011111;	/* CH1Fx */
-localparam SEL_ATA_AUX		= 11'b11111101111;	/* CH3Fx */
-localparam SEL_INTR_SET		= 11'b11111110111;
-localparam SEL_INTR_CLR		= 11'b11111111011;
-localparam SEL_BRDREV		= 11'b11111111101;
-localparam SEL_PLDREV		= 11'b11111111110;
+wire ControlSpaceDev = SpaceCtrl & (DevIndex == 4'd0);
 
-localparam SEL_IDX_DUART        = 10;
-localparam SEL_IDX_TMR_CSR      = 9;
-localparam SEL_IDX_TMR_LSB      = 8;
-localparam SEL_IDX_TMR_MSB      = 7;
-localparam SEL_IDX_I2C          = 6;
-localparam SEL_IDX_ATA          = 5;
-localparam SEL_IDX_ATA_AUX      = 4;
-localparam SEL_IDX_INTR_SET     = 3;
-localparam SEL_IDX_INTR_CLR     = 2;
-localparam SEL_IDX_BRDREV       = 1;
-localparam SEL_IDX_PLDREV       = 0;
+wire sel_pldrev  = ControlSpaceDev && (DevPart == CTLIDX_PLDREV);
+wire sel_brdrev  = ControlSpaceDev && (DevPart == CTLIDX_BRDREV);
+wire sel_intrclr = ControlSpaceDev && (DevPart == CTLIDX_INTCLR);
+wire sel_intrset = ControlSpaceDev && (DevPart == CTLIDX_INTSET);
 
-reg [10:0] DevSelects;
-always @(*) begin
-	casex ({SpaceIO, SpaceCtrl, DevIndex, DevPart, DevOffset})
-	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
-	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
-	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;
-	{2'b10, DEVIDX_TMR,   4'd0, 3'd1}:   DevSelects = SEL_TMR_LSB;
-	{2'b10, DEVIDX_TMR,   4'd0, 3'd2}:   DevSelects = SEL_TMR_MSB;
-	{2'b10, DEVIDX_I2C,   4'd0, 3'bxxx}: DevSelects = SEL_I2C;
-	{2'b10, DEVIDX_ATA,   4'd0, 3'bxxx}: DevSelects = SEL_ATA;
-	{2'b10, DEVIDX_ATA,   4'd1, 3'bxxx}: DevSelects = SEL_ATA_AUX;
+wire SimpleIO    = SpaceIO && NilDevPart;
 
-	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
-	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;
-	{2'b01, 4'd0, CTLIDX_BRDREV, 3'd0}:  DevSelects = SEL_BRDREV;
-	{2'b01, 4'd0, CTLIDX_PLDREV, 3'd0}:  DevSelects = SEL_PLDREV;
+wire sel_duart   = SimpleIO && (DevIndex == DEVIDX_UART0 ||
+			       DevIndex == DEVIDX_UART1);
+wire sel_tmr     = SimpleIO && DevIndex == DEVIDX_TMR;
+wire sel_i2c     = SimpleIO && DevIndex == DEVIDX_I2C;
+wire sel_ata     = SpaceIO  && DevIndex == DEVIDX_ATA;
 
-	default:                             DevSelects = SEL_NONE;
-	endcase
-end
+wire internal_reg_p =
+    sel_pldrev | sel_brdrev | sel_intrclr | sel_intrset | sel_tmr;
 
-wire internal_reg_p = ~DevSelects[SEL_IDX_PLDREV] |
-		      ~DevSelects[SEL_IDX_BRDREV] |
-		      ~DevSelects[SEL_IDX_INTR_CLR] |
-		      ~DevSelects[SEL_IDX_INTR_SET] |
-		      ~DevSelects[SEL_IDX_TMR_MSB] |
-		      ~DevSelects[SEL_IDX_TMR_LSB] |
-		      ~DevSelects[SEL_IDX_TMR_CSR];
-
-wire ata_reg_p = ~DevSelects[SEL_IDX_ATA] |
-		 ~DevSelects[SEL_IDX_ATA_AUX];
-
-assign nDUARTSEL  = DevSelects[SEL_IDX_DUART];
-assign nI2CSEL    = DevSelects[SEL_IDX_I2C];
-assign nATASEL    = DevSelects[SEL_IDX_ATA];
-assign nATAAUXSEL = DevSelects[SEL_IDX_ATA_AUX];
-assign nATABEN    = ~ata_reg_p;
+assign nDUARTSEL  = ~sel_duart;
+assign nI2CSEL    = ~sel_i2c;
+assign nATASEL    = ~(sel_ata && DevPart == 4'd0);
+assign nATAAUXSEL = ~(sel_ata && DevPart == 4'd1);
+assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
 
 /* I/O strobe types. */
@@ -341,8 +303,7 @@ wire [1:0] io_strobe_type = {RnW, ~RnW};
  * at 10MHz, we can meet that without any extra delays for writes, but
  * /NOT/ for reads!
  */
-wire fast_io_strobe_p = ~DevSelects[SEL_IDX_DUART] |
-			(ata_reg_p & ~RnW);
+wire fast_io_strobe_p = sel_duart | (sel_ata & ~RnW);
 wire [1:0] fast_io_strobe =
     io_strobe_type & {fast_io_strobe_p, fast_io_strobe_p};
 
@@ -360,11 +321,9 @@ assign {nIORD, nIOWR} = ~((io_strobe | fast_io_strobe) & {~nDS, ~nDS});
  * it's 290ns for PIO-0, PIO-1, and PIO-2, so we can only to a
  * FAST_DTACK for ATA if both byte lanes are selected.
  */
-wire ata_fast_dtack_p = ata_reg_p & ~nUDS & ~nLDS;
+wire ata_fast_dtack_p = sel_ata & ~nUDS & ~nLDS;
 
-wire FAST_DTACK = internal_reg_p |
-		  ~DevSelects[SEL_IDX_DUART] |
-		  ata_fast_dtack_p;
+wire FAST_DTACK = internal_reg_p | sel_duart | ata_fast_dtack_p;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
@@ -376,33 +335,54 @@ localparam REV_PLDSET = 8'd0;	/* A.0 */
 wire enable_data_out = RnW && internal_reg_p;
 reg [7:0] data_out;
 always @(*) begin
-	case (DevSelects)
-	SEL_TMR_CSR:	data_out = {6'b0, Timer_int, Timer_enab};
-	SEL_TMR_LSB:	data_out = Timer_value[7:0];
-	SEL_TMR_MSB:	data_out = Timer_value[15:8];
-	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
-	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
-	SEL_BRDREV:	data_out = REV_BOARD;
-	SEL_PLDREV:	data_out = REV_PLDSET;
-	default:	data_out = 8'hFF;
-	endcase
+	if (sel_tmr) begin
+		if (DevOffset == 3'd0) begin
+			data_out = {6'b0, Timer_int, Timer_enab};
+		end
+		else if (DevOffset == 3'd1) begin
+			data_out = Timer_value[7:0];
+		end
+		else if (DevOffset == 3'd2) begin
+			data_out = Timer_value[15:8];
+		end
+		else begin
+			data_out = 8'hFF;
+		end
+	end
+	else if (sel_intrset || sel_intrclr) begin
+		data_out = {6'b0, Intr_swint};
+	end
+	else if (sel_brdrev) begin
+		data_out = REV_BOARD;
+	end
+	else if (sel_pldrev) begin
+		data_out = REV_PLDSET;
+	end
+	else begin
+		data_out = 8'hFF;
+	end
 end
 assign DATA = (enable_data_out & ~nUDS) ? data_out : 8'bzzzzzzzz;
 
 /*
  * BUS CYCLE STATE MACHINE
  */
-wire [2:0] Cycle = {(SpaceIO | SpaceCtrl), nDS, RnW};
+wire [1:0] Cycle = {nDS, RnW};
+localparam CYCLE_READ		= 3'b01;
+localparam CYCLE_WRITE		= 3'b00;
+localparam CYCLE_EITHER		= 3'b0x;
 
-localparam CYCLE_IOREAD		= 3'b101;
-localparam CYCLE_IOWRITE	= 3'b100;
-localparam CYCLE_IOEITHER	= 3'b10x;
+wire [3:0] Target = {sel_tmr, sel_intrset, sel_intrclr, sel_ata};
+localparam TARG_TIMER		= 4'b1000;
+localparam TARG_INTRSET		= 4'b0100;
+localparam TARG_INTRCLR		= 4'b0010;
+localparam TARG_ATA		= 4'b0001;
 
+reg [1:0] state;
 localparam S_IDLE		= 2'd0;
 localparam S_ATA_WAIT_1		= 2'd1;
 localparam S_DTACK		= 2'd2;
 
-reg [1:0] state;
 always @(posedge CLK, negedge nRST) begin
 	if (~nRST) begin
 		io_strobe <= IO_STROBE_NONE;
@@ -447,29 +427,35 @@ always @(posedge CLK, negedge nRST) begin
 			 * in the 68000 bus protocol or FAST_DTACK
 			 * devices need not be considered.
 			 */
-			casex ({Cycle, DevSelects})
-			{CYCLE_IOREAD, SEL_TMR_CSR}: begin
-				Timer_intack <= Timer_int;
-				state <= S_DTACK;
+			casex ({Cycle, Target})
+			{CYCLE_READ, TARG_TIMER}: begin
+				if (DevOffset == 3'b0) begin
+					Timer_intack <= Timer_int;
+				end
 			end
 
-			{CYCLE_IOWRITE, SEL_TMR_CSR}: begin
-				Timer_enab <= DATA[0];
-				state <= S_DTACK;
+			{CYCLE_WRITE, TARG_TIMER}: begin
+				if (DevOffset == 3'd0) begin
+					Timer_enab <= DATA[0];
+				end
+				else if (DevOffset == 3'd1) begin
+					Timer_value[7:0] <= DATA;
+					Timer_valmod <= 1'b1;
+					Timer_enab <= 1'b0;
+				end
+				else if (DevOffset == 3'd2) begin
+					Timer_value[15:8] = DATA;
+					Timer_valmod <= 1'b1;
+					Timer_enab <= 1'b0;
+				end
 			end
 
-			{CYCLE_IOWRITE, SEL_TMR_LSB}: begin
-				Timer_valmod <= 1'b1;
-				Timer_enab <= 1'b0;
-				Timer_value[7:0] <= DATA;
-				state <= S_DTACK;
+			{CYCLE_WRITE, TARG_INTRSET}: begin
+				Intr_swint <= Intr_swint | DATA[1:0];
 			end
 
-			{CYCLE_IOWRITE, SEL_TMR_MSB}: begin
-				Timer_valmod <= 1'b1;
-				Timer_enab <= 1'b0;
-				Timer_value[15:8] = DATA;
-				state <= S_DTACK;
+			{CYCLE_WRITE, TARG_INTRCLR}: begin
+				Intr_swint <= Intr_swint & ~DATA[1:0];
 			end
 
 			/*
@@ -486,7 +472,7 @@ always @(posedge CLK, negedge nRST) begin
 			 * For 16-bit transfers, we end up using FAST_DTACK
 			 * to ensure that it's asserted by the end of S4.
 			 */
-			{CYCLE_IOEITHER, SEL_ATA}: begin
+			{CYCLE_EITHER, TARG_ATA}: begin
 				io_strobe <= io_strobe_type;
 				if (nLDS) begin
 					state <= S_ATA_WAIT_1;
@@ -494,37 +480,6 @@ always @(posedge CLK, negedge nRST) begin
 				else begin
 					state <= S_DTACK;
 				end
-			end
-
-			{CYCLE_IOEITHER, SEL_ATA_AUX}: begin
-				io_strobe <= io_strobe_type;
-				if (nLDS) begin
-					state <= S_ATA_WAIT_1;
-				end
-				else begin
-					state <= S_DTACK;
-				end
-			end
-
-			{CYCLE_IOWRITE, SEL_INTR_SET}: begin
-				Intr_swint <=
-				    Intr_swint | DATA[1:0];
-				state <= S_DTACK;
-			end
-
-			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
-				Intr_swint <=
-				    Intr_swint & ~DATA[1:0];
-				state <= S_DTACK;
-			end
-
-			/*
-			 * We don't explcitly signal any bus
-			 * errors from this module.  No response
-			 * will cause a bus timeout.
-			 */
-			default: begin
-				state <= S_IDLE;
 			end
 			endcase
 		end

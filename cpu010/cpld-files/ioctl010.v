@@ -50,6 +50,11 @@
  *	-> Software controlled interrupts at IPL1-IPL2 via two separate
  *	   SET and CLR registers.
  *
+ * - Board and PLD revision registers (located in Control space)
+ *	-> These can be used by system firmware to work around hardware
+ *	   bugs, enable features found on later board revisions, and
+ *	   detect whether or not it's running in an emulator.
+ *
  * Random thoughts:
  *
  * It probably wouldn't be too difficult to support vectored interrupts
@@ -223,6 +228,9 @@ assign {nIORD, nIOWR} = ~(io_strobe & {~nDS, ~nDS});
  *           xxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Set (1 byte)
  *           xxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Clear (1 byte)
  *
+ *           xxxx.xxxx xxxx.xxxx 1110.0000 - Board revision ('A' and up)
+ *           xxxx.xxxx xxxx.xxxx 1111.0000 - CPLD set revision
+ *
  * CPU space addresses:
  *
  *           xxxx.0000 xxxx.xxxx xxxx.xxxx - BPACK cycle
@@ -253,20 +261,24 @@ localparam DEVIDX_ATA		= 4'd4;
 
 localparam CTLIDX_INTSET	= 4'd4;
 localparam CTLIDX_INTCLR	= 4'd5;
+localparam CTLIDX_BRDREV	= 4'd14;
+localparam CTLIDX_PLDREV	= 4'd15;
 
-localparam SEL_dc		= 9'bxxxxxxxxx;
-localparam SEL_NONE		= 9'b111111111;
-localparam SEL_DUART		= 9'b011111111;
-localparam SEL_TMR_CSR		= 9'b101111111;
-localparam SEL_TMR_LSB		= 9'b110111111;
-localparam SEL_TMR_MSB		= 9'b111011111;
-localparam SEL_I2C		= 9'b111101111;
-localparam SEL_ATA		= 9'b111110111;	/* CH1Fx */
-localparam SEL_ATA_AUX		= 9'b111111011;	/* CH3Fx */
-localparam SEL_INTR_SET		= 9'b111111101;
-localparam SEL_INTR_CLR		= 9'b111111110;
+localparam SEL_dc		= 11'bxxxxxxxxxxx;
+localparam SEL_NONE		= 11'b11111111111;
+localparam SEL_DUART		= 11'b01111111111;
+localparam SEL_TMR_CSR		= 11'b10111111111;
+localparam SEL_TMR_LSB		= 11'b11011111111;
+localparam SEL_TMR_MSB		= 11'b11101111111;
+localparam SEL_I2C		= 11'b11110111111;
+localparam SEL_ATA		= 11'b11111011111;	/* CH1Fx */
+localparam SEL_ATA_AUX		= 11'b11111101111;	/* CH3Fx */
+localparam SEL_INTR_SET		= 11'b11111110111;
+localparam SEL_INTR_CLR		= 11'b11111111011;
+localparam SEL_BRDREV		= 11'b11111111101;
+localparam SEL_PLDREV		= 11'b11111111110;
 
-reg [8:0] DevSelects;
+reg [10:0] DevSelects;
 always @(*) begin
 	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[4:7], ADDR[3:1]})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
@@ -280,19 +292,24 @@ always @(*) begin
 
 	{2'b01, 4'd0, CTLIDX_INTSET, 3'd0}:  DevSelects = SEL_INTR_SET;
 	{2'b01, 4'd0, CTLIDX_INTCLR, 3'd0}:  DevSelects = SEL_INTR_CLR;
+	{2'b01, 4'd0, CTLIDX_BRDREV, 3'd0}:  DevSelects = SEL_BRDREV;
+	{2'b01, 4'd0, CTLIDX_PLDREV, 3'd0}:  DevSelects = SEL_PLDREV;
 
 	default:                             DevSelects = SEL_NONE;
 	endcase
 end
-assign nDUARTSEL  = DevSelects[8];
-assign nI2CSEL    = DevSelects[4];
-assign nATASEL    = DevSelects[3];
-assign nATAAUXSEL = DevSelects[2];
+assign nDUARTSEL  = DevSelects[10];
+assign nI2CSEL    = DevSelects[6];
+assign nATASEL    = DevSelects[5];
+assign nATAAUXSEL = DevSelects[4];
 assign nATABEN    = nATASEL && nATAAUXSEL;
 assign nEXPSEL    = ~SpaceEXP;
 
 wire BPACK = SpaceCPU && (CPUTYP == 4'b0000);
 wire IACK  = SpaceCPU && (CPUTYP == 4'b1111);
+
+localparam REV_BOARD = 8'h41;	/* 'A' */
+localparam REV_PLDSET = 8'd0;	/* A.0 */
 
 /* Logic for reading the internal registers. */
 reg enable_data_out;
@@ -304,6 +321,8 @@ always @(*) begin
 	SEL_TMR_MSB:	data_out = Timer_value[15:8];
 	SEL_INTR_SET:	data_out = {6'b0, Intr_swint};
 	SEL_INTR_CLR:	data_out = {6'b0, Intr_swint};
+	SEL_BRDREV:	data_out = REV_BOARD;
+	SEL_PLDREV:	data_out = REV_PLDSET;
 	default:	data_out = 8'hFF;
 	endcase
 end
@@ -480,6 +499,30 @@ always @(posedge CLK, negedge nRST) begin
 			{CYCLE_IOWRITE, SEL_INTR_CLR}: begin
 				Intr_swint <=
 				    Intr_swint & ~DATA[1:0];
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_BRDREV}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_BRDREV}: begin
+				/* writes are ignored */
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOREAD, SEL_PLDREV}: begin
+				enable_data_out <= 1'b1;
+				dtack <= 1'b1;
+				state <= TermWait;
+			end
+
+			{CYCLE_IOWRITE, SEL_PLDREV}: begin
+				/* writes are ignored */
 				dtack <= 1'b1;
 				state <= TermWait;
 			end

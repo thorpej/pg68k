@@ -280,7 +280,7 @@ localparam SEL_PLDREV		= 11'b11111111110;
 
 reg [10:0] DevSelects;
 always @(*) begin
-	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[4:7], ADDR[3:1]})
+	casex ({SpaceIO, SpaceCtrl, ADDR[11:8], ADDR[7:4], ADDR[3:1]})
 	{2'b10, DEVIDX_UART0, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_UART1, 4'd0, 3'bxxx}: DevSelects = SEL_DUART;
 	{2'b10, DEVIDX_TMR,   4'd0, 3'd0}:   DevSelects = SEL_TMR_CSR;

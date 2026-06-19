@@ -195,7 +195,7 @@ romcalls:
 	.long	cons_pollc
 	.long	cons_putc
 
-	.long	dd7seg_hex
+	.long	dd7seg_digits
 romcalls_end:
 
 #ifdef CONFIG_MC68010

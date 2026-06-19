@@ -85,11 +85,11 @@ struct romcalls_v1 {
 	 * firmware appears in the address space where it's expected, but
 	 * does not need to run with the firmware mappings.
 	 *
-	 * This takes single byte argument and basically diplays it as BCD.
-	 * If a nybble is the range of A - F, that nybble is cleared on the
-	 * display.
+	 * First argument is the upper digit, and second argument is lower
+	 * digit.  0 - 15, '0' - '9', 'A' - 'F', 'a' - 'f', and ' ' are all
+	 * valid arguments.  Any unknown value will also blank that digit.
 	 */
-	void	(*rv1_diag)(unsigned char);
+	void	(*rv1_diag)(unsigned char, unsigned char);
 };
 
 extern struct romcalls_v1 romcalls;

@@ -45,6 +45,7 @@
 #endif /* CONFIG_MC68010 */
 
 #if defined(FC_CONTROL) && defined(CONFIG_DD7SEG)
+#include "dd7seg_chrs.h"
 /*
  * Assumes Control Space is selected.  Clobbers %a4 and %d4.
  */
@@ -256,7 +257,7 @@ start:
 	movec	%d0,%dfc
 #endif
 
-	DD('B', 0)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_0)
 
 	| In case we ended up here via nefarious means, go ahead and
 	| re-load the stack pointer from the vector table.
@@ -281,7 +282,7 @@ start:
 	and.l	#SYSEN_HOWTO,%d5	| clear everything except howto
 	moves.b	%d5,(%a5)		| %d5 -> System Enable register
 
-	DD('B', 1)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_1)
 
 	|
 	| RAM is inaccessible until the MMU is enabled, so we need to
@@ -300,7 +301,7 @@ start:
 	cmpa.l	%d1,%a0
 	bne	1b
 
-	DD('B', 2)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_2)
 
 	| Zero out all of the Page Map space.
 	move.l	#MMU_CTLSEL_PAGEMAP,%d1
@@ -311,7 +312,7 @@ start:
 	cmpa.l	%d1,%a0
 	bne	1b
 
-	DD('B', 3)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_3)
 
 #define	FILL_PMES(v, p, s, w)						 \
 	movea.l	%d2,%a0							;\
@@ -333,17 +334,17 @@ start:
 	| Map all of the on-board system RAM VA==PA.
 	FILL_PMES(RAM0_START, RAM0_START, RAM0_SIZE, PME_W)
 
-	DD('B', 4)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_4)
 
 	| Map the ROM into the correct location.
 	FILL_PMES(ROM_VIRT, ROM_PHYS, ROM_SIZE, 0)
 
-	DD('B', 5)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_5)
 
 	| Map the on-board I/O.
 	FILL_PMES(OBIO_VIRT, OBIO_PHYS, OBIO_SIZE, PME_W);
 
-	DD('B', 6)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_6)
 
 #undef FILL_PMES
 
@@ -370,17 +371,17 @@ start:
 	| RAM Segment Map entries.
 	FILL_SMES(RAM0_START, RAM0_SIZE)
 
-	DD('B', 7)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_7)
 
 	| ROM Segment Map entries.
 	FILL_SMES(ROM_VIRT, ROM_SIZE)
 
-	DD('B', 8)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_8)
 
 	| On-board I/O Segment Map entries.
 	FILL_SMES(OBIO_VIRT, OBIO_SIZE)
 
-	DD('B', 9)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_9)
 
 #undef FILL_SMES
 
@@ -393,7 +394,7 @@ start:
 	or.b	#SYSEN_MMU,%d5
 	moves.b	%d5,(%a5)
 
-	DD('B', 10)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_A)
 #endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000
@@ -413,7 +414,7 @@ start:
 	addq.l	#4,%sp
 #endif /* CONFIG_MC68030 */
 
-	DD('C', 0)
+	DD(DD7SEG_CHR_C, DD7SEG_CHR_0)
 
 	|
 	| Copy the .data segment from ROM to the run-time location
@@ -427,7 +428,7 @@ start:
 	jbsr	memcpy		| memcpy(__data_start, __data_store, d0)
 	add.l	#12,%sp
 
-	DD('C', 1)
+	DD(DD7SEG_CHR_C, DD7SEG_CHR_1)
 
 	|
 	| Zero the BSS segment in RAM.
@@ -440,7 +441,7 @@ start:
 	jbsr	memset		| memset(_edata, 0, d0)
 	add.l	#12,%sp
 
-	DD('C', 2)
+	DD(DD7SEG_CHR_C, DD7SEG_CHR_2)
 
 #ifdef CONFIG_MC68010
 	|
@@ -464,7 +465,7 @@ start:
 	movc	%d0,%cacr
 #endif /* CONFIG_MC68030 */
 
-	DD('C', 3)
+	DD(DD7SEG_CHR_C, DD7SEG_CHR_3)
 
 	|
 	| Terminate the call stack by loading $0000.0000 into

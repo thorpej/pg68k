@@ -63,7 +63,7 @@
  *      +         +
  *           D
  */
-#define	DD7SEG_CHR_1	(~(DD7SEG_B+DD7SEG_C))
+#define	DD7SEG_CHR_1	(DD7SEG_A+DD7SEG_D+DD7SEG_E+DD7SEG_F+DD7SEG_G)
 
 /*
  *           A
@@ -82,7 +82,7 @@
  *      +---------+
  *           D
  */
-#define	DD7SEG_CHR_2	(DD7SEG_F+DD7SEG_C)
+#define	DD7SEG_CHR_2	(DD7SEG_C+DD7SEG_F)
 
 /*
  *           A
@@ -101,7 +101,7 @@
  *      +---------+
  *           D
  */
-#define	DD7SEG_CHR_3	(DD7SEG_F+DD7SEG_E)
+#define	DD7SEG_CHR_3	(DD7SEG_E+DD7SEG_F)
 
 /*
  *           A
@@ -177,7 +177,7 @@
  *      +         +
  *           D
  */
-#define	DD7SEG_CHR_7	(~(DD7SEG_A+DD7SEG_B+DD7SEG_C))
+#define	DD7SEG_CHR_7	(DD7SEG_D+DD7SEG_E+DD7SEG_F+DD7SEG_G)
 
 /*
  *           A

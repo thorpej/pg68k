@@ -44,6 +44,17 @@
 #include "mmu_config.h"
 #endif /* CONFIG_MC68010 */
 
+#if defined(FC_CONTROL) && defined(CONFIG_DD7SEG)
+/*
+ * Assumes Control Space is selected.  Clobbers %a4 and %d4.
+ */
+#define	DD(ud, ld)	movea.l	#CTLREG_DD7SEG,%a4		;\
+			move.w	(((ud) << 8)+(ld)),%d4		;\
+			moves.w	%d4,(%a4)
+#else
+#define	DD(ud, ld)	/* nothing */
+#endif
+
 	.text
 
 |
@@ -238,17 +249,21 @@ start:
 	| Except the NMI, obviously.
 	move.w	#PSL_HIGHIPL,%sr
 
+#ifdef FC_CONTROL
+	| Set source and destination FCs for MOVES.
+	moveq	#FC_CONTROL,%d0
+	movec	%d0,%sfc
+	movec	%d0,%dfc
+#endif
+
+	DD('B', 0)
+
 	| In case we ended up here via nefarious means, go ahead and
 	| re-load the stack pointer from the vector table.
 	lea	vectab,%a0
 	movea.l	(%a0),%sp
 
 #ifdef CONFIG_MC68010
-	| Set source and destination FCs for MOVES.
-	moveq	#FC_CONTROL,%d0
-	movec	%d0,%sfc
-	movec	%d0,%dfc
-
 	|
 	| We can't know with certainty how we got here; it could have
 	| been a system reset ("cold boot"), it could have been a
@@ -265,6 +280,8 @@ start:
 	moves.b	(%a5),%d5		| %d5 <- System Enable register
 	and.l	#SYSEN_HOWTO,%d5	| clear everything except howto
 	moves.b	%d5,(%a5)		| %d5 -> System Enable register
+
+	DD('B', 1)
 
 	|
 	| RAM is inaccessible until the MMU is enabled, so we need to
@@ -283,6 +300,8 @@ start:
 	cmpa.l	%d1,%a0
 	bne	1b
 
+	DD('B', 2)
+
 	| Zero out all of the Page Map space.
 	move.l	#MMU_CTLSEL_PAGEMAP,%d1
 	movea.l	%d1,%a0
@@ -291,6 +310,8 @@ start:
 	adda.l	#(1 << 4),%a0		| advance PME address
 	cmpa.l	%d1,%a0
 	bne	1b
+
+	DD('B', 3)
 
 #define	FILL_PMES(v, p, s, w)						 \
 	movea.l	%d2,%a0							;\
@@ -312,11 +333,17 @@ start:
 	| Map all of the on-board system RAM VA==PA.
 	FILL_PMES(RAM0_START, RAM0_START, RAM0_SIZE, PME_W)
 
+	DD('B', 4)
+
 	| Map the ROM into the correct location.
 	FILL_PMES(ROM_VIRT, ROM_PHYS, ROM_SIZE, 0)
 
+	DD('B', 5)
+
 	| Map the on-board I/O.
 	FILL_PMES(OBIO_VIRT, OBIO_PHYS, OBIO_SIZE, PME_W);
+
+	DD('B', 6)
 
 #undef FILL_PMES
 
@@ -343,11 +370,17 @@ start:
 	| RAM Segment Map entries.
 	FILL_SMES(RAM0_START, RAM0_SIZE)
 
+	DD('B', 7)
+
 	| ROM Segment Map entries.
 	FILL_SMES(ROM_VIRT, ROM_SIZE)
 
+	DD('B', 8)
+
 	| On-board I/O Segment Map entries.
 	FILL_SMES(OBIO_VIRT, OBIO_SIZE)
+
+	DD('B', 9)
 
 #undef FILL_SMES
 
@@ -359,6 +392,8 @@ start:
 	|
 	or.b	#SYSEN_MMU,%d5
 	moves.b	%d5,(%a5)
+
+	DD('B', 10)
 #endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000
@@ -378,6 +413,8 @@ start:
 	addq.l	#4,%sp
 #endif /* CONFIG_MC68030 */
 
+	DD('C', 0)
+
 	|
 	| Copy the .data segment from ROM to the run-time location
 	| in RAM.
@@ -390,6 +427,8 @@ start:
 	jbsr	memcpy		| memcpy(__data_start, __data_store, d0)
 	add.l	#12,%sp
 
+	DD('C', 1)
+
 	|
 	| Zero the BSS segment in RAM.
 	|
@@ -400,6 +439,8 @@ start:
 	pea	_edata
 	jbsr	memset		| memset(_edata, 0, d0)
 	add.l	#12,%sp
+
+	DD('C', 2)
 
 #ifdef CONFIG_MC68010
 	|
@@ -422,6 +463,8 @@ start:
 	move.l	#IC_BE+IC_CLR+IC_ENABLE,%d0
 	movc	%d0,%cacr
 #endif /* CONFIG_MC68030 */
+
+	DD('C', 3)
 
 	|
 	| Terminate the call stack by loading $0000.0000 into

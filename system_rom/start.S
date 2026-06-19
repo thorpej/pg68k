@@ -49,7 +49,7 @@
  * Assumes Control Space is selected.  Clobbers %a4 and %d4.
  */
 #define	DD(ud, ld)	movea.l	#CTLREG_DD7SEG,%a4		;\
-			move.w	(((ud) << 8)+(ld)),%d4		;\
+			move.w	#(((ud) << 8)+(ld)),%d4		;\
 			moves.w	%d4,(%a4)
 #else
 #define	DD(ud, ld)	/* nothing */

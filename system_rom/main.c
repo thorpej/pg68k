@@ -1380,7 +1380,7 @@ main(int argc, char *argv[])
 
 #ifdef CONFIG_DD7SEG
 	/* Clear the diagnostic display. */
-	dd7seg(0xff);
+	dd7seg_blank();
 #endif
 
 	/*

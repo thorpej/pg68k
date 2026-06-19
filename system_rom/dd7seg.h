@@ -29,6 +29,8 @@
 
 #include "systypes.h"
 
-void	dd7seg(unsigned char);
+void	dd7seg_hex(uint8_t);
+void	dd7seg_digits(uint8_t, uint8_t);
+void	dd7seg_blank(void);
 
 #endif /* dd7seg_h_included */

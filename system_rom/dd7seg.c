@@ -28,205 +28,71 @@
 #include "syslib.h"
 
 #include "dd7seg.h"
+#include "dd7seg_chrs.h"
 #include "control.h"
 
-static const unsigned char digits[] = {
-/*
- *           A
- *      +---------+
- *      |         |
- *      |         |
- *    F |         | B
- *      |         |
- *      |    G    |
- *      +         +
- *      |         |
- *      |         |
- *    E |         | C
- *      |         |
- *      |         |
- *      +---------+
- *           D
- */
-[0]	= DD7SEG_G,
-/*
- *           A
- *      +         +
- *                |
- *                |
- *    F           | B
- *                |
- *           G    |
- *      +         +
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +         +
- *           D
- */
-[1]	= ~(DD7SEG_B|DD7SEG_C),
-/*
- *           A
- *      +---------+
- *                |
- *                |
- *    F           | B
- *                |
- *           G    |
- *      +---------+
- *      |          
- *      |          
- *    E |           C
- *      |          
- *      |          
- *      +---------+
- *           D
- */
-[2]	= DD7SEG_F|DD7SEG_C,
-/*
- *           A
- *      +---------+
- *                |
- *                |
- *    F           | B
- *                |
- *           G    |
- *      +---------+
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +---------+
- *           D
- */
-[3]	= DD7SEG_F|DD7SEG_E,
-/*
- *           A
- *      +         +
- *      |         |
- *      |         |
- *    F |         | B
- *      |         |
- *      |    G    |
- *      +---------+
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +         +
- *           D
- */
-[4]	= DD7SEG_A|DD7SEG_D|DD7SEG_E,
-/*
- *           A
- *      +---------+
- *      |          
- *      |          
- *    F |           B
- *      |          
- *      |    G     
- *      +---------+
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +---------+
- *           D
- */
-[5]	= DD7SEG_B|DD7SEG_E,
-/*
- *           A
- *      +         +
- *      |          
- *      |          
- *    F |           B
- *      |          
- *      |    G     
- *      +---------+
- *      |         |
- *      |         |
- *    E |         | C
- *      |         |
- *      |         |
- *      +---------+
- *           D
- */
-[6]	= DD7SEG_A|DD7SEG_B,
-/*
- *           A
- *      +---------+
- *                |
- *                |
- *    F           | B
- *                |
- *           G    |
- *      +         +
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +         +
- *           D
- */
-[7]	= ~(DD7SEG_A|DD7SEG_B|DD7SEG_C),
-/*
- *           A
- *      +---------+
- *      |         |
- *      |         |
- *    F |         | B
- *      |         |
- *      |    G    |
- *      +---------+
- *      |         |
- *      |         |
- *    E |         | C
- *      |         |
- *      |         |
- *      +---------+
- *           D
- */
-[8]	= 0,
-/*
- *           A
- *      +---------+
- *      |         |
- *      |         |
- *    F |         | B
- *      |         |
- *      |    G    |
- *      +---------+
- *                |
- *                |
- *    E           | C
- *                |
- *                |
- *      +         +
- *           D
- */
-[9]	= DD7SEG_D|DD7SEG_E,
-/*
- * The remainder are blank spaces.
- */
-[10]	= 0xff,
-[11]	= 0xff,
-[12]	= 0xff,
-[13]	= 0xff,
-[14]	= 0xff,
-[15]	= 0xff,
+static const uint8_t hex_digits[] = {
+[0]	= DD7SEG_CHR_0,
+[1]	= DD7SEG_CHR_1,
+[2]	= DD7SEG_CHR_2,
+[3]	= DD7SEG_CHR_3,
+[4]	= DD7SEG_CHR_4,
+[5]	= DD7SEG_CHR_5,
+[6]	= DD7SEG_CHR_6,
+[7]	= DD7SEG_CHR_7,
+[8]	= DD7SEG_CHR_8,
+[9]	= DD7SEG_CHR_9,
+[10]	= DD7SEG_CHR_A,
+[11]	= DD7SEG_CHR_B,
+[12]	= DD7SEG_CHR_C,
+[13]	= DD7SEG_CHR_D,
+[14]	= DD7SEG_CHR_E,
+[15]	= DD7SEG_CHR_F,
 };
 
 void
-dd7seg(unsigned char bcd)
+dd7seg_hex(uint8_t hex)
 {
 	unsigned short val;
 
-	val = ((int)digits[bcd >> 4] << 8) | digits[bcd & 0xf];
+	val = ((int)hex_digits[hex >> 4] << 8) | hex_digits[hex & 0xf];
+	control_outw(CTLREG_DD7SEG, val);
+}
+
+void
+dd7seg_blank(void)
+{
+	control_outw(CTLREG_DD7SEG, (DD7SEG_CHR_SPACE << 4) | DD7SEG_CHR_SPACE);
+}
+
+static int
+dd7seg_nybble(uint8_t val)
+{
+	if (val >= 0 && val <= 15) {
+		return hex_digits[val];
+	}
+
+	if (val >= '0' && val <= '9') {
+		return hex_digits[val - '0'];
+	}
+
+	if (val >= 'A' && val <= 'F') {
+		return hex_digits[val - 'A'];
+	}
+
+	if (val >= 'a' && val <= 'f') {
+		return hex_digits[val - 'a'];
+	}
+
+	/* default to a blank */
+	return DD7SEG_CHR_SPACE;
+}
+
+void
+dd7seg_digits(uint8_t upper, uint8_t lower)
+{
+	unsigned short val;
+
+	val = (dd7seg_nybble(upper) << 4) | dd7seg_nybble(lower);
 	control_outw(CTLREG_DD7SEG, val);
 }

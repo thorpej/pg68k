@@ -71,9 +71,9 @@ pgtimer_initclock(unsigned int interval_us)
 
 	/*
 	 * Changing the counter reload value implicitly disables the
-	 * timer.  The reload value is unpredictable until both bytes
-	 * have been written.  The value registers can be written in
-	 * any order.
+	 * timer.  The reload value is set by writing the high byte
+	 * followed by the load byte to the Value register.  The reload
+	 * value is unpredictable until both bytes have been written.
 	 */
 	REG_WRITE(TIMER_VAL, (uint8_t)(ticks >> 8));
 	REG_WRITE(TIMER_VAL, (uint8_t)ticks);

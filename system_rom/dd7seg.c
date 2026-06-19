@@ -93,6 +93,6 @@ dd7seg_digits(uint8_t upper, uint8_t lower)
 {
 	unsigned short val;
 
-	val = (dd7seg_nybble(upper) << 4) | dd7seg_nybble(lower);
+	val = (dd7seg_nybble(upper) << 8) | dd7seg_nybble(lower);
 	control_outw(CTLREG_DD7SEG, val);
 }

@@ -2402,9 +2402,9 @@
 		)
 		(uuid "2ed5cf44-e176-4d10-861d-c32138bddfe9")
 	)
-	(text "A BSS84 would probably be OK here, but the\nlow-Rds MMFTP3334K should provide a lot of\nmargin for the DS1813."
+	(text "A BSS84 would probably be OK here, but the\nlow-Rds Si2301CDS should provide a lot of\nmargin for the DS1813.\n\nAlternatives in case Si2301CDS isn't available:\n- MMFTP3334K\n- AO3401A\n- DMG2305X"
 		(exclude_from_sim no)
-		(at 212.598 37.592 0)
+		(at 221.996 41.91 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4301,15 +4301,15 @@
 	(symbol
 		(lib_id "Transistor_FET:BSS84")
 		(at 215.9 55.88 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "829a7edb-fdb6-4dd8-84d3-90b64083b1b5")
 		(property "Reference" "Q802"
-			(at 222.25 54.6099 0)
+			(at 222.25 57.1501 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4317,8 +4317,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MMFTP3334K"
-			(at 222.25 57.1499 0)
+		(property "Value" "Si2301CDS"
+			(at 222.25 54.6101 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4327,7 +4327,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 220.98 57.785 0)
+			(at 220.98 53.975 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4337,8 +4337,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://assets.nexperia.com/documents/data-sheet/BSS84.pdf"
-			(at 220.98 59.69 0)
+		(property "Datasheet" ""
+			(at 220.98 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4347,7 +4347,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "-0.13A Id, -50V Vds, P-Channel MOSFET, SOT-23"
+		(property "Description" ""
 			(at 215.9 55.88 0)
 			(effects
 				(font
@@ -4356,7 +4356,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "637-MMFTP3334K"
+		(property "Mouser" "781-SI2301CDS-T1-GE3"
 			(at 215.9 55.88 0)
 			(effects
 				(font
@@ -4365,7 +4365,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C49256473"
+		(property "LCSC" "C10487"
 			(at 215.9 55.88 0)
 			(effects
 				(font

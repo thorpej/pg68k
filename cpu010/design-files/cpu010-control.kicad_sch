@@ -6,7 +6,7 @@
 	(paper "A3")
 	(title_block
 		(title "68k Playground CPU010")
-		(date "2026-06-12")
+		(date "2026-06-20")
 		(rev "B")
 		(company "(c) 2025, 2026 Jason R. Thorpe.  All rights reserved.")
 	)
@@ -4086,7 +4086,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Control space (FC==4):\n[CTLSPDEC]\nxxxx.xxxx xxxx.xxxx 0000.0000 - Diagnostic display (upper digit)\nxxxx.xxxx xxxx.xxxx 0000.0001 - Diagnostic display (lower digit)\nxxxx.xxxx xxxx.xxxx 0001.000x - Configuration switches\nxxxx.xxxx xxxx.xxxx 0010.0000 - System Enable register\n[IOCTL010]\nxxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Set\nxxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Clear\n"
+	(text "Control space (FC==4):\n[CTLSPDEC]\nxxxx.xxxx xxxx.xxxx 0000.0000 - Diagnostic display (upper digit)\nxxxx.xxxx xxxx.xxxx 0000.0001 - Diagnostic display (lower digit)\nxxxx.xxxx xxxx.xxxx 0001.000x - Configuration switches\nxxxx.xxxx xxxx.xxxx 0010.0000 - System Enable register\n[IOCTL010]\nxxxx.xxxx xxxx.xxxx 0100.0000 - Interrupt Set\nxxxx.xxxx xxxx.xxxx 0101.0000 - Interrupt Clear\nxxxx.xxxx xxxx.xxxx 1110.0000 - Board revision (< 'A' == simulator)\nxxxx.xxxx xxxx.xxxx 1111.0000 - CPLD revision (entire set)"
 		(exclude_from_sim no)
 		(at 21.336 30.226 0)
 		(effects

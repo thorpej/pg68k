@@ -1,7 +1,8 @@
 MACH_TYPE=	PG68010_MK_I
 MACH_CPU=	68010
 MACH_PROG=	pg68010mk1.elf
-MACH_IMGS=	pg68010mk1.bin
+MACH_BIN=	pg68010mk1.bin
+MACH_IMGS=	pg68010mk1_even.bin pg68010mk1_odd.bin
 MACH_CLEANFILES=${MACH_PROG}.list
 DEVICE_TREE=	../../cpu010/dts/pg68k-cpu010.dts
 
@@ -20,5 +21,8 @@ ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \
 	    > $(.TARGET).list
 
-${MACH_IMGS}: ${MACH_PROG}
+${MACH_BIN}: ${MACH_PROG}
 	${OBJCOPY} -O binary ${.ALLSRC} ${.TARGET}
+
+${MACH_IMGS}: ${MACH_BIN} romsplit
+	./romsplit ${MACH_BIN}

@@ -2,6 +2,9 @@
 # Common Makefile infrastructure for the pg68k system ROM.
 #
 
+HOST_CC?=	${CC}
+HOST_CFLAGS=	-Os -Wall -Wstrict-prototypes -Werror
+
 CPPFLAGS=	-I. -I.. -DCONFIG_MACH_$(MACH_TYPE) -DKERNEL_USE
 CFLAGS=		-Os -Wall -Wstrict-prototypes -Werror
 AFLAGS=
@@ -75,6 +78,11 @@ device-tree.dtb: ${DEVICE_TREE}
 	dtc -I dts -O dtb -o ${.TARGET} ${DEVICE_TREE}
 
 CLEANFILES+=	device-tree.o device-tree.S device-tree.dtb
+
+romsplit: romsplit.c
+	${HOST_CC} ${HOST_CFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+CLEANFILES+=	romsplit
 
 clean:
 	-rm -f $(M68KOBJS) $(OBJS) $(MACH_PROG) $(MACH_IMGS) $(CLEANFILES)

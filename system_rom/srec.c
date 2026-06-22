@@ -118,8 +118,10 @@ srec_get_nybble(struct srec_context *ctx, int ch)
 	}
 	ctx->curbyte = (ctx->curbyte << 4) | val;
 	ctx->half_byte ^= true;
-	if (! ctx->half_byte) {
-		ctx->cksum += val;
+	if (ctx->state >= STATE_BCOUNT_0 &&
+	    ctx->state < STATE_CKSUM_0 &&
+	    !ctx->half_byte) {
+		ctx->cksum += ctx->curbyte;
 	}
 	return ctx->curbyte;
 }
@@ -130,7 +132,6 @@ srec_get_type(struct srec_context *ctx, int ch)
 	ctx->addr = 0;
 	ctx->addr_nybbles = 0;
 	ctx->data_nybbles = 0;
-	ctx->half_byte = false;
 	ctx->curbyte = 0;
 	ctx->cksum = 0;
 
@@ -217,7 +218,7 @@ srec_get_bcount(struct srec_context *ctx, int ch)
 		goto bad_length;
 	}
 
-	ctx->data_nybbles = (val - addr_len) * 2;
+	ctx->data_nybbles = (val - (addr_len + 1)) * 2;
 	return STATE_ADDR;
 
  bad_record:
@@ -278,7 +279,7 @@ srec_get_data(struct srec_context *ctx, int ch)
 		*(uint8_t *)ctx->addr = (uint8_t)val;
 		ctx->addr++;
 	}
-	if (ctx->addr_nybbles == 0) {
+	if (ctx->data_nybbles == 0) {
 		return STATE_CKSUM_0;
 	}
 
@@ -293,6 +294,7 @@ static srec_state_t
 srec_get_cksum(struct srec_context *ctx, int ch)
 {
 	int val = srec_get_nybble(ctx, ch);
+	uint8_t cksum;
 
 	if (val == -1) {
 		goto bad_record;
@@ -302,7 +304,8 @@ srec_get_cksum(struct srec_context *ctx, int ch)
 		return STATE_CKSUM_1;
 	}
 
-	if (ctx->cksum != 0xff) {
+	cksum = 0xff - ctx->cksum;
+	if (cksum != val) {
 		goto bad_checksum;
 	}
 
@@ -313,18 +316,15 @@ srec_get_cksum(struct srec_context *ctx, int ch)
 	return STATE_ABORTED;
 
  bad_checksum:
-	srec_error(ctx, "SREC #%u: bad checksum (0x%02x)",
-	    ctx->record_count, ctx->cksum);
+	srec_error(ctx, "SREC #%u: bad checksum (0x%02x != 0x%02x)",
+	    ctx->record_count, cksum, val);
 	return STATE_ABORTED;
 }
 
 static srec_state_t
 srec_get_eor(struct srec_context *ctx, int ch)
 {
-	if (ch == '\r') {
-		return STATE_EOR;
-	}
-	if (ch == '\n') {
+	if (ch == '\r' || ch == '\n') {
 		return ctx->last_record ? STATE_DONE : STATE_TYPE_0;
 	}
 
@@ -336,17 +336,26 @@ srec_get_eor(struct srec_context *ctx, int ch)
 static srec_state_t
 srec_skip_record(struct srec_context *ctx, int ch)
 {
-	if (ch == '\n') {
+	if (ch == '\r' || ch == '\n') {
 		return STATE_TYPE_0;
 	}
 	return STATE_SKIP;
 }
 
 static srec_state_t
-srec_process_byte(struct srec_context *ctx, int ch)
+srec_process_char(struct srec_context *ctx, int ch)
 {
+	if (ch == 3) {	/* ETX - ^C */
+		return STATE_CANCELLED;
+	}
+
 	switch (ctx->state) {
 	case STATE_TYPE_0:
+		/* Skip newline-adjacent characters. */
+		if (ch == '\r' || ch == '\n') {
+			return ctx->state;
+		}
+		/* FALLTHROUGH */
 	case STATE_TYPE_1:
 		return srec_get_type(ctx, ch);
 	
@@ -380,15 +389,13 @@ srec_process_byte(struct srec_context *ctx, int ch)
 static void
 srec_process(struct srec_context *ctx)
 {
+	srec_state_t next_state;
 	int ch;
 
 	for (;;) {
 		ch = srec_getc(ctx);
-		if (ch == 3) {	/* ETX - ^C */
-			ctx->state = STATE_CANCELLED;
-			return;
-		}
-		ctx->state = srec_process_byte(ctx, ch);
+		next_state = srec_process_char(ctx, ch);
+		ctx->state = next_state;
 		if (ctx->state >= STATE_DONE) {
 			return;
 		}
@@ -398,7 +405,7 @@ srec_process(struct srec_context *ctx)
 uintptr_t
 srec_load(int unit)
 {
-	struct srec_context ctx { .unit = unit };
+	struct srec_context ctx = { .unit = unit };
 
 	srec_process(&ctx);
 
@@ -406,10 +413,12 @@ srec_load(int unit)
 		printf("Loaded %u data record%s (%u record%s total).\n",
 		    ctx.data_record_count, plural(ctx.data_record_count),
 		    ctx.record_count, plural(ctx.record_count));
+		printf("Entry point: 0x%08x\n", ctx.addr);
 		return ctx.addr;
 	}
 
 	if (ctx.state == STATE_CANCELLED) {
+		printf("S-Record load cancelled.\n");
 		return SREC_LOAD_FAILED;
 	}
 

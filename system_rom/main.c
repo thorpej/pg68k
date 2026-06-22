@@ -38,6 +38,7 @@
 #include "ls.h"
 #include "cli.h"
 #include "boot.h"
+#include "srec.h"
 
 #ifdef CONFIG_DD7SEG
 #include "dd7seg.h"
@@ -650,6 +651,23 @@ cli_u_devs(const char *str)
 }
 
 static void
+cli_u_srec(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_srec(int argc, char *argv[])
+{
+	if (argc != 1) {
+		cli_u_srec(argv[0]);
+		return;
+	}
+
+	srec_load(CONFIG_CONSOLE_UART);
+}
+
+static void
 cli_h_devs(int argc, char *argv[])
 {
 	configure();
@@ -1201,6 +1219,11 @@ static const struct cli_handler {
 	  "boot an executable file",
 	  cli_h_boot,
 	  cli_u_boot,
+	},
+	{ "srec",
+	  "load an S-Record file",
+	  cli_h_srec,
+	  cli_u_srec,
 	},
 	{ "devs",
 	  "show memory and device configuration",

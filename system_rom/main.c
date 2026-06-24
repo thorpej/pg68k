@@ -659,12 +659,16 @@ cli_u_srec(const char *str)
 static void
 cli_h_srec(int argc, char *argv[])
 {
+	uintptr_t first_addr, last_addr, entry;
+
 	if (argc != 1) {
 		cli_u_srec(argv[0]);
 		return;
 	}
 
-	srec_load(CONFIG_CONSOLE_UART);
+	printf("Waiting for S-Records on uart%d, ^C to cancel...\n",
+	    CONFIG_CONSOLE_UART);
+	srec_load(CONFIG_CONSOLE_UART, &first_addr, &last_addr, &entry);
 }
 
 static void

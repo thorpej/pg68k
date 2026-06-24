@@ -27,8 +27,6 @@
 #ifndef srec_h_included
 #define	srec_h_included
 
-#define	SREC_LOAD_FAILED	((uintptr_t)-1)
-
-uintptr_t srec_load(int);
+bool	srec_load(int, uintptr_t *, uintptr_t *, uintptr_t *);
 
 #endif /* srec_h_included */

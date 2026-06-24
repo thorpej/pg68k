@@ -53,6 +53,8 @@ struct srec_context {
 	u_int		error_count;
 	srec_state_t	state;
 	uintptr_t	addr;
+	uintptr_t	first_addr;
+	uintptr_t	last_addr;
 	uint16_t	addr_nybbles;
 	uint16_t	data_nybbles;
 	uint8_t		curbyte;
@@ -277,6 +279,12 @@ srec_get_data(struct srec_context *ctx, int ch)
 	ctx->data_nybbles--;
 	if ((ctx->data_nybbles & 1) == 0) {
 		*(uint8_t *)ctx->addr = (uint8_t)val;
+		if (ctx->addr < ctx->first_addr) {
+			ctx->first_addr = ctx->addr;
+		}
+		if (ctx->addr > ctx->last_addr) {
+			ctx->last_addr = ctx->addr;
+		}
 		ctx->addr++;
 	}
 	if (ctx->data_nybbles == 0) {
@@ -402,10 +410,14 @@ srec_process(struct srec_context *ctx)
 	}
 }
 
-uintptr_t
-srec_load(int unit)
+bool
+srec_load(int unit, uintptr_t *first_addrp, uintptr_t *last_addrp,
+    uintptr_t *entryp)
 {
-	struct srec_context ctx = { .unit = unit };
+	struct srec_context ctx = {
+		.unit = unit,
+		.first_addr = 0xffffffff,
+	};
 
 	srec_process(&ctx);
 
@@ -413,18 +425,23 @@ srec_load(int unit)
 		printf("Loaded %u data record%s (%u record%s total).\n",
 		    ctx.data_record_count, plural(ctx.data_record_count),
 		    ctx.record_count, plural(ctx.record_count));
+		printf("Loaded image: 0x%08x - 0x%08x\n",
+		    ctx.first_addr, ctx.last_addr);
 		printf("Entry point: 0x%08x\n", ctx.addr);
-		return ctx.addr;
+		*first_addrp = ctx.first_addr;
+		*last_addrp = ctx.last_addr;
+		*entryp = ctx.addr;
+		return true;
 	}
 
 	if (ctx.state == STATE_CANCELLED) {
 		printf("S-Record load cancelled.\n");
-		return SREC_LOAD_FAILED;
+		return false;
 	}
 
 	if (ctx.error_msg[0] != '\0') {
 		printf("%s\n", ctx.error_msg);
 	}
 	printf("S-Record load aborted.\n");
-	return SREC_LOAD_FAILED;
+	return false;
 }

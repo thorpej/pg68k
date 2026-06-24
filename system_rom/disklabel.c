@@ -634,11 +634,13 @@ partition_list_show(struct partition_list *pl)
 	switch (pl->pl_scheme) {
 #ifdef CONFIG_DISKLABEL_GPT
 	case PARTITION_SCHEME_GPT:
+		printf("Scheme: %s\n", partition_scheme_name(pl->pl_scheme));
 		partition_list_show_gpt(pl);
 		break;
 #endif
 #ifdef CONFIG_DISKLABEL_BSD44
 	case PARTITION_SCHEME_BSD44:
+		printf("Scheme: %s\n", partition_scheme_name(pl->pl_scheme));
 		partition_list_show_bsd44(pl);
 		break;
 #endif

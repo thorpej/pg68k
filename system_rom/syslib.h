@@ -168,6 +168,8 @@ int	puts(const char *);
 int	putstrn(const char *, size_t);
 int	putchar(int);
 
+void	twiddle(void);
+
 void *	get_fdt(void);
 
 int	exec(int, int, char *[]);

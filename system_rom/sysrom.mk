@@ -22,6 +22,7 @@ SYSLIBOBJS=	crc32.o \
 		strchr.o strrchr.o strcmp.o strncmp.o strlen.o strnlen.o \
 		    strcpy.o strdup.o \
 		strtoul.o \
+		twiddle.o \
 		unicode.o uuid.o
 
 .PATH: ../libfdt

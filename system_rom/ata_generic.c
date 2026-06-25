@@ -255,6 +255,27 @@ wdc_wait_for_ready(int ctlr)
 }
 
 /*
+ * Wait until the device indicates data request.
+ */
+int
+wdc_wait_for_drq(int ctlr)
+{
+	u_int timo;
+	uint8_t st;
+
+	for (timo = WDC_CMD_TIMO; timo > 0; timo--) {
+		st = REG_READ(ctlr, wd_status);
+
+		if ((st & (WDCS_BSY | WDCS_DRQ)) == WDCS_DRQ) {
+			return 0;
+		}
+		clock_delay(WDC_CMD_DELAY);
+	}
+	printf("%s: status=0x%02x\n", __func__, st);
+	return EIO;
+}
+
+/*
  * Send a command to the device.
  */
 static int
@@ -299,6 +320,22 @@ static void
 wdc_read_sector(int ctlr, void *buf)
 {
 	wdc_read_data(ctlr, buf, 512);
+}
+
+static void
+wdc_write_data(int ctlr, const void *buf, u_int count)
+{
+	if (ATA_FORCE_PIO8) {
+		DATA_OUT8(ctlr, buf, count);
+	} else {
+		DATA_OUT16(ctlr, buf, count);
+	}
+}
+
+static void
+wdc_write_sector(int ctlr, const void *buf)
+{
+	wdc_write_data(ctlr, buf, 512);
 }
 
 static int
@@ -348,6 +385,10 @@ wdc_cmd_read(int ctlr, int drive, uint32_t lba, void *buf)
 	if (error) {
 		return error;
 	}
+	error = wdc_wait_for_drq(ctlr);
+	if (error) {
+		return error;
+	}
 	wdc_read_sector(ctlr, buf);
 	return 0;
 }
@@ -355,7 +396,27 @@ wdc_cmd_read(int ctlr, int drive, uint32_t lba, void *buf)
 static int
 wdc_cmd_write(int ctlr, int drive, uint32_t lba, const void *buf)
 {
-	return EIO;
+	struct wdc_command cmd = {
+		.r_drive = drive,
+		.r_count = 1,
+		.r_command = WDCC_WRITE,
+	};
+	int error;
+
+	cmd.r_sector = (uint8_t)  lba;
+	cmd.r_cyl    = (uint16_t)(lba >> 8);
+	cmd.r_head   = (uint8_t)((lba >> 24) & 0x0f) | WDSD_LBA;
+
+	error = wdc_exec_command(ctlr, &cmd);
+	if (error) {
+		return error;
+	}
+	error = wdc_wait_for_drq(ctlr);
+	if (error) {
+		return error;
+	}
+	wdc_write_sector(ctlr, buf);
+	return 0;
 }
 
 static const char *

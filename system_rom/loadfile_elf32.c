@@ -288,8 +288,9 @@ ELFNAMEEND(readfile_local)(int fd, Elf_Off elfoff, void *addr, size_t size)
  */
 static int
 ELFNAMEEND(readfile_global)(int fd, u_long offset, Elf_Off elfoff,
-    Elf_Addr addr, size_t size)
+    Elf_Addr addr, size_t resid)
 {
+	size_t size;
 	ssize_t nr;
 
 	/* some ports dont use the offset */
@@ -299,15 +300,22 @@ ELFNAMEEND(readfile_global)(int fd, u_long offset, Elf_Off elfoff,
 		WARN(("lseek section"));
 		return -1;
 	}
-	nr = READ(fd, addr, size);
-	if (nr == -1) {
-		WARN(("read section"));
-		return -1;
-	}
-	if (nr != (ssize_t)size) {
-		errno = EIO;
-		WARN(("read section"));
-		return -1;
+	for (; resid != 0; resid -= size, addr += size) {
+		size = resid;
+		if (size > CONFIG_PAGESIZE) {
+			size = CONFIG_PAGESIZE;
+		}
+		TWIDDLE();
+		nr = READ(fd, addr, size);
+		if (nr == -1) {
+			WARN(("read section"));
+			return -1;
+		}
+		if (nr != (ssize_t)size) {
+			errno = EIO;
+			WARN(("read section"));
+			return -1;
+		}
 	}
 
 	return 0;

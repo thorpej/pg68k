@@ -42,6 +42,7 @@
 				} while(/* CONSTCOND */0)
 
 #define	PROGRESS(a)		(void) printf a
+#define	TWIDDLE()		twiddle()
 
 /*
  * Array indices in the u_long position array

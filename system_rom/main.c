@@ -650,6 +650,9 @@ cli_u_devs(const char *str)
 	printf("usage: %s\n", str);
 }
 
+static uintptr_t dump_range_start;
+static uintptr_t dump_range_end;
+
 static void
 cli_u_srec(const char *str)
 {
@@ -668,7 +671,92 @@ cli_h_srec(int argc, char *argv[])
 
 	printf("Waiting for S-Records on uart%d, ^C to cancel...\n",
 	    CONFIG_CONSOLE_UART);
-	srec_load(CONFIG_CONSOLE_UART, &first_addr, &last_addr, &entry);
+	if (srec_load(CONFIG_CONSOLE_UART, &first_addr, &last_addr, &entry)) {
+		dump_range_start = first_addr;
+		dump_range_end = last_addr + 1;
+	}
+}
+
+static void
+cli_u_dump(const char *str)
+{
+	printf("usage: %s partition [<addr> <length>]\n", str);
+	printf("example: %s ata(0,0,1)\n", str);
+	printf("\n"
+"Both <addr> and <length> must be specified together or not at all.\n"
+"If not specified, the <addr> and <length> are implied from the last\n"
+"loaded image.\n");
+}
+
+static void
+cli_h_dump(int argc, char *argv[])
+{
+	uintptr_t start, val;
+	size_t length, blocks;
+	int fd;
+	char dstr[DEV_STRING_SIZE];
+
+	switch (argc) {
+	case 2:
+		if (dump_range_start == dump_range_end) {
+			printf("No loaded image to dump?\n");
+			cli_u_dump(argv[0]);
+			return;
+		}
+		start = dump_range_start;
+		length = dump_range_end - dump_range_start;
+		break;
+
+	case 4:
+		if (! parse_va(argv[2], &start)) {
+			cli_u_dump(argv[0]);
+		}
+		if (! parse_va(argv[3], &val)) {
+			cli_u_dump(argv[0]);
+		}
+		if (val == 0 || start + (val - 1) < start) {
+			printf("Invalid length.\n");
+			return;
+		}
+		length = val;
+		break;
+
+	default:
+		cli_u_dump(argv[0]);
+		return;
+	}
+
+	/* Round to device blocksize. */
+	blocks = btodb(length + (DEV_BSIZE - 1));
+
+	fd = open(argv[1], O_RDWR | O_RAW);
+	if (fd < 0) {
+		/* error already printed */
+		return;
+	}
+
+	printf("\nDUMPING %u BYTE%s (%u BLOCK%s) TO %s.\n"
+	       "ENTER 'YES' TO CONTINUE.\n",
+	       length, plural_u(length),
+	       blocks, plural_u(blocks),
+	       dev_string(getfile(fd), dstr, sizeof(dstr)));
+	cli_get_cmdline("ARE YOU SURE? ");
+	if (strcmp(cli_cmdline, "YES") != 0) {
+		printf("ABORTED.\n");
+		goto out;
+	}
+
+	for (; blocks != 0; blocks--, start += DEV_BSIZE) {
+		printf("%6u\r", blocks);
+		if (write(fd, (void *)start, DEV_BSIZE) != DEV_BSIZE) {
+			printf("write: %s\n", strerror(errno));
+			goto out;
+		}
+	}
+	printf("DUMP SUCCEEDED.\n");
+
+ out:
+	close(fd);
 }
 
 static void
@@ -1228,6 +1316,11 @@ static const struct cli_handler {
 	  "load an S-Record file",
 	  cli_h_srec,
 	  cli_u_srec,
+	},
+	{ "dump",
+	  "dump memory to disk",
+	  cli_h_dump,
+	  cli_u_dump,
 	},
 	{ "devs",
 	  "show memory and device configuration",

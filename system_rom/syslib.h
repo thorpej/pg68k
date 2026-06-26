@@ -123,6 +123,13 @@ plural(long v)
 	return v == 1 ? "" : "s";
 }
 
+/* XXX should have have toupper() */
+static inline const char *
+plural_u(long v)
+{
+	return v == 1 ? "" : "S";
+}
+
 int	memcmp(const void *, const void *, size_t);
 void *	memcpy(void *, const void *, size_t);
 void *	memmove(void *, const void *, size_t);

@@ -75,11 +75,11 @@
 /*
  * OBIO space is beyond the addressing capabilities of the CPU, so
  * the MMU has be be enabled to access it.  All of OBIO space is just
- * 1 4K page, so we map it at the page below where the ROM is linked.
+ * 1 4K page, so we map it at the page below the reserved RAM area.
  */
 #define	OBIO_PHYS	0x08000000	/* phys start of OBIO space */
-#define	OBIO_VIRT	0x00eff000	/* virt start of OBIO space */
 #define	OBIO_SIZE	0x00001000
+#define	OBIO_VIRT	(RESV_RAM_VIRT - OBIO_SIZE)
 
 #define	UART0_ADDR	(OBIO_VIRT+0x0000)
 #define	UART1_ADDR	(OBIO_VIRT+0x0100)

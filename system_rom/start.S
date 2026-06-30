@@ -383,10 +383,15 @@ start:
 
 	DD(DD7SEG_CHR_B, DD7SEG_CHR_9)
 
+	| Reserved RAM Segment Map entries.
+	FILL_SMES(RESV_RAM_VIRT, RESV_RAM_SIZE)
+
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_A)
+
 	| On-board I/O Segment Map entries.
 	FILL_SMES(OBIO_VIRT, OBIO_SIZE)
 
-	DD(DD7SEG_CHR_B, DD7SEG_CHR_A)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_B)
 
 #undef FILL_SMES
 
@@ -399,7 +404,7 @@ start:
 	or.b	#SYSEN_MMU,%d5
 	moves.b	%d5,(%a5)
 
-	DD(DD7SEG_CHR_B, DD7SEG_CHR_B)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_C)
 #endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000

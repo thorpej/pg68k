@@ -123,11 +123,11 @@ sbrk(int incr)
 	uintptr_t newbrk = round_page(curbrk + incr);
 	void *rv;
 
-#ifdef BRK_LIMIT
-	if (newbrk >= BRK_LIMIT) {
+#ifdef CONFIG_BRK_LIMIT
+	if (newbrk > CONFIG_BRK_LIMIT) {
 		return (void *)-1;
 	}
-#endif /* BRK_LIMIT */
+#endif /* CONFIG_BRK_LIMIT */
 
 	rv = (void *)curbrk;
 	curbrk = newbrk;

@@ -112,7 +112,8 @@ device_physaddr(unsigned long addr)
 
 #define	CONFIG_MACHINE_STRING	"Phaethon 1 Retrostation"
 #define	CONFIG_CPU_DESC_STRING	"10MHz MC68010"
-#define	CONFIG_RIISP		(RAM0_START+(RAM0_SIZE-0x00100000))
+#define	CONFIG_RIISP		(RESV_RAM_VIRT + RESV_RAM_SIZE)
+#define	CONFIG_BRK_LIMIT	(CONFIG_RIISP - 4096) /* 1 page for stack */
 #define	CONFIG_MC68010
 #define	CONFIG_DEVICETREE
 #define	CONFIG_DEV_REGSHIFT	1

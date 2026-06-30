@@ -13,13 +13,14 @@ MEMORY
      to eventually run.
 
      N.B. the system RAM on the Phaethon 1 is 8MB @ $0000.0000, but
-     we place our .data and .bss starting at $00700000 (7MB), with
-     the heap growing up after that, and our stack at the same location
-     growing down.  This gives us the best chance of staying out of
-     the way of the operating system kernel.  */
+     we place our .data and .bss starting at $00fd0000 and limit it
+     (and the heap and the stack) to 64KB.  This is stolen from the
+     last 64KB of the base system RAM, is double-mapped at that
+     location, and is reserved for the firmware even when the operating
+     system is running.  */
 
   rom  : o = 0x00fe0000, l = 128K
-  ram  : o = 0x00700000, l = 1M
+  ram  : o = 0x00fd0000, l = 64K
 }
 SECTIONS
 {

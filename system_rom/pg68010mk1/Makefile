@@ -21,8 +21,9 @@ ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \
 	    > $(.TARGET).list
 
-${MACH_BIN}: ${MACH_PROG}
-	${OBJCOPY} -O binary ${.ALLSRC} ${.TARGET}
+${MACH_BIN}: ${MACH_PROG} rompad
+	${OBJCOPY} -O binary ${MACH_PROG} ${.TARGET}.tmp
+	./rompad 1m ${.TARGET}.tmp && mv ${.TARGET}.tmp ${.TARGET}
 
 ${MACH_IMGS}: ${MACH_BIN} romsplit
 	./romsplit ${MACH_BIN}

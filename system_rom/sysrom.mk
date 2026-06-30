@@ -85,5 +85,10 @@ romsplit: romsplit.c
 
 CLEANFILES+=	romsplit
 
+rompad: rompad.c
+	${HOST_CC} ${HOST_CFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+CLEANFILES+=	rompad
+
 clean:
 	-rm -f $(M68KOBJS) $(OBJS) $(MACH_PROG) $(MACH_IMGS) $(CLEANFILES)

@@ -39,6 +39,12 @@
 #define	RAM0_SIZE	0x00800000	/* fixed size of on-board RAM */
 #define	RAM0_DESC	"On-board RAM"
 
+/*
+ * The last 64KB of the first RAM area is reserved for the firmware.
+ */
+#define	RESV_RAM_SIZE	0x00010000
+#define	RESV_RAM_START	((RAM0_START + RAM0_SIZE) - RESV_RAM_SIZE)
+
 #define	RAM1_START	0x00800000	/* start of expansion RAM */
 #define	RAM1_MAXSIZE	0x03800000	/* max expansion RAM size */
 #define	RAM1_DESC	"NQVME expansion RAM"
@@ -46,13 +52,25 @@
 #define	RAM_PROBE_VIRT	0x00900000	/* VA to use for probing RAM */
 
 /*
- * ROM physically starts at $04000000 and is linked at $00F0.0000.
- * and the hardware incompletely decodes it, so it mirrors every
- * 1MB.
+ * ROM physically starts at $04000000.  The 2x512KB chips provide for
+ * 1MB of physical space, but only 128KB is used and is repeats every
+ * 128KB within the ROM.  The ROM space is incompletely decoded, so
+ * the 1MB physical space itself also repeats.
+ *
+ * We thus map the first 128KB of the ROM into the upper 128KB of the
+ * address space at $00FE.0000 to keep it as far out of the way as
+ * possible.
  */
 #define	ROM_PHYS	0x04000000	/* phys start of ROM */
-#define	ROM_VIRT	0x00f00000	/* virt start of ROM */
-#define	ROM_SIZE	0x00100000
+#define	ROM_VIRT	0x00fe0000	/* virt start of ROM */
+#define	ROM_SIZE	0x00020000
+
+/*
+ * Reserved RAM is double-mapped just below the ROM.  This will
+ * make it obvious to the operating system to preserve the mapping
+ * (VA != PA).
+ */
+#define	RESV_RAM_VIRT	(ROM_VIRT - RESV_RAM_SIZE)
 
 /*
  * OBIO space is beyond the addressing capabilities of the CPU, so

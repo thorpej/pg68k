@@ -91,4 +91,5 @@ rompad: rompad.c
 CLEANFILES+=	rompad
 
 clean:
-	-rm -f $(M68KOBJS) $(OBJS) $(MACH_PROG) $(MACH_IMGS) $(CLEANFILES)
+	-rm -f $(M68KOBJS) $(OBJS) $(MACH_PROG) $(MACH_IMGS) $(CLEANFILES) \
+	    *.bin *.tmp

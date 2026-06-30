@@ -180,6 +180,8 @@ void			bootinfo_enumerate(void *,
 					   bool (*)(struct bi_record *, void *),
 					   void *);
 size_t			bootinfo_size(const char *);
+void			bootinfo_set_mem_records(void);
+struct bi_mem_info *	bootinfo_get_mem_record(struct bi_mem_info *);
 void			bootinfo_populate(void *, const char *);
 
 #endif /* bootinfo_h_included */

@@ -62,18 +62,7 @@
 		};
 	};
 
-	memory@0 {
-		/*
-		 * Phaethon 1 has 8MB of base memory.  If the firmware
-		 * detects NQVME expansion memory, it will adjust the
-		 * size accordingly.
-		 *
-		 * N.B. memory information is also provided in the
-		 * bootinfo data passed to the kernel.
-		 */
-		device_type = "memory";
-		reg = <0x0 0x800000>;
-	};
+	/* Memory nodes added at run-time. */
 
 	ctrl: control-space {
 		/*

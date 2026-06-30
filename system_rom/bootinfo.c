@@ -154,14 +154,97 @@ bootinfo_set_string(struct bi_record *bi, uint16_t tag,
 #define	BI_MMU_value	BI_MMU_68060
 #endif
 
+#define	MAX_MEM_RECORDS	8
+static struct bi_mem_info mem_records[MAX_MEM_RECORDS];
+static unsigned int num_mem_records;
+
+static void
+_bootinfo_set_mem_record(uintptr_t start, size_t size)
+{
+	int idx = num_mem_records;
+
+	/* Check to see if we're setting the first record. */
+	if (num_mem_records == 0) {
+		goto add_record;
+	}
+
+	/* Check to see if we can merge with the previous record. */
+	int prev_idx = idx - 1;
+	if (start ==
+	    mem_records[prev_idx].mem_addr + mem_records[prev_idx].mem_size) {
+		mem_records[prev_idx].mem_size += size;
+		return;
+	}
+
+	/* Must add a record; is there room? */
+	if (idx == MAX_MEM_RECORDS) {
+		return;
+	}
+
+ add_record:
+	/* "Hey, we've got another record over here!" */
+	num_mem_records++;
+	mem_records[idx].mem_addr = start;
+	mem_records[idx].mem_size = size;
+}
+
+void
+bootinfo_set_mem_records(void)
+{
+	uintptr_t start;
+	size_t size;
+	int i;
+
+	for (i = 0; i < memory_bank_count; i++) {
+		if (memory_banks[i].size == 0) {
+			continue;
+		}
+		start = memory_banks[i].start;
+		size = memory_banks[i].size;
+
+		if (RESV_RAM_START >= start &&
+		    RESV_RAM_SIZE < (start + size)) {
+			uintptr_t a0, a1, a2, a3;
+
+			a0 = start;
+			a1 = RESV_RAM_START;
+			a2 = (RESV_RAM_START + RESV_RAM_SIZE);
+			a3 = (start + size);
+
+			if (a1 - a0) {
+				_bootinfo_set_mem_record(a0, a1 - a0);
+			}
+			if (a3 - a2) {
+				_bootinfo_set_mem_record(a2, a3 - a2);
+			}
+		} else {
+			_bootinfo_set_mem_record(start, size);
+		}
+	}
+}
+
+struct bi_mem_info *
+bootinfo_get_mem_record(struct bi_mem_info *bi)
+{
+	if (bi == NULL) {
+		return mem_records;
+	}
+
+	uintptr_t idx = bi - mem_records;
+	if (idx + 1 < num_mem_records) {
+		return bi + 1;
+	}
+
+	return NULL;
+}
+
 static struct bi_record *
 _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 {
-	struct bi_record *next_bi;
 	int i;
 
 	bi = _bootinfo_set_u32(bi, BI_MACHTYPE, BI_MACH_FDT, wr);
-#ifdef BI_CPU_value
+#ifdef B_CPU_value
 	bi = _bootinfo_set_u32(bi, BI_CPUTYPE, BI_CPU_value, wr);
 #endif
 #ifdef BI_FPU_value
@@ -172,32 +255,9 @@ _bootinfo_populate(struct bi_record *bi, const char *bargs, bool wr)
 	bi = _bootinfo_set_u32(bi, BI_MMUTYPE, BI_MMU_value, wr);
 #endif
 
-	for (next_bi = NULL, i = 0; i < memory_bank_count; i++) {
-		if (memory_banks[i].size == 0) {
-			continue;
-		}
-
-		/*
-		 * If next_bi != NULL, then bi == the last MEMCHUNK record
-		 * we set.  See if we can merge with the last one in that
-		 * case.
-		 */
-		if (next_bi != NULL) {
-			struct bi_mem_info *m = bootinfo_dataptr(bi);
-			if (m->mem_addr + m->mem_size ==
-			    memory_banks[i].start) {
-				/* merge them! */
-				m->mem_size += memory_banks[i].size;
-				continue;
-			}
-			/* can't merge, add a new record. */
-			bi = next_bi;
-		}
-		next_bi = _bootinfo_set_mem_info(bi, BI_MEMCHUNK,
-		    memory_banks[i].start, memory_banks[i].size, wr);
-	}
-	if (next_bi != NULL) {
-		bi = next_bi;
+	for (i = 0; i < num_mem_records; i++) {
+		bi = _bootinfo_set_mem_info(bi, BI_MEMCHUNK,
+		    mem_records[i].mem_addr, mem_records[i].mem_size, wr);
 	}
 
 	if (bargs != NULL && strlen(bargs) != 0) {

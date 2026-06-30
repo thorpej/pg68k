@@ -334,6 +334,9 @@ size_memory(bool do_init)
 		configure_printf("%lu%cB %s @ 0x%08lx\n",
 		    psize, mod, mb->desc, (u_long)mb->start);
 	}
+
+	configure_printf("%uKB @ 0x%08x reserved for firmware.\n",
+	    RESV_RAM_SIZE / 1024, RESV_RAM_START);
 }
 
 static bool configure_quietly;

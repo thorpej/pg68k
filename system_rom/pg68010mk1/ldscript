@@ -8,18 +8,22 @@ MEMORY
      .data segment is also stored there, but is copied at run-time
      to the RAM area and is linked there.
 
+     The ROM repeats every 128KB within the 1MB space, so we link it
+     at 0x00fe0000 to get as far away from where the kernel would like
+     to eventually run.
+
      N.B. the system RAM on the Phaethon 1 is 8MB @ $0000.0000, but
      we place our .data and .bss starting at $00700000 (7MB), with
      the heap growing up after that, and our stack at the same location
      growing down.  This gives us the best chance of staying out of
      the way of the operating system kernel.  */
 
-  rom  : o = 0x00f00000, l = 1M
+  rom  : o = 0x00fe0000, l = 128K
   ram  : o = 0x00700000, l = 1M
 }
 SECTIONS
 {
-  ROM = 0x00f00000;
+  ROM = 0x00fe0000;
 
   /DISCARD/ : { *(.eh_frame .eh_frame.*) }
   

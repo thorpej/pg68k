@@ -45,8 +45,8 @@ uart_configure(bool do_init)
 	int i;
 
 	for (i = 0; i < uart_count; i++) {
-		configure_printf("uart%d at 0x%08lx\n",
-		    i, (u_long)uart_addrs[i]);
+		configure_printf("uart%d at 0x%08x\n",
+		    i, vtophys(uart_addrs[i]));
 
 		if (do_init) {
 			/* Console UART already configured. */

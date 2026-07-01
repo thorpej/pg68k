@@ -144,8 +144,8 @@ clock_configure(bool do_init)
 		pgtimer_delaycal();
 	}
 
-	configure_printf("timer0 at 0x%08lx (delay divisor: %u)\n",
-	    (u_long)TIMER_ADDR, delay_divisor);
+	configure_printf("timer0 at 0x%08x (delay divisor: %u)\n",
+	    vtophys(TIMER_ADDR), delay_divisor);
 
 	if (do_init) {
 		/* Register the timer interrupt. */

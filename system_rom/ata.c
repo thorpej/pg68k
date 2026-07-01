@@ -44,8 +44,8 @@ ata_configure(bool do_init)
 	int i;
 
 	for (i = 0; i < ata_count; i++) {
-		configure_printf("ata%d at 0x%08lx%s\n", i,
-		    (u_long)ata_addrs[(i << 1)],
+		configure_printf("ata%d at 0x%08x%s\n", i,
+		    vtophys(ata_addrs[(i << 1)]),
 		    ATA_FORCE_PIO8 ? " (8-bit)" : "");
 		ata_init(i, do_init);
 	}

@@ -192,6 +192,25 @@ mmu_unmap(uintptr_t va, size_t size)
 		}
 	}
 }
+
+static uintptr_t
+mmu_vtophys(uintptr_t va)
+{
+	uint16_t sme = mmu_sme0_get(va);
+	if ((sme & SME_V) == 0) {
+		return (uintptr_t)-1;
+	}
+
+	uint32_t pme_index = ((sme & SME_PMEG) * PGMMU_PMES_PER_PMEG) +
+	    ((va & PGMMU_SEG_OFFSET) >> PAGE_SHIFT);
+
+	uint32_t pme = mmu_pme_get(pme_index);
+	if ((pme & PME_V) == 0) {
+		return (uintptr_t)-1;
+	}
+
+	return ((pme & PME_PFN) << PAGE_SHIFT) | (va & (PAGE_SIZE - 1));
+}
 #define	CONFIG_MMU_COMMAND
 #endif /* CONFIG_MC68010 */
 
@@ -337,6 +356,16 @@ size_memory(bool do_init)
 
 	configure_printf("%uKB @ 0x%08x reserved for firmware.\n",
 	    RESV_RAM_SIZE / 1024, RESV_RAM_START);
+}
+
+uintptr_t
+vtophys(uintptr_t va)
+{
+#ifdef CONFIG_MC68010
+	return mmu_vtophys(va);
+#else
+	return va;
+#endif
 }
 
 static bool configure_quietly;

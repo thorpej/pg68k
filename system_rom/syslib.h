@@ -171,6 +171,8 @@ int	verbose_printf(const char *, ...) __printflike(1,2);
 void	sys_reboot(void);
 void	panic(const char *, ...);
 
+uintptr_t vtophys(uintptr_t);
+
 int	puts(const char *);
 int	putstrn(const char *, size_t);
 int	putchar(int);

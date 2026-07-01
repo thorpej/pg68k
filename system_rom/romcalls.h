@@ -31,10 +31,7 @@ struct romcalls_v1 {
 	int	rv1_version;	/* version of the ROM call vector */
 
 	/*
-	 * System boot lifecycle.  These functions can be called
-	 * as long as the firmware appears in the address space where
-	 * it's expected, but does not need to run with the firmware
-	 * mappings.
+	 * System boot lifecycle.
 	 *
 	 * void (*reboot)(void);
 	 *	Reboot the system, auto-booting the system, if possible.
@@ -53,20 +50,7 @@ struct romcalls_v1 {
 	void	(*rv1_poweroff)(void);
 
 	/*
-	 * Memory allocation.  These functions may only be called when
-	 * running on the firmware's mappings, and are provided as a
-	 * convenience for client programs who wish to allocate and
-	 * free memory dynamically.  These are not usable if the client
-	 * program implements its own memory management.
-	 */
-	void *	(*rv1_malloc)(unsigned int);
-	void *	(*rv1_realloc)(void *, unsigned int);
-	void	(*rv1_free)(void *);
-
-	/*
-	 * console I/O.  These functions may ONLY be called when running
-	 * on the firmware's mappings.  Once the operating system is running
-	 * on its own mappings, these functions may not be used.
+	 * Console I/O.
 	 *
 	 * int (*cnpollc)(void);
 	 *	Poll for a character from the console.  If no character
@@ -81,9 +65,7 @@ struct romcalls_v1 {
 	void	(*rv1_cnputc)(int);
 
 	/*
-	 * Diagnostic display.  This function can be called as long as the
-	 * firmware appears in the address space where it's expected, but
-	 * does not need to run with the firmware mappings.
+	 * Diagnostic display.
 	 *
 	 * First argument is the upper digit, and second argument is lower
 	 * digit.  0 - 15, '0' - '9', 'A' - 'F', 'a' - 'f', and ' ' are all

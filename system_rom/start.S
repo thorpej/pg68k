@@ -200,10 +200,6 @@ romcalls:
 	.long	romcall_halt
 	.long	romcall_poweroff
 
-	.long	malloc
-	.long	realloc
-	.long	free
-
 	.long	cons_pollc
 	.long	cons_putc
 

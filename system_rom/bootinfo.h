@@ -49,6 +49,20 @@
 #define	BOOTINFO_ALIGN	2
 #define	BOOTINFO_ROUND	4
 
+/*
+ * We do our best to put the bootinfo at _end[].  However, if the kernel
+ * is loaded as S-Records, we don't necessarily get the .bss segment
+ * written down.  So, we also pass a pointer to the bootinfo along with
+ * the size so that the kernel can tell if we've stashed it before _end[]
+ * so that the kernel can relocate it, if necessary.
+ *
+ * Kernel is invoked like this:
+ *
+ *	(*entry)(BI_MAG1, BI_MAG2, bi, bi_size);
+ */
+#define	BI_MAG0		0x70673638	/* 'pg68' */
+#define	BI_MAG1		0x4263466f	/* 'BnFo' */
+
 struct bi_record {
 	uint16_t	bi_tag;		/* record type */
 	uint16_t	bi_size;	/* record size (including header) */

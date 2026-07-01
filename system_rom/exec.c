@@ -454,11 +454,12 @@ exec(int load_flags, int argc, char *argv[])
 #else
 	if (load_flags & LOAD_BOOTINFO) {
 		/*
-		 * The bootinfo is loaded at the next longword boundary
+		 * The bootinfo is loaded at the next word boundary
 		 * after _end[], but we will pass in a pointer as the
 		 * argument anyway.
 		 */
-		transfer(marks[MARK_ENTRY], vbi);
+		transfer(marks[MARK_ENTRY], BI_MAG0, BI_MAG1,
+		    marks[MARK_BOOTINFO], marks[MARK_BOOTINFOSZ]);
 	} else {
 		transfer(marks[MARK_ENTRY], argc, argv);
 	}

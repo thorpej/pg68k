@@ -131,7 +131,7 @@ struct bi_virt_dev {
 #define	BI_MACH_M5441X		13
 #define	BI_MACH_VIRT		14
 /* pg68k extensions: */
-#define	BI_MACH_FDT		15
+#define	BI_MACH_FDT		0x46445400	/* 'FDT\0' */
 
 /*
  * Values for BI_CPUTYPE.

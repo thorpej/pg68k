@@ -181,7 +181,7 @@ void	twiddle(void);
 
 void *	get_fdt(void);
 
-int	exec(int, int, char *[]);
+int	exec_file(int, int, char *[]);
 void	quiesce(void);
 void	transfer(uintptr_t, ...);
 

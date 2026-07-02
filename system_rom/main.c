@@ -34,7 +34,7 @@
 #include "intr.h"
 #include "ata.h"
 #include "uart.h"
-#include "loadfile.h"	/* for load flags passed to exec() */
+#include "loadfile.h"	/* for load flags passed to exec_*() */
 #include "ls.h"
 #include "cli.h"
 #include "boot.h"
@@ -673,7 +673,7 @@ cli_h_boot(int argc, char *argv[])
 		return;
 	}
 
-	(void) exec(LOAD_ALL, argc, argv);
+	(void) exec_file(LOAD_ALL, argc, argv);
 }
 
 static void

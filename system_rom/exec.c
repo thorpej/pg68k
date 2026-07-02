@@ -340,7 +340,7 @@ exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
 #endif /* CONFIG_DEVICETREE */
 
 int
-exec(int load_flags, int argc, char *argv[])
+exec_file(int load_flags, int argc, char *argv[])
 {
 	char dstr[DEV_STRING_SIZE];
 	u_long marks[MARK_MAX] = { 0 };

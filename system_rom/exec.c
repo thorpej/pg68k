@@ -100,9 +100,14 @@ static const char prop_booted_gpt_guid[] = "netbsd,gpt-guid";
 static void
 set_booted_device(int fd)
 {
-	struct open_file *f = getfile(fd);
 	int chosen, fdterr;
 	const struct partition *p;
+
+	if (fd < 0) {
+		return;
+	}
+
+	struct open_file *f = getfile(fd);
 
 	if (f->f_dev == NULL) {
 		return;
@@ -339,14 +344,127 @@ exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
 }
 #endif /* CONFIG_DEVICETREE */
 
+char *
+make_bargs(int argc, char *argv[])
+{
+	size_t size;
+	char *bargs = NULL;
+	int i;
+
+	for (size = 0, i = 0; i < argc; i++) {
+		size += strlen(argv[i]) + 1;
+	}
+	if (size != 0) {
+		bargs = malloc(size);
+		char *cp, *str = bargs;
+		for (i = 0; i < argc; i++) {
+			cp = argv[i];
+			while ((*str = *cp++) != '\0') {
+				str++;
+			}
+			if (i < argc - 1) {
+				*str++ = ' ';
+			}
+		}
+	}
+
+	return bargs;
+}
+
+static void
+do_exec(int load_flags, u_long *marks, int argc, char *argv[])
+{
+	closeall();
+	quiesce();
+	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
+
+#ifdef CONFIG_MACH_HOST_SIM
+	sim_boot_fdt(fdt_store, fdt_totalsize(fdt_store));
+#else
+	if (load_flags & LOAD_BOOTINFO) {
+		/*
+		 * The bootinfo is loaded at the next word boundary
+		 * after _end[], but we will pass in a pointer as the
+		 * argument anyway.
+		 */
+		transfer(marks[MARK_ENTRY], BI_MAG0, BI_MAG1,
+		    marks[MARK_BOOTINFO], marks[MARK_BOOTINFOSZ]);
+	} else {
+		transfer(marks[MARK_ENTRY], argc, argv);
+	}
+#endif /* CONFIG_MACH_HOST_SIM */
+}
+
+int
+exec_mem(int load_flags, uintptr_t imgend, uintptr_t entry,
+    int argc, char *argv[])
+{
+	u_long marks[MARK_MAX] = { 0 };
+
+	marks[MARK_END] = imgend;
+	marks[MARK_ENTRY] = entry;
+
+	/* Construct bootargs. */
+	char *bargs = make_bargs(argc - 1, &argv[1]);
+
+	/*
+	 * Set up the memory records that will be passed to the client
+	 * program; FDT needs this info.
+	 */
+	bootinfo_set_mem_records();
+
+#ifdef CONFIG_DEVICETREE
+	int error = exec_prep_fdt(-1, load_flags, bargs, marks);
+	if (error) {
+		return error;
+	}
+#endif
+
+	if (load_flags & LOAD_BOOTINFO) {
+		struct bi_record *bi;
+		void *vbi;
+
+		marks[MARK_BOOTINFOSZ] = bootinfo_size(bargs);
+		marks[MARK_BOOTINFO] = (imgend + 1) & ~1UL;
+		vbi = (void *)marks[MARK_BOOTINFO];
+		bootinfo_populate(vbi, bargs);
+
+		/*
+		 * ELF_SYMS is always the last record.  We don't have
+		 * them available, so terminate the list there.
+		 */
+		bi = bootinfo_find(vbi, BI_FDT_ELF_SYMS);
+		if (bi != NULL) {
+			bi->bi_tag = BI_LAST;
+		}
+
+		printf("Bootinfo @ 0x%lx\n", marks[MARK_BOOTINFO]);
+#ifdef CONFIG_DEVICETREE
+		bi = bootinfo_find(vbi, BI_FDT_BLOB);
+		if (bi != NULL) {
+			struct bi_data *d = bootinfo_dataptr(bi);
+			printf("FDT @ %p\n", &d->data_bytes[0]);
+		}
+#endif /* CONFIG_DEVICETREE */
+	}
+
+	if (bargs != NULL) {
+		free(bargs);
+	}
+
+	do_exec(load_flags, marks, argc, argv);
+
+	/* NOTREACHED */
+	return 0;
+}
+
 int
 exec_file(int load_flags, int argc, char *argv[])
 {
 	char dstr[DEV_STRING_SIZE];
 	u_long marks[MARK_MAX] = { 0 };
 	char *bargs = NULL;
-	size_t size;
-	int i, error;
+	int error;
 
 	/* Args already checked. */
 
@@ -358,22 +476,7 @@ exec_file(int load_flags, int argc, char *argv[])
 	}
 
 	/* Construct bootargs. */
-	for (size = 0, i = 2; i < argc; i++) {
-		size += strlen(argv[i]) + 1;
-	}
-	if (size != 0) {
-		bargs = malloc(size);
-		char *cp, *str = bargs;
-		for (i = 2; i < argc; i++) {
-			cp = argv[i];
-			while ((*str = *cp++) != '\0') {
-				str++;
-			}
-			if (i < argc - 1) {
-				*str++ = ' ';
-			}
-		}
-	}
+	bargs = make_bargs(argc - 2, &argv[2]);
 
 	/*
 	 * Set up the memory records that will be passed to the client
@@ -419,13 +522,19 @@ exec_file(int load_flags, int argc, char *argv[])
 
 	if (have_bootinfo) {
 		bootinfo_populate(vbi, bargs);
-		if (have_sym) {
-			bi = bootinfo_find(vbi, BI_FDT_ELF_SYMS);
-			if (bi != NULL) {
+		/*
+		 * ELF_SYMS is the last record type.  If we don't have
+		 * them, terminate the list there.
+		 */
+		bi = bootinfo_find(vbi, BI_FDT_ELF_SYMS);
+		if (bi != NULL) {
+			if (have_sym) {
 				bootinfo_set_mem_info(bi,
 				    BI_FDT_ELF_SYMS,
 				    marks[MARK_SYM],
 				    marks[MARK_END] - marks[MARK_SYM]);
+			} else {
+				bi->bi_tag = BI_LAST;
 			}
 		}
 		printf("Bootinfo @ 0x%lx\n", marks[MARK_BOOTINFO]);
@@ -445,25 +554,8 @@ exec_file(int load_flags, int argc, char *argv[])
 	if (bargs != NULL) {
 		free(bargs);
 	}
-	closeall();
-	quiesce();
-	printf("Start @ 0x%lx...\n", marks[MARK_ENTRY]);
 
-#ifdef CONFIG_MACH_HOST_SIM
-	sim_boot_fdt(fdt_store, fdt_totalsize(fdt_store));
-#else
-	if (load_flags & LOAD_BOOTINFO) {
-		/*
-		 * The bootinfo is loaded at the next word boundary
-		 * after _end[], but we will pass in a pointer as the
-		 * argument anyway.
-		 */
-		transfer(marks[MARK_ENTRY], BI_MAG0, BI_MAG1,
-		    marks[MARK_BOOTINFO], marks[MARK_BOOTINFOSZ]);
-	} else {
-		transfer(marks[MARK_ENTRY], argc, argv);
-	}
-#endif /* CONFIG_MACH_HOST_SIM */
+	do_exec(load_flags, marks, argc, argv);
 
 	/* NOTREACHED */
 	return 0;

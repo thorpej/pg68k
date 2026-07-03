@@ -1,6 +1,6 @@
 MACH_TYPE=	PG68010_MK_I
 MACH_CPU=	68010
-MACH_PROG=	hellorld.elf
+MACH_PROG=	hellorld
 
 XCOMP_CPU=	m68010
 
@@ -18,8 +18,13 @@ OBJS=	hellorld.o showme.o subr_prf.o
 OBJS+=	clzsi2.o ctzsi2.o mulsi3.o \
 	umodsi3.o umoddi3.o udivdi3.o udivmoddi4.o udivsi3.o
 
-${MACH_PROG}: ${OBJS}
-	${CC} -nostdlib -o ${MACH_PROG} ${OBJS}
+all: ${MACH_PROG}.elf ${MACH_PROG}.srec
+
+${MACH_PROG}.elf: ${OBJS}
+	${CC} -nostdlib -o ${MACH_PROG}.elf ${OBJS}
+
+${MACH_PROG}.srec: ${MACH_PROG}.elf
+	${OBJCOPY} -O srec ${MACH_PROG}.elf ${.TARGET}
 
 clean:
 	-rm -f ${MACH_PROG} ${OBJS}

@@ -249,12 +249,17 @@ dump_bi(struct bi_record *bi)
 			(*prf)(bi);
 		} else {
 			printf("UNK-<%u> size %u\n", bi->bi_tag, bi->bi_size);
+			if (bi->bi_size == 0) {
+				printf("SIZE==0, aborting!\n");
+				break;
+			}
 		}
 	}
 }
 
 void
-showme(void *vbi)
+showme(void *vbi, u_long sz)
 {
+	printf("Bootinfo: %p (%ld bytes)\n", vbi, sz);
 	dump_bi(vbi);
 }

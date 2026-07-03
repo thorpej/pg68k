@@ -676,14 +676,35 @@ cli_h_boot(int argc, char *argv[])
 	(void) exec_file(LOAD_ALL, argc, argv);
 }
 
+static uintptr_t loaded_image_start;
+static uintptr_t loaded_image_end;
+static uintptr_t loaded_image_entry;
+
+static void
+cli_u_exec(const char *str)
+{
+	printf("usage: %s [args]\n", str);
+}
+
+static void
+cli_h_exec(int argc, char *argv[])
+{
+	if (loaded_image_start == loaded_image_end ||
+	    !(loaded_image_entry >= loaded_image_start &&
+	      loaded_image_entry < loaded_image_end)) {
+		printf("No loaded image to exec?\n");
+		return;
+	}
+
+	(void) exec_mem(LOAD_ALL, loaded_image_end, loaded_image_entry,
+	    argc, argv);
+}
+
 static void
 cli_u_devs(const char *str)
 {
 	printf("usage: %s\n", str);
 }
-
-static uintptr_t dump_range_start;
-static uintptr_t dump_range_end;
 
 static void
 cli_u_srec(const char *str)
@@ -704,8 +725,9 @@ cli_h_srec(int argc, char *argv[])
 	printf("Waiting for S-Records on uart%d, ^C to cancel...\n",
 	    CONFIG_CONSOLE_UART);
 	if (srec_load(CONFIG_CONSOLE_UART, &first_addr, &last_addr, &entry)) {
-		dump_range_start = first_addr;
-		dump_range_end = last_addr + 1;
+		loaded_image_start = first_addr;
+		loaded_image_end = last_addr + 1;
+		loaded_image_entry = entry;
 	}
 }
 
@@ -730,13 +752,13 @@ cli_h_dump(int argc, char *argv[])
 
 	switch (argc) {
 	case 2:
-		if (dump_range_start == dump_range_end) {
+		if (loaded_image_start == loaded_image_end) {
 			printf("No loaded image to dump?\n");
 			cli_u_dump(argv[0]);
 			return;
 		}
-		start = dump_range_start;
-		length = dump_range_end - dump_range_start;
+		start = loaded_image_start;
+		length = loaded_image_end - loaded_image_start;
 		break;
 
 	case 4:
@@ -1348,6 +1370,11 @@ static const struct cli_handler {
 	  "load an S-Record file",
 	  cli_h_srec,
 	  cli_u_srec,
+	},
+	{ "exec",
+	  "exec a loaded S-Record file",
+	  cli_h_exec,
+	  cli_u_exec,
 	},
 	{ "dump",
 	  "dump memory to disk",

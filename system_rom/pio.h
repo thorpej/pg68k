@@ -35,77 +35,77 @@
 #include "systypes.h"
 #include "endian.h"
 
-#define	PA_TO_ADDR(t, pa)	((t)(pa))
+#define	PIO_ADDR(t, a)	((t)(a))
 
 /***** Byte access *****/
 
 static inline uint8_t
-inb(uintptr_t pa)
+inb(uintptr_t addr)
 {
-	return *PA_TO_ADDR(vptr8_t, pa);
+	return *PIO_ADDR(vptr8_t, addr);
 }
 
 static inline void
-insb(uintptr_t pa, void *v, size_t n)
+insb(uintptr_t addr, void *v, size_t n)
 {
 	uint8_t *dst = v;
 
 	while (n--) {
-		*dst++ = *PA_TO_ADDR(vptr8_t, pa);
+		*dst++ = *PIO_ADDR(vptr8_t, addr);
 	}
 }
 
 static inline void
-outb(uintptr_t pa, uint8_t v)
+outb(uintptr_t addr, uint8_t v)
 {
-	*PA_TO_ADDR(vptr8_t, pa) = v;
+	*PIO_ADDR(vptr8_t, addr) = v;
 }
 
 static inline void
-outsb(uintptr_t pa, const void *v, size_t n)
+outsb(uintptr_t addr, const void *v, size_t n)
 {
 	const uint8_t *src = v;
 
 	while (n--) {
-		*PA_TO_ADDR(vptr8_t, pa) = *src++;
+		*PIO_ADDR(vptr8_t, addr) = *src++;
 	}
 }
 
 /***** Word access *****/
 
 static inline uint16_t
-inw(uintptr_t pa)
+inw(uintptr_t addr)
 {
-	return le16toh(*PA_TO_ADDR(vptr16_t, pa));
+	return le16toh(*PIO_ADDR(vptr16_t, addr));
 }
 
 static inline void
-insw(uintptr_t pa, void *v, size_t n)
+insw(uintptr_t addr, void *v, size_t n)
 {
 	uint16_t *dst = v;
 	n >>= 1;
 
 	while (n--) {
 		/* "stream" are not swapped */
-		*dst++ = *PA_TO_ADDR(vptr16_t, pa);
+		*dst++ = *PIO_ADDR(vptr16_t, addr);
 	}
 }
 
 static inline void
-outw(uintptr_t pa, uint16_t v)
+outw(uintptr_t addr, uint16_t v)
 {
-	*PA_TO_ADDR(vptr16_t, pa) = htole16(v);
+	*PIO_ADDR(vptr16_t, addr) = htole16(v);
 }
 
 static inline void
-outsw(uintptr_t pa, const void *v, size_t n)
+outsw(uintptr_t addr, const void *v, size_t n)
 {
 	const uint16_t *src = v;
 	n >>= 1;
 
 	while (n--) {
 		/* "stream" are not swapped */
-		*PA_TO_ADDR(vptr16_t, pa) = *src++;
+		*PIO_ADDR(vptr16_t, addr) = *src++;
 	}
 }
 

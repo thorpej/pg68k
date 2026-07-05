@@ -426,7 +426,7 @@ wdc_decode_identify_string(const char *in, size_t insize, char *out)
 	char c, *q;
 
 	for (blank = 0, q = out, i = 0; i < insize; i++) {
-		c = *in++;
+		c = in[i ^ 1];
 		if (c == '\0') {
 			break;
 		}

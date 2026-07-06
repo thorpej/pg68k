@@ -254,38 +254,58 @@ fixup_ata_nodes(void)
 {
 	int offset, fdterr, len;
 	char path[80];
+	const char *name;
 
-	if (! ATA_FORCE_PIO8) {
+	if (! (ATA_FORCE_PIO8 || ATA_FORCE_NOIRQ)) {
 		return;
 	}
 
 	for (offset = fdt_next_node(fdt_store, -1, NULL);
 	     offset >= 0;
 	     offset = fdt_next_node(fdt_store, offset, NULL)) {
-		if (fdt_getprop(fdt_store, offset,
-				"ata-generic,use16bit", &len) == NULL) {
+		name = fdt_get_name(fdt_store, offset, &len);
+		if (len < 4 || strncmp(name, "ata@", 4) != 0) {
 			continue;
 		}
-
 		if (fdt_get_path(fdt_store, offset, path, sizeof(path)) < 0) {
 			snprintf(path, sizeof(path),
 			    "fdt-offset-0x%x", offset);
 		}
-		verbose_printf("FDT: Forcing ata-generic,use8bit for %s\n",
-		    path);
-
-		fdterr = fdt_delprop(fdt_store, offset, "ata-generic,use16bit");
-		if (fdterr) {
-			printf("%s: fdt_delprop(%s/ata-generic,use16bit) "
-			    "- %s\n", __func__, path, fdt_strerror(fdterr));
-			continue;
+		if (ATA_FORCE_PIO8 &&
+		    fdt_getprop(fdt_store, offset,
+				"ata-generic,use16bit", &len) != NULL) {
+			verbose_printf("FDT: Forcing ata-generic,use8bit "
+				       "for %s\n", path);
+			fdterr = fdt_delprop(fdt_store, offset,
+			    "ata-generic,use16bit");
+			if (fdterr) {
+				printf(
+				    "%s: fdt_delprop(%s/ata-generic,use16bit) "
+				    "- %s\n", __func__, path,
+				    fdt_strerror(fdterr));
+			}
+			fdterr = fdt_setprop_empty(fdt_store, offset,
+						   "ata-generic,use8bit");
+			if (fdterr) {
+				printf(
+				    "%s: fdt_setprop(%s/ata-generic,use8bit) "
+				    "- %s\n", __func__, path,
+				    fdt_strerror(fdterr));
+			}
 		}
-		fdterr = fdt_setprop_empty(fdt_store, offset,
-					   "ata-generic,use8bit");
-		if (fdterr) {
-			printf("%s: fdt_setprop(%s/ata-generic,use8bit) "
-			    "- %s\n", __func__, path, fdt_strerror(fdterr));
-			continue;
+		if (ATA_FORCE_NOIRQ &&
+		    fdt_getprop(fdt_store, offset,
+				"interrupts", &len) != NULL) {
+			verbose_printf("FDT: Removing interrupts "
+				       "for %s\n", path);
+			fdterr = fdt_delprop(fdt_store, offset,
+			    "interrupts");
+			if (fdterr) {
+				printf(
+				    "%s: fdt_delprop(%s/ata-generic,use16bit) "
+				    "- %s\n", __func__, path,
+				    fdt_strerror(fdterr));
+			}
 		}
 	}
 }

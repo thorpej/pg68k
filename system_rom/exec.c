@@ -186,7 +186,12 @@ set_booted_device(int fd)
 			char buf[sizeof(struct uuid)];
 			uuid_snprintf(strbuf, sizeof(strbuf),
 			    &p->p_gpt_info.gpt_ent);
+#if 0
 			uuid_enc_le(buf, &p->p_gpt_info.gpt_ent);
+#else
+			/* NetBSD kernel expects this in native-order. */
+			memcpy(buf, &p->p_gpt_info.gpt_ent, sizeof(buf));
+#endif
 			verbose_printf("FDT: /chosen/%s = << %s >>\n",
 			    prop_booted_gpt_guid, strbuf);
 			fdterr = fdt_setprop(fdt_store, chosen,

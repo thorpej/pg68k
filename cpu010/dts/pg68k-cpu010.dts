@@ -131,6 +131,11 @@
 			reg-shift = <1>;
 			clocks = <&sys_clk>;
 			interrupts = <3 0>;
+
+			rtc@68 {
+				compatible = "dallas,ds3231";
+				reg = <0x68>;
+			};
 		};
 
 		ata@8000400 {

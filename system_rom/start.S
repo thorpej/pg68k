@@ -49,10 +49,14 @@
 /*
  * Assumes Control Space is selected.  Clobbers %a4 and %d4.
  */
-#define	DD(ud, ld)	movea.l	#CTLREG_DD7SEG,%a4		;\
-			move.w	#(((ud) << 8)+(ld)),%d4		;\
-			moves.w	%d4,(%a4)
+#define	DDVAL(ud, ld)	move.w	#(((ud) << 8)+(ld)),%d4
+#define	DDSET()		movea.l #CTLREG_DD7SEG,%a4		;\
+			moves.w %d4,(%a4)
+#define	DD(ud, ld)	DDVAL((ud), (ld))			;\
+			DDSET()
 #else
+#define	DDVAL(ud, ld)	/* nothing */
+#define	DDSET()		/* nothing */
 #define	DD(ud, ld)	/* nothing */
 #endif
 
@@ -210,20 +214,25 @@ romcalls_end:
 	.globl	romcall_reboot_noauto
 romcall_reboot_noauto:
 	move.l	#(BOOT_HOWTO_NOAUTO << SYSEN_HOWTO_SHIFT),%d1
+	DDVAL(DD7SEG_CHR_H, DD7SEG_CHR_0)
 	bra	1f
 
 romcall_reboot:
 	move.l	#(BOOT_HOWTO_REBOOT << SYSEN_HOWTO_SHIFT),%d1
+	DDVAL(DD7SEG_CHR_H, DD7SEG_CHR_1)
 	bra	1f
 
 romcall_halt:
 romcall_poweroff:
 	move.l	#(BOOT_HOWTO_HALT << SYSEN_HOWTO_SHIFT),%d1
+	move.l	#DD7SEG_CHR_1,%d2
+	DDVAL(DD7SEG_CHR_H, DD7SEG_CHR_2)
 1:
 	move.w	#PSL_HIGHIPL,%sr	| splhigh()
 	moveq	#FC_CONTROL,%d0
 	movec	%d0,%sfc
 	movec	%d0,%dfc
+	DDSET()
 	movea.l	#CTLREG_SYSEN,%a0	| %a5 = System Enable register
 	moves.b	%d1,(%a0)		| set howto, disable everything else
 	bra	start
@@ -245,6 +254,12 @@ start:
 	| Before we do anything else, disable all interrupts.
 	| Except the NMI, obviously.
 	move.w	#PSL_HIGHIPL,%sr
+
+#ifndef CONFIG_MC68000
+	| Make sure the VBR is the at-reset default.
+	movea.l	#0,%a0
+	movec	%a0,%vbr
+#endif /* ! CONFIG_MC68000 */
 
 #ifdef FC_CONTROL
 	| Set source and destination FCs for MOVES.

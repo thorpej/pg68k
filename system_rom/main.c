@@ -32,7 +32,6 @@
 #include "trap.h"
 #include "clock.h"
 #include "intr.h"
-#include "psl.h"
 #include "ata.h"
 #include "uart.h"
 #include "loadfile.h"	/* for load flags passed to exec_*() */
@@ -405,8 +404,6 @@ configure(void)
 		intr_init();
 	}
 	clock_configure(!devices_initialized);
-	spl0();
-
 #ifdef UART0_ADDR
 	uart_configure(!devices_initialized);
 #endif

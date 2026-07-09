@@ -59,9 +59,6 @@
 #include "pio.h"
 #include "clock.h"
 
-#include "intr.h"
-#include "psl.h"
-
 #include "ata.h"
 #include "atareg.h"
 #include "wdc1003reg.h"
@@ -103,17 +100,8 @@ struct ata_drive {
 	char		drv_model[41];
 };
 
-#ifndef CONFIG_ATA_IPL
-#define	CONFIG_ATA_IPL	3
-#endif
-
-#define	splata()	_spl(IPLTOPSL(CONFIG_ATA_IPL))
-
 struct ata_controller {
 	struct ata_drive ata_drives[2];
-	struct intr_handle ata_intr_handle;
-	volatile uint8_t ata_status;
-	volatile bool ata_cmd_done;
 };
 
 static struct ata_controller ata_controllers[MAXATA];
@@ -243,52 +231,27 @@ struct wdc_command {
 	uint8_t		r_sector;
 	uint8_t		r_count;
 	uint8_t		r_features;
-
-	bool		r_poll;
 };
 
 /*
  * Wait until the device is ready.
  */
 int
-wdc_wait_for_ready(int ctlr, bool poll)
+wdc_wait_for_ready(int ctlr)
 {
-	if (poll) {
-		u_int timo;
-		uint8_t st;
+	u_int timo;
+	uint8_t st;
 
-		for (timo = WDC_CMD_TIMO; timo > 0; timo--) {
-			st = REG_READ(ctlr, wd_status);
+	for (timo = WDC_CMD_TIMO; timo > 0; timo--) {
+		st = REG_READ(ctlr, wd_status);
 
-			if ((st & (WDCS_BSY | WDCS_DRDY)) == WDCS_DRDY) {
-				return 0;
-			}
-			clock_delay(WDC_CMD_DELAY);
+		if ((st & (WDCS_BSY | WDCS_DRDY)) == WDCS_DRDY) {
+			return 0;
 		}
-		printf("%s: status=0x%02x\n", __func__, st);
-		return EIO;
-	} else {
-		u_int deadline = clock_getsecs() + 5;
-		uint8_t st;
-
-		for (;;) {
-			if (ata_controllers[ctlr].ata_cmd_done) {
-				st = ata_controllers[ctlr].ata_status;
-				if ((st & (WDCS_BSY | WDCS_DRDY))
-				    != WDCS_DRDY) {
-					printf("%s: status=0x%02x\n",
-					    __func__, st);
-					return EIO;
-				}
-				return 0;
-			}
-			if (clock_getsecs() >= deadline) {
-				ata_controllers[ctlr].ata_status =
-				    REG_READ(ctlr, wd_status);
-				return EIO;
-			}
-		}
+		clock_delay(WDC_CMD_DELAY);
 	}
+	printf("%s: status=0x%02x\n", __func__, st);
+	return EIO;
 }
 
 /*
@@ -319,11 +282,6 @@ static int
 wdc_exec_command(int ctlr, const struct wdc_command *cmd)
 {
 
-	int s = splata();
-	ata_controllers[ctlr].ata_cmd_done = false;
-	CTLREG_WRITE(ctlr, wd_aux_control,
-	    cmd->r_poll ? WDCTL_4BIT | WDCTL_IDS
-			: WDCTL_4BIT);
 	REG_WRITE(ctlr, wd_features, cmd->r_features);
 	REG_WRITE(ctlr, wd_seccnt,   cmd->r_count);
 	REG_WRITE(ctlr, wd_sector,   cmd->r_sector);
@@ -332,18 +290,14 @@ wdc_exec_command(int ctlr, const struct wdc_command *cmd)
 	REG_WRITE(ctlr, wd_sdh,
 	    WDSD_IBM | (cmd->r_drive << 4) | cmd->r_head);
 	REG_WRITE(ctlr, wd_command,  cmd->r_command);
-	splx(s);
 
-	int error = wdc_wait_for_ready(ctlr, cmd->r_poll);
-	CTLREG_WRITE(ctlr, wd_aux_control, WDCTL_4BIT | WDCTL_IDS);
-
-	if (error != 0) {
+	if (wdc_wait_for_ready(ctlr) != 0) {
 		printf("ata(%d,%d): command timed out\n",
 		    ctlr, cmd->r_drive);
 		return ENXIO;
 	}
 
-	if (ata_controllers[ctlr].ata_status & WDCS_ERR) {
+	if (REG_READ(ctlr, wd_status) & WDCS_ERR) {
 		printf("ata(%d,%d): error 0x%02x\n", ctlr, cmd->r_drive,
 		    REG_READ(ctlr, wd_error));
 		return EIO;
@@ -391,7 +345,6 @@ wdc_cmd_set_feature(int ctlr, int drive, uint8_t feat)
 		.r_drive = drive,
 		.r_features = feat,
 		.r_command = SET_FEATURES,
-		.r_poll = true,
 	};
 
 	return wdc_exec_command(ctlr, &cmd);
@@ -403,7 +356,6 @@ wdc_cmd_identify_drive(int ctlr, int drive, void *buf)
 	struct wdc_command cmd = {
 		.r_drive = drive,
 		.r_command = WDCC_IDENTIFY,
-		.r_poll = true,
 	};
 	int error;
 
@@ -492,16 +444,6 @@ wdc_decode_identify_string(const char *in, size_t insize, char *out)
 	return out;
 }
 
-static void
-ata_intr(void *arg)
-{
-	struct ata_controller *ata = arg;
-	int ctlr = ata - &ata_controllers[0];
-
-	ata->ata_status = REG_READ(ctlr, wd_status);
-	ata->ata_cmd_done = true;
-}
-
 void
 ata_init(int ctlr, bool do_init)
 {
@@ -510,15 +452,6 @@ ata_init(int ctlr, bool do_init)
 	uint16_t u16;
 	uint32_t capacity;
 	struct ata_drive *drv;
-
-	if (do_init) {
-		ata_controllers[ctlr].ata_intr_handle.ih_func = ata_intr;
-		ata_controllers[ctlr].ata_intr_handle.ih_arg =
-		    &ata_controllers[ctlr];
-		ata_controllers[ctlr].ata_intr_handle.ih_ipl =
-		    CONFIG_ATA_IPL;
-		intr_establish(&ata_controllers[ctlr].ata_intr_handle);
-	}
 
 	for (drive = 0; do_init && drive < 2; drive++) {
 		if (drive == 0) {
@@ -533,7 +466,6 @@ ata_init(int ctlr, bool do_init)
 		if ((rv & __BIT(drive)) == 0) {
 			continue;
 		}
-
 		if (ATA_FORCE_PIO8) {
 			error = wdc_cmd_set_feature(ctlr, drive,
 			    WDSF_8BIT_PIO_EN);

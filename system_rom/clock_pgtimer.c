@@ -152,13 +152,18 @@ clock_configure(bool do_init)
 		intr_establish(&pgtimer_intr_handle);
 
 		/* Start the timer. */
-		int s = splhigh();
+		splhigh();
 		if (1000000 % hz) {
 			printf("Cannot get %d Hz clock; using 100 Hz\n", hz);
 			hz = 100;
 		}
 		pgtimer_initclock(1000000 / hz);
-		splx(s);
+
+		/*
+		 * Drop to IPL5 to allow timer interrupts, but block
+		 * everything else.
+		 */
+		_spl(PSL_S|PSL_IPL5);
 	}
 }
 

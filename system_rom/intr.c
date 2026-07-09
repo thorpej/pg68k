@@ -25,7 +25,6 @@
  */
 
 #include "intr.h"
-#include "psl.h"
 #include "syslib.h"
 
 #define	NIPL	8
@@ -78,7 +77,6 @@ intr_init(void)
 {
 	int ipl;
 
-	splhigh();
 	for (ipl = 0; ipl < NIPL; ipl++) {
 		LIST_INIT(&intr_handle_lists[ipl]);
 	}
@@ -89,7 +87,6 @@ intr_init(void)
 void
 intr_fini(void)
 {
-	splhigh();
 	intr_disable();
 }
 

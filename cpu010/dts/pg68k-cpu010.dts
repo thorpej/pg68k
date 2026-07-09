@@ -31,6 +31,11 @@
 		 * System timer.
 		 */
 		timer0 = "/obio/timer@8000200";
+
+		/*
+		 * System real-time clock / calendar.
+		 */
+		rtc0 = "/obio/i2c@8000300/rtc@68";
 	};
 
 	cpus {

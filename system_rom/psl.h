@@ -85,6 +85,7 @@ _splx(int s)
 }
 
 #define	splhigh()	_spl(PSL_S|PSL_IPL7)
+#define	spl0()		_spl(PSL_S|PSL_IPL0)
 #define	splx(s)		_splx(s)
 
 #endif /* !__ASSEMBLER__ */

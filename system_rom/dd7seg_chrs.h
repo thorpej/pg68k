@@ -350,6 +350,120 @@
  */
 #define	DD7SEG_CHR_H	(DD7SEG_A+DD7SEG_D)
 
+/*
+ *           A
+ *      +         +
+ *                |
+ *                |
+ *    F           | B
+ *                |
+ *           G    |
+ *      +         +
+ *      |         |
+ *      |         |
+ *    E |         | C
+ *      |         |
+ *      |         |
+ *      +---------+
+ *           D
+ */
+#define	DD7SEG_CHR_J	(DD7SEG_A+DD7SEG_F+DD7SEG_G)
+
+/*
+ *           A
+ *      +         +
+ *      |          
+ *      |          
+ *    F |           B
+ *      |          
+ *      |    G     
+ *      +         +
+ *      |          
+ *      |          
+ *    E |           C
+ *      |          
+ *      |          
+ *      +---------+
+ *           D
+ */
+#define	DD7SEG_CHR_L	(DD7SEG_A+DD7SEG_B+DD7SEG_C+DD7SEG_G)
+
+/*
+ *           A
+ *      +         +
+ *                 
+ *                 
+ *    F             B
+ *                 
+ *           G     
+ *      +---------+
+ *      |         |
+ *      |         |
+ *    E |         | C
+ *      |         |
+ *      |         |
+ *      +---------+
+ *           D
+ */
+#define	DD7SEG_CHR_O	(DD7SEG_A+DD7SEG_B+DD7SEG_F)
+
+/*
+ *           A
+ *      +---------+
+ *      |         |
+ *      |         |
+ *    F |         | B
+ *      |         |
+ *      |    G    |
+ *      +---------+
+ *      |          
+ *      |          
+ *    E |           C
+ *      |          
+ *      |          
+ *      +         +
+ *           D
+ */
+#define	DD7SEG_CHR_P	(DD7SEG_C+DD7SEG_D)
+
+/*
+ *           A
+ *      +         +
+ *      |         |
+ *      |         |
+ *    F |         | B
+ *      |         |
+ *      |    G    |
+ *      +         +
+ *      |         |
+ *      |         |
+ *    E |         | C
+ *      |         |
+ *      |         |
+ *      +---------+
+ *           D
+ */
+#define	DD7SEG_CHR_U	(DD7SEG_A+DD7SEG_G)
+
+/*
+ *           A
+ *      +         +
+ *                 
+ *                 
+ *    F             B
+ *                 
+ *           G     
+ *      +         +
+ *      |         |
+ *      |         |
+ *    E |         | C
+ *      |         |
+ *      |         |
+ *      +---------+
+ *           D
+ */
+#define	DD7SEG_CHR_u	(DD7SEG_A+DD7SEG_B+DD7SEG_F+DD7SEG_G)
+
 #define	DD7SEG_CHR_SPACE 0xf
 
 #endif /* dd7seg_chrs_h_included */

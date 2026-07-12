@@ -33,6 +33,7 @@
 #include "clock.h"
 #include "intr.h"
 #include "ata.h"
+#include "i2c.h"
 #include "uart.h"
 #include "loadfile.h"	/* for load flags passed to exec_*() */
 #include "ls.h"
@@ -406,6 +407,9 @@ configure(void)
 	clock_configure(!devices_initialized);
 #ifdef UART0_ADDR
 	uart_configure(!devices_initialized);
+#endif
+#ifdef I2C_ADDR
+	i2c_configure(!devices_initialized);
 #endif
 #ifdef ATA_ADDR
 	ata_configure(!devices_initialized);
@@ -870,6 +874,34 @@ cli_h_uptime(int argc, char *argv[])
 	time_t secs = clock_getsecs();
 
 	printf("uptime: %lld second%s\n", (long long)secs, plural((int)secs));
+}
+
+static void
+cli_u_date(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_date(int argc, char *argv[])
+{
+	struct clock_ymdhms dt;
+	int error;
+
+	if (argc != 1) {
+		cli_u_date(argv[0]);
+		return;
+	}
+
+	error = clock_gettime(&dt);
+	if (error) {
+		printf("Unable to read RTC: %s\n", strerror(error));
+		return;
+	}
+
+	printf("%u/%u/%llu %02d:%02d:%02d UTC\n",
+	    dt.dt_mon, dt.dt_day, (unsigned long long)dt.dt_year,
+	    dt.dt_hour, dt.dt_min, dt.dt_sec);
 }
 
 static void
@@ -1400,6 +1432,11 @@ static const struct cli_handler {
 	  "get number of seconds since boot",
 	  cli_h_uptime,
 	  cli_u_uptime,
+	},
+	{ "date",
+	  "get/set the system date",
+	  cli_h_date,
+	  cli_u_date,
 	},
 	{ "reboot",
 	  "reboot the system",

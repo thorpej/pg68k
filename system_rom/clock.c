@@ -51,3 +51,9 @@ int	delay_divisor = 8192 / 33;
 #elif defined(CONFIG_PGTIMER)
 #include "clock_pgtimer.c"
 #endif
+
+#if defined(CONFIG_MACH_HOST_SIM)
+#include "rtc_hostsim.c"
+#elif defined(CONFIG_RTC_DS3231)
+#include "rtc_dsrtc.c"
+#endif

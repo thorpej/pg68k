@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Jason R. Thorpe.
+ * Copyright (c) 2026 Jason R. Thorpe.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,39 +24,19 @@
  * SUCH DAMAGE.
  */
 
-#ifndef clock_h_included
-#define	clock_h_included
+#ifndef i2c_h_included
+#define	i2c_h_included
 
-#include "config.h"
-#include "systypes.h"
+#include "syslib.h"
 
-struct clock_ymdhms {
-	uint64_t	dt_year;
-	uint8_t		dt_mon;
-	uint8_t		dt_day;
-	uint8_t		dt_wday;
-	uint8_t		dt_hour;
-	uint8_t		dt_min;
-	uint8_t		dt_sec;
-};
+typedef uint8_t i2c_op_t;
+typedef uint8_t i2c_addr_t;
 
-void	clock_configure(bool);
-void	clock_quiesce(void);
+#define	I2C_OP_WRITE	0
+#define	I2C_OP_READ	1
 
-#ifdef CONFIG_MACH_HOST_SIM
-void	clock_delay(int);
-#else
-extern void	delay_(unsigned int);	/* see start.S */
-#define	clock_delay(x)	delay_(((unsigned int)(x)) << 10)
-#endif
+void	i2c_configure(bool);
+void	i2c_init(bool);
+int	i2c_exec(i2c_op_t, i2c_addr_t, const void *, size_t, void *, size_t);
 
-time_t	clock_getsecs(void);
-int	clock_gettime(struct clock_ymdhms *);
-
-static inline unsigned int
-bcdtobin(unsigned int bcd)
-{
-	return ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f);
-}
-
-#endif /* clock_h_included */
+#endif /* i2c_h_included */

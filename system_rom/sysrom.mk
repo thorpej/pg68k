@@ -32,6 +32,8 @@ FDTOBJS=	fdt_addresses.o fdt_empty_tree.o fdt_overlay.o fdt_ro.o \
 
 ATAOBJS=	ata.o
 
+I2COBJS=	i2c.o
+
 IMGOBJS=	img.o
 
 .PATH: ../ufs

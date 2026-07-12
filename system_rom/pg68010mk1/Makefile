@@ -12,6 +12,7 @@ XCOMP_CPU=	m68010
 .include "../sysrom.mk"
 
 OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
+OBJS+=		${I2COBJS}
 OBJS+=		${IMGOBJS}
 OBJS+=		dd7seg.o
 OBJS+=		device-tree.o

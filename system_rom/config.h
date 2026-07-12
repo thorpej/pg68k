@@ -125,7 +125,11 @@ device_physaddr(unsigned long addr)
 #define	CONFIG_PGTIMER
 #define	CONFIG_PGTIMER_FREQ	(10000000 / 16)
 #define	CONFIG_ATA_GENERIC
-#define	CONFIG_ATA_8BIT_PIO	/* XXX */
+#define	CONFIG_I2C_PCF8584
+/* PCF8584 is fed the 10MHz system clock; it has a 12MHz configuration,
+   so we use that one. */
+#define	CONFIG_PCF8584_FREQ	12000000
+#define	CONFIG_RTC_DS3231
 #define	CONFIG_DEV_IMG
 #define	CONFIG_DISKLABEL_BSD44
 #define	CONFIG_DISKLABEL_GPT
@@ -214,6 +218,10 @@ device_physaddr(unsigned long addr)
 
 #ifndef CONFIG_DEV_REGSHIFT
 #define	CONFIG_DEV_REGSHIFT	0
+#endif
+
+#ifndef CONFIG_RTC_EPOCH_YEAR
+#define	CONFIG_RTC_EPOCH_YEAR	1970	/* Unix epoch */
 #endif
 
 #if defined(CONFIG_ATA_GENERIC) || defined(CONFIG_ATA_HOST_SIM)

@@ -24,39 +24,18 @@
  * SUCH DAMAGE.
  */
 
-#ifndef clock_h_included
-#define	clock_h_included
-
 #include "config.h"
-#include "systypes.h"
+#include "syslib.h"
 
-struct clock_ymdhms {
-	uint64_t	dt_year;
-	uint8_t		dt_mon;
-	uint8_t		dt_day;
-	uint8_t		dt_wday;
-	uint8_t		dt_hour;
-	uint8_t		dt_min;
-	uint8_t		dt_sec;
-};
+#include "i2c.h"
 
-void	clock_configure(bool);
-void	clock_quiesce(void);
-
-#ifdef CONFIG_MACH_HOST_SIM
-void	clock_delay(int);
-#else
-extern void	delay_(unsigned int);	/* see start.S */
-#define	clock_delay(x)	delay_(((unsigned int)(x)) << 10)
-#endif
-
-time_t	clock_getsecs(void);
-int	clock_gettime(struct clock_ymdhms *);
-
-static inline unsigned int
-bcdtobin(unsigned int bcd)
+void
+i2c_configure(bool do_init)
 {
-	return ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f);
+	configure_printf("i2c at 0x%08x\n", I2C_ADDR);
+	i2c_init(do_init);
 }
 
-#endif /* clock_h_included */
+#if defined(CONFIG_I2C_PCF8584)
+#include "i2c_pcf8584.c"
+#endif

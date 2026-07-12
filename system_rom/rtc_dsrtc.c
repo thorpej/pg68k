@@ -61,6 +61,63 @@
 #define	DSRTC_MONTH_CENTURY	0x80
 
 int
+clock_type(void)
+{
+	uint8_t cmdbuf[1], buf[1];
+	int error, type = 3231;
+
+	/*
+	 * The DS3231 has no NVRAM, so it's useful to know if that's
+	 * what we actually have vs a DS3232, which does have NVRAM.
+	 *
+	 * We can distinguish beteen them as follows:
+	 *
+	 * On a DS3231, bit 6 of the STATUS register is hard-wired to 0.
+	 *
+	 * On a DS3232, bit 6 controls battery-backed 32KHz output and
+	 * can be toggled to 1.
+	 */
+	cmdbuf[0] = 0x0f;
+	error = i2c_exec(I2C_OP_READ, DSRTC_I2C_ADDR,
+	    cmdbuf, sizeof(cmdbuf), buf, sizeof(buf));
+	if (error) {
+		goto out;
+	}
+	if (buf[0] & __BIT(6)) {
+		/* If it's set, it's for sure a 3232. */
+		type = 3232;
+		goto out;
+	}
+
+	/* Not set, try setting it. */
+	buf[0] |= __BIT(6);
+	error = i2c_exec(I2C_OP_WRITE, DSRTC_I2C_ADDR,
+	    cmdbuf, sizeof(cmdbuf), buf, sizeof(buf));
+	if (error) {
+		goto out;
+	}
+
+	/* Read it back. */
+	error = i2c_exec(I2C_OP_READ, DSRTC_I2C_ADDR,
+	    cmdbuf, sizeof(cmdbuf), buf, sizeof(buf));
+	if (error) {
+		goto out;
+	}
+	if (buf[0] & __BIT(6)) {
+		/* It stuck!  It's a 3232. */
+		type = 3232;
+	}
+
+	/* Set it back to what it was. */
+	buf[0] &= ~__BIT(6);
+	(void) i2c_exec(I2C_OP_WRITE, DSRTC_I2C_ADDR,
+	    cmdbuf, sizeof(cmdbuf), buf, sizeof(buf));
+
+ out:
+	return type;
+}
+
+int
 clock_gettime(struct clock_ymdhms *dt)
 {
 	uint8_t bcd[DSRTC_RTC_SIZE], cmdbuf[1];

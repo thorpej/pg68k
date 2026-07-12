@@ -253,6 +253,50 @@ set_memory_nodes(void)
 	}
 }
 
+#ifdef CONFIG_RTC_DS3231
+static void
+fixup_ds3231_node(void)
+{
+	int offset, fdterr, len;
+	char path[80];
+	const char *compat;
+	char buf[16];
+	const char *name;
+	char last_digit = clock_type() == 3232 ? '2' : '1';
+
+	for (offset = fdt_next_node(fdt_store, -1, NULL);
+	     offset >= 0;
+	     offset = fdt_next_node(fdt_store, offset, NULL)) {
+		name = fdt_get_name(fdt_store, offset, &len);
+		if (len < 4 || strncmp(name, "rtc@", 4) != 0) {
+			continue;
+		}
+		if (fdt_get_path(fdt_store, offset, path, sizeof(path)) < 0) {
+			snprintf(path, sizeof(path),
+			    "fdt-offset-0x%x", offset);
+		}
+		compat = fdt_getprop(fdt_store, offset, "compatible", &len);
+		if (compat == NULL || len > sizeof(buf)) {
+			continue;
+		}
+		memcpy(buf, compat, len);
+		if (buf[len - 2] != last_digit) {
+			buf[len - 2] = last_digit;
+			verbose_printf("FDT: Setting compatible to "
+			    "\"%s\" for %s\n", buf, path);
+			fdterr = fdt_setprop(fdt_store, offset,
+			    "compatible", buf, len);
+			if (fdterr) {
+				printf("%s: fdt_setprop(%s/compatible) - %s\n",
+				    __func__, path,
+				    fdt_strerror(fdterr));
+			}
+		}
+		return;
+	}
+}
+#endif /* CONFIG_RTC_DS3231 */
+
 #ifdef CONFIG_DEV_ATA
 static void
 fixup_ata_nodes(void)
@@ -356,6 +400,9 @@ exec_prep_fdt(int fd, int load_flags, const char *bargs, u_long *marks)
 
 #ifdef CONFIG_DEV_ATA
 	fixup_ata_nodes();
+#endif
+#ifdef CONFIG_RTC_DS3231
+	fixup_ds3231_node();
 #endif
 
 	fdterr = fdt_pack(fdt_store);

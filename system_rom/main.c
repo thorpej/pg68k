@@ -899,6 +899,9 @@ cli_h_date(int argc, char *argv[])
 		return;
 	}
 
+	if (verbose) {
+		verbose_printf("Clock type: %d\n", clock_type());
+	}
 	printf("%u/%u/%llu %02d:%02d:%02d UTC\n",
 	    dt.dt_mon, dt.dt_day, (unsigned long long)dt.dt_year,
 	    dt.dt_hour, dt.dt_min, dt.dt_sec);

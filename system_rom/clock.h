@@ -53,6 +53,8 @@ extern void	delay_(unsigned int);	/* see start.S */
 time_t	clock_getsecs(void);
 int	clock_gettime(struct clock_ymdhms *);
 
+int	clock_type(void);
+
 static inline unsigned int
 bcdtobin(unsigned int bcd)
 {

@@ -62,7 +62,7 @@ dd7seg_hex(uint8_t hex)
 void
 dd7seg_blank(void)
 {
-	control_outw(CTLREG_DD7SEG, (DD7SEG_CHR_SPACE << 4) | DD7SEG_CHR_SPACE);
+	control_outw(CTLREG_DD7SEG, (DD7SEG_CHR_SPACE << 8) | DD7SEG_CHR_SPACE);
 }
 
 static int

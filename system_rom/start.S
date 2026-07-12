@@ -225,7 +225,6 @@ romcall_reboot:
 romcall_halt:
 romcall_poweroff:
 	move.l	#(BOOT_HOWTO_HALT << SYSEN_HOWTO_SHIFT),%d1
-	move.l	#DD7SEG_CHR_1,%d2
 	DDVAL(DD7SEG_CHR_H, DD7SEG_CHR_2)
 1:
 	move.w	#PSL_HIGHIPL,%sr	| splhigh()
@@ -233,9 +232,10 @@ romcall_poweroff:
 	movec	%d0,%sfc
 	movec	%d0,%dfc
 	DDSET()
+	movea.l	#start,%a1
 	movea.l	#CTLREG_SYSEN,%a0	| %a5 = System Enable register
 	moves.b	%d1,(%a0)		| set howto, disable everything else
-	bra	start
+	jmp	(%a1)
 #endif /* CONFIG_MC68010 */
 
 	.section .rodata
@@ -406,6 +406,13 @@ start:
 
 #undef FILL_SMES
 
+	| Set the Context register to #0 for good measure.
+	moveq	#0,%d2
+	movea.l	#MMUREG_CONTEXT,%a0
+	moves.b	%d2,(%a0)
+
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_C)
+
 	|
 	| The tables in the MMU are all configured for the firmware
 	| environment now.  %d5 still has the System Enable register
@@ -415,7 +422,7 @@ start:
 	or.b	#SYSEN_MMU,%d5
 	moves.b	%d5,(%a5)
 
-	DD(DD7SEG_CHR_B, DD7SEG_CHR_C)
+	DD(DD7SEG_CHR_B, DD7SEG_CHR_D)
 #endif /* CONFIG_MC68010 */
 
 #ifndef CONFIG_MC68000

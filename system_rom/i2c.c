@@ -32,7 +32,7 @@
 void
 i2c_configure(bool do_init)
 {
-	configure_printf("i2c at 0x%08x\n", I2C_ADDR);
+	configure_printf("i2c at 0x%08x\n", vtophys(I2C_ADDR));
 	i2c_init(do_init);
 }
 

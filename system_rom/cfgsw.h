@@ -29,6 +29,7 @@
 
 bool	cfwsw_set_p(unsigned int);
 bool	cfgsw_autoboot_p(void);
+bool	cfgsw_verbose_p(void);
 
 void	cfgsw_print(unsigned int);
 

@@ -428,13 +428,19 @@ quiesce(void)
 
 static bool verbose;
 
+static bool
+verbose_p(void)
+{
+	return verbose || cfgsw_verbose_p();
+}
+
 int
 verbose_printf(const char *fmt, ...)
 {
 	va_list ap;
 	int rv = 0;
 
-	if (verbose) {
+	if (verbose_p()) {
 		va_start(ap, fmt);
 		rv = vprintf(fmt, ap);
 		va_end(ap);
@@ -925,7 +931,7 @@ cli_h_date(int argc, char *argv[])
 		return;
 	}
 
-	if (verbose) {
+	if (verbose_p()) {
 		verbose_printf("Clock type: %d\n", clock_type());
 	}
 	printf("%u/%u/%llu %02d:%02d:%02d UTC\n",
@@ -971,7 +977,8 @@ cli_h_verbose(int argc, char *argv[])
 	switch (argc) {
 	case 1:
 	we_are_verbose:
-		printf("Verbose is %s.\n", verbose ? "on" : "off");
+		printf("Verbose is %s%s.\n", verbose_p() ? "on" : "off",
+		    (verbose_p() && !verbose) ? " (via cfgsw)" : "");
 		return;
 
 	case 2:
@@ -980,6 +987,9 @@ cli_h_verbose(int argc, char *argv[])
 			goto we_are_verbose;
 		} else if (strcmp(argv[1], "off") == 0) {
 			verbose = false; /* (shh.... */
+			if (verbose_p()) {
+				goto we_are_verbose;
+			}
 			/* we are not verbose ;-) */
 			return;
 		}

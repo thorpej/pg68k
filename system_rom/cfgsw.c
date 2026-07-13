@@ -36,11 +36,15 @@
 #ifdef CONFIG_MACH_PG68010_MK_I
 #define	NUM_CFGSW	16
 #define	CFGSW_AUTOBOOT	16
+#define	CFGSW_VERBOSE	15
 #endif
 
 static const char * const cfgsw_descriptions[NUM_CFGSW] = {
 #ifdef CFGSW_AUTOBOOT
 [CFGSW_IDX(CFGSW_AUTOBOOT)]	 	= "auto-boot",
+#endif
+#ifdef CFGSW_VERBOSE
+[CFGSW_IDX(CFGSW_VERBOSE)]		= "verbose",
 #endif
 };
 
@@ -78,6 +82,16 @@ cfgsw_autoboot_p(void)
 {
 #ifdef CFGSW_AUTOBOOT
 	return cfwsw_set_p(CFGSW_AUTOBOOT);
+#else
+	return false;
+#endif
+}
+
+bool
+cfgsw_verbose_p(void)
+{
+#ifdef CFGSW_VERBOSE
+	return cfwsw_set_p(CFGSW_VERBOSE);
 #else
 	return false;
 #endif

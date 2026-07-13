@@ -543,6 +543,14 @@ jmp_buf cli_env;
 static bool cli_env_valid;
 
 static void
+cli_set_cmdline(const char *prompt, const char *str)
+{
+	printf("%s%s\n", prompt, str);
+	strcpy(cli_cmdline, str);
+	cli_cmdline_idx = strlen(str) + 1;
+}
+
+static void
 cli_get_cmdline(const char *prompt)
 {
 	int ch;
@@ -1560,7 +1568,7 @@ cli_dispatch(void)
 }
 
 static void
-cli_loop(void)
+cli_loop(const char *str)
 {
 	setjmp(cli_env);
 	cli_env_valid = true;
@@ -1569,7 +1577,12 @@ cli_loop(void)
 	configure_quietly = false;
 
 	for (;;) {
-		cli_get_cmdline(">>> ");
+		if (str != NULL) {
+			cli_set_cmdline(">>> ", str);
+			str = NULL;
+		} else {
+			cli_get_cmdline(">>> ");
+		}
 		cli_get_argv();
 		cli_dispatch();
 	}
@@ -1602,14 +1615,37 @@ version(void)
 	    CONFIG_ROM_VERSION_MAJOR, CONFIG_ROM_VERSION_MINOR);
 }
 
-static void
+#define	AUTOBOOT_COMMAND	"boot ata()/netbsd"
+
+static const char *
 auto_boot(void)
 {
-	/*
-	 * Eventually we want to check the auto-boot configuration
-	 * setting and, if set, attempt to auto-boot.  Otherwise,
-	 * we just return and fall into the CLI loop.
-	 */
+	unsigned int deadline;
+	int i;
+
+	if (! cfgsw_autoboot_p()) {
+ abort_autoboot:
+		return NULL;
+	}
+
+	deadline = clock_getsecs() + 1;
+	printf("Auto-boot in");
+	while (clock_getsecs() != deadline) {
+		/* wait */;
+	}
+	for (i = 5; i > 0; i--) {
+		deadline = clock_getsecs() + 1;
+		printf(" %d...", i);
+		while (clock_getsecs() != deadline) {
+			if (cons_pollc() != -1) {
+				printf(" aborted!\n");
+				goto abort_autoboot;
+			}
+		}
+	}
+	printf("\n");
+
+	return AUTOBOOT_COMMAND;
 }
 
 u_int	boot_howto;
@@ -1617,6 +1653,8 @@ u_int	boot_howto;
 int
 main(int argc, char *argv[])
 {
+	const char *autoboot_cmd = NULL;
+
 	/* First step - initialize console so we can see messages. */
 	cons_init();
 
@@ -1631,6 +1669,7 @@ main(int argc, char *argv[])
 	 * there.
 	 */
 	if (setjmp(cli_env)) {
+		autoboot_cmd = NULL;
 		goto enter_loop;
 	}
 	cli_env_valid = true;
@@ -1673,11 +1712,11 @@ main(int argc, char *argv[])
 	printf("\n");
 
 	if (boot_howto == BOOT_HOWTO_DEFAULT) {
-		auto_boot();
+		autoboot_cmd = auto_boot();
 	}
 
  enter_loop:
-	cli_loop();
+	cli_loop(autoboot_cmd);
 }
 
 void

@@ -113,7 +113,7 @@
  *
  * All bits not defined here are reserved.
  */
-#define	CFGSW_AUTOBOOT	0x01		/* auto-boot at power-on/reset */
+/* config switches are machine-specific */
 
 /*
  * System Enable Register

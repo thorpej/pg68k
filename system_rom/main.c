@@ -40,6 +40,7 @@
 #include "cli.h"
 #include "boot.h"
 #include "srec.h"
+#include "cfgsw.h"
 
 #ifdef CONFIG_DD7SEG
 #include "dd7seg.h"
@@ -877,6 +878,23 @@ cli_h_uptime(int argc, char *argv[])
 }
 
 static void
+cli_u_cfgsw(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_cfgsw(int argc, char *argv[])
+{
+	if (argc != 1) {
+		cli_u_cfgsw(argv[0]);
+		return;
+	}
+
+	cfgsw_print(0);
+}
+
+static void
 cli_u_date(const char *str)
 {
 	printf("usage: %s\n", str);
@@ -1400,6 +1418,11 @@ static const struct cli_handler {
 	  "boot an executable file",
 	  cli_h_boot,
 	  cli_u_boot,
+	},
+	{ "cfgsw",
+	  "show configuration switches",
+	  cli_h_cfgsw,
+	  cli_u_cfgsw,
 	},
 	{ "srec",
 	  "load an S-Record file",

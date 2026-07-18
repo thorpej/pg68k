@@ -712,18 +712,98 @@ cli_h_ls(int argc, char *argv[])
 static void
 cli_u_boot(const char *str)
 {
-	printf("usage: %s file [args]\n", str);
+	printf("usage: %s [file] [args]\n", str);
+	printf("'args' without a 'file' are denoted by a "
+	       "leading '-' charater\n"
+	       "or '--' separator.\n\n");
+	printf("examples:\n");
+	printf("\tboot ata()/vmunix\n");
+	printf("\tboot vmunix -s\n");
+	printf("\tboot -s\n");
+	printf("\tboot vmunix root=wd1a\n");
+	printf("\tboot -- root=wd1a\n");
 }
+
+#define	BOOT_CMDBUF_SIZE	64
+static char boot_cmdbuf[BOOT_CMDBUF_SIZE];
 
 static void
 cli_h_boot(int argc, char *argv[])
 {
-	if (argc < 2) {
-		cli_u_boot(argv[0]);
-		return;
+	/*
+	 * Try to make sense if what we got from the user.  In
+	 * addition to a full boot command:
+	 *
+	 *	boot ata()/netbsd -s
+	 *
+	 * we's also like to support:
+	 *
+	 *	boot netbsd.bak
+	 *
+	 *	boot ata(0,1) -v
+	 *
+	 *	boot -s
+	 *
+	 * (or even just)
+	 *
+	 *	boot
+	 *
+	 * ...and have the obvious thing happen.
+	 */
+	//char *devstr = NULL;
+	//char *filestr = NULL;
+	//char *argsstr = NULL;
+	char *cp;
+
+	char *new_argv[MAX_CL_ARGS];
+	int new_argc = 0;
+	int i;
+
+	if (argc == 1 || *(argv[1]) == '-') {
+		/*
+		 * Bare "boot" command or command that has only
+		 * arguments.  Need to fill in at least device
+		 * and file.
+		 *
+		 * Note we don't need to tokenize the args since they're
+		 * simple recombined to a single string in exec().
+		 */
+		new_argv[new_argc++] = argv[0];
+
+		/* construct dev()file */
+		cp = boot_cmdbuf;
+		cp += default_bootdev(cp);
+		cp += default_bootfile(cp);
+		new_argv[new_argc++] = boot_cmdbuf;
+		cp++;	/* advance past NUL */
+
+		if (argc == 1) {
+			(void) default_bootargs(cp);
+			new_argv[new_argc++] = cp;
+			goto set_new_argv;
+		}
+
+		i = strcmp(argv[1], "--") == 0 ? 2 : 1;
+		for (; i < argc; i++) {
+			new_argv[new_argc++] = argv[i];
+		}
+		goto set_new_argv;
 	}
 
+ do_exec:
 	(void) exec_file(LOAD_ALL, argc, argv);
+	return;
+
+ set_new_argv:
+	argv = new_argv;
+	argc = new_argc;
+	verbose_printf("Resolved boot command: ");
+	for (int i = 0; i < argc; i++) {
+		verbose_printf("%s%s", argv[i],
+		    i + 1 < argc ? " " : "");
+	}
+	verbose_printf("\n");
+	goto do_exec;
 }
 
 static uintptr_t loaded_image_start;
@@ -1657,12 +1737,10 @@ version(void)
 }
 
 #define	AUTOBOOT_COMMAND	"boot "
-#define	AUTOBOOT_CMDBUF_SIZE	64
 
 static const char *
 auto_boot(void)
 {
-	static char autoboot_cmdbuf[AUTOBOOT_CMDBUF_SIZE];
 	unsigned int deadline;
 	int i;
 
@@ -1688,7 +1766,7 @@ auto_boot(void)
 	}
 	printf("\n");
 
-	char *cp = autoboot_cmdbuf;
+	char *cp = boot_cmdbuf;
 	strcpy(cp, AUTOBOOT_COMMAND);
 	cp += strlen(AUTOBOOT_COMMAND);
 
@@ -1699,7 +1777,7 @@ auto_boot(void)
 		cp += default_bootargs(cp);
 	}
 
-	return autoboot_cmdbuf;
+	return boot_cmdbuf;
 }
 
 u_int	boot_howto;

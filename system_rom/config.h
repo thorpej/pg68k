@@ -28,7 +28,7 @@
 #define	config_h_included
 
 #define	CONFIG_ROM_VERSION_MAJOR	0
-#define	CONFIG_ROM_VERSION_MINOR	6
+#define	CONFIG_ROM_VERSION_MINOR	7
 
 /*
  * Configuration for the Playground 68010 Mk I (Phaethon 1).

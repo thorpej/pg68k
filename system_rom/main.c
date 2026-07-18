@@ -750,9 +750,8 @@ cli_h_boot(int argc, char *argv[])
 	 *
 	 * ...and have the obvious thing happen.
 	 */
-	//char *devstr = NULL;
-	//char *filestr = NULL;
-	//char *argsstr = NULL;
+	char *devstr = NULL;
+	char *filestr = NULL;
 	char *cp;
 
 	char *new_argv[MAX_CL_ARGS];
@@ -785,6 +784,65 @@ cli_h_boot(int argc, char *argv[])
 
 		i = strcmp(argv[1], "--") == 0 ? 2 : 1;
 		for (; i < argc; i++) {
+			new_argv[new_argc++] = argv[i];
+		}
+		goto set_new_argv;
+	}
+
+	/*
+	 * Ok, argv[1] is either something like:
+	 *
+	 *	dev()file
+	 * -or-
+	 *	dev()
+	 * -or-
+	 *	file
+	 *
+	 * We can determine which by looking for the parantheses.
+	 */
+	devstr = filestr = argv[1];
+	cp = strchr(devstr, '(');
+	if (cp == NULL) {
+		/* no device specified */
+		devstr = NULL;
+	}
+
+	/*
+	 * If a device was specified, look for a file after it.
+	 */
+	if (devstr != NULL) {
+		filestr = strchr(argv[1], ')');
+		if (filestr != NULL) {
+			filestr++;
+			if (*filestr == '\0') {
+				/* no file specified */
+				filestr = NULL;
+			}
+		}
+	}
+
+	if (devstr == NULL || filestr == NULL) {
+		/*
+		 * We must construct the dev()file argument
+		 * because only one was specified.
+		 */
+		new_argv[new_argc++] = argv[0];
+
+		cp = boot_cmdbuf;
+		if (devstr != NULL) {
+			strcpy(cp, devstr);
+			cp += strlen(cp);
+		} else {
+			cp += default_bootdev(cp);
+		}
+		if (filestr != NULL) {
+			strcpy(cp, filestr);
+		} else {
+			(void) default_bootfile(cp);
+		}
+		new_argv[new_argc++] = boot_cmdbuf;
+
+		for (i = 2; i < argc; i++) {
 			new_argv[new_argc++] = argv[i];
 		}
 		goto set_new_argv;

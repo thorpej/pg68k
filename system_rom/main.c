@@ -494,6 +494,37 @@ strerror(int err)
 }
 #endif
 
+#define	DEFAULT_BOOTDEV		"ata()"
+#define	DEFAULT_BOOTFILE	"/netbsd"
+#define	DEFAULT_BOOTARGS	""
+
+static size_t
+default_bootdev(char *buf)
+{
+	if (buf != NULL) {
+		strcpy(buf, DEFAULT_BOOTDEV);
+	}
+	return strlen(DEFAULT_BOOTDEV);
+}
+
+static size_t
+default_bootfile(char *buf)
+{
+	if (buf != NULL) {
+		strcpy(buf, DEFAULT_BOOTFILE);
+	}
+	return strlen(DEFAULT_BOOTFILE);
+}
+
+static size_t
+default_bootargs(char *buf)
+{
+	if (buf != NULL) {
+		strcpy(buf, DEFAULT_BOOTARGS);
+	}
+	return strlen(DEFAULT_BOOTARGS);
+}
+
 static bool
 parse_value(const char *str, unsigned long max_val, u_long *val_out)
 {
@@ -1625,11 +1656,13 @@ version(void)
 	    CONFIG_ROM_VERSION_MAJOR, CONFIG_ROM_VERSION_MINOR);
 }
 
-#define	AUTOBOOT_COMMAND	"boot ata()/netbsd"
+#define	AUTOBOOT_COMMAND	"boot "
+#define	AUTOBOOT_CMDBUF_SIZE	64
 
 static const char *
 auto_boot(void)
 {
+	static char autoboot_cmdbuf[AUTOBOOT_CMDBUF_SIZE];
 	unsigned int deadline;
 	int i;
 
@@ -1655,7 +1688,18 @@ auto_boot(void)
 	}
 	printf("\n");
 
-	return AUTOBOOT_COMMAND;
+	char *cp = autoboot_cmdbuf;
+	strcpy(cp, AUTOBOOT_COMMAND);
+	cp += strlen(AUTOBOOT_COMMAND);
+
+	cp += default_bootdev(cp);
+	cp += default_bootfile(cp);
+	if (default_bootargs(NULL) != 0) {
+		*cp++ = ' ';
+		cp += default_bootargs(cp);
+	}
+
+	return autoboot_cmdbuf;
 }
 
 u_int	boot_howto;

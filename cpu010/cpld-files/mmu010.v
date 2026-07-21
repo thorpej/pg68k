@@ -375,6 +375,9 @@ reg [7:0] PME_copy;
 wire PME_V = PME_copy[7];	/* valid bit */
 wire PME_W = PME_copy[6];	/* write bit */
 wire PME_K = PME_copy[5];	/* kernel bit */
+/* Sun3 puts NC at   [4]           no-cache bit */
+/* Add an NX bit at  [3]?          no-execute bit */
+/* Spare bit at      [2]                          */
 
 /*
  * The updated PageMap entry always gets the REF bit set, and we set

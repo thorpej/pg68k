@@ -22,6 +22,7 @@ CPPFLAGS+=	${FDTCPPFLAGS}
 ${MACH_PROG}: $(M68KOBJS) $(OBJS)
 	${LD} -M -T ldscript -o $(.TARGET) $(M68KOBJS) $(OBJS) \
 	    > $(.TARGET).list
+	${SIZE} $(.TARGET)
 
 ${MACH_BIN}: ${MACH_PROG} rompad
 	${OBJCOPY} -O binary ${MACH_PROG} ${.TARGET}.tmp

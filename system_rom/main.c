@@ -46,6 +46,10 @@
 #include "dd7seg.h"
 #endif
 
+#ifdef CONFIG_DEV_NVRAM
+#include "nvram.h"
+#endif
+
 #include "memory.h"
 
 size_t
@@ -414,6 +418,9 @@ configure(void)
 #endif
 #ifdef ATA_ADDR
 	ata_configure(!devices_initialized);
+#endif
+#ifdef CONFIG_DEV_NVRAM
+	nvram_init();
 #endif
 
 	devices_initialized = true;
@@ -1060,6 +1067,25 @@ cli_h_uptime(int argc, char *argv[])
 	printf("uptime: %lld second%s\n", (long long)secs, plural((int)secs));
 }
 
+#ifdef CONFIG_DEV_NVRAM
+static void
+cli_u_nvram(const char *str)
+{
+	printf("usage: %s\n", str);
+}
+
+static void
+cli_h_nvram(int argc, char *argv[])
+{
+	if (argc != 1) {
+		cli_u_nvram(argv[0]);
+		return;
+	}
+
+	nvram_print_all();
+}
+#endif /* CONFIG_DEV_NVRAM */
+
 static void
 cli_u_cfgsw(const char *str)
 {
@@ -1606,6 +1632,13 @@ static const struct cli_handler {
 	  cli_h_boot,
 	  cli_u_boot,
 	},
+#ifdef CONFIG_DEV_NVRAM
+	{ "nvram",
+	  "examine or modify NVRAM",
+	  cli_h_nvram,
+	  cli_u_nvram,
+	},
+#endif
 	{ "cfgsw",
 	  "show configuration switches",
 	  cli_h_cfgsw,

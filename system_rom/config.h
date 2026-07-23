@@ -130,6 +130,7 @@ device_physaddr(unsigned long addr)
    so we use that one. */
 #define	CONFIG_PCF8584_FREQ	12000000
 #define	CONFIG_RTC_DS3231
+#define	CONFIG_NVRAM_DS3232
 #define	CONFIG_DEV_IMG
 #define	CONFIG_DISKLABEL_BSD44
 #define	CONFIG_DISKLABEL_GPT
@@ -226,6 +227,10 @@ device_physaddr(unsigned long addr)
 
 #if defined(CONFIG_ATA_GENERIC) || defined(CONFIG_ATA_HOST_SIM)
 #define	CONFIG_DEV_ATA
+#endif
+
+#if defined(CONFIG_NVRAM_DS3232)
+#define	CONFIG_DEV_NVRAM
 #endif
 
 #ifndef DEVICE_PHYSADDR

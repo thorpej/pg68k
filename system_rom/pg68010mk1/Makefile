@@ -13,6 +13,7 @@ XCOMP_CPU=	m68010
 
 OBJS+=		${ATAOBJS} ${DOSFSOBJS} ${UFSOBJS} ${FDTOBJS}
 OBJS+=		${I2COBJS}
+OBJS+=		${NVRAMOBJS}
 OBJS+=		${IMGOBJS}
 OBJS+=		dd7seg.o
 OBJS+=		device-tree.o

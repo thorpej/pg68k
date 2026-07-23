@@ -34,6 +34,8 @@ ATAOBJS=	ata.o
 
 I2COBJS=	i2c.o
 
+NVRAMOBJS=	nvram.o
+
 IMGOBJS=	img.o
 
 .PATH: ../ufs

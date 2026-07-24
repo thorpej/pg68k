@@ -501,35 +501,41 @@ strerror(int err)
 }
 #endif
 
-#define	DEFAULT_BOOTDEV		"ata()"
-#define	DEFAULT_BOOTFILE	"/netbsd"
-#define	DEFAULT_BOOTARGS	""
+#ifdef CONFIG_DEV_NVRAM
+#define	DEFAULT_BOOTDEV		nvram_get_string("bootdev")
+#define	DEFAULT_BOOTFILE	nvram_get_string("bootfile")
+#define	DEFAULT_BOOTARGS	nvram_get_string("bootargs")
+#else
+#define	DEFAULT_BOOTDEV		CONFIG_NVRAM_DEFAULT_BOOTDEV
+#define	DEFAULT_BOOTFILE	CONFIG_NVRAM_DEFAULT_BOOTFILE
+#define	DEFAULT_BOOTARGS	CONFIG_NVRAM_DEFAULT_BOOTARGS
+#endif
+
+static size_t
+default_nvram_value(char *buf, const char *val)
+{
+	if (buf != NULL) {
+		strcpy(buf, val);
+	}
+	return strlen(val);
+}
 
 static size_t
 default_bootdev(char *buf)
 {
-	if (buf != NULL) {
-		strcpy(buf, DEFAULT_BOOTDEV);
-	}
-	return strlen(DEFAULT_BOOTDEV);
+	return default_nvram_value(buf, DEFAULT_BOOTDEV);
 }
 
 static size_t
 default_bootfile(char *buf)
 {
-	if (buf != NULL) {
-		strcpy(buf, DEFAULT_BOOTFILE);
-	}
-	return strlen(DEFAULT_BOOTFILE);
+	return default_nvram_value(buf, DEFAULT_BOOTFILE);
 }
 
 static size_t
 default_bootargs(char *buf)
 {
-	if (buf != NULL) {
-		strcpy(buf, DEFAULT_BOOTARGS);
-	}
-	return strlen(DEFAULT_BOOTARGS);
+	return default_nvram_value(buf, DEFAULT_BOOTARGS);
 }
 
 static bool
@@ -1071,18 +1077,40 @@ cli_h_uptime(int argc, char *argv[])
 static void
 cli_u_nvram(const char *str)
 {
-	printf("usage: %s\n", str);
+	printf("usage: %s [var[=value]]\n", str);
 }
 
 static void
 cli_h_nvram(int argc, char *argv[])
 {
-	if (argc != 1) {
+	switch (argc) {
+	case 1:
+		nvram_print_all();
+		return;
+
+	case 2:
+		break;
+
+	default:
 		cli_u_nvram(argv[0]);
 		return;
 	}
 
-	nvram_print_all();
+	char *cp = strchr(argv[1], '=');
+	if (cp == NULL) {
+		/* Not an assignment, just print the var. */
+		nvram_print(argv[1]);
+		return;
+	}
+
+	/* Looks like an assignment. */
+	*cp++ = '\0';
+
+	int error = nvram_set(argv[1], cp);
+	if (error) {
+		printf("Unable to set %s: %s\n", argv[1],
+		    strerror(error));
+	}
 }
 #endif /* CONFIG_DEV_NVRAM */
 

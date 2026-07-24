@@ -233,6 +233,18 @@ device_physaddr(unsigned long addr)
 #define	CONFIG_DEV_NVRAM
 #endif
 
+#ifndef CONFIG_NVRAM_DEFAULT_BOOTDEV
+#define	CONFIG_NVRAM_DEFAULT_BOOTDEV	"ata(0,0)"
+#endif
+
+#ifndef CONFIG_NVRAM_DEFAULT_BOOTFILE
+#define	CONFIG_NVRAM_DEFAULT_BOOTFILE	"netbsd"
+#endif
+
+#ifndef CONFIG_NVRAM_DEFAULT_BOOTARGS
+#define	CONFIG_NVRAM_DEFAULT_BOOTARGS	""
+#endif
+
 #ifndef DEVICE_PHYSADDR
 #define	DEVICE_PHYSADDR(x)	((unsigned long)(x))
 #endif

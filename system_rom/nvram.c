@@ -28,18 +28,6 @@
 #include "syslib.h"
 #include "nvram.h"
 
-#ifndef CONFIG_NVRAM_DEFAULT_BOOTDEV
-#define	CONFIG_NVRAM_DEFAULT_BOOTDEV	"ata(0,0)"
-#endif
-
-#ifndef CONFIG_NVRAM_DEFAULT_BOOTFILE
-#define	CONFIG_NVRAM_DEFAULT_BOOTFILE	"netbsd"
-#endif
-
-#ifndef CONFIG_NVRAM_DEFAULT_BOOTARGS
-#define	CONFIG_NVRAM_DEFAULT_BOOTARGS	""
-#endif
-
 #define	NVRAM_VERSION		1
 #define	NVRAM_MAGIC		"pg68k,nvram"	/* 12 bytes incl. NUL */
 
@@ -127,6 +115,11 @@ static bool nvram_write_back;
 static int
 nvram_save(void)
 {
+	struct nvram_data *d = &nvram_data;
+
+	d->hdr.cksum = 0;
+	d->hdr.cksum = nvram_checksum(d);
+
 	return nvram_write_back ? nvram_write() : 0;
 }
 

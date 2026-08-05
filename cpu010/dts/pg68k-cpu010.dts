@@ -146,7 +146,7 @@
 		ata@8000400 {
 			compatible = "ata-generic";
 			reg = <0x8000400 0x10>,	/* command */
-			      <0x8000416 0x04>;	/* control */
+			      <0x800041c 0x04>;	/* control */
 			reg-shift = <1>;
 			interrupts = <3 0>;
 			ata-generic,use16bit;

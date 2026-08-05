@@ -157,7 +157,7 @@ device_physaddr(unsigned long addr)
 #define	UART1_ADDR	(ISA_START+0x2f8)
 #define	TIMER_ADDR	(ISA_START+0x040)
 #define	ATA_ADDR	(ISA_START+0x1f0)
-#define	ATA_AUX_ADDR	(ISA_START+0x3f6)
+#define	ATA_AUX_ADDR	(ISA_START+0x3f0)
 #define	ETH_ADDR	(ISA_START+0x300)
 #define	I2C_ADDR	0xffe10000
 #define	PSUC_ADDR	0xffefffe0
@@ -194,7 +194,7 @@ device_physaddr(unsigned long addr)
 
 #define	UART0_ADDR	(ISA_START+0x3f8)
 #define	ATA_ADDR	(ISA_START+0x1f0)
-#define	ATA_AUX_ADDR	(ISA_START+0x3f6)
+#define	ATA_AUX_ADDR	(ISA_START+0x3f0)
 
 #define	CONFIG_MACHINE_STRING	"Playground 68k Hosted ROM simulator"
 #define	CONFIG_RIISP		0	/* just a dummy */

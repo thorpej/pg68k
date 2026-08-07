@@ -11,7 +11,6 @@
 	chosen {
 		bootargs = "";
 		stdout-path = "serial0:115200n8r";
-		netbsd,hardclock = "timer0";
 	};
 
 	aliases {

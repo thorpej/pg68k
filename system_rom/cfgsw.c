@@ -30,36 +30,32 @@
 #include "control.h"
 #include "cfgsw.h"
 
-#define	CFGSW_IDX(x)	((x) - 1)		/* switches are 1-N */
-#define	CFGSW_BIT(x)	__BIT(CFGSW_IDX(x))
-
 #ifdef CONFIG_MACH_PG68010_MK_I
 #define	NUM_CFGSW	16
-#define	CFGSW_AUTOBOOT	16
-#define	CFGSW_VERBOSE	15
+#define	CFGSW_AUTOBOOT	15
+#define	CFGSW_VERBOSE	14
 #endif
 
 static const char * const cfgsw_descriptions[NUM_CFGSW] = {
 #ifdef CFGSW_AUTOBOOT
-[CFGSW_IDX(CFGSW_AUTOBOOT)]	 	= "auto-boot",
+[CFGSW_AUTOBOOT]	 	= "auto-boot",
 #endif
 #ifdef CFGSW_VERBOSE
-[CFGSW_IDX(CFGSW_VERBOSE)]		= "verbose",
+[CFGSW_VERBOSE]			= "verbose",
 #endif
 };
 
 static const char *
 cfgsw_description(unsigned int sw)
 {
-	if (sw >= 1 && sw <= NUM_CFGSW &&
-	    cfgsw_descriptions[CFGSW_IDX(sw)] != NULL) {
-		return cfgsw_descriptions[CFGSW_IDX(sw)];
+	if (sw < NUM_CFGSW && cfgsw_descriptions[sw] != NULL) {
+		return cfgsw_descriptions[sw];
 	}
 	return "<undefined>";
 }
 
 bool
-cfwsw_set_p(unsigned int sw)	/* 1...N */
+cfgsw_set_p(unsigned int sw)
 {
 #ifndef NUM_CFGSW
 	return false;
@@ -71,8 +67,8 @@ cfwsw_set_p(unsigned int sw)	/* 1...N */
 #error Invalid config switch configuration.
 #endif
 
-	if (sw >= 1 && sw <= NUM_CFGSW) {
-		return (val & CFGSW_BIT(sw)) != 0;
+	if (sw < NUM_CFGSW) {
+		return (val & __BIT(sw)) != 0;
 	}
 	return false;
 }
@@ -81,7 +77,7 @@ bool
 cfgsw_autoboot_p(void)
 {
 #ifdef CFGSW_AUTOBOOT
-	return cfwsw_set_p(CFGSW_AUTOBOOT);
+	return cfgsw_set_p(CFGSW_AUTOBOOT);
 #else
 	return false;
 #endif
@@ -91,7 +87,7 @@ bool
 cfgsw_verbose_p(void)
 {
 #ifdef CFGSW_VERBOSE
-	return cfwsw_set_p(CFGSW_VERBOSE);
+	return cfgsw_set_p(CFGSW_VERBOSE);
 #else
 	return false;
 #endif
@@ -104,17 +100,15 @@ cfgsw_verbose_p(void)
 #endif
 
 void
-cfgsw_print(unsigned int sw)	/* 0 == all */
+cfgsw_print(int sw)	/* -1 == all */
 {
 #ifdef NUM_CFGSW
-	unsigned int i;
-
-	for (i = NUM_CFGSW; i > 0; i--) {
-		if (sw != 0 && sw != i) {
+	for (int i = NUM_CFGSW - 1; i >= 0; i--) {
+		if (sw >= 0 && sw != i) {
 			continue;
 		}
 		printf(SWNO_FORMAT ": %-30s %s\n",
-		    i, cfgsw_description(i), cfwsw_set_p(i) ? "ON" : "OFF");
+		    i, cfgsw_description(i), cfgsw_set_p(i) ? "ON" : "OFF");
 	}
 #endif
 }

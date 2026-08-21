@@ -27,10 +27,12 @@
 #ifndef cfgsw_h_included
 #define cfgsw_h_included
 
-bool	cfwsw_set_p(unsigned int);
+bool	cfgsw_set_p(unsigned int);
 bool	cfgsw_autoboot_p(void);
 bool	cfgsw_verbose_p(void);
 
-void	cfgsw_print(unsigned int);
+#define	CFGSW_ALL	-1
+
+void	cfgsw_print(int);
 
 #endif /* cfgsw_h_included */

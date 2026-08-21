@@ -1128,7 +1128,7 @@ cli_h_cfgsw(int argc, char *argv[])
 		return;
 	}
 
-	cfgsw_print(0);
+	cfgsw_print(CFGSW_ALL);
 }
 
 static void

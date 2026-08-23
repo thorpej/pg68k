@@ -5564,6 +5564,26 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Consider replacing with\nIS61C3216AL-12TLI (TSOP-II-44)."
+		(exclude_from_sim no)
+		(at 50.8 248.412 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "bcd8bc7a-4449-45c1-b36d-24b03fd8d02a")
+	)
+	(text "Consider replcaing with\nAS7C4098A-12TIN (TSOP-II-44)."
+		(exclude_from_sim no)
+		(at 271.526 251.206 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "ec9a1ce1-dec0-4167-aa37-4d702acae9de")
+	)
 	(junction
 		(at 16.51 223.52)
 		(diameter 0)

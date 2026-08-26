@@ -5564,16 +5564,6 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Consider replacing with\nIS61C3216AL-12TLI (TSOP-II-44)."
-		(exclude_from_sim no)
-		(at 50.8 248.412 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "bcd8bc7a-4449-45c1-b36d-24b03fd8d02a")
-	)
 	(text "Consider replcaing with\nAS7C4098A-12TIN (TSOP-II-44)."
 		(exclude_from_sim no)
 		(at 271.526 251.206 0)
@@ -19448,7 +19438,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "45687066-5f56-49e8-9a7a-8d5ae44c6740")
 		(property "Reference" "U303"
 			(at 101.2033 179.07 0)
@@ -24307,7 +24296,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:SOJ-44_10.16x28.575mm_P1.27mm"
+		(property "Footprint" "Package_SO:TSOP-II-44_10.16x18.41mm_P0.8mm"
 			(at 50.8 172.72 0)
 			(effects
 				(font
@@ -24334,7 +24323,7 @@
 				(hide yes)
 			)
 		)
-		(property "Part" "ISSI IS61C3216AL-12KLI"
+		(property "Part" "ISSI IS61C3216AL-12TLI"
 			(at 50.8 172.72 0)
 			(effects
 				(font
@@ -24343,7 +24332,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1351200"
+		(property "LCSC" "XXX"
 			(at 50.8 172.72 0)
 			(effects
 				(font
@@ -24352,7 +24341,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "870IS61C3216AL12KLI"
+		(property "Mouser" "870IS61C3216AL12TLI"
 			(at 50.8 172.72 0)
 			(effects
 				(font

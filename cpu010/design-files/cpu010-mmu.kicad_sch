@@ -5564,6 +5564,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Alternative: AS7C513B-12TCN"
+		(exclude_from_sim no)
+		(at 51.308 248.92 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "36e9e0f3-81f1-446c-9927-1522e4cbbbcc")
+	)
 	(text "Consider replcaing with\nAS7C4098A-12TIN (TSOP-II-44)."
 		(exclude_from_sim no)
 		(at 271.526 251.206 0)
@@ -24332,7 +24342,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "XXX"
+		(property "LCSC" "C443415"
 			(at 50.8 172.72 0)
 			(effects
 				(font
@@ -24342,6 +24352,15 @@
 			)
 		)
 		(property "Mouser" "870IS61C3216AL12TLI"
+			(at 50.8 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Alt" "AS7C513B-12TCN"
 			(at 50.8 172.72 0)
 			(effects
 				(font

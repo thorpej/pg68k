@@ -17268,7 +17268,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "DS3231MZ+"
+		(property "Value" "DS3232MZ+"
 			(at 155.8133 227.33 0)
 			(effects
 				(font
@@ -17286,7 +17286,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://datasheets.maximintegrated.com/en/ds/DS3231M.pdf"
+		(property "Datasheet" "http://datasheets.maximintegrated.com/en/ds/DS3232M.pdf"
 			(at 153.67 229.87 0)
 			(effects
 				(font
@@ -17304,7 +17304,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C722467"
+		(property "LCSC" "C1520452"
 			(at 153.67 214.63 0)
 			(effects
 				(font
@@ -17313,7 +17313,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "700-DS3231MZ+"
+		(property "Mouser" "700-DS3232MZ+"
 			(at 153.67 214.63 0)
 			(effects
 				(font

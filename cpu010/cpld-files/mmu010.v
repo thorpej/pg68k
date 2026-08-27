@@ -25,8 +25,6 @@
  */
 
 /*
- * XXX THIS IS A WORK-IN-PROGRESS, but essentially "complete" XXX
- *
  * Memory Management Unit for the Motorola 68010 CPU.  This implementation
  * is targeted at an Atmel/Microchip ATF1508AS-7AX100 7.5ns CPLD.
  *

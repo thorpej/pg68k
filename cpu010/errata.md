@@ -12,8 +12,8 @@ to a cut-and-paste error in the schematic.  On Rev A boards, this will be
 corrected by cutting the horizontal traces leading to pins a7 and a8 of
 J701 and connecting the following bodge wires on the back side of the board:
 
-* J701 a7 -> U702 12
-* J701 a8 -> U702 11
+* J701 a7 -> U702 8
+* J701 a8 -> U702 9
 
 Because all 3 slots have the error and J702 and J703 are fed from J701,
 correcting J701 will fix all 3 slots.
@@ -29,7 +29,7 @@ to drive a voltage high enough to meet the DS1813 threshold voltage, so
 the system never comes out of reset.
 
 On Rev A boards, this will be worked-around by cutting the PWR_OK trace
-on the back side of the board, below the power button near the via, and
+on the back side of the board, below the reset button near the via, and
 bodging +5V from any nearby source (U404 or U402 are very convenient) to
 the cathode (stripe side) of D202.  This will immediately start the power-
 on-reset as soon as Vcc crosses the DS1813 threshold voltage rather than

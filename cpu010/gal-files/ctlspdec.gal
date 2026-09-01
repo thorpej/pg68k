@@ -1,8 +1,8 @@
 GAL22V10
 CTLSPDEC
 
- FC0 FC1  FC2     A1      A2      A3      A4      A5    A6   A7 /UDS   GND
-/LDS RnW /CTLSEL /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERRD /ERWR NC  DTACK VCC
+ FC0 FC1 FC2  A1      A2      A3      A4      A5    A6   A7 /UDS   GND
+/LDS RnW NC  /DDUSEL /DDLSEL /CSUSEL /CSLSEL /ERRD /ERWR NC  DTACK VCC
 
 ;
 ; Board control space is selected when:
@@ -11,9 +11,6 @@ CTLSPDEC
 ;     |_______________|   |_____________|
 ;           FC==4                0
 ;
-; We make this available on an output pin and also feed that back in for
-; our own use.
-;
 ; A7 A6 A5 A4
 ;  0  0  0  0 - 0 - Diagnostic display register(s)
 ;  0  0  0  1 - 1 - Configuration switches
@@ -21,36 +18,31 @@ CTLSPDEC
 ;
 
 ;
-; We qual with the data strobes because we're also using this to control
-; the output enable of our /DTACK output.
+; Generate the /DTACK output.
 ;
-CTLSEL = FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * UDS
-       + FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * LDS;
+; We drive an open-drain inverter.  This also serves as a proxy for
+; "board control space is selected".
+;
+DTACK = FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * UDS
+      + FC2 * /FC1 * /FC0 * /A3 * /A2 * /A1 * LDS;
 
 ;
 ; Diagnostic display register selection (write only).
 ;
-DDUSEL = CTLSEL * /A7 * /A6 * /A5 * /A4 * UDS * /RnW;
-DDLSEL = CTLSEL * /A7 * /A6 * /A5 * /A4 * LDS * /RnW;
+DDUSEL = DTACK * /A7 * /A6 * /A5 * /A4 * UDS * /RnW;
+DDLSEL = DTACK * /A7 * /A6 * /A5 * /A4 * LDS * /RnW;
 
 ;
 ; Configuration switches (read only).
 ;
-CSUSEL = CTLSEL * /A7 * /A6 * /A5 *  A4 * UDS *  RnW;
-CSLSEL = CTLSEL * /A7 * /A6 * /A5 *  A4 * LDS *  RnW;
+CSUSEL = DTACK * /A7 * /A6 * /A5 *  A4 * UDS *  RnW;
+CSLSEL = DTACK * /A7 * /A6 * /A5 *  A4 * LDS *  RnW;
 
 ;
 ; System enable register selection (read/write).
 ;
-ERRD = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS *  RnW;
-ERWR = CTLSEL * /A7 * /A6 *  A5 * /A4 * UDS * /RnW;
-
-;
-; Generate the /DTACK output.
-;
-; We drive an open-drain inverter.
-;
-DTACK = CTLSEL;
+ERRD = DTACK * /A7 * /A6 *  A5 * /A4 * UDS *  RnW;
+ERWR = DTACK * /A7 * /A6 *  A5 * /A4 * UDS * /RnW;
 
 DESCRIPTION
 

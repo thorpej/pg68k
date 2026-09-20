@@ -28,6 +28,7 @@ MMU_TESTCASES+=	mmu_rmw_super_ok \
 
 MMU_TESTCASES+=	mmu_ctx \
 		mmu_segmap \
+		mmu_segmap_acc \
 		mmu_pagemap \
 		mmu_bustimer \
 		mmu_berr_reg

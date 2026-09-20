@@ -294,9 +294,7 @@ assign CPU_CLK = ClockDiv[1];
  *     writes and we know that it will transition well after /AS is
  *     stable (/AS is asserted on the rising edge of S2 and /UDS is
  *     asserted on the rising edge of S4, so there is ample time for
- *     signal synchronization to occur).  The practical upshot is that
- *     there will probably end up being a wait state incurred for
- *     Context Register writes.
+ *     signal synchronization to occur).
  *
  * ALSO NOTE: The MC6800 peripheral interface is -- not supported --,
  * because I don't want to be bothered with dealing with both /DTACK
@@ -488,6 +486,12 @@ wire BusErrorRegSel = ControlSpace && (ADDR == MMUADDR_BusErrorReg);
  */
 wire MapSel = (SegMap0Sel || SegMapSel || PageMapUSel || PageMapLSel);
 
+/*
+ * This wire indicates that the MMU itself has been selected and is used
+ * in the generation of the MMU's MMU_DTACK output.
+ */
+wire MmuSel = (MapSel || ContextRegSel || BusErrorRegSel);
+
 /********************** SEGMENT MAP CONTROL LOGIC ****************************/
 
 /*
@@ -649,7 +653,7 @@ end
 assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
 
 /*
- * Qual MMU_DTACK on the non-synchronized /AS input to ensure it de-asserts
+ * Qual MMU_DTACK on the non-synchronized /xDS inputs to ensure it de-asserts
  * as quickly as possbile.
  *
  * "AC ELECTRICAL SPECIFICATIONS - READ AND WRITE CYCLES" from the "M68000
@@ -657,11 +661,10 @@ assign DATA = (enable_data_out && ~nUDS) ? data_out : 8'bzzzzzzzz;
  * time (characteristic #28), as well as for "/AS negated to /BERR negated"
  * time (characteristic #30).
  *
- * Also qual with the combined /xDS signal so that we can assert our
- * internal dtack early.
+ * While the characteristics talk about /AS, the /xDS signals will de-asssert
+ * at the same time as /AS, so there's no need to consult /AS separately.
  */
-reg dtack;
-assign MMU_DTACK = dtack & (~nUDS | ~nLDS) & ~nAS;
+assign MMU_DTACK = MmuSel & (~nUDS | ~nLDS);
 
 /************************ BUS CYCLE TIMEOUT LOGIC ****************************/
 
@@ -800,7 +803,6 @@ always @(negedge CLK40) begin
 		PME_copy <= 8'b0;
 
 		enable_data_out <= 1'b0;
-		dtack <= 1'b0;
 		state <= S_IDLE;
 	end
 	else begin
@@ -825,7 +827,6 @@ always @(negedge CLK40) begin
 
 			CYCLE_RD_CONTEXT: begin
 				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
 			end
 
@@ -834,29 +835,24 @@ always @(negedge CLK40) begin
 				 * We have to wait for the synchronized
 				 * /UDS signal to be asserted.
 				 */
-				dtack <= 1'b1;
 				state <= S_WR_CONTEXT;
 			end
 
 			CYCLE_RD_ERROR: begin
 				enable_data_out <= 1'b1;
-				dtack <= 1'b1;
 				state <= S_ERROR_REG_TERM_WAIT;
 			end
 
 			CYCLE_WR_ERROR: begin
 				/* We just ignore these writes. */
-				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
 			end
 
 			CYCLE_RD_MAP: begin
-				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
 			end
 
 			CYCLE_WR_MAP: begin
-				dtack <= 1'b1;
 				state <= S_MMU_REG_TERM_WAIT;
 			end
 
@@ -915,7 +911,6 @@ always @(negedge CLK40) begin
 
 		S_MMU_REG_TERM_WAIT: begin
 			if (nAS_s) begin
-				dtack <= 1'b0;
 				state <= S_IDLE;
 			end
 		end
@@ -924,7 +919,6 @@ always @(negedge CLK40) begin
 			/* Bus Error Register is reset after reading. */
 			if (nAS_s) begin
 				bus_error_reg <= BERR_NONE;
-				dtack <= 1'b0;
 				state <= S_IDLE;
 			end
 		end

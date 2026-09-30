@@ -58,8 +58,6 @@ wire [3:0] n_ramsel;
 wire n_expramsel;
 
 wire decode_out;
-wire [1:0] space_out;
-wire [4:0] bank_out;
 
 wire dtack;
 
@@ -90,8 +88,6 @@ wire want_decode = (fc == FC_USER_DATA ||
 		.nEXPRAMSEL(n_expramsel),
 
 		.decode_out(decode_out),
-		.space_out(space_out),
-		.bank_out(bank_out),
 
 		.DTACK(dtack)
 	);

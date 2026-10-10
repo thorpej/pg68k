@@ -60,8 +60,6 @@ module memctl010(
 
 `ifdef BUILD_FOR_TEST
 	output wire decode_out,
-	output wire [1:0] space_out,
-	output wire [4:0] bank_out,
 `endif
 
 	output wire DTACK	/* drives open-drain inverter */
@@ -80,54 +78,46 @@ module memctl010(
  *
  * Normal space that we decode: FC[1] ^ FC[0] -> 1
  */
-wire Decode = (FC[1] ^ FC[0]) && ~nAS;
-
-localparam SEL_NONE	= 6'b000000;
-localparam SEL_ROM	= 6'b100000;
-localparam SEL_RAM3	= 6'b010000;
-localparam SEL_RAM2	= 6'b001000;
-localparam SEL_RAM1	= 6'b000100;
-localparam SEL_RAM0	= 6'b000010;
-localparam SEL_EXPRAM	= 6'b000001;
-
-localparam SP_dc	= 2'bxx;
-localparam SP_RAM	= 2'b00;
-localparam SP_ROM	= 2'b01;
-
-wire [1:0] Space = ADDR[6:5];
-wire [4:0] Bank  = ADDR[4:0];
-
+wire decode = (FC[1] ^ FC[0]) & ~nAS;
 `ifdef BUILD_FOR_TEST
-assign decode_out = Decode;
-assign space_out = Space;
-assign bank_out = Bank;
+assign decode_out = decode;
 `endif
 
-reg [5:0] Selects;
-always @(*) begin
-	casex ({Decode, MMUEN, Space, Bank})
-	/* MMU disabled -> everything goes to ROM. */
-	{1'b1, 1'b0, SP_dc,  5'bxxxxx}: Selects = SEL_ROM;
+/*
+ * Our ADDR[6:0] input is A27..A21 from the MMU.
+ *
+ * The spaces we decode are:
+ *
+ * 65.43210
+ * A      A
+ * 2      2
+ * 7      1
+ * 00.00000	on-board RAM bank 0 (2MB) -> DTACK
+ * 00.00001	on-board RAM bank 1 (2MB) -> DTACK
+ * 00.00010	on-board RAM bank 2 (2MB) -> DTACK
+ * 00.00011	on-board RAM bank 3 (2MB) -> DTACK
+ * 00.001xx	expansion RAM
+ * 00.01xxx	expansion RAM
+ * 00.1xxxx	expansion RAM
+ * 01.xxxxx	on-board ROM              -> DTACK
+ *
+ * The on-board ROM is also selected if the MMU is disabled.
+ */
 
-	/* ROM space -> ROM, everything else don't care */
-	{1'b1, 1'b1, SP_ROM, 5'bxxxxx}: Selects = SEL_ROM;
+wire ram_sel = decode & (MMUEN & ~ADDR[6] & ~ADDR[5]);
+wire rom_sel = decode & (~MMUEN | (MMUEN & ~ADDR[6] & ADDR[5]));
 
-	/* 4 banks of 2MB RAM. */
-	{1'b1, 1'b1, SP_RAM, 5'b00000}: Selects = SEL_RAM0;
-	{1'b1, 1'b1, SP_RAM, 5'b00001}: Selects = SEL_RAM1;
-	{1'b1, 1'b1, SP_RAM, 5'b00010}: Selects = SEL_RAM2;
-	{1'b1, 1'b1, SP_RAM, 5'b00011}: Selects = SEL_RAM3;
+wire onboard_ram = ~ADDR[4] & ~ADDR[3] & ~ADDR[2];
 
-	/* Provision for expansion RAM. */
-	{1'b1, 1'b1, SP_RAM, 5'b001xx}: Selects = SEL_EXPRAM;
-	{1'b1, 1'b1, SP_RAM, 5'b01xxx}: Selects = SEL_EXPRAM;
-	{1'b1, 1'b1, SP_RAM, 5'b1xxxx}: Selects = SEL_EXPRAM;
+assign nRAMSEL[0] = ~(ram_sel &  onboard_ram & ~ADDR[1] & ~ADDR[0]);
+assign nRAMSEL[1] = ~(ram_sel &  onboard_ram & ~ADDR[1] &  ADDR[0]);
+assign nRAMSEL[2] = ~(ram_sel &  onboard_ram &  ADDR[1] & ~ADDR[0]);
+assign nRAMSEL[3] = ~(ram_sel &  onboard_ram &  ADDR[1] &  ADDR[0]);
+assign nEXPRAMSEL = ~(ram_sel & ~onboard_ram);
+assign nROMSEL    = ~(rom_sel);
 
-	default:                        Selects = SEL_NONE;
-	endcase
-end
-
-assign {nROMSEL, nRAMSEL, nEXPRAMSEL} = ~Selects;
+/* We don't ACK expansion RAM; we don't know how fast it is. */
+assign DTACK = ((ram_sel & onboard_ram) | rom_sel) & (~nUDS | ~nLDS);
 
 /* Read vs write strobe. */
 assign nU_RD = nUDS | ~RnW;
@@ -135,9 +125,6 @@ assign nU_WR = nUDS |  RnW;
 
 assign nL_RD = nLDS | ~RnW;
 assign nL_WR = nLDS |  RnW;
-
-/* We don't ACK expansion RAM; we don't know how fast it is. */
-assign DTACK = (Selects[5:1] != 5'd0) && (~nUDS | ~nLDS);
 
 endmodule
 

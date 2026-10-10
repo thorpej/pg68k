@@ -30,16 +30,16 @@ initial begin
 		if (addr >= ROM_START && addr < ROM_END &&
 		    (n_ramsel != ALL_RAM_UNSEL ||
 		     ~n_expramsel)) begin
-			$display("--> addr=%8x decode=%0d mmu_en=%0d space=%0d bank=%5b",
-			    addr, decode_out, mmu_en, space_out, bank_out);
+			$display("--> addr=%8x decode=%0d mmu_en=%0d",
+			    addr, decode_out, mmu_en);
 			$fatal(1,
 			    "    --> FAILED unexpected n_ramsel=%4b n_expramsel=%0b",
 			    n_ramsel, n_expramsel);
 		end
 		if (addr >= ROM_START && addr < ROM_END &&
 		    n_romsel) begin
-			$display("--> addr=%8x decode=%0d mmu_en=%0d space=%0d bank=%5b",
-			    addr, decode_out, mmu_en, space_out, bank_out);
+			$display("--> addr=%8x decode=%0d mmu_en=%0d",
+			    addr, decode_out, mmu_en);
 			$fatal(1,
 			    "    --> FAILED expected /ROMSEL");
 		end

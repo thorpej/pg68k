@@ -1,4 +1,4 @@
-Atmel ATF1504 Fitter Version 1918 ,running Wed Jun 17 16:13:32 2026
+Atmel ATF1504 Fitter Version 1918 ,running Sat Oct 10 07:28:53 2026
 
 
 
@@ -81,7 +81,7 @@ TDI is placed at pin 7 (MC 8)
 MMUEN is placed at pin 6 (MC 11)
 RnW is placed at pin 5 (MC 14)
 nLDS is placed at pin 4 (MC 16)
-id00010Q is placed at feedback node 616 (MC 16)
+id00006Q is placed at feedback node 616 (MC 16)
 nU_RD is placed at pin 21 (MC 17)
 ADDR_6 is placed at pin 20 (MC 19)
 ADDR_5 is placed at pin 19 (MC 20)
@@ -146,15 +146,23 @@ NC = Unused I/O pins which must be unconnected on the board
 
 Universal-Interconnect-Multiplexer assignments
 ------------------------------------------------
-FanIn assignment for block A [3]
+FanIn assignment for block A [9]
 {
+ADDR_4,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
 FC_1,FC_0,
+MMUEN,
 nAS,
 }
 Multiplexer assignment for block A
-FC_1			(MC2	P)   : MUX 9		Ref (A4p)
-FC_0			(MC3	P)   : MUX 21		Ref (A5p)
-nAS			(MC1	FB)  : MUX 32		Ref (GCLR)
+MMUEN			(MC4	P)   : MUX 0		Ref (A11p)
+ADDR_4			(MC7	P)   : MUX 1		Ref (B21p)
+FC_1			(MC1	P)   : MUX 9		Ref (A4p)
+ADDR_3			(MC8	P)   : MUX 13		Ref (B24p)
+FC_0			(MC2	P)   : MUX 21		Ref (A5p)
+ADDR_2			(MC9	P)   : MUX 22		Ref (B25p)
+ADDR_6			(MC6	P)   : MUX 23		Ref (B19p)
+nAS			(MC3	FB)  : MUX 32		Ref (GCLR)
+ADDR_5			(MC5	P)   : MUX 33		Ref (B20p)
 
 FanIn assignment for block B [2]
 {
@@ -167,53 +175,55 @@ RnW			(MC2	P)   : MUX 28		Ref (A14p)
 
 FanIn assignment for block C [12]
 {
-ADDR_4,ADDR_0,ADDR_1,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
+ADDR_0,ADDR_1,ADDR_6,ADDR_5,
+FC_1,FC_0,
 MMUEN,
 RnW,
-id00010Q,
-nUDS,nLDS,
+id00006Q,
+nUDS,nLDS,nAS,
 }
 Multiplexer assignment for block C
-MMUEN			(MC6	P)   : MUX 0		Ref (A11p)
-ADDR_4			(MC10	P)   : MUX 1		Ref (B21p)
-ADDR_0			(MC9	P)   : MUX 3		Ref (A1p)
-ADDR_1			(MC8	P)   : MUX 6		Ref (B30p)
-nUDS			(MC2	FB)  : MUX 12		Ref (OE2)
-ADDR_3			(MC12	P)   : MUX 13		Ref (B24p)
-ADDR_2			(MC11	P)   : MUX 22		Ref (B25p)
-ADDR_6			(MC4	P)   : MUX 23		Ref (B19p)
-RnW			(MC3	P)   : MUX 28		Ref (A14p)
-id00010Q		(MC1	FB)  : MUX 29		Ref (A16fb)
-nLDS			(MC7	P)   : MUX 30		Ref (A16p)
-ADDR_5			(MC5	P)   : MUX 35		Ref (B20p)
+MMUEN			(MC5	P)   : MUX 0		Ref (A11p)
+ADDR_0			(MC12	P)   : MUX 1		Ref (A1p)
+ADDR_1			(MC11	P)   : MUX 6		Ref (B30p)
+FC_1			(MC2	P)   : MUX 9		Ref (A4p)
+nUDS			(MC8	FB)  : MUX 12		Ref (OE2)
+FC_0			(MC3	P)   : MUX 21		Ref (A5p)
+ADDR_6			(MC7	P)   : MUX 23		Ref (B19p)
+id00006Q		(MC1	FB)  : MUX 29		Ref (A16fb)
+RnW			(MC9	P)   : MUX 32		Ref (A14p)
+ADDR_5			(MC6	P)   : MUX 35		Ref (B20p)
+nLDS			(MC10	P)   : MUX 36		Ref (A16p)
+nAS			(MC4	FB)  : MUX 38		Ref (GCLR)
 
-FanIn assignment for block D [11]
+FanIn assignment for block D [14]
 {
-ADDR_4,ADDR_0,ADDR_1,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
+ADDR_0,ADDR_4,ADDR_1,ADDR_3,ADDR_2,ADDR_6,ADDR_5,
+FC_1,FC_0,
 MMUEN,
-id00010Q,
-nUDS,nLDS,
+id00006Q,
+nUDS,nAS,nLDS,
 }
 Multiplexer assignment for block D
 MMUEN			(MC5	P)   : MUX 0		Ref (A11p)
-ADDR_4			(MC9	P)   : MUX 1		Ref (B21p)
-ADDR_0			(MC8	P)   : MUX 3		Ref (A1p)
-ADDR_1			(MC7	P)   : MUX 6		Ref (B30p)
-nUDS			(MC2	FB)  : MUX 12		Ref (OE2)
-ADDR_3			(MC11	P)   : MUX 13		Ref (B24p)
-ADDR_2			(MC10	P)   : MUX 22		Ref (B25p)
-ADDR_6			(MC3	P)   : MUX 23		Ref (B19p)
-id00010Q		(MC1	FB)  : MUX 29		Ref (A16fb)
-nLDS			(MC6	P)   : MUX 30		Ref (A16p)
-ADDR_5			(MC4	P)   : MUX 35		Ref (B20p)
+ADDR_0			(MC14	P)   : MUX 1		Ref (A1p)
+ADDR_4			(MC9	P)   : MUX 5		Ref (B21p)
+ADDR_1			(MC13	P)   : MUX 6		Ref (B30p)
+FC_1			(MC2	P)   : MUX 9		Ref (A4p)
+nUDS			(MC8	FB)  : MUX 12		Ref (OE2)
+ADDR_3			(MC10	P)   : MUX 13		Ref (B24p)
+FC_0			(MC3	P)   : MUX 21		Ref (A5p)
+ADDR_2			(MC11	P)   : MUX 22		Ref (B25p)
+ADDR_6			(MC7	P)   : MUX 23		Ref (B19p)
+id00006Q		(MC1	FB)  : MUX 29		Ref (A16fb)
+nAS			(MC4	FB)  : MUX 32		Ref (GCLR)
+ADDR_5			(MC6	P)   : MUX 35		Ref (B20p)
+nLDS			(MC12	P)   : MUX 36		Ref (A16p)
 
 Creating JEDEC file memctl010.jed ...
 
 PLCC44 programmed logic:
 -----------------------------------
-id00010Q = ((!nAS & FC_1 & !FC_0)
-	# (!nAS & !FC_1 & FC_0));
-
 !nL_RD = (RnW & !nLDS);
 
 !nL_WR = (!RnW & !nLDS);
@@ -222,27 +232,35 @@ id00010Q = ((!nAS & FC_1 & !FC_0)
 
 !nU_WR = (!RnW & !nUDS);
 
-!nEXPRAMSEL = ((!ADDR_6 & !ADDR_5 & MMUEN & id00010Q & ADDR_3)
-	# (!ADDR_6 & !ADDR_5 & MMUEN & id00010Q & ADDR_2)
-	# (!ADDR_6 & !ADDR_5 & ADDR_4 & MMUEN & id00010Q));
+!nROMSEL = ((!FC_1 & FC_0 & !nAS & !ADDR_6 & ADDR_5)
+	# (FC_1 & !FC_0 & !MMUEN & !nAS)
+	# (FC_1 & !FC_0 & !nAS & !ADDR_6 & ADDR_5)
+	# (!FC_1 & FC_0 & !MMUEN & !nAS));
 
-!nROMSEL = ((id00010Q & !ADDR_6 & ADDR_5)
-	# (!MMUEN & id00010Q));
+id00006Q = ((!FC_1 & FC_0 & !nAS & MMUEN & !ADDR_5 & !ADDR_6 & !ADDR_4 & !ADDR_3 & !ADDR_2)
+	# (FC_1 & !FC_0 & !nAS & MMUEN & !ADDR_5 & !ADDR_6 & !ADDR_4 & !ADDR_3 & !ADDR_2));
 
-DTACK = ((id00010Q & !ADDR_4 & !ADDR_6 & !ADDR_2 & !ADDR_3 & !nLDS)
-	# (id00010Q & !ADDR_6 & !nUDS & ADDR_5)
-	# (id00010Q & !nUDS & !MMUEN)
-	# (id00010Q & !ADDR_6 & !nLDS & ADDR_5)
-	# (id00010Q & !nLDS & !MMUEN)
-	# (id00010Q & !ADDR_4 & !ADDR_6 & !ADDR_2 & !ADDR_3 & !nUDS));
+!nEXPRAMSEL = ((!ADDR_6 & !ADDR_5 & !FC_1 & FC_0 & MMUEN & !nAS & ADDR_3)
+	# (!ADDR_6 & !ADDR_5 & !FC_1 & FC_0 & MMUEN & !nAS & ADDR_2)
+	# (!ADDR_6 & !ADDR_5 & ADDR_4 & FC_1 & !FC_0 & MMUEN & !nAS)
+	# (!ADDR_6 & !ADDR_5 & FC_1 & !FC_0 & MMUEN & !nAS & ADDR_3)
+	# (!ADDR_6 & !ADDR_5 & FC_1 & !FC_0 & MMUEN & !nAS & ADDR_2)
+	# (!ADDR_6 & !ADDR_5 & ADDR_4 & !FC_1 & FC_0 & MMUEN & !nAS));
 
-!nRAMSEL_0 = (!ADDR_1 & !ADDR_0 & id00010Q & !ADDR_4 & !ADDR_5 & MMUEN & !ADDR_6 & !ADDR_2 & !ADDR_3);
+!DTACK = ((!FC_1 & !FC_0 & !id00006Q)
+	# (!id00006Q & nAS)
+	# (!id00006Q & ADDR_6 & MMUEN)
+	# (!id00006Q & MMUEN & !ADDR_5)
+	# (FC_1 & FC_0 & !id00006Q)
+	# (nLDS & nUDS));
 
-!nRAMSEL_3 = (ADDR_1 & ADDR_0 & id00010Q & !ADDR_4 & !ADDR_5 & MMUEN & !ADDR_6 & !ADDR_2 & !ADDR_3);
+!nRAMSEL_0 = (!ADDR_1 & !ADDR_0 & id00006Q);
 
-!nRAMSEL_1 = (!ADDR_1 & ADDR_0 & id00010Q & !ADDR_4 & !ADDR_5 & MMUEN & !ADDR_6 & !ADDR_2 & !ADDR_3);
+!nRAMSEL_3 = (ADDR_1 & ADDR_0 & id00006Q);
 
-!nRAMSEL_2 = (ADDR_1 & !ADDR_0 & id00010Q & !ADDR_4 & !ADDR_5 & MMUEN & !ADDR_6 & !ADDR_2 & !ADDR_3);
+!nRAMSEL_1 = (!ADDR_1 & ADDR_0 & id00006Q);
+
+!nRAMSEL_2 = (ADDR_1 & !ADDR_0 & id00006Q);
 
 
 PLCC44 Pin/Node Placement:
@@ -276,7 +294,7 @@ Pin 33 = nRAMSEL_3; /* MC 49 */
 Pin 34 = nEXPRAMSEL; /* MC 51 */ 
 Pin 38 = TDO; /* MC 56 */ 
 Pin 40 = DTACK; /* MC 62 */ 
-PINNODE 616 = id00010Q; /* MC 16 Feedback */
+PINNODE 616 = id00006Q; /* MC 16 Feedback */
 
 ** Resource Usage **
 
@@ -319,7 +337,7 @@ MC12  0         --                --              --        --             0    
 MC13  0         --                --              --        --             0     f- 
 MC14  5    --   RnW        INPUT  --              --        --             0     f- 
 MC15  0         --                --              --        --             0     f- 
-MC16  4    --   nLDS       INPUT  id00010Q C----  --        --             2     f- 
+MC16  4    --   nLDS       INPUT  id00006Q C----  --        --             2     f- 
 MC17  21   on   nU_RD      C----  --              --        --             1     f- 
 MC18  0         --                --              --        --             0     f- 
 MC19  20   --   ADDR_6     INPUT  --              --        --             0     f- 
@@ -340,7 +358,7 @@ MC33  24   on   nU_WR      C----  --              --        --             1    
 MC34  0         --                --              --        --             0     f- 
 MC35  25   on   nL_RD      C----  --              --        --             1     f- 
 MC36  26   on   nL_WR      C----  --              --        --             1     f- 
-MC37  27   on   nROMSEL    C----  --              --        --             2     f- 
+MC37  27   on   nROMSEL    C----  --              --        --             4     f- 
 MC38  0         --                --              --        --             0     f- 
 MC39  0         --                --              --        --             0     f- 
 MC40  28   on   nRAMSEL_0  C----  --              --        --             1     f- 
@@ -353,8 +371,8 @@ MC46  31   on   nRAMSEL_2  C----  --              --        --             1    
 MC47  0         --                --              --        --             0     f- 
 MC48  32   --   TCK        INPUT  --              --        --             0     f- 
 MC49  33   on   nRAMSEL_3  C----  --              --        --             1     f- 
-MC50  0         --                --              --        --             0     f- 
-MC51  34   on   nEXPRAMSEL C----  --              --        --             3     f- 
+MC50  0         --                --              --        -> nEXPRAMSEL  5     f- 
+MC51  34   on   nEXPRAMSEL C----  --              --        --             1     f- 
 MC52  36        --                --              --        --             0     f- 
 MC53  37        --                --              --        --             0     f- 
 MC54  0         --                --              --        --             0     f- 
@@ -374,21 +392,21 @@ MC0   44        --                --              --        --             0    
 MC0   43        --                --              --        --             0     f- 
 
 Logic Array Block			Macro Cells	I/O Pins	Foldbacks	TotalPT	FanIN		Cascades
-A: MC1	- MC16		1/16(6%)	7/16(43%)	0/16(0%)	2/80(2%)	3/40(7%)	0
+A: MC1	- MC16		1/16(6%)	7/16(43%)	0/16(0%)	2/80(2%)	9/40(22%)	0
 B: MC17	- MC32		1/16(6%)	8/16(50%)	0/16(0%)	1/80(1%)	2/40(5%)	0
-C: MC33	- MC48		7/16(43%)	8/16(50%)	0/16(0%)	8/80(10%)	12/40(30%)	0
-D: MC49	- MC64		4/16(25%)	4/16(25%)	0/16(0%)	10/80(12%)	11/40(27%)	1
+C: MC33	- MC48		7/16(43%)	8/16(50%)	0/16(0%)	10/80(12%)	12/40(30%)	0
+D: MC49	- MC64		4/16(25%)	4/16(25%)	0/16(0%)	13/80(16%)	14/40(35%)	2
 
 Total dedicated input used:	2/4 	(50%)
 Total I/O pins used		27/32 	(84%)
-Total Macro cells used 		14/64 	(21%)
+Total Macro cells used 		15/64 	(23%)
 Total Flip-Flop used 		0/64 	(0%)
 Total Foldback logic used 	0/64 	(0%)
 Total Nodes+FB/MCells 		13/64 	(20%)
-Total cascade used 		1
+Total cascade used 		2
 Total input pins 			17
 Total output pins 		12
-Total Pts 				21
+Total Pts 				26
 Creating pla file memctl010.tt3 with 0 inputs 0 outputs, 0 pins 0 nodes and 0 pterms...
 
 ----------------  End fitter, Design FITS
